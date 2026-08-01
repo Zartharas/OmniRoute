@@ -6,6 +6,11 @@ on:
       - fix/combo-target-timeout-scope
     paths:
       - ".github/workflows/apply-combo-target-timeout-scope-fix.yml"
+  pull_request:
+    branches:
+      - release/v3.8.50
+    paths:
+      - ".github/workflows/apply-combo-target-timeout-scope-fix.yml"
 
 permissions:
   contents: write
