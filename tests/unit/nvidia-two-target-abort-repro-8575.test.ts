@@ -41,9 +41,15 @@ function wait(ms: number) {
 test("#8575: timed-out NVIDIA target is aborted before the second target succeeds", async () => {
   const clientAbortController = new AbortController();
   const attemptedModels: string[] = [];
+  const infoMessages: string[] = [];
   let firstTargetAbortObserved = false;
   let firstTargetStillActive = false;
   let firstTargetCompletedLate = false;
+
+  const testLog = {
+    ...log,
+    info: (...args: unknown[]) => infoMessages.push(args.map(String).join(" ")),
+  };
 
   const handleSingleModel = async (
     _body: Record<string, unknown>,
@@ -85,18 +91,18 @@ test("#8575: timed-out NVIDIA target is aborted before the second target succeed
     body: { model: "nvidia-repro", messages: [{ role: "user", content: "ping" }] },
     combo: makeTwoTargetCombo("nvidia-8575-timeout", 25),
     handleSingleModel,
-    log,
+    log: testLog,
     settings: {},
     allCombos: [],
     signal: clientAbortController.signal,
   });
 
-  assert.equal(result.status, 200, "the second NVIDIA target should complete the combo");
   assert.deepEqual(
     attemptedModels,
     [firstModel, secondModel],
-    "the combo should time out target one, then attempt target two exactly once"
+    `the combo should time out target one, then attempt target two exactly once; logs=${infoMessages.join(" | ")}`
   );
+  assert.equal(result.status, 200, "the second NVIDIA target should complete the combo");
   assert.equal(firstTargetAbortObserved, true, "target one must observe its timeout abort");
   assert.equal(firstTargetStillActive, false, "target one must be inactive before combo success");
 
