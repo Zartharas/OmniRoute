@@ -1,0 +1,1 @@
+Prevent a locally timed-out combo target from exhausting the whole provider or connection, so remaining same-provider targets can still be attempted while the abandoned request is cancelled.
