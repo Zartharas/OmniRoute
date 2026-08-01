@@ -48,6 +48,20 @@ test("Responses client preserves a provider configured for native Responses", ()
   assert.equal(r.targetFormat, FORMATS.OPENAI_RESPONSES);
 });
 
+test("model registry native Responses target overrides a Chat provider default", () => {
+  const model = "gpt-5.6-sol";
+  assert.equal(getModelTargetFormat("openai", model), FORMATS.OPENAI_RESPONSES);
+
+  const r = resolveChatCoreTargetFormat({
+    provider: "openai",
+    resolvedModel: model,
+    apiFormat: "responses",
+    customModelTargetFormat: undefined,
+    providerSpecificData: undefined,
+  });
+  assert.equal(r.targetFormat, FORMATS.OPENAI_RESPONSES);
+});
+
 test("delegates byte-identically for a normal model without a custom override", () => {
   const r = resolveChatCoreTargetFormat({
     provider: "openai",
