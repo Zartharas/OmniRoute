@@ -1,0 +1,118 @@
+name: Apply and validate combo target timeout scope fix
+
+on:
+  push:
+    branches:
+      - fix/combo-target-timeout-scope
+    paths:
+      - ".github/workflows/apply-combo-target-timeout-scope-fix.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v7
+        with:
+          ref: fix/combo-target-timeout-scope
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Apply narrow timeout classification fix
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          timeout_path = Path("open-sse/services/combo/targetTimeoutRunner.ts")
+          timeout_text = timeout_path.read_text()
+          old_timeout = '''        resolve(
+                    new Response(JSON.stringify({ error: { message: `Model ${modelStr} timed out` } }), {
+                      status: 524,
+                      headers: { "Content-Type": "application/json" },
+                    })
+                  );'''
+          new_timeout = '''        resolve(
+                    new Response(
+                      JSON.stringify({
+                        error: {
+                          message: `Model ${modelStr} timed out`,
+                          code: "combo_target_timeout",
+                          type: "upstream_timeout",
+                        },
+                      }),
+                      {
+                        status: 524,
+                        headers: { "Content-Type": "application/json" },
+                      }
+                    )
+                  );'''
+          if old_timeout not in timeout_text:
+              raise SystemExit("target timeout response block not found")
+          timeout_path.write_text(timeout_text.replace(old_timeout, new_timeout, 1))
+
+          predicates_path = Path("open-sse/services/combo/comboPredicates.ts")
+          predicates_text = predicates_path.read_text()
+          old_codes = '''const REQUEST_SCOPED_UPSTREAM_ERROR_CODES = new Set([
+            "context_length_exceeded",'''
+          new_codes = '''const REQUEST_SCOPED_UPSTREAM_ERROR_CODES = new Set([
+            "combo_target_timeout",
+            "context_length_exceeded",'''
+          if old_codes not in predicates_text:
+              raise SystemExit("request-scoped error-code set not found")
+          predicates_path.write_text(predicates_text.replace(old_codes, new_codes, 1))
+
+          test_path = Path("tests/unit/combo-target-timeout-runner.test.ts")
+          test_text = test_path.read_text()
+          old_assertions = '''  const body = await res.json();
+            assert.match(JSON.stringify(body), /timed out/i);'''
+          new_assertions = '''  const body = (await res.json()) as {
+              error?: { message?: string; code?: string; type?: string };
+            };
+            assert.match(JSON.stringify(body), /timed out/i);
+            assert.equal(body.error?.code, "combo_target_timeout");
+            assert.equal(body.error?.type, "upstream_timeout");'''
+          if old_assertions not in test_text:
+              raise SystemExit("timeout runner assertion block not found")
+          test_path.write_text(test_text.replace(old_assertions, new_assertions, 1))
+          PY
+
+          git diff --check
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run focused tests
+        run: |
+          node --import tsx --test \
+            tests/unit/combo-target-timeout-runner.test.ts \
+            tests/unit/nvidia-two-target-abort-repro-8575.test.ts
+
+      - name: Run focused ESLint
+        run: |
+          npx eslint \
+            open-sse/services/combo/targetTimeoutRunner.ts \
+            open-sse/services/combo/comboPredicates.ts \
+            tests/unit/combo-target-timeout-runner.test.ts \
+            tests/unit/nvidia-two-target-abort-repro-8575.test.ts \
+            --max-warnings=0
+
+      - name: Commit validated fix and remove temporary workflow
+        run: |
+          git rm .github/workflows/apply-combo-target-timeout-scope-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            open-sse/services/combo/targetTimeoutRunner.ts \
+            open-sse/services/combo/comboPredicates.ts \
+            tests/unit/combo-target-timeout-runner.test.ts
+          git commit -m "fix(combo): keep local target timeout request-scoped"
+          git push origin HEAD:fix/combo-target-timeout-scope
