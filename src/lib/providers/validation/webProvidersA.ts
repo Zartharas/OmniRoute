@@ -498,7 +498,7 @@ export async function validateChatGptWebProvider({ apiKey, providerSpecificData 
     }
 
     // Use the TLS-impersonating client — Cloudflare on chatgpt.com pins
-    // cf_clearance to JA3/JA4 + HTTP/2 SETTINGS, so plain fetch always
+    // cf_clearance to JA3/JA4 + HTTP/2 SETTINGS, so plain Node fetch always
     // gets cf-mitigated: challenge regardless of cookies.
     const { tlsFetchChatGpt, TlsClientUnavailableError } =
       await import("@omniroute/open-sse/services/chatgptTlsClient.ts");
