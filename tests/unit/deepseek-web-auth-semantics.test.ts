@@ -34,7 +34,9 @@ test("DeepSeek HTTP 200 code 40003 is surfaced as auth-classifiable 401", async 
     },
     200,
     async () => {
-      const result = await validateDeepSeekWebProvider({ apiKey: SYNTHETIC_INVALID_TOKEN });
+      const result: any = await validateDeepSeekWebProvider({
+        apiKey: SYNTHETIC_INVALID_TOKEN,
+      });
 
       assert.equal(result.valid, false);
       assert.equal(result.statusCode, 401);
@@ -61,7 +63,9 @@ test("DeepSeek unknown HTTP 200 business failure is not synthesized into 401", a
     },
     200,
     async () => {
-      const result = await validateDeepSeekWebProvider({ apiKey: SYNTHETIC_INVALID_TOKEN });
+      const result: any = await validateDeepSeekWebProvider({
+        apiKey: SYNTHETIC_INVALID_TOKEN,
+      });
 
       assert.equal(result.valid, false);
       assert.equal(result.statusCode, undefined);
@@ -80,7 +84,9 @@ test("DeepSeek unknown HTTP 200 business failure is not synthesized into 401", a
 test("DeepSeek literal 401 and 403 preserve their HTTP auth status", async () => {
   for (const status of [401, 403]) {
     await withFetchResponse({}, status, async () => {
-      const result = await validateDeepSeekWebProvider({ apiKey: SYNTHETIC_INVALID_TOKEN });
+      const result: any = await validateDeepSeekWebProvider({
+        apiKey: SYNTHETIC_INVALID_TOKEN,
+      });
       assert.equal(result.valid, false);
       assert.equal(result.statusCode, status);
 
@@ -104,7 +110,9 @@ test("DeepSeek valid HTTP 200 response with derived token remains healthy", asyn
     },
     200,
     async () => {
-      const result = await validateDeepSeekWebProvider({ apiKey: "synthetic-valid-user-token" });
+      const result = await validateDeepSeekWebProvider({
+        apiKey: "synthetic-valid-user-token",
+      });
       assert.deepEqual(result, { valid: true, error: null });
     }
   );
