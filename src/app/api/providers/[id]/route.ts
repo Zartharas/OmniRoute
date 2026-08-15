@@ -4,12 +4,9 @@ import {
   getProviderAuditTarget,
   summarizeProviderConnectionForAudit,
 } from "@/lib/compliance/providerAudit";
-import {
-  getCachedProviderConnectionById,
-  updateProviderConnection,
-  deleteProviderConnection,
-  isCloudEnabled,
-} from "@/lib/localDb";
+import { updateProviderConnection, deleteProviderConnection } from "@/lib/db/providers";
+import { getCachedProviderConnectionById } from "@/lib/db/readCache";
+import { isCloudEnabled } from "@/lib/db/settings";
 import { getConsistentMachineId } from "@/shared/utils/machineId";
 import { syncToCloud } from "@/lib/cloudSync";
 import { updateProviderConnectionSchema } from "@/shared/validation/schemas";
@@ -25,6 +22,7 @@ import {
 import { requireManagementAuth } from "@/lib/api/requireManagementAuth";
 import { isApiKeyRevealEnabled, maskStoredApiKey } from "@/lib/apiKeyExposure";
 import { cleanupProviderModelsAfterConnectionDelete } from "@/lib/db/models";
+import { getWebSessionCredentialRequirement } from "@/shared/providers/webSessionCredentials";
 import {
   refreshConnectionRateLimits,
   enableRateLimitProtection,
@@ -161,7 +159,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (globalPriority !== undefined) updateData.globalPriority = globalPriority;
     if (defaultModel !== undefined) updateData.defaultModel = defaultModel;
     if (isActive !== undefined) updateData.isActive = isActive;
-    if (apiKey && existing.authType === "apikey") {
+    const webSessionRequirement = getWebSessionCredentialRequirement(existing.provider);
+    const canUpdateApiKey =
+      existing.authType === "apikey" ||
+      (existing.authType === "cookie" && webSessionRequirement?.kind === "token");
+
+    if (apiKey && canUpdateApiKey) {
       if (existing.provider === "chatgpt-web-codex") {
         const validationId =
           incomingPsd && typeof incomingPsd.validationId === "string"
