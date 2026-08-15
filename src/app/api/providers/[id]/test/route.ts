@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isValidationFailure, validateBody } from "@/shared/validation/helpers";
-import {
-  getCachedProviderConnectionById,
-  updateProviderConnection,
-  isCloudEnabled,
-  resolveProxyForConnection,
-} from "@/lib/localDb";
+import { updateProviderConnection } from "@/lib/db/providers";
+import { getCachedProviderConnectionById } from "@/lib/db/readCache";
+import { isCloudEnabled, resolveProxyForConnection } from "@/lib/db/settings";
 import { getConsistentMachineId } from "@/shared/utils/machineId";
 import { syncToCloud } from "@/lib/cloudSync";
 import { validateProviderApiKey } from "@/lib/providers/validation";
@@ -21,6 +18,7 @@ import { logProxyEvent } from "@/lib/proxyLogger";
 import { runWithProxyContext } from "@omniroute/open-sse/utils/proxyFetch.ts";
 import { isGitLabDirectAccessDisabled } from "@/lib/oauth/gitlab";
 import { providerAllowsOptionalApiKey } from "@/shared/constants/providers";
+import { getWebSessionCredentialRequirement } from "@/shared/providers/webSessionCredentials";
 import { removeConnectionHealth } from "@omniroute/open-sse/services/apiKeyRotator.ts";
 import { classifyAmbiguousOrAuthError, type ClassifyFailureArgs } from "./mistralAmbiguousAuth";
 import { buildApiKeyConnectionTestResult } from "./apiKeyTestResult";
@@ -657,6 +655,9 @@ export async function testSingleConnection(connectionId: string, validationModel
   let result;
   const startTime = Date.now();
   const runtime = await getProviderRuntimeStatus(connection);
+  const webSessionRequirement = getWebSessionCredentialRequirement(provider);
+  const tokenBackedWebSession =
+    connection.authType === "cookie" && webSessionRequirement?.kind === "token";
 
   if ((runtime as any)?.diagnosis) {
     result = {
@@ -665,7 +666,7 @@ export async function testSingleConnection(connectionId: string, validationModel
       refreshed: false,
       diagnosis: (runtime as any).diagnosis,
     };
-  } else if (connection.authType === "apikey") {
+  } else if (connection.authType === "apikey" || tokenBackedWebSession) {
     const enrichedConnection = validationModelId
       ? {
           ...connection,
