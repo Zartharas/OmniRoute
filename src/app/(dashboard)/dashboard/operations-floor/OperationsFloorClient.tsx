@@ -206,6 +206,8 @@ export default function OperationsFloorClient() {
   const selectedProviderId = selection?.kind === "provider" ? selection.providerId : null;
   const readyDeskCount = desks.filter((desk) => desk.connected > 0).length;
   const activeCount = observedActiveRequests.length;
+  const evidenceLabel = simulationEnabled ? "scenario evidence" : "attention";
+  const evidenceDetail = simulationEnabled ? "retained scenario flags" : "operator items";
 
   const selectProvider = useCallback((providerId: string) => {
     setSelection({ kind: "provider", providerId: normalizeOperationsProviderId(providerId) });
@@ -332,9 +334,9 @@ export default function OperationsFloorClient() {
             onClick={() => setControlTab("attention")}
             className="col-span-2 p-2.5 text-left transition hover:bg-bg-subtle/30 sm:col-span-1"
           >
-            <div className="text-[9px] uppercase tracking-[0.12em] text-text-muted">attention</div>
+            <div className="text-[9px] uppercase tracking-[0.12em] text-text-muted">{evidenceLabel}</div>
             <div className={`mt-0.5 text-lg font-semibold ${attention.length > 0 ? "text-amber-500" : "text-emerald-500"}`}>{attention.length}</div>
-            <div className="text-[9px] text-text-muted">operator items</div>
+            <div className="text-[9px] text-text-muted">{evidenceDetail}</div>
           </button>
         </div>
       </Card>
@@ -355,7 +357,7 @@ export default function OperationsFloorClient() {
               className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-1 text-[10px] font-semibold text-amber-500"
             >
               <span className="size-1.5 rounded-full bg-amber-500" />
-              {attention.length} need attention
+              {simulationEnabled ? `${attention.length} scenario flags` : `${attention.length} need attention`}
             </button>
           )}
         </div>
@@ -386,6 +388,7 @@ export default function OperationsFloorClient() {
             comboEvents={observedComboEvents}
             attention={attention}
             connectionTests={connectionTests}
+            simulationMode={simulationEnabled}
             onSelectProvider={selectProvider}
             onSelectRequest={selectRequest}
             onTestConnection={(connectionId) => void testConnection(connectionId)}
@@ -396,7 +399,7 @@ export default function OperationsFloorClient() {
         <div className="border-t border-border">
           <div className="flex flex-wrap items-center gap-1 bg-bg-subtle/20 px-3 py-2">
             <ControlTabButton active={controlTab === "live"} onClick={() => setControlTab("live")} label="Live" count={observedActiveRequests.length} />
-            <ControlTabButton active={controlTab === "attention"} onClick={() => setControlTab("attention")} label="Needs attention" count={attention.length} alert={attention.length > 0} />
+            <ControlTabButton active={controlTab === "attention"} onClick={() => setControlTab("attention")} label={simulationEnabled ? "Scenario evidence" : "Needs attention"} count={attention.length} alert={attention.length > 0} />
             <ControlTabButton active={controlTab === "requests"} onClick={() => setControlTab("requests")} label="Requests" count={observedCompletedRequests.length} />
             <ControlTabButton active={controlTab === "fallbacks"} onClick={() => setControlTab("fallbacks")} label="Fallbacks" count={observedComboEvents.length} />
             <div className="ml-auto hidden text-[9px] text-text-muted md:block">
@@ -439,7 +442,13 @@ export default function OperationsFloorClient() {
                     <span className="shrink-0 text-[9px] text-text-muted">{formatClock(item.timestamp)}</span>
                   </button>
                 ))}
-                {attention.length === 0 && <EmptyRow>No observed issue currently needs operator attention.</EmptyRow>}
+                {attention.length === 0 && (
+                  <EmptyRow>
+                    {simulationEnabled
+                      ? "No scenario evidence has been retained in this step."
+                      : "No observed issue currently needs operator attention."}
+                  </EmptyRow>
+                )}
               </div>
             )}
 
