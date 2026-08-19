@@ -20,6 +20,7 @@ export type OperationsFloorConnection = {
 
 export type OperationsFloorComboEvent = {
   comboName?: string | null;
+  targetIndex?: number | null;
   provider?: string | null;
   model?: string | null;
   type?: "attempt" | "succeeded" | "failed" | string | null;
@@ -195,12 +196,18 @@ export function buildOperationsAttentionItems(
   const failedCombo = comboEvents.find((event) => event.type === "failed");
   if (failedCombo) {
     const provider = normalizeOperationsProviderId(failedCombo.provider);
+    const failureStage =
+      typeof failedCombo.targetIndex === "number"
+        ? failedCombo.targetIndex > 0
+          ? "fallback attempt failed"
+          : "primary target failed"
+        : "target failed";
     items.push({
       id: `combo-failed:${failedCombo.comboName ?? "combo"}:${failedCombo.timestamp ?? 0}`,
       severity: "warning",
       kind: "fallback",
       provider: provider || undefined,
-      title: `${failedCombo.comboName || "Combo"} fallback attempt failed`,
+      title: `${failedCombo.comboName || "Combo"} ${failureStage}`,
       detail: failedCombo.error?.trim() || `${provider || "The selected provider"} did not complete the combo attempt.`,
       timestamp: typeof failedCombo.timestamp === "number" ? failedCombo.timestamp : undefined,
     });
