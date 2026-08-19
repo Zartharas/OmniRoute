@@ -14,7 +14,7 @@ const DEFAULT_HOST = "127.0.0.1";
 
 /**
  * Default origins allowed to open a WebSocket against the local dashboard.
- * These match the loopback HTTP listener at port 20128.
+ * These match the default loopback HTTP listener at port 20128.
  */
 export const DEFAULT_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
   "http://127.0.0.1:20128",
@@ -35,12 +35,31 @@ export function parseCsvEnv(value: string | undefined | null): Set<string> {
   );
 }
 
+function configuredDashboardLoopbackOrigins(env: NodeJS.ProcessEnv): string[] {
+  const rawPort = env.DASHBOARD_PORT || env.PORT;
+  if (!rawPort) return [];
+  const port = Number.parseInt(rawPort, 10);
+  if (!Number.isFinite(port) || port < 1 || port > 65535) return [];
+  return [
+    `http://127.0.0.1:${port}`,
+    `http://localhost:${port}`,
+    `http://[::1]:${port}`,
+  ];
+}
+
 /**
- * Build the static origin allow-list from defaults + LIVE_WS_ALLOWED_ORIGINS.
+ * Build the static origin allow-list from defaults, the configured local
+ * dashboard port, and LIVE_WS_ALLOWED_ORIGINS. Including the configured
+ * loopback dashboard origin keeps split/custom-port local development working
+ * without weakening the allow-list to arbitrary origins.
  */
 export function buildAllowedOrigins(env: NodeJS.ProcessEnv = process.env): Set<string> {
   const extra = parseCsvEnv(env.LIVE_WS_ALLOWED_ORIGINS);
-  return new Set([...DEFAULT_ALLOWED_ORIGINS, ...extra]);
+  return new Set([
+    ...DEFAULT_ALLOWED_ORIGINS,
+    ...configuredDashboardLoopbackOrigins(env),
+    ...extra,
+  ]);
 }
 
 /**
@@ -85,8 +104,9 @@ export function originHostMatches(origin: string, allowedHosts: Set<string>): bo
  *     browser-side check.
  *
  *   - When `origin` is present, we accept it if it matches an entry in the
- *     static origin list (defaults + LIVE_WS_ALLOWED_ORIGINS) or if its
- *     host matches an entry in the LAN allow-list (LIVE_WS_ALLOWED_HOSTS).
+ *     static origin list (defaults + configured loopback dashboard origin +
+ *     LIVE_WS_ALLOWED_ORIGINS) or if its host matches an entry in the LAN
+ *     allow-list (LIVE_WS_ALLOWED_HOSTS).
  */
 export function isOriginAllowed(
   origin: string | undefined,
