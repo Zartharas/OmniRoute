@@ -253,6 +253,15 @@ const TOOLS_GROUP: SidebarItemGroup = {
       subtitleFallback: "CLI-agent fleet",
     },
     {
+      id: "operations-floor",
+      href: "/dashboard/operations-floor",
+      i18nKey: "operationsFloor",
+      labelFallback: "Operations Floor",
+      subtitleKey: "operationsFloorSubtitle",
+      subtitleFallback: "Live routing and protected OpenAI fallback",
+      icon: "hub",
+    },
+    {
       id: "agent-bridge",
       href: "/dashboard/tools/agent-bridge",
       i18nKey: "agentBridge",
