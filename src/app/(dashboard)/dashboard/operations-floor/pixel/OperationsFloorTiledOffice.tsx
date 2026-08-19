@@ -15,6 +15,10 @@ import OperationsFloorLocalPixelAgent, {
   useOperationsFloorLocalPixelPack,
 } from "../OperationsFloorLocalPixelAgent";
 import { getOperationsLane, normalizeOperationsProviderId } from "../operationsFloorModel";
+import {
+  isFreshOperationsFloorSystemSignal,
+  type OperationsFloorSystemSignals,
+} from "../operationsFloorSystemSignals";
 
 const ROOT = "/local-assets/operations-floor";
 const FLIP_H = 0x80000000;
@@ -293,11 +297,41 @@ function Envelope({ from, to, protectedLane, index }: { from: Point; to: Point; 
   );
 }
 
+function SystemPacket({
+  from,
+  to,
+  color,
+  label,
+}: {
+  from: Point;
+  to: Point;
+  color: string;
+  label: string;
+}) {
+  const controlX = (from.x + to.x) / 2;
+  const controlY = Math.min(from.y, to.y) - 2.5;
+  const path = `M ${from.x * 16 + 8} ${from.y * 16 + 8} Q ${controlX * 16 + 8} ${controlY * 16 + 8} ${to.x * 16 + 8} ${to.y * 16 + 8}`;
+  return (
+    <g className="motion-reduce:hidden">
+      <path d={path} fill="none" stroke={color} strokeWidth="1.2" strokeDasharray="2 3" opacity="0">
+        <animate attributeName="opacity" values="0;0.5;0.25;0" dur="2.4s" repeatCount="1" fill="freeze" />
+      </path>
+      <g opacity="0">
+        <circle r="5" fill={color} />
+        <text x="0" y="1.5" textAnchor="middle" fontSize="4" fontWeight="700" fill="white">{label}</text>
+        <animate attributeName="opacity" values="0;1;1;0" dur="2.4s" repeatCount="1" fill="freeze" />
+        <animateMotion dur="2.4s" repeatCount="1" fill="freeze" path={path} />
+      </g>
+    </g>
+  );
+}
+
 export default function OperationsFloorTiledOffice({
   regularDesks,
   protectedDesks,
   activeRequests,
   comboEvents,
+  systemSignals,
   selectedProviderId,
   onSelectProvider,
 }: {
@@ -305,6 +339,7 @@ export default function OperationsFloorTiledOffice({
   protectedDesks: PixelOfficeDesk[];
   activeRequests: PixelOfficeRequest[];
   comboEvents: PixelOfficeComboEvent[];
+  systemSignals: OperationsFloorSystemSignals;
   selectedProviderId?: string | null;
   onSelectProvider: (providerId: string) => void;
 }) {
@@ -439,10 +474,21 @@ export default function OperationsFloorTiledOffice({
 
   const entrance = loaded.spawns.get("entrance") ?? { x: 18, y: 20 };
   const codexPoint = loaded.spawns.get("desk-ceo") ?? { x: 5, y: 4 };
+  const dispatchPoint = { x: loaded.map.width / 2 - 0.5, y: loaded.map.height / 2 - 0.8 };
+  const authPoint = { x: loaded.map.width - 2.6, y: 4.2 };
+  const compressionPoint = { x: loaded.map.width - 5.3, y: loaded.map.height - 3.2 };
+  const authFresh = isFreshOperationsFloorSystemSignal(systemSignals.auth);
+  const compressionFresh = isFreshOperationsFloorSystemSignal(systemSignals.compression);
   const protectedRequestActive = activeRequests.some((request) => getOperationsLane(request.provider) === "protected");
   const protectedFallbackActive = comboEvents.some((event) => event.type === "attempt" && getOperationsLane(event.provider) === "protected");
   const protectedActive = protectedRequestActive || protectedFallbackActive;
   const protectedState = protectedFallbackActive ? "FALLBACK" : protectedRequestActive ? "ACTIVE" : "RESERVED";
+  const authState = systemSignals.auth?.newStatus || (systemSignals.auth ? "OBSERVED" : "STANDBY");
+  const compressionState = systemSignals.compression
+    ? systemSignals.compression.event === "compression.completed"
+      ? "COMPLETE"
+      : "STEP"
+    : "STANDBY";
   const worldWidth = loaded.map.width * loaded.map.tilewidth;
   const worldHeight = loaded.map.height * loaded.map.tileheight;
 
@@ -491,6 +537,12 @@ export default function OperationsFloorTiledOffice({
               ))}
               {protectedFallbackActive && (
                 <Envelope from={loaded.spawns.get("pc-1") ?? { x: 12, y: 10 }} to={codexPoint} protectedLane index={0} />
+              )}
+              {authFresh && systemSignals.auth && (
+                <SystemPacket key={systemSignals.auth.key} from={authPoint} to={dispatchPoint} color="#10b981" label="A" />
+              )}
+              {compressionFresh && systemSignals.compression && (
+                <SystemPacket key={systemSignals.compression.key} from={compressionPoint} to={dispatchPoint} color="#8b5cf6" label="C" />
               )}
             </svg>
 
@@ -546,6 +598,24 @@ export default function OperationsFloorTiledOffice({
                 <OperationsFloorLocalPixelAgent character="Bob" active={protectedActive} scale={1.05} />
               </div>
             </button>
+
+            <div className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full" style={pct(authPoint, loaded.map)}>
+              <div className="rounded border border-emerald-400/45 bg-emerald-950/90 px-1.5 py-0.5 font-mono text-[6px] text-emerald-100 shadow">
+                AUTH KEEPER · {authState.toUpperCase()}
+              </div>
+              <div className="mt-0.5 text-center font-mono text-[5px] text-emerald-100/70">
+                {systemSignals.auth?.provider || "credential health"}
+              </div>
+            </div>
+
+            <div className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-full" style={pct(compressionPoint, loaded.map)}>
+              <div className="rounded border border-violet-400/45 bg-violet-950/90 px-1.5 py-0.5 font-mono text-[6px] text-violet-100 shadow">
+                COMPRESSION · {compressionState}
+              </div>
+              <div className="mt-0.5 text-center font-mono text-[5px] text-violet-100/70">
+                {systemSignals.compression?.engine || systemSignals.compression?.mode || "RTK · Caveman"}
+              </div>
+            </div>
 
             <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 rounded border border-primary/35 bg-[#180d14]/90 px-2 py-1.5 text-center shadow-[0_0_18px_rgba(244,63,94,0.16)]">
               <div className="font-mono text-[7px] font-semibold text-primary">OMNIROUTE DISPATCH</div>
