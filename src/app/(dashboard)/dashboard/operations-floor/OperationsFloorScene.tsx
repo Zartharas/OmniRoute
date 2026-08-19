@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import ProviderIcon from "@/shared/components/ProviderIcon";
 import { getOperationsLane } from "./operationsFloorModel";
 
@@ -62,7 +63,7 @@ function PixelOperator({ tone = "primary", active = false }: { tone?: PixelTone;
   );
 }
 
-function WorkstationShell({ children, tone = "primary" }: { children: React.ReactNode; tone?: PixelTone }) {
+function WorkstationShell({ children, tone = "primary" }: { children: ReactNode; tone?: PixelTone }) {
   const palette = PIXEL_TONES[tone];
   return (
     <div className="relative rounded-md border border-black/35 bg-[#17191f]/95 p-2 shadow-[0_4px_0_rgba(0,0,0,0.28)]">
@@ -324,11 +325,11 @@ export default function OperationsFloorScene({
         <section className="absolute bottom-[7%] left-[39%] z-20 w-[14%] rounded-lg border border-emerald-400/15 bg-[#101a17]/95 p-3">
           <ZoneLabel icon="shield_lock" title="Auth Keeper" detail="refresh · health · recovery" />
           <div className="mt-2 flex items-center gap-2 rounded-md border border-emerald-400/10 bg-black/25 p-2">
-            <PixelOperator tone="emerald" active />
+            <PixelOperator tone="muted" />
             <div className="min-w-0 flex-1">
-              <div className="font-mono text-[8px] text-emerald-300/70">CREDENTIAL WATCH</div>
-              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-black/40">
-                <div className="h-full w-4/5 rounded-full bg-emerald-500/60" />
+              <div className="font-mono text-[8px] text-white/50">INTEGRATION POINT</div>
+              <div className="mt-1 rounded-sm border border-dashed border-white/10 px-1 py-0.5 font-mono text-[7px] text-white/25">
+                LIVE STATE NOT WIRED
               </div>
             </div>
           </div>
@@ -463,7 +464,7 @@ export default function OperationsFloorScene({
             Compression Bay · RTK / Caveman
           </div>
           <div className="rounded-lg border border-emerald-400/15 bg-[#101a17] p-3 text-[10px] text-emerald-200/55">
-            Auth Keeper · credential watch
+            Auth Keeper · integration point
           </div>
         </div>
       </div>
