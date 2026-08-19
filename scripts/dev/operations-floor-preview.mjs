@@ -196,6 +196,36 @@ function httpCode(port) {
   });
 }
 
+function verifyPreviewLogin(port) {
+  return new Promise((resolve) => {
+    const body = JSON.stringify({ password });
+    const request = http.request(
+      {
+        hostname: "127.0.0.1",
+        port,
+        path: "/api/auth/login",
+        method: "POST",
+        timeout: 5000,
+        headers: {
+          "content-type": "application/json",
+          "content-length": Buffer.byteLength(body),
+        },
+      },
+      (response) => {
+        const chunks = [];
+        response.on("data", (chunk) => chunks.push(chunk));
+        response.on("end", () => {
+          const responseBody = Buffer.concat(chunks).toString("utf8");
+          resolve({ statusCode: response.statusCode || 0, body: responseBody });
+        });
+      }
+    );
+    request.on("timeout", () => request.destroy(new Error("login verification timed out")));
+    request.on("error", (error) => resolve({ statusCode: 0, body: error.message }));
+    request.end(body);
+  });
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -295,6 +325,19 @@ async function start() {
     throw new Error(`Preview did not become ready within 120 seconds.\n\n${tailLog()}`);
   }
 
+  // A reachable login page is not sufficient evidence that the seeded password
+  // actually works. Verify the exact credential before we advertise PASS or open
+  // the browser. The login route persists the INITIAL_PASSWORD as a bcrypt hash
+  // on first successful authentication, which is exactly the normal runtime path.
+  const authCheck = await verifyPreviewLogin(httpPort);
+  if (authCheck.statusCode !== 200) {
+    stopProcessGroup(child.pid);
+    clearState();
+    throw new Error(
+      `Preview login verification failed: HTTP ${authCheck.statusCode}. Response: ${authCheck.body || "(empty)"}\n\n${tailLog()}`
+    );
+  }
+
   const liveAfter = dockerState();
   if (
     liveAfter.running !== "true" ||
@@ -321,6 +364,7 @@ async function start() {
   console.log(`live_image_id=${liveAfter.imageId}`);
   console.log(`URL=${url}`);
   console.log(`PASSWORD=${password}`);
+  console.log("login_verification=PASS");
   console.log(`LOG=${logPath}`);
   console.log("OPERATIONS_FLOOR_V2_VISUAL_PREVIEW=PASS");
 }
