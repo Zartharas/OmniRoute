@@ -3,7 +3,7 @@ export type OperationsFloorSimulationConnection = {
   provider: string;
   name: string;
   isActive: boolean;
-  testStatus: "success" | "failed";
+  testStatus: "success" | "error";
 };
 
 export type OperationsFloorSimulationRequest = {
@@ -188,7 +188,7 @@ export function buildOperationsFloorSimulation(
     };
   }
 
-  connections[0] = { ...connections[0], testStatus: "failed" };
+  connections[0] = { ...connections[0], testStatus: "error" };
 
   if (step === 2) {
     return {
