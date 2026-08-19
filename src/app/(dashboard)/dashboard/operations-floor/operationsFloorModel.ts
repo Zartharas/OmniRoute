@@ -5,6 +5,8 @@ export type OperationsFloorRequest = {
   status?: string | null;
 };
 
+export type OperationsLane = "primary" | "protected";
+
 export const PROTECTED_OPENAI_PROVIDER_IDS = new Set([
   "codex",
   "openai",
@@ -19,6 +21,12 @@ export function normalizeOperationsProviderId(provider: unknown): string {
 export function isProtectedOpenAiProvider(provider: unknown): boolean {
   const id = normalizeOperationsProviderId(provider);
   return PROTECTED_OPENAI_PROVIDER_IDS.has(id);
+}
+
+export function getOperationsLane(provider: unknown): OperationsLane | null {
+  const id = normalizeOperationsProviderId(provider);
+  if (!id) return null;
+  return isProtectedOpenAiProvider(id) ? "protected" : "primary";
 }
 
 export function summarizeOpenAiPreservation(requests: OperationsFloorRequest[]) {
