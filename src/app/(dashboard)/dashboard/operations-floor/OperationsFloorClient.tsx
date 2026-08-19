@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 
 import { Card } from "@/shared/components";
@@ -13,6 +13,7 @@ import {
 import { useLiveComboStatus, useLiveRequests } from "@/hooks/useLiveDashboard";
 import OperationsFloorScene from "./OperationsFloorScene";
 import OperationsFloorInspector, {
+  type OperationsConnectionTestState,
   type OperationsFloorSelection,
 } from "./OperationsFloorInspector";
 import {
@@ -40,7 +41,19 @@ type ProviderDesk = {
   errors: number;
 };
 
+type ProviderTestResponse = {
+  valid?: boolean;
+  error?: string | null;
+  latencyMs?: number;
+  testedAt?: string;
+  diagnosis?: {
+    message?: string | null;
+  } | null;
+};
+
 type ControlTab = "live" | "attention" | "requests" | "fallbacks";
+type LiveRequest = ReturnType<typeof useLiveRequests>["activeRequests"][number];
+type ComboEvent = ReturnType<typeof useLiveComboStatus>["comboEvents"][number];
 
 function providerLabel(providerId: string): string {
   const config = (AI_PROVIDERS as Record<string, { name?: string }>)[providerId];
@@ -73,6 +86,7 @@ export default function OperationsFloorClient() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [selection, setSelection] = useState<OperationsFloorSelection>(null);
   const [controlTab, setControlTab] = useState<ControlTab>("live");
+  const [connectionTests, setConnectionTests] = useState<Record<string, OperationsConnectionTestState>>({});
 
   const {
     activeRequests,
@@ -135,6 +149,7 @@ export default function OperationsFloorClient() {
     [activeRequests, completedRequests]
   );
   const selectedProviderId = selection?.kind === "provider" ? selection.providerId : null;
+  const readyDeskCount = desks.filter((desk) => desk.connected > 0).length;
 
   const selectProvider = useCallback((providerId: string) => {
     setSelection({ kind: "provider", providerId: normalizeOperationsProviderId(providerId) });
@@ -144,106 +159,110 @@ export default function OperationsFloorClient() {
     setSelection({ kind: "request", requestId });
   }, []);
 
+  const testConnection = useCallback(
+    async (connectionId: string) => {
+      setConnectionTests((current) => ({
+        ...current,
+        [connectionId]: { status: "running" },
+      }));
+
+      try {
+        const response = await fetch(`/api/providers/${encodeURIComponent(connectionId)}/test`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: "{}",
+        });
+        const data = (await response.json().catch(() => ({}))) as ProviderTestResponse;
+        if (!response.ok) {
+          throw new Error(data.error || `Connection test failed with HTTP ${response.status}`);
+        }
+
+        const passed = data.valid === true;
+        setConnectionTests((current) => ({
+          ...current,
+          [connectionId]: {
+            status: passed ? "success" : "error",
+            message: data.error || data.diagnosis?.message || undefined,
+            latencyMs: data.latencyMs,
+            testedAt: data.testedAt,
+          },
+        }));
+        await loadProviders();
+      } catch (error) {
+        setConnectionTests((current) => ({
+          ...current,
+          [connectionId]: {
+            status: "error",
+            message: error instanceof Error ? error.message : "Connection test failed",
+          },
+        }));
+      }
+    },
+    [loadProviders]
+  );
+
   return (
-    <div className="space-y-5 pb-8">
-      <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <div className="mb-1 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">hub</span>
-            <h1 className="text-2xl font-semibold text-text-main">Operations Floor</h1>
-            {attention.length > 0 && (
-              <button
-                onClick={() => setControlTab("attention")}
-                className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-500"
-              >
-                <span className="size-1.5 rounded-full bg-amber-500" />
-                {attention.length} need attention
-              </button>
-            )}
-          </div>
-          <p className="max-w-3xl text-sm text-text-muted">
-            A live control surface for routing, provider health, fallback evidence, and protected OpenAI/Codex usage. Click the floor instead of hunting through disconnected logs.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 text-xs">
-          <span
-            className={`size-2 rounded-full ${liveConnected ? "bg-emerald-500" : "bg-amber-500"}`}
-          />
-          <span className="text-text-muted">
-            {liveConnected ? "live telemetry connected" : "live telemetry reconnecting"}
+    <div className="space-y-3 pb-5">
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <p className="max-w-3xl text-xs leading-5 text-text-muted">
+          Live routing, provider health, fallback evidence, and protected OpenAI/Codex usage in one operator workspace.
+        </p>
+        <div className="flex flex-wrap items-center gap-3 text-xs">
+          <span className="inline-flex items-center gap-1.5 text-text-muted">
+            <span className={`size-2 rounded-full ${liveConnected ? "bg-emerald-500" : "bg-amber-500"}`} />
+            {liveConnected ? "telemetry connected" : "telemetry reconnecting"}
           </span>
           {!liveConnected && (
             <button className="text-primary hover:underline" onClick={reconnect}>
               reconnect
             </button>
           )}
+          <Link href="/dashboard/combos/live" className="text-primary hover:underline">Combo Studio</Link>
+          <Link href="/dashboard/analytics/compression" className="text-primary hover:underline">Compression</Link>
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Card className="p-4">
-          <div className="text-xs uppercase tracking-[0.12em] text-text-muted">live requests</div>
-          <div className="mt-1 text-2xl font-semibold text-text-main">{activeCount}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-xs uppercase tracking-[0.12em] text-text-muted">
-            observed non-OpenAI
-          </div>
-          <div className="mt-1 text-2xl font-semibold text-emerald-500">
-            {preservation.nonOpenAiRequests}
-          </div>
-          <div className="text-[11px] text-text-muted">
-            {formatPercent(preservation.nonOpenAiShare)} of recent routed calls
-          </div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-xs uppercase tracking-[0.12em] text-text-muted">
-            OpenAI-family calls
-          </div>
-          <div className="mt-1 text-2xl font-semibold text-amber-500">
-            {preservation.openAiRequests}
-          </div>
-          <div className="text-[11px] text-text-muted">observed only — not estimated savings</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-xs uppercase tracking-[0.12em] text-text-muted">provider desks</div>
-          <div className="mt-1 text-2xl font-semibold text-text-main">{desks.length}</div>
-          <div className="text-[11px] text-text-muted">
-            {desks.filter((desk) => desk.connected > 0).length} currently ready
-          </div>
-        </Card>
       </div>
 
       <Card className="overflow-hidden p-0">
-        <div className="border-b border-border px-4 py-3 sm:px-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base font-semibold text-text-main">Live routing floor</h2>
-              <p className="text-xs text-text-muted">
-                Animated traffic is real session telemetry. Provider desks are now inspectable control-surface objects.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link href="/dashboard/combos/live" className="text-xs text-primary hover:underline">
-                Combo Studio
-              </Link>
-              <Link href="/dashboard/analytics/compression" className="text-xs text-primary hover:underline">
-                Compression
-              </Link>
-            </div>
+        <div className="grid grid-cols-2 divide-x divide-y divide-border sm:grid-cols-5 sm:divide-y-0">
+          <StatusCell label="live" value={String(activeCount)} detail="requests" tone={activeCount > 0 ? "primary" : "normal"} />
+          <StatusCell label="providers" value={`${readyDeskCount}/${desks.length}`} detail="ready desks" tone={readyDeskCount > 0 ? "good" : "normal"} />
+          <StatusCell label="non-OpenAI" value={String(preservation.nonOpenAiRequests)} detail={`${formatPercent(preservation.nonOpenAiShare)} observed`} tone="good" />
+          <StatusCell label="OpenAI family" value={String(preservation.openAiRequests)} detail="observed calls" tone="warning" />
+          <button
+            type="button"
+            onClick={() => setControlTab("attention")}
+            className="col-span-2 p-2.5 text-left transition hover:bg-bg-subtle/30 sm:col-span-1"
+          >
+            <div className="text-[9px] uppercase tracking-[0.12em] text-text-muted">attention</div>
+            <div className={`mt-0.5 text-lg font-semibold ${attention.length > 0 ? "text-amber-500" : "text-emerald-500"}`}>{attention.length}</div>
+            <div className="text-[9px] text-text-muted">operator items</div>
+          </button>
+        </div>
+      </Card>
+
+      <Card className="overflow-hidden p-0">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
+          <div>
+            <div className="text-sm font-semibold text-text-main">Live operations workspace</div>
+            <div className="text-[10px] text-text-muted">Click desks and evidence rows to inspect; connection tests run only when explicitly requested.</div>
           </div>
+          {attention.length > 0 && (
+            <button
+              onClick={() => setControlTab("attention")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-1 text-[10px] font-semibold text-amber-500"
+            >
+              <span className="size-1.5 rounded-full bg-amber-500" />
+              {attention.length} need attention
+            </button>
+          )}
         </div>
 
-        <div className="grid gap-4 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid gap-3 p-3 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0">
             {loading ? (
-              <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">
-                Loading provider floor…
-              </div>
+              <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">Loading provider floor…</div>
             ) : loadError ? (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 text-sm text-red-400">
-                Provider inventory unavailable: {loadError}
-              </div>
+              <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 text-sm text-red-400">Provider inventory unavailable: {loadError}</div>
             ) : (
               <OperationsFloorScene
                 regularDesks={regularDesks}
@@ -263,120 +282,122 @@ export default function OperationsFloorClient() {
             requests={allRequests}
             comboEvents={comboEvents}
             attention={attention}
+            connectionTests={connectionTests}
             onSelectProvider={selectProvider}
             onSelectRequest={selectRequest}
+            onTestConnection={(connectionId) => void testConnection(connectionId)}
             onClear={() => setSelection(null)}
           />
         </div>
-      </Card>
 
-      <Card className="overflow-hidden p-0">
-        <div className="flex flex-wrap items-center gap-1 border-b border-border bg-bg-subtle/20 px-3 py-2">
-          <ControlTabButton active={controlTab === "live"} onClick={() => setControlTab("live")} label="Live" count={activeRequests.length} />
-          <ControlTabButton active={controlTab === "attention"} onClick={() => setControlTab("attention")} label="Needs attention" count={attention.length} alert={attention.length > 0} />
-          <ControlTabButton active={controlTab === "requests"} onClick={() => setControlTab("requests")} label="Requests" count={completedRequests.length} />
-          <ControlTabButton active={controlTab === "fallbacks"} onClick={() => setControlTab("fallbacks")} label="Fallbacks" count={comboEvents.length} />
-          <div className="ml-auto hidden text-[10px] text-text-muted md:block">
-            session evidence · newest first
+        <div className="border-t border-border">
+          <div className="flex flex-wrap items-center gap-1 bg-bg-subtle/20 px-3 py-2">
+            <ControlTabButton active={controlTab === "live"} onClick={() => setControlTab("live")} label="Live" count={activeRequests.length} />
+            <ControlTabButton active={controlTab === "attention"} onClick={() => setControlTab("attention")} label="Needs attention" count={attention.length} alert={attention.length > 0} />
+            <ControlTabButton active={controlTab === "requests"} onClick={() => setControlTab("requests")} label="Requests" count={completedRequests.length} />
+            <ControlTabButton active={controlTab === "fallbacks"} onClick={() => setControlTab("fallbacks")} label="Fallbacks" count={comboEvents.length} />
+            <div className="ml-auto hidden text-[9px] text-text-muted md:block">session evidence · newest first</div>
           </div>
-        </div>
 
-        <div className="max-h-[420px] overflow-auto p-3 sm:p-4">
-          {controlTab === "live" && (
-            <div className="space-y-2">
-              {activeRequests.map((request) => (
-                <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
-              ))}
-              {comboEvents.filter((event) => event.type === "attempt").slice(0, 10).map((event, index) => (
-                <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
-              ))}
-              {activeRequests.length === 0 && comboEvents.filter((event) => event.type === "attempt").length === 0 && (
-                <EmptyRow>Nothing is actively routing or cascading right now.</EmptyRow>
-              )}
-            </div>
-          )}
+          <div className="max-h-[210px] overflow-auto p-3">
+            {controlTab === "live" && (
+              <div className="space-y-1.5">
+                {activeRequests.map((request) => (
+                  <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
+                ))}
+                {comboEvents.filter((event) => event.type === "attempt").slice(0, 10).map((event, index) => (
+                  <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
+                ))}
+                {activeRequests.length === 0 && comboEvents.filter((event) => event.type === "attempt").length === 0 && (
+                  <EmptyRow>Nothing is actively routing or cascading right now.</EmptyRow>
+                )}
+              </div>
+            )}
 
-          {controlTab === "attention" && (
-            <div className="space-y-2">
-              {attention.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    if (item.requestId) selectRequest(item.requestId);
-                    else if (item.provider) selectProvider(item.provider);
-                  }}
-                  disabled={!item.requestId && !item.provider}
-                  className="flex w-full items-start gap-3 rounded-xl border border-border/70 bg-bg-subtle/20 px-3 py-2.5 text-left transition hover:border-primary/40"
-                >
-                  <span className={`mt-1 size-2 shrink-0 rounded-full ${attentionTone(item)}`} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-xs font-medium text-text-main">{item.title}</span>
-                    <span className="mt-0.5 block text-[11px] leading-4 text-text-muted">{item.detail}</span>
-                  </span>
-                  <span className="shrink-0 text-[10px] text-text-muted">{formatClock(item.timestamp)}</span>
-                </button>
-              ))}
-              {attention.length === 0 && <EmptyRow>No observed issue currently needs operator attention.</EmptyRow>}
-            </div>
-          )}
+            {controlTab === "attention" && (
+              <div className="space-y-1.5">
+                {attention.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      if (item.requestId) selectRequest(item.requestId);
+                      else if (item.provider) selectProvider(item.provider);
+                    }}
+                    disabled={!item.requestId && !item.provider}
+                    className="flex w-full items-start gap-3 rounded-lg border border-border/70 bg-bg-subtle/20 px-3 py-2 text-left transition hover:border-primary/40"
+                  >
+                    <span className={`mt-1 size-2 shrink-0 rounded-full ${attentionTone(item)}`} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-xs font-medium text-text-main">{item.title}</span>
+                      <span className="mt-0.5 block text-[10px] leading-4 text-text-muted">{item.detail}</span>
+                    </span>
+                    <span className="shrink-0 text-[9px] text-text-muted">{formatClock(item.timestamp)}</span>
+                  </button>
+                ))}
+                {attention.length === 0 && <EmptyRow>No observed issue currently needs operator attention.</EmptyRow>}
+              </div>
+            )}
 
-          {controlTab === "requests" && (
-            <div className="space-y-2">
-              {completedRequests.map((request) => (
-                <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
-              ))}
-              {completedRequests.length === 0 && <EmptyRow>No completed requests observed in this browser session yet.</EmptyRow>}
-            </div>
-          )}
+            {controlTab === "requests" && (
+              <div className="space-y-1.5">
+                {completedRequests.map((request) => (
+                  <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
+                ))}
+                {completedRequests.length === 0 && <EmptyRow>No completed requests observed in this browser session yet.</EmptyRow>}
+              </div>
+            )}
 
-          {controlTab === "fallbacks" && (
-            <div className="space-y-2">
-              {comboEvents.map((event, index) => (
-                <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
-              ))}
-              {comboEvents.length === 0 && <EmptyRow>No combo cascade events observed in this browser session yet.</EmptyRow>}
-            </div>
-          )}
+            {controlTab === "fallbacks" && (
+              <div className="space-y-1.5">
+                {comboEvents.map((event, index) => (
+                  <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
+                ))}
+                {comboEvents.length === 0 && <EmptyRow>No combo cascade events observed in this browser session yet.</EmptyRow>}
+              </div>
+            )}
+          </div>
         </div>
       </Card>
     </div>
   );
 }
 
-function ControlTabButton({
-  active,
-  onClick,
+function StatusCell({
   label,
-  count,
-  alert = false,
+  value,
+  detail,
+  tone = "normal",
 }: {
-  active: boolean;
-  onClick: () => void;
   label: string;
-  count: number;
-  alert?: boolean;
+  value: string;
+  detail: string;
+  tone?: "normal" | "primary" | "good" | "warning";
 }) {
+  const toneClass = tone === "primary" ? "text-primary" : tone === "good" ? "text-emerald-500" : tone === "warning" ? "text-amber-500" : "text-text-main";
+  return (
+    <div className="p-2.5">
+      <div className="text-[9px] uppercase tracking-[0.12em] text-text-muted">{label}</div>
+      <div className={`mt-0.5 text-lg font-semibold ${toneClass}`}>{value}</div>
+      <div className="text-[9px] text-text-muted">{detail}</div>
+    </div>
+  );
+}
+
+function ControlTabButton({ active, onClick, label, count, alert = false }: { active: boolean; onClick: () => void; label: string; count: number; alert?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-        active ? "bg-primary text-white" : "text-text-muted hover:bg-bg-subtle hover:text-text-main"
-      }`}
+      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${active ? "bg-primary text-white" : "text-text-muted hover:bg-bg-subtle hover:text-text-main"}`}
     >
       {label}
-      <span className={`rounded-full px-1.5 py-0.5 text-[9px] ${active ? "bg-white/20" : alert ? "bg-amber-500/15 text-amber-500" : "bg-bg-subtle text-text-muted"}`}>
-        {count}
-      </span>
+      <span className={`rounded-full px-1.5 py-0.5 text-[9px] ${active ? "bg-white/20" : alert ? "bg-amber-500/15 text-amber-500" : "bg-bg-subtle text-text-muted"}`}>{count}</span>
     </button>
   );
 }
 
-function RequestRow({ request, onClick }: { request: ReturnType<typeof useLiveRequests>["completedRequests"][number]; onClick: () => void }) {
+function RequestRow({ request, onClick }: { request: LiveRequest; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-bg-subtle/20 px-3 py-2.5 text-left transition hover:border-primary/40"
-    >
+    <button onClick={onClick} className="flex w-full items-center gap-3 rounded-lg border border-border/70 bg-bg-subtle/20 px-3 py-2 text-left transition hover:border-primary/40">
       <ProviderIcon providerId={request.provider} size={17} type="color" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-xs font-medium text-text-main">{request.provider} · {request.model}</span>
@@ -385,37 +406,27 @@ function RequestRow({ request, onClick }: { request: ReturnType<typeof useLiveRe
           {request.latencyMs !== undefined ? ` · ${request.latencyMs.toLocaleString()} ms` : ""}
         </span>
       </span>
-      <span className={`text-[10px] font-medium ${request.status === "error" ? "text-red-400" : request.status === "success" ? "text-emerald-500" : "text-primary"}`}>
-        {request.status}
-      </span>
-      <span className="w-[72px] shrink-0 text-right text-[10px] text-text-muted">{formatClock(request.timestamp)}</span>
+      <span className={`text-[10px] font-medium ${request.status === "error" ? "text-red-400" : request.status === "success" ? "text-emerald-500" : "text-primary"}`}>{request.status}</span>
+      <span className="w-[72px] shrink-0 text-right text-[9px] text-text-muted">{formatClock(request.timestamp)}</span>
     </button>
   );
 }
 
-function ComboRow({ event, onClick }: { event: ReturnType<typeof useLiveComboStatus>["comboEvents"][number]; onClick: () => void }) {
+function ComboRow({ event, onClick }: { event: ComboEvent; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-bg-subtle/20 px-3 py-2.5 text-left transition hover:border-primary/40"
-    >
+    <button onClick={onClick} className="flex w-full items-center gap-3 rounded-lg border border-border/70 bg-bg-subtle/20 px-3 py-2 text-left transition hover:border-primary/40">
       <span className={`size-2 shrink-0 rounded-full ${event.type === "failed" ? "bg-red-500" : event.type === "succeeded" ? "bg-emerald-500" : "bg-amber-500"}`} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-xs font-medium text-text-main">{event.comboName}</span>
         <span className="mt-0.5 block truncate text-[10px] text-text-muted">
-          {event.type} → {event.provider}/{event.model}
-          {event.error ? ` · ${event.error}` : ""}
+          {event.type} → {event.provider}/{event.model}{event.error ? ` · ${event.error}` : ""}
         </span>
       </span>
-      <span className="w-[72px] shrink-0 text-right text-[10px] text-text-muted">{formatClock(event.timestamp)}</span>
+      <span className="w-[72px] shrink-0 text-right text-[9px] text-text-muted">{formatClock(event.timestamp)}</span>
     </button>
   );
 }
 
-function EmptyRow({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-text-muted">
-      {children}
-    </div>
-  );
+function EmptyRow({ children }: { children: ReactNode }) {
+  return <div className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-text-muted">{children}</div>;
 }
