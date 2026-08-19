@@ -23,6 +23,10 @@ import {
   summarizeOpenAiPreservation,
   type OperationsAttentionItem,
 } from "./operationsFloorModel";
+import {
+  buildOperationsFloorSimulation,
+  OPERATIONS_FLOOR_SIMULATION_FINAL_STEP,
+} from "./operationsFloorSimulation";
 
 type ProviderConnection = {
   id: string;
@@ -87,15 +91,60 @@ export default function OperationsFloorClient() {
   const [selection, setSelection] = useState<OperationsFloorSelection>(null);
   const [controlTab, setControlTab] = useState<ControlTab>("live");
   const [connectionTests, setConnectionTests] = useState<Record<string, OperationsConnectionTestState>>({});
+  const [simulationEnabled, setSimulationEnabled] = useState(false);
+  const [simulationPlaying, setSimulationPlaying] = useState(false);
+  const [simulationStep, setSimulationStep] = useState(0);
 
   const {
-    activeRequests,
-    completedRequests,
-    activeCount,
+    activeRequests: liveActiveRequests,
+    completedRequests: liveCompletedRequests,
     isConnected: liveConnected,
     reconnect,
   } = useLiveRequests();
-  const { comboEvents } = useLiveComboStatus();
+  const { comboEvents: liveComboEvents } = useLiveComboStatus();
+
+  const simulation = useMemo(
+    () => buildOperationsFloorSimulation(simulationStep),
+    [simulationStep]
+  );
+
+  useEffect(() => {
+    if (!simulationEnabled || !simulationPlaying) return;
+    if (simulationStep >= OPERATIONS_FLOOR_SIMULATION_FINAL_STEP) {
+      setSimulationPlaying(false);
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setSimulationStep((current) => Math.min(current + 1, OPERATIONS_FLOOR_SIMULATION_FINAL_STEP));
+    }, 1_700);
+    return () => window.clearTimeout(timer);
+  }, [simulationEnabled, simulationPlaying, simulationStep]);
+
+  const startSimulation = useCallback(() => {
+    setSimulationEnabled(true);
+    setSimulationStep(0);
+    setSimulationPlaying(true);
+    setSelection(null);
+    setControlTab("live");
+    setConnectionTests({});
+  }, []);
+
+  const replaySimulation = useCallback(() => {
+    setSimulationStep(0);
+    setSimulationPlaying(true);
+    setSelection(null);
+    setControlTab("live");
+    setConnectionTests({});
+  }, []);
+
+  const stopSimulation = useCallback(() => {
+    setSimulationEnabled(false);
+    setSimulationPlaying(false);
+    setSimulationStep(0);
+    setSelection(null);
+    setControlTab("live");
+    setConnectionTests({});
+  }, []);
 
   const loadProviders = useCallback(async () => {
     try {
@@ -117,9 +166,22 @@ export default function OperationsFloorClient() {
     return () => clearInterval(timer);
   }, [loadProviders]);
 
+  const observedConnections: ProviderConnection[] = simulationEnabled
+    ? simulation.connections
+    : connections;
+  const observedActiveRequests: LiveRequest[] = simulationEnabled
+    ? simulation.activeRequests
+    : liveActiveRequests;
+  const observedCompletedRequests: LiveRequest[] = simulationEnabled
+    ? simulation.completedRequests
+    : liveCompletedRequests;
+  const observedComboEvents: ComboEvent[] = simulationEnabled
+    ? simulation.comboEvents
+    : liveComboEvents;
+
   const desks = useMemo(() => {
     const grouped = new Map<string, ProviderDesk>();
-    for (const connection of connections) {
+    for (const connection of observedConnections) {
       const providerId = normalizeOperationsProviderId(connection.provider);
       if (!providerId) continue;
       const desk = grouped.get(providerId) || {
@@ -135,21 +197,22 @@ export default function OperationsFloorClient() {
       grouped.set(providerId, desk);
     }
     return [...grouped.values()].sort((a, b) => a.label.localeCompare(b.label));
-  }, [connections]);
+  }, [observedConnections]);
 
   const regularDesks = desks.filter((desk) => !isProtectedOpenAiProvider(desk.id));
   const protectedDesks = desks.filter((desk) => isProtectedOpenAiProvider(desk.id));
-  const preservation = summarizeOpenAiPreservation(completedRequests);
+  const preservation = summarizeOpenAiPreservation(observedCompletedRequests);
   const attention = useMemo(
-    () => buildOperationsAttentionItems(connections, completedRequests, comboEvents),
-    [connections, completedRequests, comboEvents]
+    () => buildOperationsAttentionItems(observedConnections, observedCompletedRequests, observedComboEvents),
+    [observedConnections, observedCompletedRequests, observedComboEvents]
   );
   const allRequests = useMemo(
-    () => [...activeRequests, ...completedRequests],
-    [activeRequests, completedRequests]
+    () => [...observedActiveRequests, ...observedCompletedRequests],
+    [observedActiveRequests, observedCompletedRequests]
   );
   const selectedProviderId = selection?.kind === "provider" ? selection.providerId : null;
   const readyDeskCount = desks.filter((desk) => desk.connected > 0).length;
+  const activeCount = observedActiveRequests.length;
 
   const selectProvider = useCallback((providerId: string) => {
     setSelection({ kind: "provider", providerId: normalizeOperationsProviderId(providerId) });
@@ -161,6 +224,17 @@ export default function OperationsFloorClient() {
 
   const testConnection = useCallback(
     async (connectionId: string) => {
+      if (simulationEnabled) {
+        setConnectionTests((current) => ({
+          ...current,
+          [connectionId]: {
+            status: "error",
+            message: "Simulation mode: no provider connection test was sent.",
+          },
+        }));
+        return;
+      }
+
       setConnectionTests((current) => ({
         ...current,
         [connectionId]: { status: "running" },
@@ -198,7 +272,7 @@ export default function OperationsFloorClient() {
         }));
       }
     },
-    [loadProviders]
+    [loadProviders, simulationEnabled]
   );
 
   return (
@@ -208,26 +282,58 @@ export default function OperationsFloorClient() {
           Live routing, provider health, fallback evidence, and protected OpenAI/Codex usage in one operator workspace.
         </p>
         <div className="flex flex-wrap items-center gap-3 text-xs">
-          <span className="inline-flex items-center gap-1.5 text-text-muted">
-            <span className={`size-2 rounded-full ${liveConnected ? "bg-emerald-500" : "bg-amber-500"}`} />
-            {liveConnected ? "telemetry connected" : "telemetry reconnecting"}
-          </span>
-          {!liveConnected && (
-            <button className="text-primary hover:underline" onClick={reconnect}>
-              reconnect
-            </button>
+          {simulationEnabled ? (
+            <span className="inline-flex items-center gap-1.5 font-medium text-violet-400">
+              <span className="size-2 rounded-full bg-violet-500 animate-pulse" />
+              simulation local · zero provider calls
+            </span>
+          ) : (
+            <>
+              <span className="inline-flex items-center gap-1.5 text-text-muted">
+                <span className={`size-2 rounded-full ${liveConnected ? "bg-emerald-500" : "bg-amber-500"}`} />
+                {liveConnected ? "telemetry connected" : "telemetry reconnecting"}
+              </span>
+              {!liveConnected && (
+                <button className="text-primary hover:underline" onClick={reconnect}>
+                  reconnect
+                </button>
+              )}
+            </>
+          )}
+          {simulationEnabled ? (
+            <>
+              <button className="text-violet-400 hover:underline" onClick={replaySimulation}>Replay simulation</button>
+              <button className="text-text-muted hover:text-text-main" onClick={stopSimulation}>Stop</button>
+            </>
+          ) : (
+            <button className="text-violet-400 hover:underline" onClick={startSimulation}>Run zero-call simulation</button>
           )}
           <Link href="/dashboard/combos/live" className="text-primary hover:underline">Combo Studio</Link>
           <Link href="/dashboard/analytics/compression" className="text-primary hover:underline">Compression</Link>
         </div>
       </div>
 
+      {simulationEnabled && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-violet-500/30 bg-violet-500/5 px-3 py-2">
+          <div className="min-w-0">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-violet-400">
+              Visual scenario · step {simulation.step}/{OPERATIONS_FLOOR_SIMULATION_FINAL_STEP}
+            </div>
+            <div className="mt-0.5 text-xs font-medium text-text-main">{simulation.label}</div>
+            <div className="mt-0.5 text-[10px] text-text-muted">{simulation.detail}</div>
+          </div>
+          <div className="rounded-full border border-violet-500/30 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-violet-400">
+            {simulationPlaying ? "playing" : "complete"}
+          </div>
+        </div>
+      )}
+
       <Card className="overflow-hidden p-0">
         <div className="grid grid-cols-2 divide-x divide-y divide-border sm:grid-cols-5 sm:divide-y-0">
-          <StatusCell label="live" value={String(activeCount)} detail="requests" tone={activeCount > 0 ? "primary" : "normal"} />
-          <StatusCell label="providers" value={`${readyDeskCount}/${desks.length}`} detail="ready desks" tone={readyDeskCount > 0 ? "good" : "normal"} />
-          <StatusCell label="non-OpenAI" value={String(preservation.nonOpenAiRequests)} detail={`${formatPercent(preservation.nonOpenAiShare)} observed`} tone="good" />
-          <StatusCell label="OpenAI family" value={String(preservation.openAiRequests)} detail="observed calls" tone="warning" />
+          <StatusCell label="live" value={String(activeCount)} detail={simulationEnabled ? "simulated requests" : "requests"} tone={activeCount > 0 ? "primary" : "normal"} />
+          <StatusCell label="providers" value={`${readyDeskCount}/${desks.length}`} detail={simulationEnabled ? "simulated ready desks" : "ready desks"} tone={readyDeskCount > 0 ? "good" : "normal"} />
+          <StatusCell label="non-OpenAI" value={String(preservation.nonOpenAiRequests)} detail={simulationEnabled ? `${formatPercent(preservation.nonOpenAiShare)} simulation` : `${formatPercent(preservation.nonOpenAiShare)} observed`} tone="good" />
+          <StatusCell label="OpenAI family" value={String(preservation.openAiRequests)} detail={simulationEnabled ? "simulation records" : "observed calls"} tone="warning" />
           <button
             type="button"
             onClick={() => setControlTab("attention")}
@@ -243,8 +349,12 @@ export default function OperationsFloorClient() {
       <Card className="overflow-hidden p-0">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
           <div>
-            <div className="text-sm font-semibold text-text-main">Live operations workspace</div>
-            <div className="text-[10px] text-text-muted">Click desks and evidence rows to inspect; connection tests run only when explicitly requested.</div>
+            <div className="text-sm font-semibold text-text-main">{simulationEnabled ? "Local visual simulation" : "Live operations workspace"}</div>
+            <div className="text-[10px] text-text-muted">
+              {simulationEnabled
+                ? "Deterministic browser-only routing evidence; provider tests are blocked and no LLM request is issued."
+                : "Click desks and evidence rows to inspect; connection tests run only when explicitly requested."}
+            </div>
           </div>
           {attention.length > 0 && (
             <button
@@ -259,16 +369,16 @@ export default function OperationsFloorClient() {
 
         <div className="grid gap-3 p-3 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0">
-            {loading ? (
+            {!simulationEnabled && loading ? (
               <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">Loading provider floor…</div>
-            ) : loadError ? (
+            ) : !simulationEnabled && loadError ? (
               <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 text-sm text-red-400">Provider inventory unavailable: {loadError}</div>
             ) : (
               <OperationsFloorWorkspaceScene
                 regularDesks={regularDesks}
                 protectedDesks={protectedDesks}
-                activeRequests={activeRequests}
-                comboEvents={comboEvents.slice(0, 12)}
+                activeRequests={observedActiveRequests}
+                comboEvents={observedComboEvents.slice(0, 12)}
                 selectedProviderId={selectedProviderId}
                 onSelectProvider={selectProvider}
               />
@@ -278,9 +388,9 @@ export default function OperationsFloorClient() {
           <OperationsFloorInspector
             selection={selection}
             desks={desks}
-            connections={connections}
+            connections={observedConnections}
             requests={allRequests}
-            comboEvents={comboEvents}
+            comboEvents={observedComboEvents}
             attention={attention}
             connectionTests={connectionTests}
             onSelectProvider={selectProvider}
@@ -292,24 +402,26 @@ export default function OperationsFloorClient() {
 
         <div className="border-t border-border">
           <div className="flex flex-wrap items-center gap-1 bg-bg-subtle/20 px-3 py-2">
-            <ControlTabButton active={controlTab === "live"} onClick={() => setControlTab("live")} label="Live" count={activeRequests.length} />
+            <ControlTabButton active={controlTab === "live"} onClick={() => setControlTab("live")} label="Live" count={observedActiveRequests.length} />
             <ControlTabButton active={controlTab === "attention"} onClick={() => setControlTab("attention")} label="Needs attention" count={attention.length} alert={attention.length > 0} />
-            <ControlTabButton active={controlTab === "requests"} onClick={() => setControlTab("requests")} label="Requests" count={completedRequests.length} />
-            <ControlTabButton active={controlTab === "fallbacks"} onClick={() => setControlTab("fallbacks")} label="Fallbacks" count={comboEvents.length} />
-            <div className="ml-auto hidden text-[9px] text-text-muted md:block">session evidence · newest first</div>
+            <ControlTabButton active={controlTab === "requests"} onClick={() => setControlTab("requests")} label="Requests" count={observedCompletedRequests.length} />
+            <ControlTabButton active={controlTab === "fallbacks"} onClick={() => setControlTab("fallbacks")} label="Fallbacks" count={observedComboEvents.length} />
+            <div className="ml-auto hidden text-[9px] text-text-muted md:block">
+              {simulationEnabled ? "local simulation evidence · zero provider calls" : "session evidence · newest first"}
+            </div>
           </div>
 
           <div className="max-h-[210px] overflow-auto p-3">
             {controlTab === "live" && (
               <div className="space-y-1.5">
-                {activeRequests.map((request) => (
+                {observedActiveRequests.map((request) => (
                   <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
                 ))}
-                {comboEvents.filter((event) => event.type === "attempt").slice(0, 10).map((event, index) => (
+                {observedComboEvents.filter((event) => event.type === "attempt").slice(0, 10).map((event, index) => (
                   <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
                 ))}
-                {activeRequests.length === 0 && comboEvents.filter((event) => event.type === "attempt").length === 0 && (
-                  <EmptyRow>Nothing is actively routing or cascading right now.</EmptyRow>
+                {observedActiveRequests.length === 0 && observedComboEvents.filter((event) => event.type === "attempt").length === 0 && (
+                  <EmptyRow>{simulationEnabled ? "Simulation is staged and waiting for the next local step." : "Nothing is actively routing or cascading right now."}</EmptyRow>
                 )}
               </div>
             )}
@@ -340,19 +452,19 @@ export default function OperationsFloorClient() {
 
             {controlTab === "requests" && (
               <div className="space-y-1.5">
-                {completedRequests.map((request) => (
+                {observedCompletedRequests.map((request) => (
                   <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
                 ))}
-                {completedRequests.length === 0 && <EmptyRow>No completed requests observed in this browser session yet.</EmptyRow>}
+                {observedCompletedRequests.length === 0 && <EmptyRow>{simulationEnabled ? "No simulated request has completed yet." : "No completed requests observed in this browser session yet."}</EmptyRow>}
               </div>
             )}
 
             {controlTab === "fallbacks" && (
               <div className="space-y-1.5">
-                {comboEvents.map((event, index) => (
+                {observedComboEvents.map((event, index) => (
                   <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
                 ))}
-                {comboEvents.length === 0 && <EmptyRow>No combo cascade events observed in this browser session yet.</EmptyRow>}
+                {observedComboEvents.length === 0 && <EmptyRow>{simulationEnabled ? "No simulated fallback event has occurred yet." : "No combo cascade events observed in this browser session yet."}</EmptyRow>}
               </div>
             )}
           </div>
