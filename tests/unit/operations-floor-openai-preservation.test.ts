@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const {
+  getOperationsLane,
   isProtectedOpenAiProvider,
   normalizeOperationsProviderId,
   summarizeOpenAiPreservation,
@@ -21,6 +22,15 @@ test("operations floor provider normalization is defensive", () => {
   assert.equal(normalizeOperationsProviderId("  CoDeX  "), "codex");
   assert.equal(normalizeOperationsProviderId(null), "");
   assert.equal(normalizeOperationsProviderId(42), "");
+});
+
+test("operations floor classifies request animation lanes", () => {
+  assert.equal(getOperationsLane("deepseek-web"), "primary");
+  assert.equal(getOperationsLane("zai"), "primary");
+  assert.equal(getOperationsLane("codex"), "protected");
+  assert.equal(getOperationsLane("chatgpt-web-codex"), "protected");
+  assert.equal(getOperationsLane("   "), null);
+  assert.equal(getOperationsLane(undefined), null);
 });
 
 test("preservation summary reports observed routing without inventing token savings", () => {
