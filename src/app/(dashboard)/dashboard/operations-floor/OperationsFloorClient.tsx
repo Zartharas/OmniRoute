@@ -12,6 +12,7 @@ import {
 } from "@/shared/utils/providerConnectionStatus";
 import { useLiveComboStatus, useLiveRequests } from "@/hooks/useLiveDashboard";
 import OperationsFloorWorkspaceScene from "./OperationsFloorWorkspaceScene";
+import OperationsFloorSystemTelemetry from "./OperationsFloorSystemTelemetry";
 import OperationsFloorInspector, {
   type OperationsConnectionTestState,
   type OperationsFloorSelection,
@@ -363,7 +364,8 @@ export default function OperationsFloorClient() {
         </div>
 
         <div className="grid gap-3 p-3 xl:grid-cols-[minmax(0,1fr)_340px]">
-          <div className="min-w-0">
+          <div className="min-w-0 space-y-2">
+            <OperationsFloorSystemTelemetry simulationMode={simulationEnabled} />
             {!simulationEnabled && loading ? (
               <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">Loading provider floor…</div>
             ) : !simulationEnabled && loadError ? (
