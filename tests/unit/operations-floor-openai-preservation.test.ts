@@ -125,7 +125,7 @@ test("zero-call simulation stages primary routing before protected fallback", ()
 
   assert.equal(failed.activeRequests.length, 0);
   assert.equal(failed.completedRequests[0]?.status, "error");
-  assert.equal(failed.connections.find((connection) => connection.provider === "deepseek-web")?.testStatus, "failed");
+  assert.equal(failed.connections.find((connection) => connection.provider === "deepseek-web")?.testStatus, "error");
 
   assert.equal(fallback.activeRequests.length, 1);
   assert.equal(fallback.activeRequests[0]?.provider, "codex");
