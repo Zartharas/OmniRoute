@@ -2,6 +2,11 @@
 
 import type { ReactNode } from "react";
 import ProviderIcon from "@/shared/components/ProviderIcon";
+import OperationsFloorLocalPixelAgent, {
+  providerCharacter,
+  useOperationsFloorLocalPixelPack,
+  type LocalPixelCharacter,
+} from "./OperationsFloorLocalPixelAgent";
 import { getOperationsLane } from "./operationsFloorModel";
 
 type SceneDesk = {
@@ -48,7 +53,7 @@ const PIXEL_TONES: Record<PixelTone, { body: string; glow: string; dot: string }
   },
 };
 
-function PixelOperator({ tone = "primary", active = false }: { tone?: PixelTone; active?: boolean }) {
+function NativePixelOperator({ tone = "primary", active = false }: { tone?: PixelTone; active?: boolean }) {
   const palette = PIXEL_TONES[tone];
   return (
     <div
@@ -61,6 +66,27 @@ function PixelOperator({ tone = "primary", active = false }: { tone?: PixelTone;
       <span className={`absolute bottom-0 right-1 h-2 w-1.5 rounded-b-[1px] ${palette.body}`} />
     </div>
   );
+}
+
+function OperatorAvatar({
+  localPackInstalled,
+  character,
+  tone = "primary",
+  active = false,
+}: {
+  localPackInstalled: boolean;
+  character: LocalPixelCharacter;
+  tone?: PixelTone;
+  active?: boolean;
+}) {
+  if (localPackInstalled) {
+    return (
+      <span className="relative flex h-10 w-8 shrink-0 items-end justify-center overflow-visible">
+        <OperationsFloorLocalPixelAgent character={character} active={active} scale={1.15} />
+      </span>
+    );
+  }
+  return <NativePixelOperator tone={tone} active={active} />;
 }
 
 function WorkstationShell({ children, tone = "primary" }: { children: ReactNode; tone?: PixelTone }) {
@@ -81,10 +107,12 @@ function DeskChip({
   desk,
   selected,
   onSelect,
+  localPackInstalled,
 }: {
   desk: SceneDesk;
   selected: boolean;
   onSelect: () => void;
+  localPackInstalled: boolean;
 }) {
   const healthy = desk.connected > 0 && desk.errors === 0;
   const tone: PixelTone = desk.errors > 0 ? "amber" : healthy ? "emerald" : "muted";
@@ -101,7 +129,12 @@ function DeskChip({
     >
       <WorkstationShell tone={tone}>
         <div className="flex min-w-0 items-end gap-2">
-          <PixelOperator tone={tone} active={healthy} />
+          <OperatorAvatar
+            localPackInstalled={localPackInstalled}
+            character={providerCharacter(desk.id)}
+            tone={tone}
+            active={healthy}
+          />
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex h-6 items-center gap-1.5 rounded-sm border border-white/10 bg-black/50 px-1.5">
               <ProviderIcon providerId={desk.id} size={14} type="color" />
@@ -165,9 +198,9 @@ function Packet({
   );
 }
 
-const PRIMARY_PATH = "M 150 230 C 285 230, 355 130, 680 130";
-const PROTECTED_PATH = "M 150 230 C 300 230, 360 345, 710 345";
-const FALLBACK_PATH = "M 800 170 C 890 190, 895 290, 800 315";
+const PRIMARY_PATH = "M 150 210 C 285 210, 355 118, 680 118";
+const PROTECTED_PATH = "M 150 210 C 300 210, 360 312, 710 312";
+const FALLBACK_PATH = "M 800 155 C 890 175, 895 265, 800 290";
 
 function ZoneLabel({ icon, title, detail }: { icon: string; title: string; detail: string }) {
   return (
@@ -196,6 +229,7 @@ export default function OperationsFloorScene({
   selectedProviderId?: string | null;
   onSelectProvider: (providerId: string) => void;
 }) {
+  const { installed: localPackInstalled, manifest } = useOperationsFloorLocalPixelPack();
   const primaryRequests = activeRequests
     .filter((request) => getOperationsLane(request.provider) === "primary")
     .slice(0, 5);
@@ -208,7 +242,7 @@ export default function OperationsFloorScene({
   const vacantCount = Math.max(0, 4 - regularDesks.slice(0, 6).length);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border bg-[#0d1016] shadow-inner">
+    <div className="relative overflow-hidden rounded-xl border border-border bg-[#0d1016] shadow-inner">
       <div
         className="pointer-events-none absolute inset-0 opacity-60"
         style={{
@@ -217,9 +251,9 @@ export default function OperationsFloorScene({
           backgroundSize: "18px 18px, 18px 18px, 36px 36px",
         }}
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/[0.05] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-primary/[0.05] to-transparent" />
 
-      <div className="relative hidden min-h-[520px] lg:block">
+      <div className="relative hidden min-h-[445px] lg:block">
         <div className="absolute left-4 top-3 z-20 flex items-center gap-3 rounded-md border border-white/8 bg-black/35 px-2.5 py-1.5 backdrop-blur-sm">
           <span className="font-mono text-[9px] font-semibold tracking-[0.16em] text-white/65">
             OMNIROUTE OPS // LIVE FLOOR
@@ -231,10 +265,14 @@ export default function OperationsFloorScene({
           </span>
         </div>
 
+        <div className="absolute right-4 top-3 z-20 rounded-md border border-white/8 bg-black/35 px-2.5 py-1.5 font-mono text-[8px] text-white/45">
+          {localPackInstalled ? "LOCAL PIXEL AGENTS · ACTIVE" : "NATIVE AGENTS · LOCAL PACK OPTIONAL"}
+        </div>
+
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-10 size-full"
-          viewBox="0 0 1000 470"
+          viewBox="0 0 1000 420"
           preserveAspectRatio="none"
         >
           <path d={PRIMARY_PATH} fill="none" stroke="#f43f5e" strokeWidth="2" strokeDasharray="7 9" opacity="0.24" />
@@ -265,8 +303,8 @@ export default function OperationsFloorScene({
         <section className="absolute left-[2.5%] top-[30%] z-20 w-[15%] rounded-lg border border-cyan-400/15 bg-[#111722]/95 p-3 shadow-[0_8px_25px_rgba(0,0,0,0.28)]">
           <ZoneLabel icon="terminal" title="Ingress bay" detail="Codex · IDE · API" />
           <div className="mt-3 rounded-md border border-cyan-400/10 bg-black/30 p-2">
-            <div className="mb-2 flex items-center gap-2">
-              <PixelOperator tone="primary" active={activeRequests.length > 0} />
+            <div className="flex items-end gap-2">
+              <OperatorAvatar localPackInstalled={localPackInstalled} character="Adam" tone="primary" active={activeRequests.length > 0} />
               <div className="min-w-0 flex-1">
                 <div className="h-5 rounded-sm border border-cyan-400/15 bg-[#07141b] px-1.5 font-mono text-[8px] leading-5 text-cyan-300/70">
                   REQUEST QUEUE
@@ -280,38 +318,38 @@ export default function OperationsFloorScene({
           </div>
         </section>
 
-        <section className="absolute left-[25%] top-[28%] z-20 w-[22%] rounded-xl border-2 border-primary/35 bg-[#17121a]/95 p-4 shadow-[0_12px_35px_rgba(244,63,94,0.1)]">
+        <section className="absolute left-[25%] top-[27%] z-20 w-[22%] rounded-xl border-2 border-primary/35 bg-[#17121a]/95 p-3.5 shadow-[0_12px_35px_rgba(244,63,94,0.1)]">
           <div className="flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-md border border-primary/25 bg-primary/10 shadow-[0_0_20px_rgba(244,63,94,0.12)]">
+            <div className="flex size-10 items-center justify-center rounded-md border border-primary/25 bg-primary/10 shadow-[0_0_20px_rgba(244,63,94,0.12)]">
               <span className="material-symbols-outlined text-primary">route</span>
             </div>
             <div>
-              <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-primary/70">Dispatch core</div>
+              <div className="font-mono text-[8px] uppercase tracking-[0.16em] text-primary/70">Dispatch core</div>
               <div className="text-sm font-semibold text-white/90">OmniRoute Router</div>
-              <div className="text-[9px] text-white/35">classify · route · retry · cascade</div>
+              <div className="text-[8px] text-white/35">classify · route · retry · cascade</div>
             </div>
           </div>
-          <div className="mt-3 grid grid-cols-3 gap-1.5">
+          <div className="mt-2.5 grid grid-cols-3 gap-1.5">
             {[
               ["route", "ROUTE"],
               ["sync_alt", "RETRY"],
               ["account_tree", "CASCADE"],
             ].map(([icon, label]) => (
-              <div key={label} className="rounded border border-white/7 bg-black/20 px-1 py-1.5 text-center">
-                <span className="material-symbols-outlined block text-[14px] text-primary/60">{icon}</span>
+              <div key={label} className="rounded border border-white/7 bg-black/20 px-1 py-1 text-center">
+                <span className="material-symbols-outlined block text-[13px] text-primary/60">{icon}</span>
                 <span className="font-mono text-[7px] text-white/35">{label}</span>
               </div>
             ))}
           </div>
           {activeRequests.length > 0 && (
-            <div className="mt-3 flex items-center justify-center gap-1.5 rounded-md border border-primary/25 bg-primary/10 py-1.5 font-mono text-[8px] font-semibold text-primary">
+            <div className="mt-2.5 flex items-center justify-center gap-1.5 rounded-md border border-primary/25 bg-primary/10 py-1 font-mono text-[8px] font-semibold text-primary">
               <span className="size-1.5 animate-pulse rounded-full bg-primary" />
               {activeRequests.length} PACKET{activeRequests.length === 1 ? "" : "S"} ROUTING
             </div>
           )}
         </section>
 
-        <section className="absolute bottom-[7%] left-[22%] z-20 w-[15%] rounded-lg border border-violet-400/15 bg-[#14121d]/95 p-3">
+        <section className="absolute bottom-[6%] left-[22%] z-20 w-[15%] rounded-lg border border-violet-400/15 bg-[#14121d]/95 p-2.5">
           <ZoneLabel icon="compress" title="Compression bay" detail="RTK · Caveman · context" />
           <div className="mt-2 grid grid-cols-3 gap-1">
             {["RTK", "CAVE", "CTX"].map((label) => (
@@ -322,12 +360,12 @@ export default function OperationsFloorScene({
           </div>
         </section>
 
-        <section className="absolute bottom-[7%] left-[39%] z-20 w-[14%] rounded-lg border border-emerald-400/15 bg-[#101a17]/95 p-3">
+        <section className="absolute bottom-[6%] left-[39%] z-20 w-[14%] rounded-lg border border-emerald-400/15 bg-[#101a17]/95 p-2.5">
           <ZoneLabel icon="shield_lock" title="Auth Keeper" detail="refresh · health · recovery" />
-          <div className="mt-2 flex items-center gap-2 rounded-md border border-emerald-400/10 bg-black/25 p-2">
-            <PixelOperator tone="muted" />
+          <div className="mt-2 flex items-end gap-2 rounded-md border border-emerald-400/10 bg-black/25 p-2">
+            <OperatorAvatar localPackInstalled={localPackInstalled} character="Amelia" tone="muted" />
             <div className="min-w-0 flex-1">
-              <div className="font-mono text-[8px] text-white/50">INTEGRATION POINT</div>
+              <div className="font-mono text-[7px] text-white/50">INTEGRATION POINT</div>
               <div className="mt-1 rounded-sm border border-dashed border-white/10 px-1 py-0.5 font-mono text-[7px] text-white/25">
                 LIVE STATE NOT WIRED
               </div>
@@ -335,7 +373,7 @@ export default function OperationsFloorScene({
           </div>
         </section>
 
-        <section className="absolute right-[2.5%] top-[7%] z-20 w-[38%] rounded-xl border border-emerald-400/18 bg-[#101715]/95 p-3 shadow-[0_8px_30px_rgba(0,0,0,0.24)]">
+        <section className="absolute right-[2.5%] top-[8%] z-20 w-[38%] rounded-xl border border-emerald-400/18 bg-[#101715]/95 p-3 shadow-[0_8px_30px_rgba(0,0,0,0.24)]">
           <div className="mb-2.5 flex items-center justify-between gap-2">
             <ZoneLabel icon="dns" title="Provider bullpen" detail="primary routing pool" />
             <span className="rounded-sm border border-emerald-400/15 bg-emerald-400/5 px-1.5 py-1 font-mono text-[8px] text-emerald-300/65">
@@ -349,6 +387,7 @@ export default function OperationsFloorScene({
                 desk={desk}
                 selected={selectedProviderId === desk.id}
                 onSelect={() => onSelectProvider(desk.id)}
+                localPackInstalled={localPackInstalled}
               />
             ))}
             {Array.from({ length: vacantCount }, (_, index) => (
@@ -367,7 +406,7 @@ export default function OperationsFloorScene({
           )}
         </section>
 
-        <section className="absolute bottom-[7%] right-[2.5%] z-20 w-[38%] rounded-xl border border-amber-400/25 bg-[#1b1710]/95 p-3 shadow-[0_8px_30px_rgba(245,158,11,0.06)]">
+        <section className="absolute bottom-[6%] right-[2.5%] z-20 w-[38%] rounded-xl border border-amber-400/25 bg-[#1b1710]/95 p-3 shadow-[0_8px_30px_rgba(245,158,11,0.06)]">
           <div className="mb-2.5 flex items-center justify-between gap-2">
             <ZoneLabel icon="encrypted" title="OpenAI vault" detail="protected subscription lane" />
             {protectedFallbackActive ? (
@@ -387,12 +426,18 @@ export default function OperationsFloorScene({
                 desk={desk}
                 selected={selectedProviderId === desk.id}
                 onSelect={() => onSelectProvider(desk.id)}
+                localPackInstalled={localPackInstalled}
               />
             ))}
             <div className="rounded-lg border border-amber-400/18 bg-amber-400/[0.035] p-1.5">
               <WorkstationShell tone="amber">
                 <div className="flex items-end gap-2">
-                  <PixelOperator tone="amber" active={protectedRequests.length > 0 || protectedFallbackActive} />
+                  <OperatorAvatar
+                    localPackInstalled={localPackInstalled}
+                    character="Bob"
+                    tone="amber"
+                    active={protectedRequests.length > 0 || protectedFallbackActive}
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="flex h-6 items-center gap-1 rounded-sm border border-amber-400/15 bg-black/45 px-1.5">
                       <span className="material-symbols-outlined text-[13px] text-amber-400">terminal</span>
@@ -410,7 +455,7 @@ export default function OperationsFloorScene({
           </div>
         </section>
 
-        <div className="pointer-events-none absolute bottom-[3%] left-[3%] z-20 flex items-center gap-2 font-mono text-[7px] text-white/25">
+        <div className="pointer-events-none absolute bottom-[2%] left-[3%] z-20 flex items-center gap-2 font-mono text-[7px] text-white/25">
           <span className="inline-block size-1 rounded-full bg-primary" />
           LIVE REQUEST ENVELOPES
           <span className="ml-2 inline-block size-1 rounded-full bg-amber-500" />
@@ -420,8 +465,8 @@ export default function OperationsFloorScene({
 
       <div className="relative grid gap-4 p-4 lg:hidden">
         <div className="rounded-xl border border-primary/25 bg-[#17121a] p-4">
-          <div className="flex items-center gap-3">
-            <PixelOperator tone="primary" active={activeRequests.length > 0} />
+          <div className="flex items-end gap-3">
+            <OperatorAvatar localPackInstalled={localPackInstalled} character="Alex" tone="primary" active={activeRequests.length > 0} />
             <div>
               <div className="font-mono text-[9px] uppercase tracking-[0.14em] text-primary/70">Dispatch core</div>
               <div className="font-semibold text-white/90">OmniRoute Router</div>
@@ -438,6 +483,7 @@ export default function OperationsFloorScene({
                 desk={desk}
                 selected={selectedProviderId === desk.id}
                 onSelect={() => onSelectProvider(desk.id)}
+                localPackInstalled={localPackInstalled}
               />
             ))}
             {regularDesks.length === 0 && <VacantDesk index={1} />}
@@ -452,6 +498,7 @@ export default function OperationsFloorScene({
                 desk={desk}
                 selected={selectedProviderId === desk.id}
                 onSelect={() => onSelectProvider(desk.id)}
+                localPackInstalled={localPackInstalled}
               />
             ))}
             <div className="rounded-lg border border-dashed border-amber-400/25 bg-black/20 px-3 py-2 font-mono text-[9px] text-amber-100/55">
@@ -471,7 +518,11 @@ export default function OperationsFloorScene({
 
       <div className="relative flex flex-wrap items-center justify-between gap-2 border-t border-white/8 bg-black/25 px-4 py-2 font-mono text-[8px] text-white/30">
         <span>Animated envelopes = actual in-flight WebSocket request events.</span>
-        <span>Original OmniRoute graphics · no third-party pixel assets.</span>
+        <span>
+          {localPackInstalled
+            ? `Local non-commercial pixel agents · ${manifest?.sourceCommit?.slice(0, 8) || "pinned pack"}`
+            : "Original OmniRoute agents · optional local pixel pack not installed"}
+        </span>
       </div>
     </div>
   );
