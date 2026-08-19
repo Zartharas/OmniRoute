@@ -79,10 +79,7 @@ export default function OperationsFloorLocalPixelAgent({
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
-    if (!active) {
-      setFrame(0);
-      return;
-    }
+    if (!active) return;
     const timer = window.setInterval(() => {
       setFrame((current) => (current + 1) % FRAMES_PER_DIRECTION);
     }, 150);
@@ -91,10 +88,11 @@ export default function OperationsFloorLocalPixelAgent({
 
   const backgroundPosition = useMemo(() => {
     const groupStart = DOWN_DIRECTION_GROUP * FRAMES_PER_DIRECTION;
-    const x = (groupStart + frame) * FRAME_WIDTH;
+    const visibleFrame = active ? frame : 0;
+    const x = (groupStart + visibleFrame) * FRAME_WIDTH;
     const y = WALK_ROW * FRAME_HEIGHT;
     return `-${x}px -${y}px`;
-  }, [frame]);
+  }, [active, frame]);
 
   return (
     <span
