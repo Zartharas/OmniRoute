@@ -107,6 +107,7 @@ export default function OperationsFloorInspector({
   comboEvents,
   attention,
   connectionTests,
+  simulationMode = false,
   onSelectProvider,
   onSelectRequest,
   onTestConnection,
@@ -119,6 +120,7 @@ export default function OperationsFloorInspector({
   comboEvents: InspectorComboEvent[];
   attention: OperationsAttentionItem[];
   connectionTests: Record<string, OperationsConnectionTestState>;
+  simulationMode?: boolean;
   onSelectProvider: (providerId: string) => void;
   onSelectRequest: (requestId: string) => void;
   onTestConnection: (connectionId: string) => void;
@@ -337,12 +339,12 @@ export default function OperationsFloorInspector({
       {header}
       <div className="max-h-[445px] space-y-3 overflow-auto p-3.5">
         <div className="rounded-lg border border-border bg-bg-subtle/30 p-3 text-[11px] leading-5 text-text-muted">
-          Select a provider desk, request, or attention item. Provider connection tests are available only after selecting a configured provider and run only when you click Test.
+          Select a provider desk, request, or {simulationMode ? "scenario evidence item" : "attention item"}. Provider connection tests are available only after selecting a configured provider and run only when you click Test.
         </div>
 
         <section>
           <div className="mb-1.5 flex items-center justify-between gap-2">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">Needs attention</div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">{simulationMode ? "Scenario evidence" : "Needs attention"}</div>
             <span className="text-[10px] text-text-muted">{attention.length}</span>
           </div>
           <div className="space-y-2">
@@ -362,7 +364,9 @@ export default function OperationsFloorInspector({
             ))}
             {attention.length === 0 && (
               <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-xs text-emerald-500">
-                No provider, request, or fallback evidence currently requires attention.
+                {simulationMode
+                  ? "No scenario evidence has been retained in this step."
+                  : "No provider, request, or fallback evidence currently requires attention."}
               </div>
             )}
           </div>
