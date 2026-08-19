@@ -9,8 +9,11 @@ import { getAntigravityClientProfile } from "@omniroute/open-sse/services/antigr
 // supported for the API use." Probe the actual Cloud Code model endpoint
 // (streamGenerateContent) with a minimal body:
 //   2xx      -> model path reachable (auth ok)
-//   400 geo  -> egress location blocked (auth ok — NOT an account problem)
+//   400      -> model probe rejected, but OAuth was accepted
 //   401/403  -> token bad
+// A generic 400 is not credential evidence: the intentionally minimal probe can
+// be rejected for request-shape, model-surface, or geo reasons. Keep it accepted
+// for credential health while real runtime traffic remains the availability signal.
 // Mirrors AntigravityExecutor.buildUrl/buildHeaders so the probe exercises the
 // exact same surface as real requests.
 function buildAntigravityProbe(
@@ -123,9 +126,10 @@ export const OAUTH_TEST_CONFIG: Record<string, OAuthTestConfigEntry> = {
     refreshable: true,
   },
   antigravity: {
-    // Real model-surface probe (see buildAntigravityProbe above): userinfo-only
-    // probing stayed green while the model API was geo-blocked.
+    // The minimal Cloud Code probe can return 400 even when OAuth refresh is
+    // healthy. Treat 400 as auth-accepted; runtime traffic owns availability.
     buildProbe: buildAntigravityProbe,
+    acceptStatuses: [400],
     refreshable: true,
   },
   // `agy` is a separate connection id that shares the Antigravity backend and the same
@@ -135,6 +139,7 @@ export const OAUTH_TEST_CONFIG: Record<string, OAuthTestConfigEntry> = {
   // perfectly good account. Probe the same model surface as antigravity.
   agy: {
     buildProbe: buildAntigravityProbe,
+    acceptStatuses: [400],
     refreshable: true,
   },
   xai: XAI_CHAT_OAUTH_TEST_CONFIG,
