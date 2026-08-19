@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const {
+  buildOperationsAttentionItems,
   getOperationsLane,
   isProtectedOpenAiProvider,
   normalizeOperationsProviderId,
@@ -48,4 +49,59 @@ test("preservation summary reports observed routing without inventing token savi
   assert.equal(summary.observedInputTokens, 2250);
   assert.equal(summary.observedOutputTokens, 600);
   assert.equal("tokensSaved" in summary, false);
+});
+
+test("attention queue derives provider errors and active rate limits from observed state", () => {
+  const now = Date.UTC(2026, 7, 19, 15, 0, 0);
+  const items = buildOperationsAttentionItems(
+    [
+      { id: "a", provider: "zai", testStatus: "failed" },
+      { id: "b", provider: "zai", testStatus: "success" },
+      { id: "c", provider: "mistral", rateLimitedUntil: now + 60_000 },
+      { id: "d", provider: "deepseek-web", rateLimitedUntil: now - 60_000 },
+    ],
+    [],
+    [],
+    now
+  );
+
+  assert.equal(items.some((item) => item.id === "provider-error:zai" && item.severity === "error"), true);
+  assert.equal(items.some((item) => item.id === "provider-rate-limit:mistral"), true);
+  assert.equal(items.some((item) => item.id === "provider-rate-limit:deepseek-web"), false);
+});
+
+test("attention queue surfaces failed requests and protected fallback attempts without inventing causes", () => {
+  const now = Date.UTC(2026, 7, 19, 15, 0, 0);
+  const items = buildOperationsAttentionItems(
+    [],
+    [
+      {
+        id: "req-1",
+        provider: "zai",
+        model: "glm",
+        status: "error",
+        error: "HTTP 401",
+        timestamp: now - 1_000,
+      },
+    ],
+    [
+      {
+        comboName: "coding-primary",
+        provider: "codex",
+        model: "gpt-5",
+        type: "attempt",
+        timestamp: now,
+      },
+    ],
+    now
+  );
+
+  const request = items.find((item) => item.requestId === "req-1");
+  assert.equal(request?.detail, "HTTP 401");
+  assert.equal(request?.provider, "zai");
+
+  const protectedFallback = items.find((item) => item.kind === "fallback");
+  assert.equal(protectedFallback?.title, "Protected OpenAI lane was reached");
+  assert.match(protectedFallback?.detail ?? "", /coding-primary/);
+  assert.equal(protectedFallback?.severity, "warning");
 });
