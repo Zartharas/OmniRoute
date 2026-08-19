@@ -2,35 +2,31 @@
 
 import { useMemo } from "react";
 
-import { useLiveDashboard, type WsEventPayload } from "@/hooks/useLiveDashboard";
+import { useLiveDashboard } from "@/hooks/useLiveDashboard";
+import {
+  deriveOperationsFloorSystemSignals,
+  type OperationsFloorAuthSignal,
+  type OperationsFloorCompressionSignal,
+  type OperationsFloorSystemSignals,
+} from "./operationsFloorSystemSignals";
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-  return value !== null && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
+export function useOperationsFloorSystemTelemetry(simulationMode: boolean) {
+  const { connection, events } = useLiveDashboard({
+    enabled: !simulationMode,
+    channels: ["credentials", "compression"],
+  });
+
+  const signals = useMemo<OperationsFloorSystemSignals>(
+    () => simulationMode ? { auth: null, compression: null } : deriveOperationsFloorSystemSignals(events),
+    [events, simulationMode]
+  );
+
+  return { connection, events, signals };
 }
 
-function asText(value: unknown): string | null {
-  return typeof value === "string" && value.trim() ? value.trim() : null;
-}
+export type OperationsFloorSystemTelemetryState = ReturnType<typeof useOperationsFloorSystemTelemetry>;
 
-function asNumber(value: unknown): number | null {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function latestEvent(events: WsEventPayload[], predicate: (event: WsEventPayload) => boolean) {
-  for (let index = events.length - 1; index >= 0; index -= 1) {
-    if (predicate(events[index])) return events[index];
-  }
-  return null;
-}
-
-function AuthSignal({ event }: { event: WsEventPayload | null }) {
-  const data = asRecord(event?.data);
-  const provider = asText(data?.provider);
-  const oldStatus = asText(data?.oldStatus);
-  const newStatus = asText(data?.newStatus);
-
+function AuthSignal({ signal }: { signal: OperationsFloorAuthSignal | null }) {
   return (
     <div className="min-w-0 rounded-lg border border-emerald-500/15 bg-emerald-500/[0.035] px-2.5 py-2">
       <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] text-emerald-500">
@@ -38,12 +34,12 @@ function AuthSignal({ event }: { event: WsEventPayload | null }) {
         Auth Keeper signal
       </div>
       <div className="mt-1 truncate text-[10px] text-text-main">
-        {event && provider ? `${provider}${newStatus ? ` · ${newStatus}` : ""}` : "Awaiting credential health event"}
+        {signal?.provider ? `${signal.provider}${signal.newStatus ? ` · ${signal.newStatus}` : ""}` : "Awaiting credential health event"}
       </div>
       <div className="mt-0.5 truncate font-mono text-[8px] text-text-muted">
-        {event
-          ? oldStatus && newStatus
-            ? `${oldStatus} → ${newStatus}`
+        {signal
+          ? signal.oldStatus && signal.newStatus
+            ? `${signal.oldStatus} → ${signal.newStatus}`
             : "credential.health.changed observed"
           : "live evidence only · no inferred refresh state"}
       </div>
@@ -51,31 +47,20 @@ function AuthSignal({ event }: { event: WsEventPayload | null }) {
   );
 }
 
-function CompressionSignal({ event }: { event: WsEventPayload | null }) {
-  const data = asRecord(event?.data);
-  const mode = asText(data?.mode);
-  const engine = asText(data?.engine);
-  const state = asText(data?.state);
-  const savings = asNumber(data?.savingsPercent);
-  const stepIndex = asNumber(data?.stepIndex);
-  const totalSteps = asNumber(data?.totalSteps);
-  const completed = event?.event === "compression.completed";
-
+function CompressionSignal({ signal }: { signal: OperationsFloorCompressionSignal | null }) {
   let headline = "Awaiting compression event";
   let detail = "RTK · Caveman · stacked pipeline evidence";
 
-  if (event) {
-    if (completed) {
-      headline = `${mode || "compression"}${savings !== null ? ` · ${Math.round(savings)}% observed` : ""}`;
-      const original = asNumber(data?.originalTokens);
-      const compressed = asNumber(data?.compressedTokens);
-      detail = original !== null && compressed !== null
-        ? `${original.toLocaleString()} → ${compressed.toLocaleString()} tokens`
+  if (signal) {
+    if (signal.event === "compression.completed") {
+      headline = `${signal.mode || "compression"}${signal.savingsPercent !== null ? ` · ${Math.round(signal.savingsPercent)}% observed` : ""}`;
+      detail = signal.originalTokens !== null && signal.compressedTokens !== null
+        ? `${signal.originalTokens.toLocaleString()} → ${signal.compressedTokens.toLocaleString()} tokens`
         : "compression.completed observed";
     } else {
-      headline = `${engine || mode || "compression"}${state ? ` · ${state}` : ""}`;
-      detail = stepIndex !== null && totalSteps !== null
-        ? `step ${stepIndex + 1}/${totalSteps} · compression.step`
+      headline = `${signal.engine || signal.mode || "compression"}${signal.state ? ` · ${signal.state}` : ""}`;
+      detail = signal.stepIndex !== null && signal.totalSteps !== null
+        ? `step ${signal.stepIndex + 1}/${signal.totalSteps} · compression.step`
         : "compression.step observed";
     }
   }
@@ -92,21 +77,13 @@ function CompressionSignal({ event }: { event: WsEventPayload | null }) {
   );
 }
 
-export default function OperationsFloorSystemTelemetry({ simulationMode }: { simulationMode: boolean }) {
-  const { connection, events } = useLiveDashboard({
-    enabled: !simulationMode,
-    channels: ["credentials", "compression"],
-  });
-
-  const credentialEvent = useMemo(
-    () => latestEvent(events, (event) => event.event === "credential.health.changed"),
-    [events]
-  );
-  const compressionEvent = useMemo(
-    () => latestEvent(events, (event) => event.channel === "compression"),
-    [events]
-  );
-
+export default function OperationsFloorSystemTelemetry({
+  simulationMode,
+  telemetry,
+}: {
+  simulationMode: boolean;
+  telemetry: OperationsFloorSystemTelemetryState;
+}) {
   if (simulationMode) {
     return (
       <div className="rounded-lg border border-violet-500/20 bg-violet-500/[0.035] px-3 py-2 text-[10px] text-violet-300/80">
@@ -115,10 +92,12 @@ export default function OperationsFloorSystemTelemetry({ simulationMode }: { sim
     );
   }
 
+  const { connection, events, signals } = telemetry;
+
   return (
     <div className="grid gap-2 md:grid-cols-[1fr_1fr_auto]">
-      <AuthSignal event={credentialEvent} />
-      <CompressionSignal event={compressionEvent} />
+      <AuthSignal signal={signals.auth} />
+      <CompressionSignal signal={signals.compression} />
       <div className="flex min-w-[128px] items-center gap-2 rounded-lg border border-border bg-bg-subtle/20 px-2.5 py-2">
         <span className={`size-2 shrink-0 rounded-full ${connection.isConnected ? "bg-emerald-500" : connection.isConnecting ? "bg-amber-500 animate-pulse" : "bg-red-500"}`} />
         <div>
