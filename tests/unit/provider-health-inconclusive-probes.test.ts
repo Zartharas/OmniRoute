@@ -17,7 +17,12 @@ test("NVIDIA timeout probe is credential-inconclusive instead of an auth failure
     }
   );
 
-  const result = normalizeNvidiaValidationFailure(error);
+  const result = normalizeNvidiaValidationFailure(error) as {
+    valid: boolean;
+    error: string | null;
+    method?: string;
+    warning?: string;
+  };
 
   assert.equal(result.valid, true);
   assert.equal(result.error, null);
