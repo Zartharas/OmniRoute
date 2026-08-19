@@ -12,7 +12,9 @@ import {
 } from "@/shared/utils/providerConnectionStatus";
 import { useLiveComboStatus, useLiveRequests } from "@/hooks/useLiveDashboard";
 import OperationsFloorWorkspaceScene from "./OperationsFloorWorkspaceScene";
-import OperationsFloorSystemTelemetry from "./OperationsFloorSystemTelemetry";
+import OperationsFloorSystemTelemetry, {
+  useOperationsFloorSystemTelemetry,
+} from "./OperationsFloorSystemTelemetry";
 import OperationsFloorInspector, {
   type OperationsConnectionTestState,
   type OperationsFloorSelection,
@@ -102,6 +104,7 @@ export default function OperationsFloorClient() {
     reconnect,
   } = useLiveRequests();
   const { comboEvents: liveComboEvents } = useLiveComboStatus();
+  const systemTelemetry = useOperationsFloorSystemTelemetry(simulationEnabled);
 
   const simulation = useMemo(
     () => buildOperationsFloorSimulation(simulationStep),
@@ -365,7 +368,7 @@ export default function OperationsFloorClient() {
 
         <div className="grid gap-3 p-3 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0 space-y-2">
-            <OperationsFloorSystemTelemetry simulationMode={simulationEnabled} />
+            <OperationsFloorSystemTelemetry simulationMode={simulationEnabled} telemetry={systemTelemetry} />
             {!simulationEnabled && loading ? (
               <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">Loading provider floor…</div>
             ) : !simulationEnabled && loadError ? (
@@ -376,6 +379,7 @@ export default function OperationsFloorClient() {
                 protectedDesks={protectedDesks}
                 activeRequests={observedActiveRequests}
                 comboEvents={observedComboEvents.slice(0, 12)}
+                systemSignals={systemTelemetry.signals}
                 selectedProviderId={selectedProviderId}
                 onSelectProvider={selectProvider}
               />
