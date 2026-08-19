@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import OperationsFloorScene from "./OperationsFloorScene";
 import { useOperationsFloorLocalPixelPack } from "./OperationsFloorLocalPixelAgent";
+import type { OperationsFloorSystemSignals } from "./operationsFloorSystemSignals";
 import OperationsFloorTiledOffice, {
   type PixelOfficeComboEvent,
   type PixelOfficeDesk,
@@ -17,6 +18,7 @@ export default function OperationsFloorWorkspaceScene({
   protectedDesks,
   activeRequests,
   comboEvents,
+  systemSignals,
   selectedProviderId,
   onSelectProvider,
 }: {
@@ -24,6 +26,7 @@ export default function OperationsFloorWorkspaceScene({
   protectedDesks: PixelOfficeDesk[];
   activeRequests: PixelOfficeRequest[];
   comboEvents: PixelOfficeComboEvent[];
+  systemSignals: OperationsFloorSystemSignals;
   selectedProviderId?: string | null;
   onSelectProvider: (providerId: string) => void;
 }) {
@@ -73,6 +76,7 @@ export default function OperationsFloorWorkspaceScene({
           protectedDesks={protectedDesks}
           activeRequests={activeRequests}
           comboEvents={comboEvents}
+          systemSignals={systemSignals}
           selectedProviderId={selectedProviderId}
           onSelectProvider={onSelectProvider}
         />
