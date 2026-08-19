@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
+} from "react";
 
 import ProviderIcon from "@/shared/components/ProviderIcon";
 import OperationsFloorLocalPixelAgent, {
@@ -15,6 +22,9 @@ const FLIP_V = 0x40000000;
 const FLIP_D = 0x20000000;
 const TILE_MASK = 0x1fffffff;
 const TILE_LAYERS = ["floor", "walls", "furniture-below", "furniture-above"] as const;
+const MIN_ZOOM = 0.9;
+const DEFAULT_ZOOM = 1.55;
+const MAX_ZOOM = 2.4;
 const PRIMARY_SEATS = [
   "pc-1",
   "pc-2",
@@ -80,6 +90,14 @@ type LoadedMap = {
   map: TiledMap;
   images: HTMLImageElement[];
   spawns: Map<string, Point>;
+};
+
+type PanState = {
+  pointerId: number;
+  startX: number;
+  startY: number;
+  scrollLeft: number;
+  scrollTop: number;
 };
 
 const EXTRA_TILESETS: TiledTileset[] = [
@@ -250,6 +268,14 @@ function requestTarget(
   return spawns.get(PRIMARY_SEATS[index % PRIMARY_SEATS.length]) ?? fallbackPoint(index);
 }
 
+function clampZoom(value: number): number {
+  return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Number(value.toFixed(2))));
+}
+
+function isInteractiveTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && Boolean(target.closest("button,a,input,select,textarea,[role='button']"));
+}
+
 function Envelope({ from, to, protectedLane, index }: { from: Point; to: Point; protectedLane: boolean; index: number }) {
   const color = protectedLane ? "#f59e0b" : "#f43f5e";
   const controlX = (from.x + to.x) / 2;
@@ -283,10 +309,13 @@ export default function OperationsFloorTiledOffice({
   onSelectProvider: (providerId: string) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const panRef = useRef<PanState | null>(null);
   const { installed, manifest } = useOperationsFloorLocalPixelPack();
   const [loaded, setLoaded] = useState<LoadedMap | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [zoom, setZoom] = useState(1.55);
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+  const [isPanning, setIsPanning] = useState(false);
 
   useEffect(() => {
     if (!installed) return;
@@ -338,6 +367,56 @@ export default function OperationsFloorTiledOffice({
     return positions;
   }, [loaded, protectedDesks, regularDesks]);
 
+  const activeProviderIds = useMemo(() => {
+    const providers = new Set<string>();
+    for (const request of activeRequests) {
+      const provider = normalizeOperationsProviderId(request.provider);
+      if (provider) providers.add(provider);
+    }
+    return providers;
+  }, [activeRequests]);
+
+  const handleWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+    if (!event.metaKey && !event.ctrlKey) return;
+    event.preventDefault();
+    if (event.deltaY === 0) return;
+    setZoom((value) => clampZoom(value + (event.deltaY < 0 ? 0.12 : -0.12)));
+  };
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0 || isInteractiveTarget(event.target)) return;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    panRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      scrollLeft: viewport.scrollLeft,
+      scrollTop: viewport.scrollTop,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setIsPanning(true);
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const pan = panRef.current;
+    const viewport = viewportRef.current;
+    if (!pan || !viewport || pan.pointerId !== event.pointerId) return;
+    event.preventDefault();
+    viewport.scrollLeft = pan.scrollLeft - (event.clientX - pan.startX);
+    viewport.scrollTop = pan.scrollTop - (event.clientY - pan.startY);
+  };
+
+  const endPan = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const pan = panRef.current;
+    if (!pan || pan.pointerId !== event.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    panRef.current = null;
+    setIsPanning(false);
+  };
+
   if (!installed) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-bg-subtle/20 p-8 text-center text-sm text-text-muted">
@@ -360,26 +439,39 @@ export default function OperationsFloorTiledOffice({
 
   const entrance = loaded.spawns.get("entrance") ?? { x: 18, y: 20 };
   const codexPoint = loaded.spawns.get("desk-ceo") ?? { x: 5, y: 4 };
-  const fallbackActive = comboEvents.some((event) => event.type === "attempt" && getOperationsLane(event.provider) === "protected");
+  const protectedRequestActive = activeRequests.some((request) => getOperationsLane(request.provider) === "protected");
+  const protectedFallbackActive = comboEvents.some((event) => event.type === "attempt" && getOperationsLane(event.provider) === "protected");
+  const protectedActive = protectedRequestActive || protectedFallbackActive;
+  const protectedState = protectedFallbackActive ? "FALLBACK" : protectedRequestActive ? "ACTIVE" : "RESERVED";
   const worldWidth = loaded.map.width * loaded.map.tilewidth;
   const worldHeight = loaded.map.height * loaded.map.tileheight;
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-[#080b0f]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-black/35 px-3 py-2">
-        <div className="flex items-center gap-2 font-mono text-[9px] text-white/60">
+        <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] text-white/60">
           <span className="size-1.5 rounded-full bg-emerald-400" />
           TILED OFFICE · LOCAL PACK
           <span className="text-white/25">{loaded.map.width}×{loaded.map.height} tiles</span>
+          <span className="hidden text-white/25 md:inline">drag to pan · ⌘/Ctrl + wheel to zoom</span>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => setZoom((value) => Math.max(0.9, Number((value - 0.15).toFixed(2))))} className="rounded border border-white/10 px-2 py-1 text-[10px] text-white/55 hover:bg-white/5">−</button>
-          <button onClick={() => setZoom(1.55)} className="rounded border border-white/10 px-2 py-1 font-mono text-[9px] text-white/45 hover:bg-white/5">{Math.round(zoom * 100)}%</button>
-          <button onClick={() => setZoom((value) => Math.min(2.4, Number((value + 0.15).toFixed(2))))} className="rounded border border-white/10 px-2 py-1 text-[10px] text-white/55 hover:bg-white/5">+</button>
+          <button onClick={() => setZoom((value) => clampZoom(value - 0.15))} className="rounded border border-white/10 px-2 py-1 text-[10px] text-white/55 hover:bg-white/5">−</button>
+          <button onClick={() => setZoom(DEFAULT_ZOOM)} className="rounded border border-white/10 px-2 py-1 font-mono text-[9px] text-white/45 hover:bg-white/5" title="Reset zoom">{Math.round(zoom * 100)}%</button>
+          <button onClick={() => setZoom((value) => clampZoom(value + 0.15))} className="rounded border border-white/10 px-2 py-1 text-[10px] text-white/55 hover:bg-white/5">+</button>
         </div>
       </div>
 
-      <div className="max-h-[540px] overflow-auto bg-[#090d11] p-3">
+      <div
+        ref={viewportRef}
+        onWheel={handleWheel}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endPan}
+        onPointerCancel={endPan}
+        className={`max-h-[540px] overflow-auto bg-[#090d11] p-3 ${isPanning ? "cursor-grabbing select-none" : "cursor-grab"}`}
+        aria-label="Pixel office viewport. Drag the background to pan; hold Control or Command while scrolling to zoom."
+      >
         <div
           className="relative mx-auto origin-top-left shadow-[0_18px_45px_rgba(0,0,0,0.4)]"
           style={{ width: worldWidth * zoom, height: worldHeight * zoom }}
@@ -397,7 +489,7 @@ export default function OperationsFloorTiledOffice({
                   index={index}
                 />
               ))}
-              {fallbackActive && (
+              {protectedFallbackActive && (
                 <Envelope from={loaded.spawns.get("pc-1") ?? { x: 12, y: 10 }} to={codexPoint} protectedLane index={0} />
               )}
             </svg>
@@ -415,6 +507,8 @@ export default function OperationsFloorTiledOffice({
               const point = providerPositions.get(desk.id);
               if (!point) return null;
               const healthy = desk.connected > 0 && desk.errors === 0;
+              const working = activeProviderIds.has(desk.id);
+              const state = desk.errors > 0 ? "ERROR" : working ? "WORKING" : healthy ? "READY" : "OFFLINE";
               return (
                 <button
                   key={desk.id}
@@ -422,15 +516,16 @@ export default function OperationsFloorTiledOffice({
                   onClick={() => onSelectProvider(desk.id)}
                   className="absolute z-30 -translate-x-1/2 -translate-y-full text-left"
                   style={pct(point, loaded.map)}
-                  title={`${desk.label}: ${desk.connected}/${desk.connections} ready`}
+                  title={`${desk.label}: ${desk.connected}/${desk.connections} ready · ${state.toLowerCase()}`}
                 >
-                  <div className={`mb-0.5 flex items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[6px] shadow ${selectedProviderId === desk.id ? "border-primary bg-primary/85 text-white" : desk.errors > 0 ? "border-amber-400/50 bg-amber-950/90 text-amber-200" : "border-black/40 bg-black/80 text-white/75"}`}>
+                  <div className={`mb-0.5 flex items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[6px] shadow ${selectedProviderId === desk.id ? "border-primary bg-primary/85 text-white" : working ? "border-cyan-400/50 bg-cyan-950/90 text-cyan-100" : desk.errors > 0 ? "border-amber-400/50 bg-amber-950/90 text-amber-200" : "border-black/40 bg-black/80 text-white/75"}`}>
                     <ProviderIcon providerId={desk.id} size={9} type="color" />
-                    <span className="max-w-[74px] truncate">{desk.label}</span>
-                    <span className={`size-1 rounded-full ${desk.errors > 0 ? "bg-amber-400" : healthy ? "bg-emerald-400" : "bg-white/30"}`} />
+                    <span className="max-w-[68px] truncate">{desk.label}</span>
+                    <span className="text-[5px] text-current/60">{state}</span>
+                    <span className={`size-1 rounded-full ${desk.errors > 0 ? "bg-amber-400" : working ? "bg-cyan-300" : healthy ? "bg-emerald-400" : "bg-white/30"}`} />
                   </div>
                   <div className="flex justify-center">
-                    <OperationsFloorLocalPixelAgent character={providerCharacter(desk.id)} active={healthy} scale={1.05} />
+                    <OperationsFloorLocalPixelAgent character={providerCharacter(desk.id)} active={working} scale={1.05} />
                   </div>
                 </button>
               );
@@ -444,11 +539,11 @@ export default function OperationsFloorTiledOffice({
               disabled={protectedDesks.length === 0}
               title="Protected ChatGPT Plus / Codex station"
             >
-              <div className={`mb-0.5 rounded border border-amber-400/60 bg-amber-950/90 px-1.5 py-0.5 font-mono text-[6px] text-amber-100 shadow ${fallbackActive ? "animate-pulse" : ""}`}>
-                CODEX · {fallbackActive ? "FALLBACK" : "RESERVED"}
+              <div className={`mb-0.5 rounded border border-amber-400/60 bg-amber-950/90 px-1.5 py-0.5 font-mono text-[6px] text-amber-100 shadow ${protectedActive ? "animate-pulse" : ""}`}>
+                CODEX · {protectedState}
               </div>
               <div className="flex justify-center">
-                <OperationsFloorLocalPixelAgent character="Bob" active={fallbackActive} scale={1.05} />
+                <OperationsFloorLocalPixelAgent character="Bob" active={protectedActive} scale={1.05} />
               </div>
             </button>
 
