@@ -92,7 +92,6 @@ export default function OperationsFloorClient() {
   const [controlTab, setControlTab] = useState<ControlTab>("live");
   const [connectionTests, setConnectionTests] = useState<Record<string, OperationsConnectionTestState>>({});
   const [simulationEnabled, setSimulationEnabled] = useState(false);
-  const [simulationPlaying, setSimulationPlaying] = useState(false);
   const [simulationStep, setSimulationStep] = useState(0);
 
   const {
@@ -107,23 +106,19 @@ export default function OperationsFloorClient() {
     () => buildOperationsFloorSimulation(simulationStep),
     [simulationStep]
   );
+  const simulationPlaying = simulationEnabled && simulationStep < OPERATIONS_FLOOR_SIMULATION_FINAL_STEP;
 
   useEffect(() => {
-    if (!simulationEnabled || !simulationPlaying) return;
-    if (simulationStep >= OPERATIONS_FLOOR_SIMULATION_FINAL_STEP) {
-      setSimulationPlaying(false);
-      return;
-    }
+    if (!simulationPlaying) return;
     const timer = window.setTimeout(() => {
       setSimulationStep((current) => Math.min(current + 1, OPERATIONS_FLOOR_SIMULATION_FINAL_STEP));
     }, 1_700);
     return () => window.clearTimeout(timer);
-  }, [simulationEnabled, simulationPlaying, simulationStep]);
+  }, [simulationPlaying, simulationStep]);
 
   const startSimulation = useCallback(() => {
     setSimulationEnabled(true);
     setSimulationStep(0);
-    setSimulationPlaying(true);
     setSelection(null);
     setControlTab("live");
     setConnectionTests({});
@@ -131,7 +126,6 @@ export default function OperationsFloorClient() {
 
   const replaySimulation = useCallback(() => {
     setSimulationStep(0);
-    setSimulationPlaying(true);
     setSelection(null);
     setControlTab("live");
     setConnectionTests({});
@@ -139,7 +133,6 @@ export default function OperationsFloorClient() {
 
   const stopSimulation = useCallback(() => {
     setSimulationEnabled(false);
-    setSimulationPlaying(false);
     setSimulationStep(0);
     setSelection(null);
     setControlTab("live");
