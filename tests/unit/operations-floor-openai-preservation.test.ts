@@ -112,6 +112,45 @@ test("attention queue surfaces failed requests and protected fallback attempts w
   assert.equal(protectedFallback?.severity, "warning");
 });
 
+test("attention queue distinguishes primary target failures from fallback failures", () => {
+  const now = Date.UTC(2026, 7, 19, 18, 30, 0);
+  const primary = buildOperationsAttentionItems(
+    [],
+    [],
+    [
+      {
+        comboName: "coding-primary",
+        targetIndex: 0,
+        provider: "deepseek-web",
+        model: "deepseek-reasoner",
+        type: "failed",
+        error: "primary failed",
+        timestamp: now,
+      },
+    ],
+    now
+  );
+  const fallback = buildOperationsAttentionItems(
+    [],
+    [],
+    [
+      {
+        comboName: "coding-primary",
+        targetIndex: 1,
+        provider: "codex",
+        model: "gpt-5",
+        type: "failed",
+        error: "fallback failed",
+        timestamp: now,
+      },
+    ],
+    now
+  );
+
+  assert.equal(primary.find((item) => item.id.startsWith("combo-failed:"))?.title, "coding-primary primary target failed");
+  assert.equal(fallback.find((item) => item.id.startsWith("combo-failed:"))?.title, "coding-primary fallback attempt failed");
+});
+
 test("zero-call simulation stages primary routing before protected fallback", () => {
   const now = Date.UTC(2026, 7, 19, 18, 30, 0);
   const primary = buildOperationsFloorSimulation(1, now);
