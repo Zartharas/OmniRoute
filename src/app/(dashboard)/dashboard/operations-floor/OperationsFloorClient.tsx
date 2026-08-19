@@ -12,10 +12,15 @@ import {
 } from "@/shared/utils/providerConnectionStatus";
 import { useLiveComboStatus, useLiveRequests } from "@/hooks/useLiveDashboard";
 import OperationsFloorScene from "./OperationsFloorScene";
+import OperationsFloorInspector, {
+  type OperationsFloorSelection,
+} from "./OperationsFloorInspector";
 import {
+  buildOperationsAttentionItems,
   isProtectedOpenAiProvider,
   normalizeOperationsProviderId,
   summarizeOpenAiPreservation,
+  type OperationsAttentionItem,
 } from "./operationsFloorModel";
 
 type ProviderConnection = {
@@ -35,6 +40,8 @@ type ProviderDesk = {
   errors: number;
 };
 
+type ControlTab = "live" | "attention" | "requests" | "fallbacks";
+
 function providerLabel(providerId: string): string {
   const config = (AI_PROVIDERS as Record<string, { name?: string }>)[providerId];
   return config?.name || providerId;
@@ -45,10 +52,27 @@ function formatPercent(value: number): string {
   return `${Math.round(value * 100)}%`;
 }
 
+function formatClock(timestamp: number | undefined): string {
+  if (typeof timestamp !== "number" || !Number.isFinite(timestamp)) return "—";
+  return new Date(timestamp).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
+function attentionTone(item: OperationsAttentionItem): string {
+  if (item.severity === "error") return "bg-red-500";
+  if (item.severity === "warning") return "bg-amber-500";
+  return "bg-primary";
+}
+
 export default function OperationsFloorClient() {
   const [connections, setConnections] = useState<ProviderConnection[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [selection, setSelection] = useState<OperationsFloorSelection>(null);
+  const [controlTab, setControlTab] = useState<ControlTab>("live");
 
   const {
     activeRequests,
@@ -102,7 +126,23 @@ export default function OperationsFloorClient() {
   const regularDesks = desks.filter((desk) => !isProtectedOpenAiProvider(desk.id));
   const protectedDesks = desks.filter((desk) => isProtectedOpenAiProvider(desk.id));
   const preservation = summarizeOpenAiPreservation(completedRequests);
-  const recentCombo = comboEvents.slice(0, 5);
+  const attention = useMemo(
+    () => buildOperationsAttentionItems(connections, completedRequests, comboEvents),
+    [connections, completedRequests, comboEvents]
+  );
+  const allRequests = useMemo(
+    () => [...activeRequests, ...completedRequests],
+    [activeRequests, completedRequests]
+  );
+  const selectedProviderId = selection?.kind === "provider" ? selection.providerId : null;
+
+  const selectProvider = useCallback((providerId: string) => {
+    setSelection({ kind: "provider", providerId: normalizeOperationsProviderId(providerId) });
+  }, []);
+
+  const selectRequest = useCallback((requestId: string) => {
+    setSelection({ kind: "request", requestId });
+  }, []);
 
   return (
     <div className="space-y-5 pb-8">
@@ -111,9 +151,18 @@ export default function OperationsFloorClient() {
           <div className="mb-1 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">hub</span>
             <h1 className="text-2xl font-semibold text-text-main">Operations Floor</h1>
+            {attention.length > 0 && (
+              <button
+                onClick={() => setControlTab("attention")}
+                className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-500"
+              >
+                <span className="size-1.5 rounded-full bg-amber-500" />
+                {attention.length} need attention
+              </button>
+            )}
           </div>
           <p className="max-w-3xl text-sm text-text-muted">
-            Live routing observability with a protected OpenAI/Codex lane. The scene is driven by real OmniRoute request and combo events; it does not import ChatGPT credentials or synthesize traffic.
+            A live control surface for routing, provider health, fallback evidence, and protected OpenAI/Codex usage. Click the floor instead of hunting through disconnected logs.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs">
@@ -167,111 +216,206 @@ export default function OperationsFloorClient() {
 
       <Card className="overflow-hidden p-0">
         <div className="border-b border-border px-4 py-3 sm:px-5">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-semibold text-text-main">Live routing floor</h2>
               <p className="text-xs text-text-muted">
-                Original OmniRoute visualization inspired by event-driven agent floors; no third-party pixel-art assets are used.
+                Animated traffic is real session telemetry. Provider desks are now inspectable control-surface objects.
               </p>
             </div>
-            <Link href="/dashboard/combos/live" className="text-xs text-primary hover:underline">
-              open Combo Studio
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/dashboard/combos/live" className="text-xs text-primary hover:underline">
+                Combo Studio
+              </Link>
+              <Link href="/dashboard/analytics/compression" className="text-xs text-primary hover:underline">
+                Compression
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="p-4 sm:p-5">
-          {loading ? (
-            <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">
-              Loading provider floor…
-            </div>
-          ) : loadError ? (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 text-sm text-red-400">
-              Provider inventory unavailable: {loadError}
-            </div>
-          ) : (
-            <OperationsFloorScene
-              regularDesks={regularDesks}
-              protectedDesks={protectedDesks}
-              activeRequests={activeRequests}
-              comboEvents={comboEvents.slice(0, 12)}
-            />
-          )}
+        <div className="grid gap-4 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="min-w-0">
+            {loading ? (
+              <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">
+                Loading provider floor…
+              </div>
+            ) : loadError ? (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 text-sm text-red-400">
+                Provider inventory unavailable: {loadError}
+              </div>
+            ) : (
+              <OperationsFloorScene
+                regularDesks={regularDesks}
+                protectedDesks={protectedDesks}
+                activeRequests={activeRequests}
+                comboEvents={comboEvents.slice(0, 12)}
+                selectedProviderId={selectedProviderId}
+                onSelectProvider={selectProvider}
+              />
+            )}
+          </div>
+
+          <OperationsFloorInspector
+            selection={selection}
+            desks={desks}
+            connections={connections}
+            requests={allRequests}
+            comboEvents={comboEvents}
+            attention={attention}
+            onSelectProvider={selectProvider}
+            onSelectRequest={selectRequest}
+            onClear={() => setSelection(null)}
+          />
         </div>
       </Card>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-text-main">Recent routing</h2>
-            <span className="text-[11px] text-text-muted">
-              last {Math.min(completedRequests.length, 6)} completed
-            </span>
+      <Card className="overflow-hidden p-0">
+        <div className="flex flex-wrap items-center gap-1 border-b border-border bg-bg-subtle/20 px-3 py-2">
+          <ControlTabButton active={controlTab === "live"} onClick={() => setControlTab("live")} label="Live" count={activeRequests.length} />
+          <ControlTabButton active={controlTab === "attention"} onClick={() => setControlTab("attention")} label="Needs attention" count={attention.length} alert={attention.length > 0} />
+          <ControlTabButton active={controlTab === "requests"} onClick={() => setControlTab("requests")} label="Requests" count={completedRequests.length} />
+          <ControlTabButton active={controlTab === "fallbacks"} onClick={() => setControlTab("fallbacks")} label="Fallbacks" count={comboEvents.length} />
+          <div className="ml-auto hidden text-[10px] text-text-muted md:block">
+            session evidence · newest first
           </div>
-          <div className="space-y-2">
-            {completedRequests.slice(0, 6).map((request) => (
-              <div
-                key={request.id}
-                className="flex items-center gap-3 rounded-lg border border-border/70 bg-bg-subtle/30 px-3 py-2 text-xs"
-              >
-                <ProviderIcon providerId={request.provider} size={16} type="color" />
-                <span className="min-w-0 flex-1 truncate text-text-main">
-                  {request.provider} · {request.model}
-                </span>
-                <span
-                  className={request.status === "success" ? "text-emerald-500" : "text-red-500"}
-                >
-                  {request.status}
-                </span>
-              </div>
-            ))}
-            {completedRequests.length === 0 && (
-              <div className="py-6 text-center text-xs text-text-muted">
-                No completed live requests observed in this session yet.
-              </div>
-            )}
-          </div>
-        </Card>
+        </div>
 
-        <Card className="p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-text-main">Recent fallback cascade</h2>
-            <Link
-              href="/dashboard/analytics/compression"
-              className="text-[11px] text-primary hover:underline"
-            >
-              compression analytics
-            </Link>
-          </div>
-          <div className="space-y-2">
-            {recentCombo.map((event, index) => (
-              <div
-                key={`${event.comboName}-${event.timestamp}-${index}`}
-                className="flex items-center gap-3 rounded-lg border border-border/70 bg-bg-subtle/30 px-3 py-2 text-xs"
-              >
-                <span
-                  className={`size-2 rounded-full ${
-                    event.type === "succeeded"
-                      ? "bg-emerald-500"
-                      : event.type === "failed"
-                        ? "bg-red-500"
-                        : "animate-pulse bg-amber-500"
-                  }`}
-                />
-                <span className="min-w-0 flex-1 truncate text-text-main">
-                  {event.comboName} → {event.provider}/{event.model}
-                </span>
-                <span className="text-text-muted">{event.type}</span>
-              </div>
-            ))}
-            {recentCombo.length === 0 && (
-              <div className="py-6 text-center text-xs text-text-muted">
-                No combo cascade events observed in this session yet.
-              </div>
-            )}
-          </div>
-        </Card>
-      </div>
+        <div className="max-h-[420px] overflow-auto p-3 sm:p-4">
+          {controlTab === "live" && (
+            <div className="space-y-2">
+              {activeRequests.map((request) => (
+                <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
+              ))}
+              {comboEvents.filter((event) => event.type === "attempt").slice(0, 10).map((event, index) => (
+                <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
+              ))}
+              {activeRequests.length === 0 && comboEvents.filter((event) => event.type === "attempt").length === 0 && (
+                <EmptyRow>Nothing is actively routing or cascading right now.</EmptyRow>
+              )}
+            </div>
+          )}
+
+          {controlTab === "attention" && (
+            <div className="space-y-2">
+              {attention.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    if (item.requestId) selectRequest(item.requestId);
+                    else if (item.provider) selectProvider(item.provider);
+                  }}
+                  disabled={!item.requestId && !item.provider}
+                  className="flex w-full items-start gap-3 rounded-xl border border-border/70 bg-bg-subtle/20 px-3 py-2.5 text-left transition hover:border-primary/40"
+                >
+                  <span className={`mt-1 size-2 shrink-0 rounded-full ${attentionTone(item)}`} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-medium text-text-main">{item.title}</span>
+                    <span className="mt-0.5 block text-[11px] leading-4 text-text-muted">{item.detail}</span>
+                  </span>
+                  <span className="shrink-0 text-[10px] text-text-muted">{formatClock(item.timestamp)}</span>
+                </button>
+              ))}
+              {attention.length === 0 && <EmptyRow>No observed issue currently needs operator attention.</EmptyRow>}
+            </div>
+          )}
+
+          {controlTab === "requests" && (
+            <div className="space-y-2">
+              {completedRequests.map((request) => (
+                <RequestRow key={request.id} request={request} onClick={() => selectRequest(request.id)} />
+              ))}
+              {completedRequests.length === 0 && <EmptyRow>No completed requests observed in this browser session yet.</EmptyRow>}
+            </div>
+          )}
+
+          {controlTab === "fallbacks" && (
+            <div className="space-y-2">
+              {comboEvents.map((event, index) => (
+                <ComboRow key={`${event.comboName}-${event.timestamp}-${index}`} event={event} onClick={() => selectProvider(event.provider)} />
+              ))}
+              {comboEvents.length === 0 && <EmptyRow>No combo cascade events observed in this browser session yet.</EmptyRow>}
+            </div>
+          )}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function ControlTabButton({
+  active,
+  onClick,
+  label,
+  count,
+  alert = false,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  alert?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+        active ? "bg-primary text-white" : "text-text-muted hover:bg-bg-subtle hover:text-text-main"
+      }`}
+    >
+      {label}
+      <span className={`rounded-full px-1.5 py-0.5 text-[9px] ${active ? "bg-white/20" : alert ? "bg-amber-500/15 text-amber-500" : "bg-bg-subtle text-text-muted"}`}>
+        {count}
+      </span>
+    </button>
+  );
+}
+
+function RequestRow({ request, onClick }: { request: ReturnType<typeof useLiveRequests>["completedRequests"][number]; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-bg-subtle/20 px-3 py-2.5 text-left transition hover:border-primary/40"
+    >
+      <ProviderIcon providerId={request.provider} size={17} type="color" />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-xs font-medium text-text-main">{request.provider} · {request.model}</span>
+        <span className="mt-0.5 block truncate text-[10px] text-text-muted">
+          {request.comboName ? `combo ${request.comboName}` : "direct route"}
+          {request.latencyMs !== undefined ? ` · ${request.latencyMs.toLocaleString()} ms` : ""}
+        </span>
+      </span>
+      <span className={`text-[10px] font-medium ${request.status === "error" ? "text-red-400" : request.status === "success" ? "text-emerald-500" : "text-primary"}`}>
+        {request.status}
+      </span>
+      <span className="w-[72px] shrink-0 text-right text-[10px] text-text-muted">{formatClock(request.timestamp)}</span>
+    </button>
+  );
+}
+
+function ComboRow({ event, onClick }: { event: ReturnType<typeof useLiveComboStatus>["comboEvents"][number]; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-bg-subtle/20 px-3 py-2.5 text-left transition hover:border-primary/40"
+    >
+      <span className={`size-2 shrink-0 rounded-full ${event.type === "failed" ? "bg-red-500" : event.type === "succeeded" ? "bg-emerald-500" : "bg-amber-500"}`} />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-xs font-medium text-text-main">{event.comboName}</span>
+        <span className="mt-0.5 block truncate text-[10px] text-text-muted">
+          {event.type} → {event.provider}/{event.model}
+          {event.error ? ` · ${event.error}` : ""}
+        </span>
+      </span>
+      <span className="w-[72px] shrink-0 text-right text-[10px] text-text-muted">{formatClock(event.timestamp)}</span>
+    </button>
+  );
+}
+
+function EmptyRow({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-text-muted">
+      {children}
     </div>
   );
 }
