@@ -315,11 +315,15 @@ export default function OperationsFloorTiledOffice({
 
   useEffect(() => {
     if (!loaded || !canvasRef.current) return;
-    try {
-      renderMap(canvasRef.current, loaded);
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to render local office map");
-    }
+    const canvas = canvasRef.current;
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        renderMap(canvas, loaded);
+      } catch (reason) {
+        setError(reason instanceof Error ? reason.message : "Unable to render local office map");
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [loaded]);
 
   const providerPositions = useMemo(() => {
