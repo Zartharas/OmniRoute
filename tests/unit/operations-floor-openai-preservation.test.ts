@@ -16,6 +16,12 @@ const {
 } = await import(
   "../../src/app/(dashboard)/dashboard/operations-floor/operationsFloorSimulation.ts"
 );
+const {
+  deriveOperationsFloorSystemSignals,
+  isFreshOperationsFloorSystemSignal,
+} = await import(
+  "../../src/app/(dashboard)/dashboard/operations-floor/operationsFloorSystemSignals.ts"
+);
 
 test("operations floor recognizes only the protected OpenAI provider family", () => {
   assert.equal(isProtectedOpenAiProvider("codex"), true);
@@ -184,4 +190,51 @@ test("zero-call simulation completes with evidence but no invented token usage",
   assert.equal(summary.nonOpenAiRequests, 1);
   assert.equal(summary.observedInputTokens, 0);
   assert.equal(summary.observedOutputTokens, 0);
+});
+
+test("system telemetry derives only supported auth and compression evidence", () => {
+  const now = Date.UTC(2026, 7, 19, 19, 30, 0);
+  const signals = deriveOperationsFloorSystemSignals([
+    {
+      event: "credential.health.changed",
+      channel: "credentials",
+      timestamp: now - 5_000,
+      data: { provider: "zai", oldStatus: "degraded", newStatus: "healthy" },
+    },
+    {
+      event: "compression.step",
+      channel: "compression",
+      timestamp: now - 4_000,
+      data: { engine: "rtk", state: "running", stepIndex: 0, totalSteps: 2 },
+    },
+    {
+      event: "compression.debug",
+      channel: "compression",
+      timestamp: now - 3_000,
+      data: { engine: "unknown" },
+    },
+    {
+      event: "compression.completed",
+      channel: "compression",
+      timestamp: now - 2_000,
+      data: { mode: "stacked", savingsPercent: 64, originalTokens: 1000, compressedTokens: 360 },
+    },
+  ]);
+
+  assert.equal(signals.auth?.provider, "zai");
+  assert.equal(signals.auth?.oldStatus, "degraded");
+  assert.equal(signals.auth?.newStatus, "healthy");
+  assert.equal(signals.compression?.event, "compression.completed");
+  assert.equal(signals.compression?.mode, "stacked");
+  assert.equal(signals.compression?.savingsPercent, 64);
+  assert.equal(signals.compression?.originalTokens, 1000);
+  assert.equal(signals.compression?.compressedTokens, 360);
+});
+
+test("system floor animation freshness is bounded to recent observed events", () => {
+  const now = Date.UTC(2026, 7, 19, 19, 30, 0);
+  assert.equal(isFreshOperationsFloorSystemSignal({ timestamp: now - 10_000 }, now), true);
+  assert.equal(isFreshOperationsFloorSystemSignal({ timestamp: now - 20_000 }, now), false);
+  assert.equal(isFreshOperationsFloorSystemSignal({ timestamp: now + 1_000 }, now), false);
+  assert.equal(isFreshOperationsFloorSystemSignal(null, now), false);
 });
