@@ -11,6 +11,13 @@ export type OperationsFloorSelection =
   | { kind: "request"; requestId: string }
   | null;
 
+export type OperationsConnectionTestState = {
+  status: "running" | "success" | "error";
+  message?: string;
+  latencyMs?: number;
+  testedAt?: string;
+};
+
 type InspectorDesk = {
   id: string;
   label: string;
@@ -56,7 +63,11 @@ function fmtNumber(value: number | undefined): string {
 
 function fmtTime(value: number | undefined): string {
   if (typeof value !== "number" || !Number.isFinite(value)) return "—";
-  return new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  return new Date(value).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 }
 
 function severityClasses(severity: OperationsAttentionItem["severity"]): string {
@@ -75,6 +86,19 @@ function rateLimited(connection: InspectorConnection): boolean {
   return Number.isFinite(deadline) && deadline > Date.now();
 }
 
+function connectedStatus(status: string | null | undefined): boolean {
+  return status === "active" || status === "success" || status === "connected";
+}
+
+function connectionDot(connection: InspectorConnection, test: OperationsConnectionTestState | undefined) {
+  if (test?.status === "running") return "bg-primary animate-pulse";
+  if (test?.status === "success") return "bg-emerald-500";
+  if (test?.status === "error") return "bg-red-500";
+  if (connectedStatus(connection.testStatus)) return "bg-emerald-500";
+  if (connection.testStatus) return "bg-amber-500";
+  return "bg-text-muted";
+}
+
 export default function OperationsFloorInspector({
   selection,
   desks,
@@ -82,8 +106,10 @@ export default function OperationsFloorInspector({
   requests,
   comboEvents,
   attention,
+  connectionTests,
   onSelectProvider,
   onSelectRequest,
+  onTestConnection,
   onClear,
 }: {
   selection: OperationsFloorSelection;
@@ -92,14 +118,16 @@ export default function OperationsFloorInspector({
   requests: InspectorRequest[];
   comboEvents: InspectorComboEvent[];
   attention: OperationsAttentionItem[];
+  connectionTests: Record<string, OperationsConnectionTestState>;
   onSelectProvider: (providerId: string) => void;
   onSelectRequest: (requestId: string) => void;
+  onTestConnection: (connectionId: string) => void;
   onClear: () => void;
 }) {
   const header = (
-    <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
+    <div className="flex items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
       <div>
-        <div className="text-xs uppercase tracking-[0.12em] text-text-muted">Inspector</div>
+        <div className="text-[10px] uppercase tracking-[0.12em] text-text-muted">Inspector</div>
         <div className="mt-0.5 text-sm font-semibold text-text-main">
           {selection?.kind === "provider"
             ? "Provider details"
@@ -123,21 +151,21 @@ export default function OperationsFloorInspector({
       (connection) => normalizeOperationsProviderId(connection.provider) === providerId
     );
     const limited = providerConnections.filter(rateLimited).length;
-    const recent = requests.filter(
-      (request) => normalizeOperationsProviderId(request.provider) === providerId
-    ).slice(0, 5);
+    const recent = requests
+      .filter((request) => normalizeOperationsProviderId(request.provider) === providerId)
+      .slice(0, 5);
 
     return (
-      <aside className="overflow-hidden rounded-2xl border border-border bg-bg">
+      <aside className="h-full overflow-hidden rounded-xl border border-border bg-bg">
         {header}
-        <div className="space-y-4 p-4">
+        <div className="max-h-[445px] space-y-3 overflow-auto p-3.5">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl border border-border bg-bg-subtle/40">
-              <ProviderIcon providerId={providerId} size={24} type="color" />
+            <div className="flex size-9 items-center justify-center rounded-lg border border-border bg-bg-subtle/40">
+              <ProviderIcon providerId={providerId} size={22} type="color" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="truncate font-semibold text-text-main">{desk?.label || providerId}</div>
-              <div className="text-xs text-text-muted">
+              <div className="text-[11px] text-text-muted">
                 {isProtectedOpenAiProvider(providerId) ? "protected OpenAI lane" : "primary provider lane"}
               </div>
             </div>
@@ -150,23 +178,42 @@ export default function OperationsFloorInspector({
           </div>
 
           {limited > 0 && (
-            <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-500">
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-[11px] text-amber-500">
               {limited} connection{limited === 1 ? " is" : "s are"} currently rate limited.
             </div>
           )}
 
           <section>
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-text-muted">
-              Connections
+            <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">
+              Connections · explicit checks only
             </div>
             <div className="space-y-1.5">
-              {providerConnections.slice(0, 6).map((connection) => (
-                <div key={connection.id} className="flex items-center gap-2 rounded-lg border border-border/70 px-2.5 py-2 text-xs">
-                  <span className={`size-1.5 rounded-full ${connection.testStatus === "success" ? "bg-emerald-500" : connection.testStatus ? "bg-amber-500" : "bg-text-muted"}`} />
-                  <span className="min-w-0 flex-1 truncate text-text-main">{connection.name || connection.id}</span>
-                  <span className="text-[10px] text-text-muted">{connection.testStatus || "unknown"}</span>
-                </div>
-              ))}
+              {providerConnections.slice(0, 6).map((connection) => {
+                const test = connectionTests[connection.id];
+                return (
+                  <div key={connection.id} className="rounded-lg border border-border/70 px-2.5 py-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className={`size-1.5 shrink-0 rounded-full ${connectionDot(connection, test)}`} />
+                      <span className="min-w-0 flex-1 truncate text-text-main">{connection.name || connection.id}</span>
+                      <span className="text-[9px] text-text-muted">{connection.testStatus || "unknown"}</span>
+                      <button
+                        type="button"
+                        disabled={test?.status === "running"}
+                        onClick={() => onTestConnection(connection.id)}
+                        className="rounded-md border border-border px-2 py-1 text-[10px] font-medium text-primary transition hover:border-primary/40 disabled:cursor-wait disabled:opacity-50"
+                      >
+                        {test?.status === "running" ? "Testing…" : "Test"}
+                      </button>
+                    </div>
+                    {test && test.status !== "running" && (
+                      <div className={`mt-1.5 pl-3.5 text-[10px] leading-4 ${test.status === "success" ? "text-emerald-500" : "text-red-400"}`}>
+                        {test.status === "success" ? "Connection test passed" : test.message || "Connection test failed"}
+                        {test.latencyMs !== undefined ? ` · ${test.latencyMs.toLocaleString()} ms` : ""}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
               {providerConnections.length === 0 && (
                 <div className="text-xs text-text-muted">No matching connection records.</div>
               )}
@@ -174,7 +221,7 @@ export default function OperationsFloorInspector({
           </section>
 
           <section>
-            <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-text-muted">
+            <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">
               Recent requests
             </div>
             <div className="space-y-1.5">
@@ -209,26 +256,26 @@ export default function OperationsFloorInspector({
     const request = requests.find((candidate) => candidate.id === selection.requestId);
     if (!request) {
       return (
-        <aside className="overflow-hidden rounded-2xl border border-border bg-bg">
+        <aside className="h-full overflow-hidden rounded-xl border border-border bg-bg">
           {header}
           <div className="p-4 text-xs text-text-muted">That request is no longer retained in the live session buffer.</div>
         </aside>
       );
     }
 
-    const relatedCombos = comboEvents.filter(
-      (event) => request.comboName && event.comboName === request.comboName
-    ).slice(0, 8);
+    const relatedCombos = comboEvents
+      .filter((event) => request.comboName && event.comboName === request.comboName)
+      .slice(0, 8);
 
     return (
-      <aside className="overflow-hidden rounded-2xl border border-border bg-bg">
+      <aside className="h-full overflow-hidden rounded-xl border border-border bg-bg">
         {header}
-        <div className="space-y-4 p-4">
+        <div className="max-h-[445px] space-y-3 overflow-auto p-3.5">
           <div className="flex items-center gap-3">
             <ProviderIcon providerId={request.provider} size={24} type="color" />
             <div className="min-w-0 flex-1">
               <div className="truncate font-semibold text-text-main">{request.provider} · {request.model}</div>
-              <div className="text-xs text-text-muted">{request.id}</div>
+              <div className="truncate text-[10px] text-text-muted">{request.id}</div>
             </div>
             <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${request.status === "error" ? "bg-red-500/10 text-red-400" : request.status === "success" ? "bg-emerald-500/10 text-emerald-500" : "bg-primary/10 text-primary"}`}>
               {request.status}
@@ -245,7 +292,7 @@ export default function OperationsFloorInspector({
           </dl>
 
           {request.error && (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-xs text-red-400">
+            <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3 text-xs text-red-400">
               <div className="mb-1 font-semibold">Observed error</div>
               <div className="break-words text-red-300/90">{request.error}</div>
             </div>
@@ -253,7 +300,7 @@ export default function OperationsFloorInspector({
 
           {relatedCombos.length > 0 && (
             <section>
-              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-text-muted">
+              <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">
                 Combo evidence
               </div>
               <div className="space-y-1.5">
@@ -286,16 +333,16 @@ export default function OperationsFloorInspector({
   }
 
   return (
-    <aside className="overflow-hidden rounded-2xl border border-border bg-bg">
+    <aside className="h-full overflow-hidden rounded-xl border border-border bg-bg">
       {header}
-      <div className="space-y-4 p-4">
-        <div className="rounded-xl border border-border bg-bg-subtle/30 p-3 text-xs leading-5 text-text-muted">
-          Select a provider desk, live request, or attention item. This panel only exposes observed state until a matching OmniRoute mutation API is deliberately wired.
+      <div className="max-h-[445px] space-y-3 overflow-auto p-3.5">
+        <div className="rounded-lg border border-border bg-bg-subtle/30 p-3 text-[11px] leading-5 text-text-muted">
+          Select a provider desk, request, or attention item. Provider connection tests are available only after selecting a configured provider and run only when you click Test.
         </div>
 
         <section>
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-muted">Needs attention</div>
+          <div className="mb-1.5 flex items-center justify-between gap-2">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">Needs attention</div>
             <span className="text-[10px] text-text-muted">{attention.length}</span>
           </div>
           <div className="space-y-2">
@@ -307,14 +354,14 @@ export default function OperationsFloorInspector({
                   else if (item.provider) onSelectProvider(item.provider);
                 }}
                 disabled={!item.requestId && !item.provider}
-                className={`w-full rounded-xl border p-3 text-left transition hover:brightness-110 ${severityClasses(item.severity)}`}
+                className={`w-full rounded-lg border p-2.5 text-left transition hover:brightness-110 ${severityClasses(item.severity)}`}
               >
                 <div className="text-xs font-semibold">{item.title}</div>
                 <div className="mt-1 text-[11px] leading-4 opacity-80">{item.detail}</div>
               </button>
             ))}
             {attention.length === 0 && (
-              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-xs text-emerald-500">
+              <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-xs text-emerald-500">
                 No provider, request, or fallback evidence currently requires attention.
               </div>
             )}
@@ -322,7 +369,7 @@ export default function OperationsFloorInspector({
         </section>
 
         <section>
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-text-muted">Quick inspect</div>
+          <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">Quick inspect</div>
           <div className="flex flex-wrap gap-2">
             {desks.slice(0, 8).map((desk) => (
               <button
@@ -334,6 +381,7 @@ export default function OperationsFloorInspector({
                 {desk.label}
               </button>
             ))}
+            {desks.length === 0 && <span className="text-[11px] text-text-muted">No configured provider desks in this data set.</span>}
           </div>
         </section>
       </div>
