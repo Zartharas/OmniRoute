@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 import ProviderIcon from "@/shared/components/ProviderIcon";
 import { getOperationsLane } from "./operationsFloorModel";
 
@@ -24,12 +22,24 @@ type SceneComboEvent = {
   type: "attempt" | "succeeded" | "failed";
 };
 
-function DeskChip({ desk }: { desk: SceneDesk }) {
+function DeskChip({
+  desk,
+  selected,
+  onSelect,
+}: {
+  desk: SceneDesk;
+  selected: boolean;
+  onSelect: () => void;
+}) {
   const healthy = desk.connected > 0 && desk.errors === 0;
   return (
-    <Link
-      href={`/dashboard/providers/${encodeURIComponent(desk.id)}`}
-      className="flex min-w-0 items-center gap-2 rounded-lg border border-border/80 bg-bg/90 px-2.5 py-2 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40"
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={`flex min-w-0 items-center gap-2 rounded-lg border bg-bg/90 px-2.5 py-2 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/50 ${
+        selected ? "border-primary ring-1 ring-primary/35" : "border-border/80"
+      }`}
     >
       <ProviderIcon providerId={desk.id} size={16} type="color" />
       <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-text-main">
@@ -40,7 +50,7 @@ function DeskChip({ desk }: { desk: SceneDesk }) {
           desk.errors > 0 ? "bg-red-500" : healthy ? "bg-emerald-500" : "bg-text-muted"
         }`}
       />
-    </Link>
+    </button>
   );
 }
 
@@ -80,11 +90,15 @@ export default function OperationsFloorScene({
   protectedDesks,
   activeRequests,
   comboEvents,
+  selectedProviderId,
+  onSelectProvider,
 }: {
   regularDesks: SceneDesk[];
   protectedDesks: SceneDesk[];
   activeRequests: SceneRequest[];
   comboEvents: SceneComboEvent[];
+  selectedProviderId?: string | null;
+  onSelectProvider: (providerId: string) => void;
 }) {
   const primaryRequests = activeRequests
     .filter((request) => getOperationsLane(request.provider) === "primary")
@@ -193,7 +207,12 @@ export default function OperationsFloorScene({
           </div>
           <div className="grid grid-cols-2 gap-2">
             {regularDesks.slice(0, 6).map((desk) => (
-              <DeskChip key={desk.id} desk={desk} />
+              <DeskChip
+                key={desk.id}
+                desk={desk}
+                selected={selectedProviderId === desk.id}
+                onSelect={() => onSelectProvider(desk.id)}
+              />
             ))}
           </div>
           {regularDesks.length === 0 && (
@@ -222,7 +241,12 @@ export default function OperationsFloorScene({
           </div>
           <div className="grid grid-cols-2 gap-2">
             {protectedDesks.slice(0, 3).map((desk) => (
-              <DeskChip key={desk.id} desk={desk} />
+              <DeskChip
+                key={desk.id}
+                desk={desk}
+                selected={selectedProviderId === desk.id}
+                onSelect={() => onSelectProvider(desk.id)}
+              />
             ))}
             <div className="flex items-center gap-2 rounded-lg border border-dashed border-amber-500/45 bg-bg/90 px-2.5 py-2">
               <span className="material-symbols-outlined text-[16px] text-amber-500">terminal</span>
@@ -247,7 +271,12 @@ export default function OperationsFloorScene({
           <div className="mb-2 text-xs font-semibold text-text-main">Primary provider floor</div>
           <div className="grid gap-2 sm:grid-cols-2">
             {regularDesks.slice(0, 8).map((desk) => (
-              <DeskChip key={desk.id} desk={desk} />
+              <DeskChip
+                key={desk.id}
+                desk={desk}
+                selected={selectedProviderId === desk.id}
+                onSelect={() => onSelectProvider(desk.id)}
+              />
             ))}
           </div>
         </div>
@@ -255,7 +284,12 @@ export default function OperationsFloorScene({
           <div className="mb-2 text-xs font-semibold text-text-main">Protected OpenAI lane</div>
           <div className="grid gap-2 sm:grid-cols-2">
             {protectedDesks.slice(0, 4).map((desk) => (
-              <DeskChip key={desk.id} desk={desk} />
+              <DeskChip
+                key={desk.id}
+                desk={desk}
+                selected={selectedProviderId === desk.id}
+                onSelect={() => onSelectProvider(desk.id)}
+              />
             ))}
             <div className="rounded-lg border border-dashed border-amber-500/45 bg-bg/90 px-3 py-2 text-[11px] text-text-main">
               ChatGPT Plus · Codex · bridge pending
@@ -266,7 +300,7 @@ export default function OperationsFloorScene({
 
       <div className="relative flex flex-wrap items-center justify-between gap-2 border-t border-border bg-bg/70 px-4 py-2 text-[10px] text-text-muted">
         <span>Animated packets = actual in-flight WebSocket request events.</span>
-        <span>Fallback pulse = observed combo attempt into the protected lane.</span>
+        <span>Click a desk to inspect its observed state.</span>
       </div>
     </div>
   );
