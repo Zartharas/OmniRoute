@@ -161,12 +161,17 @@ function usePageInfo(pathname: string | null): PageInfo {
       return { title: th("anthropicCompatible"), description: "", providerId: "anthropic-m" };
   }
 
-  // Derive from sidebar
+  // Derive from sidebar. Mirror Sidebar.tsx's translation fallback so a newly
+  // added route cannot crash the dashboard header before locale files catch up.
   const item = getSidebarItem(pathname);
   if (item) {
     const descKey = HEADER_DESCRIPTIONS[item.id];
+    const title =
+      typeof ts.has === "function" && ts.has(item.i18nKey)
+        ? ts(item.i18nKey)
+        : item.labelFallback ?? item.id;
     return {
-      title: ts(item.i18nKey),
+      title,
       description: descKey ? th(descKey) : "",
       icon: item.icon,
     };
