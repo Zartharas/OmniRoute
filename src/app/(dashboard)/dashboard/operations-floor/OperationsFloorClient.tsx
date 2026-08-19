@@ -11,7 +11,7 @@ import {
   isProviderConnectionErrored,
 } from "@/shared/utils/providerConnectionStatus";
 import { useLiveComboStatus, useLiveRequests } from "@/hooks/useLiveDashboard";
-import OperationsFloorScene from "./OperationsFloorScene";
+import OperationsFloorWorkspaceScene from "./OperationsFloorWorkspaceScene";
 import OperationsFloorInspector, {
   type OperationsConnectionTestState,
   type OperationsFloorSelection,
@@ -264,7 +264,7 @@ export default function OperationsFloorClient() {
             ) : loadError ? (
               <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5 text-sm text-red-400">Provider inventory unavailable: {loadError}</div>
             ) : (
-              <OperationsFloorScene
+              <OperationsFloorWorkspaceScene
                 regularDesks={regularDesks}
                 protectedDesks={protectedDesks}
                 activeRequests={activeRequests}
