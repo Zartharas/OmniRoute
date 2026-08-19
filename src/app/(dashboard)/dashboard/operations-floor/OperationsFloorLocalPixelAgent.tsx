@@ -12,11 +12,23 @@ type LocalPackManifest = {
 };
 
 const LOCAL_PACK_ROOT = "/local-assets/operations-floor";
+const PINNED_SOURCE_REPO = "chaitanyagiri/munder-difflin";
+const PINNED_SOURCE_COMMIT = "cdec9de8173e24f7d8843776da06b7d501929e4c";
 const FRAME_WIDTH = 16;
 const FRAME_HEIGHT = 32;
 const WALK_ROW = 1;
 const FRAMES_PER_DIRECTION = 6;
 const DOWN_DIRECTION_GROUP = 3;
+
+function isExpectedManifest(value: unknown): value is LocalPackManifest {
+  if (!value || typeof value !== "object") return false;
+  const manifest = value as LocalPackManifest;
+  return (
+    manifest.schemaVersion === 1 &&
+    manifest.sourceRepo === PINNED_SOURCE_REPO &&
+    manifest.sourceCommit === PINNED_SOURCE_COMMIT
+  );
+}
 
 export function useOperationsFloorLocalPixelPack() {
   const [manifest, setManifest] = useState<LocalPackManifest | null>(null);
@@ -26,8 +38,8 @@ export function useOperationsFloorLocalPixelPack() {
     fetch(`${LOCAL_PACK_ROOT}/manifest.json`, { cache: "no-store" })
       .then((response) => (response.ok ? response.json() : null))
       .then((value) => {
-        if (!cancelled && value && typeof value === "object") {
-          setManifest(value as LocalPackManifest);
+        if (!cancelled && isExpectedManifest(value)) {
+          setManifest(value);
         }
       })
       .catch(() => {
