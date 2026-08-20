@@ -31,6 +31,7 @@ import {
 import { emit } from "@/lib/events/eventBus";
 import { isAutomatedTestProcess } from "@/shared/utils/testProcess";
 import { SEARCH_VALIDATOR_CONFIGS } from "@/lib/providers/validation/searchProviders";
+import { isNoAuthProviderKey } from "@/shared/utils/noAuthProviders";
 
 // ── Config ────────────────────────────────────────────────────────────────
 
@@ -273,7 +274,11 @@ export async function sweep(): Promise<void> {
           (conn.authType === "apikey" || conn.authType === "oauth") &&
           // #9970: search-provider "validation" fires a REAL billed upstream
           // query (e.g. POST api.tavily.com/search) — never sweep these.
-          !(conn.provider in SEARCH_VALIDATOR_CONFIGS)
+          !(conn.provider in SEARCH_VALIDATOR_CONFIGS) &&
+          // True no-auth providers own no operator credential. Their custom
+          // executors manage bootstrap/session auth and must not enter the
+          // credential-health probe pipeline through synthetic DB rows.
+          !isNoAuthProviderKey(conn.provider)
       ) as Array<{
         id: string;
         provider: string;

@@ -35,6 +35,9 @@ describe("providerLacksModelListing (#5420)", () => {
     assert.equal(providerLacksModelListing("zai-web", ["llm"]), false);
     assert.equal(providerUsesCuratedModelsOnly("kimi-web"), true);
     assert.equal(providerUsesCuratedModelsOnly("zai-web"), true);
+    assert.equal(providerUsesCuratedModelsOnly("mimocode"), true);
+    assert.equal(providerUsesCuratedModelsOnly("mcode"), true);
+    assert.equal(providerUsesCuratedModelsOnly("MiMoCode"), true);
     assert.equal(providerUsesCuratedModelsOnly("qwen-cloud"), false);
     assert.equal(providerUsesCuratedModelsOnly("kimi-coding"), false);
   });
