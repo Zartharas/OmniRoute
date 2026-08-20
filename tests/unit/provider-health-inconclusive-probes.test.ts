@@ -2,7 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { SafeOutboundFetchError } from "../../src/shared/network/safeOutboundFetch.ts";
 import { normalizeNvidiaValidationFailure } from "../../src/lib/providers/validation/specialtyInline.ts";
-import { OAUTH_TEST_CONFIG } from "../../src/app/api/providers/[id]/test/oauthTestConfig.ts";
+import {
+  classifyOAuthProbeInconclusive,
+  OAUTH_TEST_CONFIG,
+} from "../../src/app/api/providers/[id]/test/oauthTestConfig.ts";
 import {
   isCredentialProbeInconclusive,
   resolveInconclusiveProbeRecheckDelayMs,
@@ -67,11 +70,40 @@ test("inconclusive probes back off without changing ordinary successful probes",
   assert.equal(resolveInconclusiveProbeRecheckDelayMs(600_000), 3_600_000);
 });
 
-test("Antigravity and AGY treat HTTP 400 as auth-accepted, not credential failure", () => {
-  assert.deepEqual(OAUTH_TEST_CONFIG.antigravity?.acceptStatuses, [400]);
-  assert.deepEqual(OAUTH_TEST_CONFIG.agy?.acceptStatuses, [400]);
-  assert.ok(!OAUTH_TEST_CONFIG.antigravity?.acceptStatuses?.includes(401));
-  assert.ok(!OAUTH_TEST_CONFIG.antigravity?.acceptStatuses?.includes(403));
-  assert.ok(!OAUTH_TEST_CONFIG.agy?.acceptStatuses?.includes(401));
-  assert.ok(!OAUTH_TEST_CONFIG.agy?.acceptStatuses?.includes(403));
+test("Antigravity and AGY keep HTTP 400 credential-inconclusive without hiding geo-blocks", () => {
+  for (const provider of ["antigravity", "agy"] as const) {
+    const config = OAUTH_TEST_CONFIG[provider];
+
+    assert.deepEqual(config?.inconclusiveStatuses, [400]);
+    assert.ok(!config?.acceptStatuses?.includes(400));
+
+    const generic = classifyOAuthProbeInconclusive(config, provider, 400, "");
+
+    assert.ok(generic);
+    assert.equal(generic.diagnosisCode, "probe_inconclusive");
+    assert.match(generic.warning, /credential validity is inconclusive/i);
+    assert.equal(
+      isCredentialProbeInconclusive({
+        valid: true,
+        warning: generic.warning,
+      }),
+      true
+    );
+
+    const geoBlocked = classifyOAuthProbeInconclusive(
+      config,
+      provider,
+      400,
+      '{"error":"User location is not supported for the API use."}'
+    );
+
+    assert.ok(geoBlocked);
+    assert.equal(geoBlocked.diagnosisCode, "geo_blocked");
+    assert.equal(geoBlocked.diagnosisType, "upstream_unavailable");
+    assert.match(geoBlocked.warning, /egress location blocked by google/i);
+    assert.match(geoBlocked.warning, /credential validity is inconclusive/i);
+
+    assert.equal(classifyOAuthProbeInconclusive(config, provider, 401, ""), null);
+    assert.equal(classifyOAuthProbeInconclusive(config, provider, 403, ""), null);
+  }
 });

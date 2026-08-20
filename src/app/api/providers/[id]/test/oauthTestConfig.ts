@@ -2,6 +2,7 @@ import { buildGitLabOAuthEndpoints, resolveGitLabOAuthBaseUrl } from "@/lib/oaut
 import { ANTIGRAVITY_RUNTIME_BASE_URLS } from "@omniroute/open-sse/config/antigravityUpstream.ts";
 import { getAntigravityContentHeaders } from "@omniroute/open-sse/services/antigravityHeaders.ts";
 import { getAntigravityClientProfile } from "@omniroute/open-sse/services/antigravityClientProfile.ts";
+import { isGeoBlockedError } from "@omniroute/open-sse/services/errorClassifier.ts";
 
 // Real model-surface probe for antigravity/agy. The previous probe only hit the
 // OAuth userinfo endpoint, which is NOT geo-restricted — so "Test Connection"
@@ -82,6 +83,7 @@ export interface OAuthTestConfigEntry {
   extraHeaders?: Record<string, string>;
   body?: string;
   acceptStatuses?: number[];
+  inconclusiveStatuses?: number[];
   checkExpiry?: boolean;
   refreshable?: boolean;
   getUrl?: (connection: any) => string;
@@ -89,6 +91,43 @@ export interface OAuthTestConfigEntry {
     connection: any,
     accessToken: string
   ) => OAuthTestProbeRequest | Promise<OAuthTestProbeRequest>;
+}
+
+export interface OAuthProbeInconclusiveClassification {
+  warning: string;
+  diagnosisType: "ok" | "upstream_unavailable";
+  diagnosisCode: "probe_inconclusive" | "geo_blocked";
+}
+
+export function classifyOAuthProbeInconclusive(
+  config: OAuthTestConfigEntry,
+  provider: string,
+  status: number,
+  bodyText: string
+): OAuthProbeInconclusiveClassification | null {
+  if (
+    !Array.isArray(config.inconclusiveStatuses) ||
+    !config.inconclusiveStatuses.includes(status)
+  ) {
+    return null;
+  }
+
+  const geoBlocked =
+    (provider === "antigravity" || provider === "agy") && isGeoBlockedError(bodyText);
+
+  if (geoBlocked) {
+    return {
+      warning: "Egress location blocked by Google; credential validity is inconclusive",
+      diagnosisType: "upstream_unavailable",
+      diagnosisCode: "geo_blocked",
+    };
+  }
+
+  return {
+    warning: `${provider} probe returned HTTP ${status}; credential validity is inconclusive`,
+    diagnosisType: "ok",
+    diagnosisCode: "probe_inconclusive",
+  };
 }
 
 export const OAUTH_TEST_CONFIG: Record<string, OAuthTestConfigEntry> = {
@@ -127,9 +166,10 @@ export const OAUTH_TEST_CONFIG: Record<string, OAuthTestConfigEntry> = {
   },
   antigravity: {
     // The minimal Cloud Code probe can return 400 even when OAuth refresh is
-    // healthy. Treat 400 as auth-accepted; runtime traffic owns availability.
+    // healthy. Treat it as credential-inconclusive rather than a credential
+    // failure, while still inspecting the body for Google's geo-block signal.
     buildProbe: buildAntigravityProbe,
-    acceptStatuses: [400],
+    inconclusiveStatuses: [400],
     refreshable: true,
   },
   // `agy` is a separate connection id that shares the Antigravity backend and the same
@@ -139,7 +179,7 @@ export const OAUTH_TEST_CONFIG: Record<string, OAuthTestConfigEntry> = {
   // perfectly good account. Probe the same model surface as antigravity.
   agy: {
     buildProbe: buildAntigravityProbe,
-    acceptStatuses: [400],
+    inconclusiveStatuses: [400],
     refreshable: true,
   },
   xai: XAI_CHAT_OAUTH_TEST_CONFIG,

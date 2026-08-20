@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isValidationFailure, validateBody } from "@/shared/validation/helpers";
-import {
-  getCachedProviderConnectionById,
-  updateProviderConnection,
-  isCloudEnabled,
-  resolveProxyForConnection,
-} from "@/lib/localDb";
+import { getCachedProviderConnectionById } from "@/lib/db/readCache";
+import { updateProviderConnection } from "@/lib/db/providers";
+import { isCloudEnabled, resolveProxyForConnection } from "@/lib/db/settings";
 import { getConsistentMachineId } from "@/shared/utils/machineId";
 import { syncToCloud } from "@/lib/cloudSync";
 import { validateProviderApiKey } from "@/lib/providers/validation";
@@ -25,7 +22,7 @@ import { shouldUseApiKeyConnectionTest } from "./webSessionTestDispatch";
 import { removeConnectionHealth } from "@omniroute/open-sse/services/apiKeyRotator.ts";
 import { classifyAmbiguousOrAuthError, type ClassifyFailureArgs } from "./mistralAmbiguousAuth";
 import { buildApiKeyConnectionTestResult } from "./apiKeyTestResult";
-import { OAUTH_TEST_CONFIG } from "./oauthTestConfig";
+import { classifyOAuthProbeInconclusive, OAUTH_TEST_CONFIG } from "./oauthTestConfig";
 import { isGeoBlockedError } from "@omniroute/open-sse/services/errorClassifier.ts";
 
 // Bound the OAuth probe so a hung upstream can't block the connection-test queue
@@ -470,6 +467,33 @@ export async function testOAuthConnection(
     if (builtProbe?.body) fetchInit.body = builtProbe.body;
     const res = await fetch(url, fetchInit);
 
+    const inconclusiveBody =
+      Array.isArray(config.inconclusiveStatuses) && config.inconclusiveStatuses.includes(res.status)
+        ? await res.text().catch(() => "")
+        : "";
+    const inconclusive = classifyOAuthProbeInconclusive(
+      config,
+      connection.provider,
+      res.status,
+      inconclusiveBody
+    );
+    if (inconclusive) {
+      return {
+        valid: true,
+        error: null,
+        warning: inconclusive.warning,
+        refreshed,
+        newTokens,
+        statusCode: res.status,
+        diagnosis: makeDiagnosis(
+          inconclusive.diagnosisType,
+          "upstream",
+          inconclusive.warning,
+          inconclusive.diagnosisCode
+        ),
+      };
+    }
+
     // Port of decolua/9router#347: some providers (Codex) intentionally trigger a
     // 400 because the probe body is invalid. A 400 from such a provider means auth
     // succeeded; only 401/403 means the token is bad.
@@ -528,6 +552,34 @@ export async function testOAuthConnection(
         if (builtProbe?.body) retryInit.body = builtProbe.body;
         else if (config.body) retryInit.body = config.body;
         const retryRes = await fetch(url, retryInit);
+
+        const retryInconclusiveBody =
+          Array.isArray(config.inconclusiveStatuses) &&
+          config.inconclusiveStatuses.includes(retryRes.status)
+            ? await retryRes.text().catch(() => "")
+            : "";
+        const retryInconclusive = classifyOAuthProbeInconclusive(
+          config,
+          connection.provider,
+          retryRes.status,
+          retryInconclusiveBody
+        );
+        if (retryInconclusive) {
+          return {
+            valid: true,
+            error: null,
+            warning: retryInconclusive.warning,
+            refreshed: true,
+            newTokens: tokens,
+            statusCode: retryRes.status,
+            diagnosis: makeDiagnosis(
+              retryInconclusive.diagnosisType,
+              "upstream",
+              retryInconclusive.warning,
+              retryInconclusive.diagnosisCode
+            ),
+          };
+        }
 
         const retryAccepted =
           retryRes.ok ||
