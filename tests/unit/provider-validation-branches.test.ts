@@ -235,6 +235,7 @@ test("registry openai-like providers report unsupported validation endpoints on 
 
   assert.equal(result.valid, false);
   assert.equal(result.error, "Provider validation endpoint not supported");
+  assert.equal(result.unsupported, true);
   assert.deepEqual(calls, [
     "https://api.openai.com/v1/models",
     "https://api.openai.com/v1/chat/completions",

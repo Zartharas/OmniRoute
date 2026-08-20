@@ -128,6 +128,27 @@ async function testConnection(
   try {
     const result = await testSingleConnection(connectionId);
 
+    // A skipped probe carries no credential-failure evidence. Unsupported
+    // validation endpoints are also stable enough that repeating the same
+    // ineffective probe on every sweep adds load without adding evidence.
+    if (result.skipped === true) {
+      const diagnosis = result.diagnosis as { type?: string; code?: string } | undefined;
+
+      if (diagnosis?.type === "unsupported" || diagnosis?.code === "unsupported") {
+        const state = getSchedulerState();
+        state.failureCounts.delete(connectionId);
+
+        const recheckDelayMs = resolveInconclusiveProbeRecheckDelayMs(getSweepInterval());
+
+        state.perConnTiming.set(connectionId, {
+          lastAttemptAt: startTime,
+          nextAttemptAt: Date.now() + recheckDelayMs,
+        });
+      }
+
+      return;
+    }
+
     const latencyMs = Date.now() - startTime;
     const state = getSchedulerState();
 

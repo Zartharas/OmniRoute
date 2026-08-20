@@ -688,6 +688,7 @@ async function testApiKeyConnection(connection: any) {
     const error = "Provider test not supported";
     return {
       valid: false,
+      skipped: true,
       error,
       diagnosis: classifyFailure({ error, unsupported: true, provider: connection.provider }),
     };
@@ -776,6 +777,23 @@ export async function testSingleConnection(connectionId: string, validationModel
     (result.valid
       ? makeDiagnosis("ok", "local", null, null)
       : classifyFailure({ error: result.error, statusCode: result.statusCode, provider }));
+
+  // Unsupported provider probes are not credential failures. Surface the
+  // unsupported diagnosis to callers without rewriting persisted health state.
+  if (result.skipped === true) {
+    return {
+      valid: false,
+      skipped: true,
+      error: result.error,
+      warning: result.warning || null,
+      refreshed: result.refreshed || false,
+      diagnosis,
+      latencyMs,
+      statusCode: result.statusCode || null,
+      runtime: runtime || null,
+      testedAt: now,
+    };
+  }
 
   // #9623: a failed connection test must not paint the connection permanently red.
   // Previously a non-terminal failure wrote `testStatus: "error"` with
