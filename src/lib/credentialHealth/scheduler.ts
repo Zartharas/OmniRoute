@@ -18,7 +18,7 @@
  */
 
 import { testSingleConnection } from "@/app/api/providers/[id]/test/route";
-import { getProviderConnections } from "@/lib/localDb";
+import { getProviderConnections } from "@/lib/db/providers";
 import {
   setCredentialHealth,
   removeCredentialHealth,
@@ -74,7 +74,7 @@ function getSchedulerState() {
   return globalThis.__omnirouteCredentialHC;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────────
 
 function isBuildProcess(): boolean {
   return typeof process !== "undefined" && process.env.NEXT_PHASE === "phase-production-build";
