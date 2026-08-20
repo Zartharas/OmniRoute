@@ -13,6 +13,7 @@
  *   - Interval: configurable via CREDENTIAL_HEALTH_CHECK_INTERVAL (default 5 min)
  *   - OAuth connections: tested less frequently (2x interval)
  *   - Backoff on failure: 5min -> 10min -> 30min -> max 2h
+ *   - Credential-inconclusive probes: rechecked no sooner than 30 min
  *   - Resets to default on success
  */
 
@@ -23,6 +24,10 @@ import {
   removeCredentialHealth,
   initCredentialCache,
 } from "@/lib/credentialHealth/cache";
+import {
+  isCredentialProbeInconclusive,
+  resolveInconclusiveProbeRecheckDelayMs,
+} from "@/lib/credentialHealth/probePolicy";
 import { emit } from "@/lib/events/eventBus";
 import { isAutomatedTestProcess } from "@/shared/utils/testProcess";
 import { SEARCH_VALIDATOR_CONFIGS } from "@/lib/providers/validation/searchProviders";
@@ -74,7 +79,6 @@ function getSchedulerState() {
 function isBuildProcess(): boolean {
   return typeof process !== "undefined" && process.env.NEXT_PHASE === "phase-production-build";
 }
-
 
 function isCredentialHealthCheckDisabled(): boolean {
   if (isBuildProcess() || isAutomatedTestProcess()) return true;
@@ -128,9 +132,20 @@ async function testConnection(
     const state = getSchedulerState();
 
     if (result.valid) {
-      // Success — reset failure count + timing, update cache
+      // Success — reset failure count and update cache. A probe that proved no
+      // credential failure but timed out is intentionally rechecked less often;
+      // repeating a 20s inference probe every 5 minutes adds load without adding
+      // authentication evidence.
       state.failureCounts.delete(connectionId);
-      state.perConnTiming.delete(connectionId);
+      if (isCredentialProbeInconclusive(result)) {
+        const recheckDelayMs = resolveInconclusiveProbeRecheckDelayMs(getSweepInterval());
+        state.perConnTiming.set(connectionId, {
+          lastAttemptAt: startTime,
+          nextAttemptAt: Date.now() + recheckDelayMs,
+        });
+      } else {
+        state.perConnTiming.delete(connectionId);
+      }
       setCredentialHealth(
         connectionId,
         provider,
