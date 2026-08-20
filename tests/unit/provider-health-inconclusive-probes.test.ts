@@ -3,6 +3,10 @@ import assert from "node:assert/strict";
 import { SafeOutboundFetchError } from "../../src/shared/network/safeOutboundFetch.ts";
 import { normalizeNvidiaValidationFailure } from "../../src/lib/providers/validation/specialtyInline.ts";
 import { OAUTH_TEST_CONFIG } from "../../src/app/api/providers/[id]/test/oauthTestConfig.ts";
+import {
+  isCredentialProbeInconclusive,
+  resolveInconclusiveProbeRecheckDelayMs,
+} from "../../src/lib/credentialHealth/probePolicy.ts";
 
 test("NVIDIA timeout probe is credential-inconclusive instead of an auth failure", () => {
   const error = new SafeOutboundFetchError(
@@ -28,6 +32,7 @@ test("NVIDIA timeout probe is credential-inconclusive instead of an auth failure
   assert.equal(result.error, null);
   assert.equal(result.method, "chat_probe_inconclusive");
   assert.match(String(result.warning), /credential validity is inconclusive/i);
+  assert.equal(isCredentialProbeInconclusive(result), true);
 });
 
 test("NVIDIA non-timeout network failures remain failures", () => {
@@ -43,6 +48,23 @@ test("NVIDIA non-timeout network failures remain failures", () => {
 
   assert.equal(result.valid, false);
   assert.equal(result.error, "fetch failed");
+  assert.equal(isCredentialProbeInconclusive(result), false);
+});
+
+test("inconclusive probes back off without changing ordinary successful probes", () => {
+  assert.equal(
+    isCredentialProbeInconclusive({ valid: true, warning: "ordinary provider warning" }),
+    false
+  );
+  assert.equal(
+    isCredentialProbeInconclusive({
+      valid: false,
+      warning: "credential validity is inconclusive",
+    }),
+    false
+  );
+  assert.equal(resolveInconclusiveProbeRecheckDelayMs(300_000), 1_800_000);
+  assert.equal(resolveInconclusiveProbeRecheckDelayMs(600_000), 3_600_000);
 });
 
 test("Antigravity and AGY treat HTTP 400 as auth-accepted, not credential failure", () => {
