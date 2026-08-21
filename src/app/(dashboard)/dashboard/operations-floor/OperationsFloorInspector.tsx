@@ -5,8 +5,13 @@ import Link from "next/link";
 import ProviderIcon from "@/shared/components/ProviderIcon";
 import type { OperationsAttentionItem } from "./operationsFloorModel";
 import { isProtectedOpenAiProvider, normalizeOperationsProviderId } from "./operationsFloorModel";
+import {
+  deriveOperationsWorkloadHealth,
+  type OperationsWorkloadModel,
+} from "./operationsFloorWorkloads";
 
 export type OperationsFloorSelection =
+  | { kind: "workload"; workloadId: string }
   | { kind: "provider"; providerId: string }
   | { kind: "request"; requestId: string }
   | null;
@@ -102,6 +107,7 @@ function connectionDot(connection: InspectorConnection, test: OperationsConnecti
 export default function OperationsFloorInspector({
   selection,
   desks,
+  workloads,
   connections,
   requests,
   comboEvents,
@@ -115,6 +121,7 @@ export default function OperationsFloorInspector({
 }: {
   selection: OperationsFloorSelection;
   desks: InspectorDesk[];
+  workloads: OperationsWorkloadModel[];
   connections: InspectorConnection[];
   requests: InspectorRequest[];
   comboEvents: InspectorComboEvent[];
@@ -131,11 +138,13 @@ export default function OperationsFloorInspector({
       <div>
         <div className="text-[10px] uppercase tracking-[0.12em] text-text-muted">Inspector</div>
         <div className="mt-0.5 text-sm font-semibold text-text-main">
-          {selection?.kind === "provider"
-            ? "Provider details"
-            : selection?.kind === "request"
-              ? "Request evidence"
-              : "Operations summary"}
+          {selection?.kind === "workload"
+            ? "Workload model"
+            : selection?.kind === "provider"
+              ? "Provider details"
+              : selection?.kind === "request"
+                ? "Request evidence"
+                : "Operations summary"}
         </div>
       </div>
       {selection && (
@@ -145,6 +154,147 @@ export default function OperationsFloorInspector({
       )}
     </div>
   );
+
+  if (selection?.kind === "workload") {
+    const workload = workloads.find(
+      (candidate) =>
+        candidate.id === selection.workloadId
+    );
+
+    if (!workload) {
+      return (
+        <aside className="h-full overflow-hidden rounded-xl border border-border bg-bg">
+          {header}
+          <div className="p-4 text-xs text-text-muted">
+            That workload model is no longer present in the unified policy.
+          </div>
+        </aside>
+      );
+    }
+
+    const providerId = workload.routeProvider;
+
+    const routeDesk = desks.find(
+      (candidate) =>
+        normalizeOperationsProviderId(candidate.id) ===
+        providerId
+    );
+
+    const providerConnections = connections.filter(
+      (connection) =>
+        normalizeOperationsProviderId(connection.provider) ===
+        providerId
+    );
+
+    const health = deriveOperationsWorkloadHealth(
+      workload,
+      desks
+    );
+
+    return (
+      <aside className="h-full overflow-hidden rounded-xl border border-border bg-bg">
+        {header}
+
+        <div className="max-h-[445px] space-y-3 overflow-auto p-3.5">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg border border-border bg-bg-subtle/40">
+              <ProviderIcon
+                providerId={providerId}
+                size={22}
+                type="color"
+              />
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-semibold text-text-main">
+                {workload.displayName}
+              </div>
+
+              <div className="truncate text-[10px] text-text-muted">
+                {workload.id}
+              </div>
+            </div>
+
+            <span className="rounded-full border border-border px-2 py-0.5 text-[9px] font-semibold uppercase text-text-muted">
+              {health}
+            </span>
+          </div>
+
+          <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+            <Fact
+              label="route provider"
+              value={providerId}
+            />
+            <Fact
+              label="scope"
+              value={workload.scope}
+            />
+            <Fact
+              label="context"
+              value={
+                workload.contextWindow
+                  ? workload.contextWindow.toLocaleString()
+                  : "—"
+              }
+            />
+            <Fact
+              label="modalities"
+              value={
+                workload.modalities.length
+                  ? workload.modalities.join(", ")
+                  : "—"
+              }
+            />
+          </dl>
+
+          <section>
+            <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted">
+              Downstream model
+            </div>
+
+            <div className="break-all rounded-lg border border-border/70 bg-bg-subtle/20 px-2.5 py-2 font-mono text-[10px] text-text-main">
+              {workload.downstreamModel}
+            </div>
+          </section>
+
+          {workload.scope === "mta" ? (
+            <div className="rounded-lg border border-violet-500/30 bg-violet-500/5 px-3 py-2 text-[11px] text-violet-400">
+              Isolated MTA route. Personal OmniRoute provider health is not used to infer this route&apos;s status.
+            </div>
+          ) : (
+            <div className="rounded-lg border border-border/70 px-3 py-2 text-[11px] text-text-muted">
+              {routeDesk
+                ? `${routeDesk.connected}/${routeDesk.connections} provider connections ready · ${routeDesk.errors} error${routeDesk.errors === 1 ? "" : "s"}`
+                : "No matching live provider desk is currently available."}
+            </div>
+          )}
+
+          {workload.scope === "personal" && routeDesk && (
+            <button
+              type="button"
+              onClick={() =>
+                onSelectProvider(providerId)
+              }
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              inspect route provider
+            </button>
+          )}
+
+          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-[10px] leading-4 text-text-muted">
+            Protected native OpenAI/Codex fallback is outside this ordinary workload route.
+          </div>
+
+          {providerConnections.length > 0 && (
+            <div className="text-[10px] text-text-muted">
+              {providerConnections.length} matching provider connection
+              {providerConnections.length === 1 ? "" : "s"} observed.
+            </div>
+          )}
+        </div>
+      </aside>
+    );
+  }
 
   if (selection?.kind === "provider") {
     const providerId = normalizeOperationsProviderId(selection.providerId);
@@ -339,7 +489,7 @@ export default function OperationsFloorInspector({
       {header}
       <div className="max-h-[445px] space-y-3 overflow-auto p-3.5">
         <div className="rounded-lg border border-border bg-bg-subtle/30 p-3 text-[11px] leading-5 text-text-muted">
-          Select a provider desk, request, or {simulationMode ? "scenario evidence item" : "attention item"}. Provider connection tests are available only after selecting a configured provider and run only when you click Test.
+          Select a workload model, provider desk, request, or {simulationMode ? "scenario evidence item" : "attention item"}. Provider connection tests are available only after selecting a configured provider and run only when you click Test.
         </div>
 
         <section>

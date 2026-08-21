@@ -15,6 +15,11 @@ import OperationsFloorWorkspaceScene from "./OperationsFloorWorkspaceScene";
 import OperationsFloorSystemTelemetry, {
   useOperationsFloorSystemTelemetry,
 } from "./OperationsFloorSystemTelemetry";
+import OperationsFloorWorkloadFleet from "./OperationsFloorWorkloadFleet";
+import type {
+  OperationsProtectedNativeModel,
+  OperationsWorkloadModel,
+} from "./operationsFloorWorkloads";
 import OperationsFloorInspector, {
   type OperationsConnectionTestState,
   type OperationsFloorSelection,
@@ -96,6 +101,11 @@ export default function OperationsFloorClient() {
   const [connectionTests, setConnectionTests] = useState<Record<string, OperationsConnectionTestState>>({});
   const [simulationEnabled, setSimulationEnabled] = useState(false);
   const [simulationStep, setSimulationStep] = useState(0);
+  const [workloads, setWorkloads] = useState<OperationsWorkloadModel[]>([]);
+  const [protectedNative, setProtectedNative] =
+    useState<OperationsProtectedNativeModel[]>([]);
+  const [workloadsLoading, setWorkloadsLoading] = useState(true);
+  const [workloadsError, setWorkloadsError] = useState<string | null>(null);
 
   const {
     activeRequests: liveActiveRequests,
@@ -163,6 +173,56 @@ export default function OperationsFloorClient() {
     return () => clearInterval(timer);
   }, [loadProviders]);
 
+  const loadWorkloads = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "/api/operations-floor/workloads",
+        { cache: "no-store" }
+      );
+
+      const body = await response.json().catch(() => ({}));
+
+      setProtectedNative(
+        Array.isArray(body?.protectedNative)
+          ? body.protectedNative
+          : []
+      );
+
+      const nextModels = Array.isArray(body?.models)
+        ? body.models
+        : [];
+
+      setWorkloads(nextModels);
+
+      if (!response.ok) {
+        setWorkloadsError(
+          typeof body?.error === "string"
+            ? body.error
+            : `HTTP ${response.status}`
+        );
+      } else {
+        setWorkloadsError(null);
+      }
+    } catch {
+      setWorkloadsError(
+        "Unified workload policy is unavailable."
+      );
+    } finally {
+      setWorkloadsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadWorkloads();
+
+    const timer = setInterval(
+      loadWorkloads,
+      15_000
+    );
+
+    return () => clearInterval(timer);
+  }, [loadWorkloads]);
+
   const observedConnections: ProviderConnection[] = simulationEnabled
     ? simulation.connections
     : connections;
@@ -208,6 +268,7 @@ export default function OperationsFloorClient() {
     [observedActiveRequests, observedCompletedRequests]
   );
   const selectedProviderId = selection?.kind === "provider" ? selection.providerId : null;
+  const selectedWorkloadId = selection?.kind === "workload" ? selection.workloadId : null;
   const readyDeskCount = desks.filter((desk) => desk.connected > 0).length;
   const activeCount = observedActiveRequests.length;
   const evidenceLabel = simulationEnabled ? "scenario evidence" : "attention";
@@ -215,6 +276,10 @@ export default function OperationsFloorClient() {
 
   const selectProvider = useCallback((providerId: string) => {
     setSelection({ kind: "provider", providerId: normalizeOperationsProviderId(providerId) });
+  }, []);
+
+  const selectWorkload = useCallback((workloadId: string) => {
+    setSelection({ kind: "workload", workloadId });
   }, []);
 
   const selectRequest = useCallback((requestId: string) => {
@@ -368,6 +433,15 @@ export default function OperationsFloorClient() {
 
         <div className="grid gap-3 p-3 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0 space-y-2">
+            <OperationsFloorWorkloadFleet
+              workloads={workloads}
+              protectedNative={protectedNative}
+              desks={desks}
+              selectedWorkloadId={selectedWorkloadId}
+              loading={workloadsLoading}
+              error={workloadsError}
+              onSelectWorkload={selectWorkload}
+            />
             <OperationsFloorSystemTelemetry simulationMode={simulationEnabled} telemetry={systemTelemetry} />
             {!simulationEnabled && loading ? (
               <div className="rounded-xl border border-border bg-bg-subtle/30 p-10 text-center text-sm text-text-muted">Loading provider floor…</div>
