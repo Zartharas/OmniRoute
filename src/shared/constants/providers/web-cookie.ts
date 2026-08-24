@@ -326,7 +326,7 @@ export const WEB_COOKIE_PROVIDERS = {
     textIcon: "KW",
     website: "https://www.kimi.ai",
     authHint:
-      "Paste access_token from www.kimi.ai DevTools → Application → Local Storage. A legacy kimi-auth cookie is also accepted.",
+      "Use www.kimi.ai. access_token is the active credential; refresh_token enables automatic renewal when captured by browser login/import. A legacy kimi-auth cookie remains accepted for existing connections.",
     subscriptionRisk: true,
     riskNoticeVariant: "webCookie",
   },

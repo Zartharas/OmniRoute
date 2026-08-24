@@ -30,6 +30,7 @@ import {
 } from "../utils/error.ts";
 import { extractKimiAccessToken } from "@/lib/providers/webCookieAuth";
 import { exchangeKimiRefreshToken } from "@/lib/kimi/tokenRefresh";
+import { getKimiWebBaseUrl, getKimiWebChatUrl } from "../utils/kimiWebUrls.ts";
 import {
   type KimiWebModelConfig,
   resolveKimiWebContextLength,
@@ -37,26 +38,10 @@ import {
   resolveKimiWebReasoningEffort,
 } from "../config/providers/registry/kimi/web/runtime.ts";
 
-export { extractKimiAccessToken };
+export { extractKimiAccessToken, getKimiWebBaseUrl, getKimiWebChatUrl };
 
-export function getKimiWebBaseUrl(): string {
-  const envUrl = process.env.KIMI_WEB_BASE_URL?.trim();
-  if (envUrl) {
-    return envUrl.replace(/\/+$/, "");
-  }
-  return "https://www.kimi.ai";
-}
-
-export function getKimiWebChatUrl(): string {
-  const envChat = process.env.KIMI_WEB_CHAT_URL?.trim();
-  if (envChat) {
-    return envChat;
-  }
-  return `${getKimiWebBaseUrl()}/apiv2/kimi.gateway.chat.v1.ChatService/Chat`;
-}
-
-const BASE_URL = "https://www.kimi.ai";
-const CHAT_URL = `${BASE_URL}/apiv2/kimi.gateway.chat.v1.ChatService/Chat`;
+const BASE_URL = getKimiWebBaseUrl();
+const CHAT_URL = getKimiWebChatUrl();
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
 
