@@ -237,10 +237,18 @@ export const WEB_SESSION_CREDENTIAL_REQUIREMENTS = {
   },
   "kimi-web": {
     kind: "token",
-    credentialName: "access_token",
-    placeholder: "access_token from www.kimi.com localStorage",
+    credentialName: "access_token + refresh_token",
+    placeholder: "access_token and refresh_token from www.kimi.ai localStorage",
     acceptsFullCookieHeader: true,
-    storageKeys: ["token", "access_token", "accessToken", "cookie", "kimi-auth"],
+    storageKeys: [
+      "token",
+      "access_token",
+      "accessToken",
+      "refresh_token",
+      "refreshToken",
+      "cookie",
+      "kimi-auth",
+    ],
   },
   "doubao-web": {
     kind: "cookie",
@@ -356,8 +364,7 @@ export const WEB_SESSION_CREDENTIAL_REQUIREMENTS = {
   "conol-web": {
     kind: "cookie",
     credentialName: "__Secure-better-auth.session_token",
-    placeholder:
-      "__Secure-better-auth.session_token=... or full Cookie header from conol.ai",
+    placeholder: "__Secure-better-auth.session_token=... or full Cookie header from conol.ai",
     acceptsFullCookieHeader: true,
     storageKeys: ["cookie", "__Secure-better-auth.session_token"],
   },

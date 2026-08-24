@@ -10,6 +10,8 @@
  * the Playwright-based login flow (dashboard API).
  */
 
+import { getKimiWebBaseUrl, getKimiWebCookieDomain } from "../utils/kimiWebUrls.ts";
+
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 /** Describes where to extract credential data from after login */
@@ -189,14 +191,19 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
   config(
     "kimi-web",
     "Kimi (Moonshot)",
-    "https://www.kimi.com/",
-    "https://www.kimi.com",
+    `${getKimiWebBaseUrl()}/`,
+    getKimiWebBaseUrl(),
     [
       { type: "localStorage", key: "access_token" },
-      { type: "cookie", name: "kimi-auth", domain: ".kimi.com" },
+      { type: "localStorage", key: "refresh_token" },
+      {
+        type: "cookie",
+        name: "kimi-auth",
+        domain: getKimiWebCookieDomain(),
+      },
     ],
-    "Log in to Kimi at www.kimi.com. The current access_token will be extracted from localStorage; kimi-auth remains a legacy fallback.",
-    { cookieDomain: ".kimi.com" }
+    "Log in to Kimi at www.kimi.ai. access_token and refresh_token will be extracted from localStorage; kimi-auth remains a legacy fallback for existing sessions.",
+    { cookieDomain: getKimiWebCookieDomain() }
   ),
 
   // ── Blackbox Web ──────────────────────────────────────────

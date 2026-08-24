@@ -12,6 +12,7 @@ import {
   extractQwenToken,
   normalizeSessionCookieHeader,
 } from "@/lib/providers/webCookieAuth";
+import { getKimiWebBaseUrl, getKimiWebUserUrl } from "@omniroute/open-sse/utils/kimiWebUrls.ts";
 
 // kimi-web uses the international (west-facing) `www.kimi.ai` Connect-RPC API by
 // default. `www.kimi.com` is the China-region endpoint — it serves China users but
@@ -22,11 +23,15 @@ import {
 // object at the top level when the `Authorization: Bearer <access_token>` header is
 // valid. Override the endpoint with KIMI_WEB_BASE_URL (opt-in).
 export async function validateKimiWebProvider({ apiKey }: any) {
+  const baseUrl = getKimiWebBaseUrl();
+  const userUrl = getKimiWebUserUrl();
+  const hostname = new URL(baseUrl).hostname;
   const rawCred = String(apiKey ?? "").trim();
+
   if (!rawCred) {
     return {
       valid: false,
-      error: "Missing Kimi access_token from www.kimi.com localStorage",
+      error: `Missing Kimi access_token from ${hostname} localStorage`,
     };
   }
 
@@ -35,17 +40,18 @@ export async function validateKimiWebProvider({ apiKey }: any) {
     return {
       valid: false,
       error:
-        "Could not find a Kimi access_token. Re-login at https://www.kimi.com and copy it from localStorage.",
+        `Could not find a Kimi access_token. Re-login at ${baseUrl} ` +
+        "and copy it from localStorage.",
     };
   }
 
   try {
-    const resp = await fetch("https://www.kimi.com/api/user", {
+    const resp = await fetch(userUrl, {
       headers: {
         Accept: "application/json, text/plain, */*",
         Authorization: `Bearer ${accessToken}`,
-        Origin: "https://www.kimi.com",
-        Referer: "https://www.kimi.com/",
+        Origin: baseUrl,
+        Referer: `${baseUrl}/`,
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
       },
@@ -55,25 +61,34 @@ export async function validateKimiWebProvider({ apiKey }: any) {
       return {
         valid: false,
         error:
-          "Kimi session is invalid or expired — re-login at https://www.kimi.com and paste a fresh access_token",
+          `Kimi session is invalid or expired — re-login at ${baseUrl} ` +
+          "and capture a fresh access_token",
+        statusCode: resp.status,
       };
     }
+
     if (!resp.ok) {
-      return { valid: false, error: `Kimi returned HTTP ${resp.status}` };
+      return {
+        valid: false,
+        error: `Kimi returned HTTP ${resp.status}`,
+        statusCode: resp.status,
+      };
     }
 
-    // Profile response: `{ id, name, email, region, ... }` at the top level.
     try {
       const data = await resp.json();
+
       if (!data?.id) {
         return {
           valid: false,
-          error:
-            "Kimi session token is invalid or expired — re-login at https://www.kimi.com and paste a fresh access_token",
+          error: `Kimi session token could not be verified at ${baseUrl}/api/user`,
         };
       }
     } catch {
-      return { valid: false, error: "Kimi returned invalid JSON response" };
+      return {
+        valid: false,
+        error: "Kimi returned invalid JSON response",
+      };
     }
 
     return { valid: true, error: null };
