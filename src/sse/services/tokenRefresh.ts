@@ -129,15 +129,20 @@ export const formatProviderCredentials = (provider: string, credentials: any) =>
 
 export const getAllAccessTokens = (userInfo: any) => _getAllAccessTokens(userInfo, log);
 
-// Local-specific: Update credentials in localDb. Refresh callers rely on this
-// acknowledgement before using rotated material, so persistence failure must
-// reject rather than being silently converted to `false`.
+// Local-specific: Update credentials in localDb. A refresh that returns both a
+// new access token and refresh token may have consumed/rotated the old refresh
+// token, so that write must fail closed. Access-only/non-rotating writes retain
+// the historical boolean acknowledgement contract.
 export async function updateProviderCredentials(
   connectionId: string,
   newCredentials: any,
   persist: (connectionId: string, updates: Record<string, any>) => Promise<any> =
     updateProviderConnection
 ) {
+  const requiresDurableRotation = Boolean(
+    newCredentials?.refreshToken && (newCredentials?.accessToken || newCredentials?.apiKey)
+  );
+
   try {
     const updates: Record<string, any> = {};
 
@@ -191,21 +196,24 @@ export async function updateProviderCredentials(
     }
 
     const result = await persist(connectionId, updates);
-    if (!result) {
+    if (!result && requiresDurableRotation) {
       throw new Error("Failed to persist refreshed provider credentials");
     }
 
     log.info("TOKEN_REFRESH", "Credentials updated in localDb", {
       connectionId,
-      success: true,
+      success: !!result,
     });
-    return true;
+    return !!result;
   } catch (error) {
     log.error("TOKEN_REFRESH", "Error updating credentials in localDb", {
       connectionId,
       error: (error as any).message,
     });
-    throw error instanceof Error ? error : new Error(String(error));
+    if (requiresDurableRotation) {
+      throw error instanceof Error ? error : new Error(String(error));
+    }
+    return false;
   }
 }
 
