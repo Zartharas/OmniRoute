@@ -1,10 +1,8 @@
 // Re-export from open-sse with local logger
 import * as log from "../utils/logger";
-import {
-  updateProviderConnection,
-  resolveProxyForConnection,
-  resolveProxyForProvider,
-} from "@/lib/localDb";
+import { updateProviderConnection } from "@/lib/db/providers";
+import { resolveProxyForConnection } from "@/lib/db/settings";
+import { resolveProxyForProvider } from "@/lib/db/proxies";
 import {
   TOKEN_EXPIRY_BUFFER_MS as BUFFER_MS,
   getRefreshLeadMs as _getRefreshLeadMs,
@@ -277,7 +275,7 @@ export async function checkAndRefreshToken(provider: string, credentials: any) {
   }
 
   // Check GitHub/GHE Copilot token expiry. Both github.com Copilot and GHE
-  // Copilot (device-code flow) issue a short-lived
+  // Copilot (device-code flow against an enterprise host) issue a short-lived
   // sub-token separate from the OAuth access token, stored the same way in
   // providerSpecificData.copilotTokenExpiresAt — only the token endpoint host
   // differs (resolveCopilotTokenBaseUrl picks it via providerSpecificData.gheUrl).
