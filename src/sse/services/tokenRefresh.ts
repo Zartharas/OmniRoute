@@ -1,10 +1,8 @@
 // Re-export from open-sse with local logger
 import * as log from "../utils/logger";
-import {
-  updateProviderConnection,
-  resolveProxyForConnection,
-  resolveProxyForProvider,
-} from "@/lib/localDb";
+import { updateProviderConnection } from "@/lib/db/providers";
+import { resolveProxyForConnection } from "@/lib/db/settings";
+import { resolveProxyForProvider } from "@/lib/db/proxies";
 import {
   TOKEN_EXPIRY_BUFFER_MS as BUFFER_MS,
   getRefreshLeadMs as _getRefreshLeadMs,
@@ -129,10 +127,26 @@ export const formatProviderCredentials = (provider: string, credentials: any) =>
 
 export const getAllAccessTokens = (userInfo: any) => _getAllAccessTokens(userInfo, log);
 
-// Local-specific: Update credentials in localDb
-export async function updateProviderCredentials(connectionId: string, newCredentials: any) {
+type CredentialPersist = (
+  connectionId: string,
+  updates: Record<string, unknown>
+) => Promise<unknown>;
+
+// Local-specific: Update credentials in localDb. A refresh that returns both a
+// new access token and refresh token may have consumed/rotated the old refresh
+// token, so that write must fail closed. Access-only/non-rotating writes retain
+// the historical boolean acknowledgement contract.
+export async function updateProviderCredentials(
+  connectionId: string,
+  newCredentials: any,
+  persist: CredentialPersist = updateProviderConnection
+) {
+  const requiresDurableRotation = Boolean(
+    newCredentials?.refreshToken && (newCredentials?.accessToken || newCredentials?.apiKey)
+  );
+
   try {
-    const updates: Record<string, any> = {};
+    const updates: Record<string, unknown> = {};
 
     if (newCredentials.accessToken) {
       updates.accessToken = newCredentials.accessToken;
@@ -183,7 +197,11 @@ export async function updateProviderCredentials(connectionId: string, newCredent
       updates.isActive = newCredentials.isActive;
     }
 
-    const result = await updateProviderConnection(connectionId, updates);
+    const result = await persist(connectionId, updates);
+    if (!result && requiresDurableRotation) {
+      throw new Error("Failed to persist refreshed provider credentials");
+    }
+
     log.info("TOKEN_REFRESH", "Credentials updated in localDb", {
       connectionId,
       success: !!result,
@@ -194,6 +212,9 @@ export async function updateProviderCredentials(connectionId: string, newCredent
       connectionId,
       error: (error as any).message,
     });
+    if (requiresDurableRotation) {
+      throw error instanceof Error ? error : new Error(String(error));
+    }
     return false;
   }
 }
