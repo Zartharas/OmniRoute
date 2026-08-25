@@ -129,6 +129,11 @@ export const formatProviderCredentials = (provider: string, credentials: any) =>
 
 export const getAllAccessTokens = (userInfo: any) => _getAllAccessTokens(userInfo, log);
 
+type CredentialPersist = (
+  connectionId: string,
+  updates: Record<string, unknown>
+) => Promise<unknown>;
+
 // Local-specific: Update credentials in localDb. A refresh that returns both a
 // new access token and refresh token may have consumed/rotated the old refresh
 // token, so that write must fail closed. Access-only/non-rotating writes retain
@@ -136,15 +141,14 @@ export const getAllAccessTokens = (userInfo: any) => _getAllAccessTokens(userInf
 export async function updateProviderCredentials(
   connectionId: string,
   newCredentials: any,
-  persist: (connectionId: string, updates: Record<string, any>) => Promise<any> =
-    updateProviderConnection
+  persist: CredentialPersist = updateProviderConnection
 ) {
   const requiresDurableRotation = Boolean(
     newCredentials?.refreshToken && (newCredentials?.accessToken || newCredentials?.apiKey)
   );
 
   try {
-    const updates: Record<string, any> = {};
+    const updates: Record<string, unknown> = {};
 
     if (newCredentials.accessToken) {
       updates.accessToken = newCredentials.accessToken;
@@ -273,7 +277,7 @@ export async function checkAndRefreshToken(provider: string, credentials: any) {
   }
 
   // Check GitHub/GHE Copilot token expiry. Both github.com Copilot and GHE
-  // Copilot (device-code flow against an enterprise host) issue a short-lived
+  // Copilot (device-code flow) issue a short-lived
   // sub-token separate from the OAuth access token, stored the same way in
   // providerSpecificData.copilotTokenExpiresAt — only the token endpoint host
   // differs (resolveCopilotTokenBaseUrl picks it via providerSpecificData.gheUrl).
