@@ -66,6 +66,48 @@ test("web-session contract preserves representative token and cookie semantics",
   );
 });
 
+test("Kimi web-session contract publishes access and refresh lifecycle token sources", () => {
+  const kimi = buildWebSessionContract().providers.find(
+    (provider) => provider.providerId === "kimi-web"
+  );
+
+  assert.ok(kimi, "kimi-web must be published");
+
+  assert.equal(
+    kimi.credential.kind,
+    "token"
+  );
+
+  assert.ok(
+    kimi.tokenSources.some(
+      (source) =>
+        source.type === "localStorage" &&
+        source.key === "access_token"
+    ),
+    "kimi-web must publish localStorage access_token"
+  );
+
+  assert.ok(
+    kimi.tokenSources.some(
+      (source) =>
+        source.type === "localStorage" &&
+        source.key === "refresh_token"
+    ),
+    "kimi-web must publish localStorage refresh_token"
+  );
+
+  assert.ok(
+    kimi.tokenSources.some(
+      (source) =>
+        source.type === "cookie" &&
+        source.name === "kimi-auth" &&
+        source.domain === ".kimi.com"
+    ),
+    "kimi-web must retain the legacy kimi-auth fallback"
+  );
+});
+
+
 test("web-session contract excludes credential values and operator-only guidance", () => {
   const serialized = JSON.stringify(buildWebSessionContract());
 

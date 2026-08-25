@@ -213,6 +213,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://www.kimi.com",
     [
       { type: "localStorage", key: "access_token" },
+      { type: "localStorage", key: "refresh_token" },
       { type: "cookie", name: "kimi-auth", domain: ".kimi.com" },
     ],
     "Log in to Kimi at www.kimi.com. The current access_token will be extracted from localStorage; kimi-auth remains a legacy fallback.",
