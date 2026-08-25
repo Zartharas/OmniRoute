@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { persistRefreshedCredentialsOrThrow } from "../../src/sse/handlers/chatHelpers.ts";
+import { updateProviderCredentials } from "../../src/sse/services/tokenRefresh.ts";
 
-describe("Kimi refreshed credential persistence wiring", () => {
-  it("fails closed when the production persistence sink reports failure", async () => {
+describe("refreshed credential persistence", () => {
+  it("fails closed when the persistence sink reports failure", async () => {
     let calls = 0;
 
     await assert.rejects(
-      persistRefreshedCredentialsOrThrow(
+      updateProviderCredentials(
         "kimi-connection",
         {
           apiKey: "new-access",
@@ -26,11 +26,11 @@ describe("Kimi refreshed credential persistence wiring", () => {
     assert.equal(calls, 1);
   });
 
-  it("forwards the rotated credential payload and resolves only after persistence succeeds", async () => {
+  it("forwards rotated credential material and acknowledges only durable persistence", async () => {
     let capturedConnectionId: string | null = null;
-    let capturedPayload: Record<string, unknown> | null = null;
+    let capturedUpdates: Record<string, unknown> | null = null;
 
-    await persistRefreshedCredentialsOrThrow(
+    const persisted = await updateProviderCredentials(
       "kimi-connection",
       {
         apiKey: "new-access",
@@ -38,23 +38,27 @@ describe("Kimi refreshed credential persistence wiring", () => {
         refreshToken: "new-refresh",
         expiresAt: "2026-08-25T12:00:00.000Z",
       },
-      async (connectionId, payload) => {
+      async (connectionId, updates) => {
         capturedConnectionId = connectionId;
-        capturedPayload = payload;
-        return true;
+        capturedUpdates = updates;
+        return { id: connectionId };
       }
     );
 
+    assert.equal(persisted, true);
     assert.equal(capturedConnectionId, "kimi-connection");
-    assert.deepEqual(capturedPayload, {
+    assert.deepEqual(capturedUpdates, {
       accessToken: "new-access",
-      refreshToken: "new-refresh",
-      expiresIn: undefined,
-      expiresAt: "2026-08-25T12:00:00.000Z",
-      providerSpecificData: undefined,
-      apiKey: "new-access",
       testStatus: "active",
-      isActive: undefined,
+      lastError: null,
+      lastErrorAt: null,
+      lastErrorType: null,
+      lastErrorSource: null,
+      errorCode: null,
+      refreshToken: "new-refresh",
+      expiresAt: "2026-08-25T12:00:00.000Z",
+      tokenExpiresAt: "2026-08-25T12:00:00.000Z",
+      apiKey: "new-access",
     });
   });
 });
