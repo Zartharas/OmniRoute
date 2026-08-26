@@ -434,6 +434,52 @@ export function stopTokenHealthCheck() {
 
 // ── Core sweep (batch concurrent) ──────────────────────────────────────────
 /** Returns the number of connections swept, which the job registry records. */
+/**
+ * Kimi Web exact-provider bridge for the proactive Token Health scheduler.
+ *
+ * Kimi Web is intentionally stored as authType="apikey", but its "API key"
+ * is actually a short-lived browser access token backed by a refresh token.
+ * The existing sweep enumerates OAuth rows only, so Kimi Web never reaches
+ * checkKimiWebConnectionIfNeeded(). Select this provider by stable provider id
+ * instead of by auth_type so its lifecycle remains correct if storage
+ * classification changes later.
+ *
+ * Do NOT query the generic apikey bucket: Moonshot/Kimi API and
+ * kimi-coding-apikey are static-key providers and must remain untouched.
+ */
+export async function loadHealthCheckSweepConnections(
+  loader: typeof getProviderConnections = getProviderConnections
+) {
+  const oauthConnections =
+    (await loader({ authType: "oauth" })) || [];
+
+  const kimiWebConnections =
+    (await loader({ provider: "kimi-web" })) || [];
+
+  const seenIds = new Set(
+    oauthConnections
+      .map((conn: any) => conn?.id)
+      .filter(Boolean)
+  );
+
+  const uniqueKimiWebConnections =
+    kimiWebConnections.filter((conn: any) => {
+      const provider =
+        String(conn?.provider || "").toLowerCase();
+
+      if (provider !== "kimi-web") return false;
+      if (!conn?.id || seenIds.has(conn.id)) return false;
+
+      seenIds.add(conn.id);
+      return true;
+    });
+
+  return [
+    ...oauthConnections,
+    ...uniqueKimiWebConnections,
+  ];
+}
+
 export async function sweep(): Promise<number> {
   const state = getHCState();
   if (state.sweeping) {
@@ -442,7 +488,7 @@ export async function sweep(): Promise<number> {
   }
   state.sweeping = true;
   try {
-    const connections = await getProviderConnections({ authType: "oauth" });
+    const connections = await loadHealthCheckSweepConnections();
 
     if (!connections || connections.length === 0) return 0;
 
