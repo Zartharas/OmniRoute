@@ -3,7 +3,7 @@
 **Repository scope:** `Zartharas/OmniRoute` fork only  
 **Companion scope:** `Zartharas/omniroute-auth-keeper` where an Auth Keeper defect or repair directly affected OmniRoute behavior  
 **Maintainer purpose:** durable engineering memory, troubleshooting reference, regression-prevention checklist, and post-incident history  
-**Coverage:** recorded OmniRoute/Auth Keeper repair work through 2026-08-26  
+**Coverage:** recorded OmniRoute/Auth Keeper repair work through 2026-08-27
 **Upstream policy:** this file is intentionally maintained only in the fork and is not intended for upstream submission.
 
 > Security note: this register intentionally excludes passwords, API keys, bearer tokens, cookies, refresh-token values, credential HMACs/digests, local management/admin tokens, and other secret material. Account names, provider credential values, and unnecessary connection identifiers are omitted. Public commit/PR/issue identifiers are retained where they are useful for engineering provenance.
@@ -1139,6 +1139,152 @@ Do not discover command syntax after production has been stopped.
 
 ---
 
+
+## OR-HARNESS-009 — Node stdin execution used `"-"` as a module-resolution filename
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+A management-auth probe run with `node -` attempted `createRequire(process.argv[1])`; stdin mode sets that argument to `"-"`, which is not an absolute filename or file URL.
+
+### Permanent fix
+
+Anchor module resolution to a known absolute `package.json` path instead of stdin's synthetic filename.
+
+### Never repeat
+
+When Node executes from stdin, do not treat `process.argv[1]` as a real script path.
+
+---
+
+## OR-HARNESS-010 — Management auth and trusted-locality failures were initially conflated
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+Container-loopback management probes returned `401 AUTH_001`, which could be mistaken for failed trusted-loopback stamping.
+
+### Decisive evidence
+
+The LOCAL_ONLY route did **not** return `403 LOCAL_ONLY`; it reached ordinary management authentication and returned `401`.
+
+### Permanent fix
+
+Use response semantics to separate:
+
+- `403 LOCAL_ONLY` -> locality rejection
+- `401 AUTH_001` -> management authentication rejection
+
+When management auth is unnecessary for the target proof, use the production CLIENT_API path instead of forcing management credentials.
+
+### Never repeat
+
+Do not diagnose authentication and locality from the same generic 401/403 bucket.
+
+---
+
+## OR-HARNESS-011 — Live browser-contract capture was blocked by modal UI state
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+A Conol Radix dialog intercepted pointer events and caused the first dynamic request-capture harness to time out on the composer.
+
+### Permanent fix
+
+Use a disposable copy of the authenticated browser profile, dismiss or remove modal state only in that disposable page, programmatically focus the composer, and intercept/abort every non-GET request before it reaches the provider.
+
+### Regression protection
+
+Dynamic web-contract capture must prove:
+
+- canonical Keeper profile not mutated
+- credential value not printed
+- target request captured before abort
+- provider mutation did not occur
+
+### Never repeat
+
+Do not make evidence collection depend on incidental live UI overlays or mutate the canonical authenticated browser profile to get around them.
+
+---
+
+## OR-HARNESS-012 — Full-suite comparator treated expected fixture errors as regressions
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+A baseline comparator classified thousands of expected test-fixture logs (`401`, `429`, quota errors, simulated network failures) as failure fingerprints and reported hundreds of false "new failures."
+
+### Root cause
+
+The comparator parsed application log severity instead of actual Node test-runner results and initially recognized only TAP-style summary lines.
+
+### Permanent fix
+
+Compare actual test-runner evidence:
+
+- TAP `not ok` names
+- spec-runner `✖`/`✗` names
+- Node `# ...` or `ℹ ...` summary sequences
+- true command/infrastructure failures only
+
+Normalize both literal and URL-encoded worktree paths before comparison.
+
+### Never repeat
+
+Expected error-path logs are test data, not test failures. Baseline comparison must consume the test runner's result protocol.
+
+---
+
+## OR-HARNESS-013 — Runtime mount parity assumed `/app/data` was the only mount
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+A candidate canary failed closed because the live container also had the intentional read-only unified workload-policy bind:
+
+`/run/omniroute-unified/workload-policy.json`
+
+### Permanent fix
+
+Require the exact proven two-mount contract:
+
+- writable `/app/data` volume
+- read-only workload-policy bind
+
+Also preserve the environment path and canonicalize Docker Desktop `/host_mnt/Users/...` versus `/Users/...` source forms.
+
+### Never repeat
+
+Do not reduce runtime parity to "the mount I care about." Reproduce all proven operational mounts and fail closed on unexpected additions or permission changes.
+
+---
+
+## OR-HARNESS-014 — Documentation-only CRLF edit tripped `git diff --check`
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+A documentation-only edit to a CRLF file introduced visible `^M` trailing-whitespace failures even though the Conol RED->GREEN behavior was already passing.
+
+### Permanent fix
+
+Prove the file's executable body was unchanged, restore the unnecessary documentation-only edit, and keep the source patch scoped to the two behavioral/test files.
+
+### Never repeat
+
+Do not normalize or partially rewrite line endings in unrelated files during a focused repair merely to update commentary.
+
+---
+
+
 # 8. Auth Keeper and recovery-watcher incidents
 
 ## OR-AK-001 — Auth Keeper used the wrong persistent data directory assumption
@@ -1731,37 +1877,110 @@ Retry policy is part of error classification, not a generic wrapper around every
 
 ---
 
-## OR-PROVIDER-004 — Conol Web currently reports a provider-side `400` condition
+## OR-PROVIDER-004 — Conol Web first-turn session-create contract drift caused provider-side `400`
 
-**Status:** OPEN — NEXT TARGET
+**Status:** CLOSED
 
-### Current evidence as of 2026-08-26
+### Symptom / failure
 
-Auth Keeper local account is:
+Real `conol-web` chat/model-test requests failed at session creation with:
 
-- bound and verified
-- `SYNCED`
+`Conol session creation failed (HTTP 400)`
 
-but OmniRoute matrix shows the Conol connection with:
+The failure affected many models because it occurred before model-specific follow-up handling or response streaming.
 
-- active connection
-- active test status from prior test
-- current `errorCode` equivalent to `400.0`
-- `hasLastError=true`
-- recent error timestamp
+### Impact
 
-### Current conclusion
+Conol Web connections could look healthy in generic credential validation while real chat failed. Reauthentication could temporarily distract the investigation without repairing the actual protocol defect.
 
-Do not assume credential expiry, cookie failure, or request-schema failure yet. This is the next provider investigation and needs an evidence-first discriminator before mutation.
+### Decisive evidence
 
-### Planned approach
+The evidence sequence deliberately separated credential state from protocol state:
 
-1. capture the exact failing request/response classification without secret material,
-2. compare executor request contract with current Conol browser/backend semantics,
-3. distinguish authentication vs payload/protocol vs provider behavior,
-4. write a focused regression before source mutation,
-5. repair permanently,
-6. re-test only the exact target.
+1. Auth Keeper binding, secure Conol session-cookie presence, and synchronization were healthy.
+2. A real pinned production chat on the exact failing connection reproduced `POST /api/sessions -> HTTP 400`.
+3. Current authenticated Conol browser JavaScript showed that the web client now sends the first user turn inside `POST /api/sessions`.
+4. A disposable-profile request interception captured the exact live body without allowing a provider mutation:
+
+   `{"source":{"type":"home"},"messages":[{"type":"text","content":"..."}],"timezone":"America/Chicago"}`
+
+5. OmniRoute's July-era executor and unit tests still required `messages: []` on session creation, then posted the first turn separately.
+6. RED tests for the current contract failed against the old executor; GREEN passed after the narrow repair.
+7. The exact candidate completed a real pinned Conol chat with HTTP 200 and zero session-create 400s.
+8. Guarded production cutover repeated that real chat successfully, followed by post-stop integrity proof and same-container restart persistence.
+
+### Root cause
+
+Conol changed its browser protocol after the integration was originally verified on 2026-07-30. New sessions must carry the first turn during `POST /api/sessions`; OmniRoute still created an empty session and deferred the first user turn to `/api/sessions/{id}/messages`.
+
+This was **not** caused by:
+
+- a stale Auth Keeper cookie
+- a missing Keeper binding
+- model-specific routing
+- follow-up message formatting
+- response-stream parsing
+
+### Permanent fix
+
+Exact source commit:
+
+`6060b1370182cad758e8a349668335fa3c6583aa`
+
+Changed only:
+
+- `open-sse/executors/conol-web.ts`
+- `tests/unit/conol-web.test.ts`
+
+For a new Conol session, OmniRoute now sends:
+
+- the transformed first-turn message parts
+- timezone
+- `modelPreset`
+- `agentModel`
+- optional clamped `agentEffort`
+
+in the same `POST /api/sessions` request.
+
+`POST /api/sessions/{id}/messages` remains follow-up-only, and `/model` remains available for a real model/effort switch on an existing session.
+
+### Regression protection
+
+Focused coverage proves:
+
+- first turn is in session creation
+- no duplicate first-turn `/messages` POST
+- initial model selection is atomic with first-turn creation
+- effort clamping remains correct
+- image first-turn handling remains correct
+- sticky-session follow-ups remain correct
+- later model switching remains correct
+
+Broader comparison on the exact parent and patch trees:
+
+- 34,624 tests on each tree
+- 34,527 pass / 76 fail / 21 skipped on each tree
+- zero new failed-test names
+- zero new infrastructure failures
+- 4,785 TypeScript diagnostics on each tree
+- zero new TypeScript diagnostics
+- zero diagnostics in changed files
+
+Candidate/runtime proof:
+
+- writable snapshot integrity passed for 7 SQLite databases
+- offline candidate booted healthy with external egress blocked
+- one exact candidate Conol canary returned HTTP 200
+- guarded production canary returned HTTP 200
+- historical session-create 400 did not reproduce
+- post-stop production-candidate data integrity passed
+- same-container restart persistence passed
+- original pre-cutover production data volume remained untouched during cutover
+
+### Never repeat
+
+Do not infer browser-provider health from a generic Test Connection result. Reproduce the actual executor path, identify the exact failing protocol boundary, then compare that boundary with the current browser client's request contract before changing credentials or mapping every HTTP 400 to authentication.
+
 
 ---
 
