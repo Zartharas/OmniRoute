@@ -1285,6 +1285,167 @@ Do not normalize or partially rewrite line endings in unrelated files during a f
 ---
 
 
+
+## OR-HARNESS-015 — R21 full-suite harness defeated OmniRoute's per-process `DATA_DIR` isolation
+
+**Status:** CLOSED
+**First observed:** 2026-08-27
+**Closed:** 2026-08-27
+**Affected component:** test/release harness
+**Affected provider:** Arena/LMArena repair validation
+
+### Symptom / failure
+
+The R21 Arena guidance candidate passed its focused safety tests, existing Arena/LMArena regressions, and changed-file lint, but the repository-wide unit regression appeared to hang/stall under high concurrency.
+
+### Impact
+
+The harness could falsely suggest a source regression or host/Docker instability and could unnecessarily prolong a validation run.
+
+### Decisive evidence
+
+OmniRoute's own `tests/_setup/isolateDataDir.ts` states that each `node:test` file process must receive its own temporary `DATA_DIR` to prevent concurrent SQLite lock contention.
+
+That preloader only creates a unique temporary directory when `DATA_DIR` is unset.
+
+R21 instead exported one shared explicit directory for the entire concurrent test run:
+
+`DATA_DIR=<single shared isolated path>`
+
+The pinned repository test command also used concurrency `20`, amplifying the shared-SQLite collision risk.
+
+### Root cause
+
+The R21 wrapper unintentionally overrode OmniRoute's test isolation contract. A single explicit `DATA_DIR` was shared by many concurrent test processes, defeating the repository's built-in per-process SQLite isolation.
+
+### Permanent fix
+
+R22 leaves `DATA_DIR` unset for repository-wide tests so `tests/_setup/isolateDataDir.ts` creates a unique temporary directory per test-file process.
+
+R22 also uses the repository's `test:unit:ci` path:
+
+- `--test-force-exit`
+- concurrency `4`
+- per-process test `DATA_DIR`
+- `APP_LOG_TO_FILE=false`
+- system-trust writes disabled
+- DNS writes disabled
+
+### Regression protection
+
+Future repository-wide OmniRoute test harnesses must:
+
+- never export one shared `DATA_DIR` across concurrent test processes
+- allow `tests/_setup/isolateDataDir.ts` to own test DB isolation
+- use bounded concurrency for repair validation
+- use `--test-force-exit` where the repository's supported test command already provides it
+
+### Rollback / safety notes
+
+The failed/stalled R21 validation did not modify canonical OmniRoute source, Keeper source, production credentials, provider state, or the live OmniRoute database.
+
+### Never repeat
+
+Do not override a repository's isolation preloader with a shared environment value merely because the shared path itself is disposable.
+
+---
+
+## OR-HARNESS-016 — Docker Desktop received repeated termination signals during R21 campaign
+
+**Status:** MONITOR — future harness interaction mitigated; original signal sender unresolved
+**First observed:** 2026-08-27
+**Closed:** N/A
+**Affected component:** macOS Docker Desktop / validation environment
+**Affected provider:** N/A
+
+### Symptom / failure
+
+During the R21 full-regression campaign, Docker Desktop became unavailable twice. The Docker backend shut down at approximately:
+
+- 2026-08-27 12:22:20 CDT
+- 2026-08-27 13:02:47 CDT
+
+After the second event, Docker-related macOS processes were still observable while the `desktop-linux` engine was unreachable.
+
+### Impact
+
+The event could be misdiagnosed as:
+
+- Docker OOM
+- Resource Saver
+- disk pressure
+- an OmniRoute `docker stop`
+- a Docker virtualization crash
+- a provider-side failure
+
+It also distracted the Arena repair by making the test-suite stall look Docker-related before the independent shared-`DATA_DIR` defect was identified.
+
+### Decisive evidence
+
+Docker's backend logs recorded, before shutdown cleanup:
+
+`engine linux/virtualization-framework shutdown requested (cancel cause: terminated signal received)`
+
+For both events, `com.docker.virtualization.watchdog` reported:
+
+`watchdog detected parent process disappeared`
+
+only **after** the backend had already received the termination signal and begun shutdown.
+
+Therefore the watchdog parent-disappearance message is a downstream consequence of backend termination, not proof of the original signal sender.
+
+Additional negative evidence:
+
+- no Docker backend OOM signature
+- no disk-pressure signature
+- Resource Saver behavior did not match the full Desktop/backend exit
+- no explicit Docker Desktop stop/kill command was found in the narrow shell-history scan
+- no matching LaunchAgent/LaunchDaemon Docker killer was found
+- static OmniRoute scans found no direct Docker Desktop control path
+- Firefly unit process-kill tests use mocks/safety guards and do not establish a Docker kill path
+
+### Root cause
+
+**UNKNOWN.**
+
+Historical retained logs prove that the Docker backend received a termination signal, but they do not identify the process that sent it.
+
+Do not rewrite the root cause as “parent process disappeared”: that watchdog event happened after backend shutdown had already started.
+
+### Mitigation / process fix
+
+R22 removes Docker from the Arena guidance validation path:
+
+- the harness never invokes the Docker CLI
+- Docker is not a prerequisite or health gate
+- any incidental Docker client code in the full unit run is pointed at an intentionally nonexistent socket
+- no production Docker container/engine mutation is permitted
+- the repository-wide test run uses correct per-process `DATA_DIR` isolation
+
+This prevents future Arena guidance validation from depending on or intentionally interacting with the live Docker Desktop engine.
+
+### Regression protection
+
+For test campaigns that do not require Docker:
+
+- do not target the live Docker Desktop socket
+- do not start/restart Docker as a test prerequisite
+- separate Docker lifecycle observations from application test failures
+- preserve exact timestamps before attributing causation
+
+If the termination repeats outside R21/R22 activity, capture the signal sender at event time rather than inferring it from post-exit watchdog messages.
+
+### Rollback / safety notes
+
+No Docker settings were changed during the investigation. Resource Saver, Docker CPU/RAM settings, images, containers, and volumes were not modified to diagnose this event.
+
+### Never repeat
+
+A downstream watchdog “parent disappeared” message does not identify who terminated the parent. Do not claim a Docker root cause until the signal sender is actually evidenced.
+
+---
+
+
 # 8. Auth Keeper and recovery-watcher incidents
 
 ## OR-AK-001 — Auth Keeper used the wrong persistent data directory assumption
@@ -2181,6 +2342,10 @@ Before any future OmniRoute repair:
 33. **Preserve media-only requests.**
 34. **Use authoritative status output for account/provider identifiers.**
 35. **After a repair is closed, archive superseded worktrees/scripts and update this register.**
+
+
+36. **Never export one shared `DATA_DIR` across concurrent OmniRoute test-file processes; let `tests/_setup/isolateDataDir.ts` create per-process temporary state.**
+37. **Do not attribute Docker Desktop termination to OOM, Resource Saver, a test, or parent-watchdog output without evidence of the initiating signal/control path.**
 
 ---
 
