@@ -825,7 +825,7 @@ Do not reuse a worktree from an unrelated provider/task merely because it has th
 
 ## OR-GIT-005 — Accumulated temporary worktrees/download artifacts created ambiguity
 
-**Status:** MONITOR
+**Status:** CLOSED
 
 ### Symptom / failure
 
@@ -840,9 +840,106 @@ After a repair is durably published and rollback needs are satisfied:
 - remove disposable worktrees
 - keep the active production and rollback identities documented
 
+### Closure evidence
+
+The 2026-08-26 cleanup was completed in guarded phases:
+
+- OmniRoute/Auth Keeper Downloads artifacts were moved into timestamped archives with manifests rather than blindly deleted.
+- stale Git worktree metadata was pruned.
+- clean worktrees were removed only when their exact HEAD was already contained by an `origin/*` branch.
+- dirty and unpublished worktrees were held for reconciliation.
+- superseded Kimi worktrees were removed only after byte-parity or commit/blob-level comparison against the final production source.
+- unique untracked Kimi regression evidence was archived before removal.
+- unrelated Mistral, Z.AI, search-blocked-provider, and operations-floor work was intentionally preserved.
+- no local branch, remote branch, Docker resource, or application data was deleted as part of cleanup.
+
 ### Never repeat
 
 Operational memory must live in Git/docs, not only in a pile of timestamped shell scripts.
+
+---
+
+## OR-GIT-006 — Final production Kimi source was live but not yet durable in the fork
+
+**Status:** CLOSED
+
+### Symptom / failure
+
+The production Kimi Web scheduler repair was running successfully from exact local commit
+`4d995a75a8703b1fb7342e3bfbd24e02bc6e95f4`, but that commit was not addressable in
+`Zartharas/OmniRoute` after the runtime repair had already been accepted.
+
+### Impact
+
+A workstation loss, accidental worktree deletion, or later cleanup could have destroyed the
+only convenient source copy of the exact production repair even though the live container was
+healthy. Reconstructing an equivalent patch later would not provide exact source provenance.
+
+### Decisive evidence
+
+Before publication, GitHub returned no commit for
+`4d995a75a8703b1fb7342e3bfbd24e02bc6e95f4`. The preserved final Kimi worktree was clean,
+its parent was exactly `fce6dbef543338fd57f9b9e80730e06da0f8adb9`, and the commit scope
+was exactly two files:
+
+- `src/lib/tokenHealthCheck.ts`
+- `tests/unit/token-health-check-kimi-web-provider-sweep.test.ts`
+
+### Root cause
+
+Production/runtime closure happened before the exact tested local commit had been published to
+the fork. The source remained safe only because the final worktree was explicitly protected
+during cleanup.
+
+### Permanent fix
+
+Publish the exact existing commit object, without recreation or force push, to the fork-only
+branch:
+
+`fix/kimi-web-provider-health-sweep-20260826-155148`
+
+The publication gate required:
+
+- exact commit SHA and parent SHA
+- exact two-file scope
+- exact blob identities
+- clean local worktree
+- fork-origin identity
+- remote branch race gate
+- non-force push
+- post-push remote SHA attestation
+- post-fetch blob attestation
+- no default-branch mutation
+- no upstream mutation
+- no Docker or application-data mutation
+
+### Closure evidence
+
+GitHub now resolves the exact commit:
+
+`4d995a75a8703b1fb7342e3bfbd24e02bc6e95f4`
+
+with parent:
+
+`fce6dbef543338fd57f9b9e80730e06da0f8adb9`
+
+and exact blobs:
+
+- `src/lib/tokenHealthCheck.ts` -> `a9f91c41a06a3ec0f6310af4b9bc03e11eb3b182`
+- `tests/unit/token-health-check-kimi-web-provider-sweep.test.ts` -> `a23eb5f1b5792bfddc66ace70584d735cd79e591`
+
+The fork default branch was intentionally not changed by this durability publication.
+
+### Regression protection
+
+A production repair is not considered source-durably closed until its exact tested commit is
+reachable from the fork (or another explicitly approved durable remote) and the remote SHA/blob
+identity has been attested.
+
+### Never repeat
+
+Do not clean up the final repair worktree or declare source closure solely because the runtime is
+healthy. Publish and attest the exact tested source first.
 
 ---
 
@@ -1412,6 +1509,19 @@ Final Kimi cutover passed:
 - no lifecycle rotation during final test
 - rollback retained
 
+### Source durability proof
+
+The exact production commit was subsequently published to the fork-only branch
+`fix/kimi-web-provider-health-sweep-20260826-155148` and re-attested remotely:
+
+- commit: `4d995a75a8703b1fb7342e3bfbd24e02bc6e95f4`
+- parent: `fce6dbef543338fd57f9b9e80730e06da0f8adb9`
+- source blob: `a9f91c41a06a3ec0f6310af4b9bc03e11eb3b182`
+- regression-test blob: `a23eb5f1b5792bfddc66ace70584d735cd79e591`
+- force push: **NO**
+- fork default branch mutation: **NO**
+- upstream mutation: **NO**
+
 ### Never repeat
 
 Provider authentication classification is not always lifecycle semantics. A provider stored as `apikey` may still require refreshable session scheduling.
@@ -1767,6 +1877,12 @@ As of 2026-08-26:
 
 ## OmniRoute
 
+- exact production source commit: `4d995a75a8703b1fb7342e3bfbd24e02bc6e95f4`
+- fork-only durability branch: `fix/kimi-web-provider-health-sweep-20260826-155148`
+- remote exact-SHA attestation: **PASS**
+- remote exact-blob attestation: **PASS**
+- fork default branch changed by durability publication: **NO**
+- upstream repository changed by durability publication: **NO**
 - exact-provider Kimi Web scheduler bridge: **PASS**
 - proactive Kimi refresh: **PASS**
 - reactive real-401 refresh: **PRESENT**
