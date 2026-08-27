@@ -425,7 +425,7 @@ describe("Conol web provider", () => {
     assert.equal(usage.quotas.subscription.used, 13);
   });
 
-  it("pins preset, model, then effort on a new session before sending the turn", async () => {
+  it("creates the first turn with model selection in POST /api/sessions", async () => {
     clearConolSessionBindingsForTests();
     const originalFetch = globalThis.fetch;
     const calls: Array<{ url: string; init?: RequestInit }> = [];
@@ -500,33 +500,30 @@ describe("Conol web provider", () => {
         imageCount: 0,
       });
 
-      // The session is created empty — model/effort there would be ignored upstream.
-      const createBody = JSON.parse(String(calls[0]?.init?.body));
-      assert.equal(calls[0]?.url.endsWith("/api/sessions"), true);
-      assert.deepEqual(createBody.messages, []);
-      assert.equal("agentModel" in createBody, false);
-      assert.equal("agentEffort" in createBody, false);
-      assert.equal(calls[0]?.init?.headers instanceof Headers, false);
-
-      // Then exactly three /model calls, in preset -> model -> effort order.
-      const modelCalls = calls.filter((call) => call.url.endsWith("/model"));
-      assert.equal(modelCalls.length, 3);
-      assert.deepEqual(JSON.parse(String(modelCalls[0]?.init?.body)), {
-        modelPreset: "pro",
-        hasImageHistory: false,
-      });
-      assert.deepEqual(JSON.parse(String(modelCalls[1]?.init?.body)), {
-        agentModel: "claude-fable-5",
-        agentEffort: null,
-      });
-      assert.deepEqual(JSON.parse(String(modelCalls[2]?.init?.body)), { agentEffort: "xhigh" });
-
-      // Configuration must complete before the turn is submitted.
-      const turnIndex = calls.findIndex(
-        (call) => call.url.endsWith("/api/sessions/session_123/messages") && call.init?.method === "POST"
+      const createCall = calls.find(
+        (call) => call.url.endsWith("/api/sessions") && call.init?.method === "POST"
       );
-      const lastModelIndex = calls.map((call) => call.url.endsWith("/model")).lastIndexOf(true);
-      assert.ok(lastModelIndex < turnIndex, "model config must precede the message turn");
+      assert.ok(createCall, "expected exactly one session-create request");
+      const createBody = JSON.parse(String(createCall.init?.body));
+      assert.deepEqual(createBody, {
+        source: { type: "home" },
+        messages: [{ type: "text", content: "Reply OK" }],
+        timezone: "Europe/Chisinau",
+        modelPreset: "pro",
+        agentModel: "claude-fable-5",
+        agentEffort: "xhigh",
+      });
+      assert.equal(createCall.init?.headers instanceof Headers, false);
+
+      const modelCalls = calls.filter((call) => call.url.endsWith("/model"));
+      assert.equal(modelCalls.length, 0, "new-session model selection belongs on session create");
+
+      const firstTurnPosts = calls.filter(
+        (call) =>
+          call.url.endsWith("/api/sessions/session_123/messages") &&
+          call.init?.method === "POST"
+      );
+      assert.equal(firstTurnPosts.length, 0, "first turn must not be submitted twice");
 
       const responseBody = await capture.response.json();
       assert.equal(responseBody.choices[0].message.content, "OK");
@@ -537,14 +534,16 @@ describe("Conol web provider", () => {
     }
   });
 
-  it("defaults to xhigh, clamps it per model, and skips effort when unsupported", async () => {
+  it("sends the clamped initial model selection on session creation", async () => {
     const runWithModel = async (model: string) => {
       clearConolSessionBindingsForTests();
       const originalFetch = globalThis.fetch;
+      const createBodies: Array<Record<string, unknown>> = [];
       const modelBodies: unknown[] = [];
       globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
         const url = input instanceof Request ? input.url : String(input);
         if (url.endsWith("/api/sessions")) {
+          createBodies.push(JSON.parse(String(init?.body)) as Record<string, unknown>);
           return new Response(JSON.stringify({ sessionId: "s1" }), { status: 201 });
         }
         if (url.endsWith("/api/sessions/s1/model")) {
@@ -564,34 +563,36 @@ describe("Conol web provider", () => {
       }) as typeof fetch;
 
       try {
-        // No effort suffix -> the xhigh default applies.
         await new ConolWebExecutor().execute({
           model: `conol-web/${model}`,
           stream: false,
           body: { messages: [{ role: "user", content: "hi" }] },
           credentials: { apiKey: `${SESSION_COOKIE_NAME}=synthetic-token` },
         });
-        return modelBodies;
+        return { createBody: createBodies[0]!, modelBodies };
       } finally {
         globalThis.fetch = originalFetch;
         clearConolSessionBindingsForTests();
       }
     };
 
-    // Supports xhigh -> applied verbatim.
-    assert.deepEqual((await runWithModel("claude-fable-5")).at(-1), { agentEffort: "xhigh" });
-    // No xhigh rung -> clamped down to high.
-    assert.deepEqual((await runWithModel("claude-sonnet-5")).at(-1), { agentEffort: "high" });
-    // No effort ladder -> only preset + model calls, no effort call.
-    const fusionBodies = await runWithModel("openrouter/fusion");
-    assert.equal(fusionBodies.length, 2);
-    assert.deepEqual(fusionBodies.at(-1), {
-      agentModel: "openrouter/fusion",
-      agentEffort: null,
-    });
+    const fable = await runWithModel("claude-fable-5");
+    assert.equal(fable.createBody.agentModel, "claude-fable-5");
+    assert.equal(fable.createBody.agentEffort, "xhigh");
+    assert.equal(fable.modelBodies.length, 0);
+
+    const sonnet = await runWithModel("claude-sonnet-5");
+    assert.equal(sonnet.createBody.agentModel, "claude-sonnet-5");
+    assert.equal(sonnet.createBody.agentEffort, "high");
+    assert.equal(sonnet.modelBodies.length, 0);
+
+    const fusion = await runWithModel("openrouter/fusion");
+    assert.equal(fusion.createBody.agentModel, "openrouter/fusion");
+    assert.equal("agentEffort" in fusion.createBody, false);
+    assert.equal(fusion.modelBodies.length, 0);
   });
 
-  it("reuses one Conol session for follow-ups and forwards only the newest user turn", async () => {
+  it("reuses one Conol session and sends only follow-ups to /messages", async () => {
     clearConolSessionBindingsForTests();
     const originalFetch = globalThis.fetch;
     const calls: Array<{ url: string; init?: RequestInit }> = [];
@@ -669,32 +670,34 @@ describe("Conol web provider", () => {
 
       assert.equal((first as { response: Response }).response.status, 200);
       assert.equal((second as { response: Response }).response.status, 200);
+
       const createCalls = calls.filter(
         (call) => call.url.endsWith("/api/sessions") && call.init?.method === "POST"
       );
       const turnCalls = calls.filter(
         (call) =>
-          call.url.endsWith("/api/sessions/sticky_session/messages") && call.init?.method === "POST"
+          call.url.endsWith("/api/sessions/sticky_session/messages") &&
+          call.init?.method === "POST"
       );
       const modelCalls = calls.filter((call) => call.url.endsWith("/model"));
-      // One session, two turns posted into it.
+
       assert.equal(createCalls.length, 1);
-      assert.equal(turnCalls.length, 2);
-      // Preset + model + effort once; the unchanged second turn re-pins nothing.
-      assert.equal(modelCalls.length, 3);
+      assert.equal(turnCalls.length, 1, "only the second turn is a follow-up POST");
+      assert.equal(modelCalls.length, 0, "unchanged session model must not be re-pinned");
 
       const createBody = JSON.parse(String(createCalls[0]?.init?.body));
-      const firstTurnBody = JSON.parse(String(turnCalls[0]?.init?.body));
-      const followUpBody = JSON.parse(String(turnCalls[1]?.init?.body));
-      assert.deepEqual(createBody.messages, []);
-      assert.deepEqual(firstTurnBody.messages, [{ type: "text", content: "First user turn" }]);
+      const followUpBody = JSON.parse(String(turnCalls[0]?.init?.body));
+      assert.deepEqual(createBody.messages, [{ type: "text", content: "First user turn" }]);
+      assert.equal(createBody.agentModel, "claude-fable-5");
+      assert.equal(createBody.agentEffort, "xhigh");
       assert.deepEqual(followUpBody.messages, [{ type: "text", content: "Second user turn" }]);
       assert.equal("source" in followUpBody, false);
       assert.equal("agentModel" in followUpBody, false);
       assert.doesNotMatch(
-        JSON.stringify([createBody, firstTurnBody, followUpBody]),
+        JSON.stringify([createBody, followUpBody]),
         /system prompt|tool output|"role"/
       );
+
       assert.equal(
         (first as { transformedBody: Record<string, unknown> }).transformedBody.reusedSession,
         false
@@ -829,7 +832,7 @@ describe("Conol web provider", () => {
     }
   });
 
-  it("uploads the structured image and references it before clean user text", async () => {
+  it("uploads the structured image into the first session-create turn", async () => {
     clearConolSessionBindingsForTests();
     const originalFetch = globalThis.fetch;
     const calls: Array<{ url: string; init?: RequestInit }> = [];
@@ -905,12 +908,14 @@ describe("Conol web provider", () => {
       });
 
       assert.equal((result as { response: Response }).response.status, 200);
-      const turnCall = calls.find(
-        (call) =>
-          call.url.endsWith("/api/sessions/image_session/messages") && call.init?.method === "POST"
+
+      const createCall = calls.find(
+        (call) => call.url.endsWith("/api/sessions") && call.init?.method === "POST"
       );
-      const turnBody = JSON.parse(String(turnCall?.init?.body));
-      assert.deepEqual(turnBody.messages, [
+      assert.ok(createCall);
+      const createBody = JSON.parse(String(createCall.init?.body));
+
+      assert.deepEqual(createBody.messages, [
         {
           type: "image",
           content: "/api/assets/asset_1",
@@ -918,13 +923,18 @@ describe("Conol web provider", () => {
         },
         { type: "text", content: "What is on the image?" },
       ]);
-      assert.doesNotMatch(JSON.stringify(turnBody), /unavailable|image-cache|System data/);
+      assert.equal(createBody.modelPreset, "pro");
+      assert.equal(createBody.agentModel, "claude-fable-5");
+      assert.equal(createBody.agentEffort, "xhigh");
+      assert.doesNotMatch(JSON.stringify(createBody), /unavailable|image-cache|System data/);
 
-      // An image turn must prime the preset as multimodal.
-      const presetBody = JSON.parse(
-        String(calls.find((call) => call.url.endsWith("/model"))?.init?.body)
+      const firstTurnPosts = calls.filter(
+        (call) =>
+          call.url.endsWith("/api/sessions/image_session/messages") &&
+          call.init?.method === "POST"
       );
-      assert.deepEqual(presetBody, { modelPreset: "pro", hasImageHistory: true });
+      assert.equal(firstTurnPosts.length, 0);
+      assert.equal(calls.filter((call) => call.url.endsWith("/model")).length, 0);
     } finally {
       globalThis.fetch = originalFetch;
       clearConolSessionBindingsForTests();

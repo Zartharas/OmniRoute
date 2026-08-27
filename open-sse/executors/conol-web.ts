@@ -1,17 +1,16 @@
 /**
  * ConolExecutor — conol.ai browser-session chat (Unofficial/Experimental).
  *
- * Protocol verified against the web client on 2026-07-30:
+ * Current web contract re-verified on 2026-08-26:
  *   - POST /api/assets for raw image uploads
- *   - POST /api/sessions to create a session
- *   - POST /api/sessions/{id}/model to pin preset, then model, then effort
- *   - POST /api/sessions/{id}/messages to submit a turn
+ *   - POST /api/sessions with the FIRST turn plus optional model selection
+ *   - POST /api/sessions/{id}/model only for later model/effort switches
+ *   - POST /api/sessions/{id}/messages only for follow-up turns
  *   - GET /api/sessions/{id}/messages?logDeltas=1 for cumulative NDJSON updates
  *   - Cookie authentication via __Secure-better-auth.session_token
  *
- * Session creation ignores agentModel/agentEffort and answers with
- * `modelDowngraded: true` on the account default, so the session is always
- * created empty and configured via /model before the first turn is submitted.
+ * Conol now rejects the historical empty-session create contract with HTTP 400.
+ * New sessions therefore carry the first turn and requested selection atomically.
  */
 import { createHash } from "node:crypto";
 
@@ -685,15 +684,26 @@ export class ConolWebExecutor extends BaseExecutor {
         // Sticky: once a session has carried an image, Conol keeps treating it as
         // multimodal, which drives preset text/multimodal model resolution.
         const hasImageHistory = (cachedBinding?.hasImageHistory ?? false) || imageParts.length > 0;
+        const plan = buildConolSessionModelPlan({ model, effort, hasImageHistory });
+        const desiredEffort = plan.effort?.agentEffort ?? null;
+        let createdWithFirstTurn = false;
 
-        // Conol ignores agentModel/agentEffort on session creation, so create the
-        // session empty and configure it before any turn is submitted. Otherwise the
-        // very first turn silently runs on the downgraded account default.
         if (!sessionId) {
+          // Current Conol web client contract (captured 2026-08-26): session
+          // creation carries the first message. Optional model-selection fields
+          // live on the same request so the first turn does not run on an
+          // unintended account default.
           const createResponse = await fetch(CONOL_SESSION_URL, {
             method: "POST",
             headers: conolHeaders(cookie, { "content-type": "application/json" }),
-            body: JSON.stringify({ source: { type: "home" }, messages: [], timezone }),
+            body: JSON.stringify({
+              source: { type: "home" },
+              messages: parts,
+              timezone,
+              modelPreset: plan.preset.modelPreset,
+              agentModel: plan.model.agentModel,
+              ...(desiredEffort ? { agentEffort: desiredEffort } : {}),
+            }),
             signal: upstreamSignal,
           });
           if (createResponse.status === 401 || createResponse.status === 403) {
@@ -723,17 +733,17 @@ export class ConolWebExecutor extends BaseExecutor {
               CONOL_SESSION_URL
             );
           }
-          presetApplied = false;
-          appliedModel = "";
-          appliedEffort = null;
+
+          presetApplied = true;
+          appliedModel = model;
+          appliedEffort = desiredEffort;
+          createdWithFirstTurn = true;
         }
 
-        const plan = buildConolSessionModelPlan({ model, effort, hasImageHistory });
-        const desiredEffort = plan.effort?.agentEffort ?? null;
-        // Re-pin only on a real change: a new session, a model switch, or an
-        // effort switch. Steady-state follow-ups cost no extra round trips.
+        // Existing sessions still use /model for a real model or effort switch.
         const needsModelUpdate =
-          !presetApplied || appliedModel !== model || appliedEffort !== desiredEffort;
+          !createdWithFirstTurn &&
+          (!presetApplied || appliedModel !== model || appliedEffort !== desiredEffort);
         if (needsModelUpdate) {
           const configured = await applyConolSessionModel({
             sessionId,
@@ -785,31 +795,6 @@ export class ConolWebExecutor extends BaseExecutor {
           }
           reusedSession = true;
           await followUpResponse.body?.cancel().catch(() => undefined);
-        } else {
-          const firstTurnUrl = `${CONOL_SESSION_URL}/${sessionId}/messages`;
-          const firstTurnResponse = await fetch(firstTurnUrl, {
-            method: "POST",
-            headers: conolHeaders(cookie, { "content-type": "application/json" }, sessionId),
-            body: JSON.stringify({ messages: parts, timezone }),
-            signal: upstreamSignal,
-          });
-          if (firstTurnResponse.status === 401 || firstTurnResponse.status === 403) {
-            return makeErrorResult(
-              firstTurnResponse.status,
-              "Conol session expired or is invalid — sign in again",
-              { model },
-              firstTurnUrl
-            );
-          }
-          if (!firstTurnResponse.ok) {
-            return makeErrorResult(
-              firstTurnResponse.status,
-              `Conol message submission failed (HTTP ${firstTurnResponse.status})`,
-              { model, sessionId },
-              firstTurnUrl
-            );
-          }
-          await firstTurnResponse.body?.cancel().catch(() => undefined);
         }
 
         if (sessionBindingKey) {
