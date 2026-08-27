@@ -31,7 +31,7 @@ export function missingCookieResult(
   return {
     response: errorResponse(
       401,
-      "Arena requires a session cookie. Paste the full Cookie header from arena.ai (include arena-auth-prod-v1.* chunks and ideally cf_clearance).",
+      "Arena requires an authenticated arena.ai session cookie. Reauthenticate through the supported browser login flow and sync the resulting session.",
       "authentication_error",
       "missing_cookie"
     ),
@@ -59,11 +59,26 @@ function isBotOrChallenge(status: number, text: string | null | undefined): bool
 }
 
 function botBlockMessage(text: string | null | undefined, hasRecaptcha: boolean, status: number) {
+  const interactiveGuidance =
+    "Complete any required verification directly in Arena's official browser experience. " +
+    "OmniRoute does not automate anti-bot challenges or accept challenge tokens.";
+
   if (isCloudflareChallenge(text)) {
-    return "Arena blocked by Cloudflare bot management. Use a residential/browser-grade network if needed, paste a fresh full Cookie header (include cf_clearance / __cf_bm when present), and optionally set providerSpecificData.recaptchaV3Token from a live browser session.";
+    return `Arena blocked the automated request with a Cloudflare challenge. ${interactiveGuidance}`;
   }
-  if (hasRecaptcha) return `Arena API error: ${status}`;
-  return `Arena API error: ${status}. If this persists, supply a browser reCAPTCHA v3 token via credentials.providerSpecificData.recaptchaV3Token (in addition to the session cookie).`;
+
+  if (status === 403) {
+    return (
+      "Arena rejected the automated request with HTTP 403. " +
+      `This may be an anti-bot or access-policy challenge. ${interactiveGuidance}`
+    );
+  }
+
+  if (hasRecaptcha) {
+    return `Arena API error: ${status}. Browser verification was not accepted. ${interactiveGuidance}`;
+  }
+
+  return `Arena API error: ${status}. ${interactiveGuidance}`;
 }
 
 /** Map non-2xx / CF TLS results to an executor failure payload, or null if OK. */
