@@ -3,6 +3,7 @@
  */
 
 export const LMARENA_API_BASE = "https://arena.ai";
+export const LMARENA_DIRECT_URL = `${LMARENA_API_BASE}/text/direct`;
 export const LMARENA_STREAM_URL = `${LMARENA_API_BASE}/nextjs-api/stream/create-evaluation`;
 /**
  * Current Chrome stable UA (header surface).
@@ -51,8 +52,9 @@ export interface LMArenaModelMetadata {
   };
 }
 
-// Live arena.ai HTML discovery is intentionally disabled. Catalog + UUID map
-// come from the Direct-chat scrape seed (registry/lmarena/directModels.ts).
+// The shipped catalog stays static for fast UI/model listing. Before an actual
+// create-evaluation POST, the executor separately validates the selected model
+// against Arena's public /text/direct initialModels metadata.
 
 function stripLMArenaModelPrefix(model: string): string {
   return model.replace(/^(?:lmarena|lma|arena)\//i, "").trim();
@@ -115,14 +117,14 @@ function isMarkedDead(entry: LMArenaModelMetadata, publicId: string): boolean {
   return false;
 }
 
-function isLMArenaChatCatalogModel(entry: LMArenaModelMetadata): boolean {
+export function isLMArenaChatCatalogModel(entry: LMArenaModelMetadata): boolean {
   if (entry.userSelectable === false) return false;
   // Must resolve to a real Arena UUID for create-evaluation.
   if (typeof entry.id !== "string" || !LMARENA_MODEL_ID_RE.test(entry.id)) return false;
 
   const chatRank = entry.rankByModality?.chat;
   if (typeof chatRank !== "number" || !Number.isFinite(chatRank)) return false;
-  // Unranked / placeholder rows use huge sentinels and commonly 404 when probed.
+  // Unranked / placeholder rows use huge sentinels and commonly 404/400 when probed.
   if (chatRank >= LMARENA_MAX_REASONABLE_CHAT_RANK) return false;
 
   if (!hasLMArenaCapability(entry, "input", "text")) return false;
@@ -227,22 +229,88 @@ export function pickLMArenaModelId(model: string, models: LMArenaModelMetadata[]
   return match?.id || requested;
 }
 
+/**
+ * Resolve a requested model only if Arena currently advertises a chat-eligible
+ * row. Public-name resolution prefers the best live-ranked duplicate; aliases
+ * that exist only in the static seed may still validate via their seeded UUID.
+ * Returns null instead of allowing a stale/unranked model to reach POST.
+ */
+export function resolveLMArenaLiveChatModelId(
+  model: string,
+  staticArenaModelId: string,
+  liveModels: LMArenaModelMetadata[]
+): string | null {
+  const requested = stripLMArenaModelPrefix(model);
+
+  if (LMARENA_MODEL_ID_RE.test(requested)) {
+    const exact = liveModels.find(
+      (entry) =>
+        typeof entry.id === "string" &&
+        normalizeModelName(entry.id) === normalizeModelName(requested) &&
+        isLMArenaChatCatalogModel(entry)
+    );
+    return exact?.id ?? null;
+  }
+
+  const liveByName = pickLMArenaModelId(requested, liveModels);
+  if (LMARENA_MODEL_ID_RE.test(liveByName)) return liveByName;
+
+  if (LMARENA_MODEL_ID_RE.test(staticArenaModelId)) {
+    const liveBySeedId = liveModels.find(
+      (entry) =>
+        typeof entry.id === "string" &&
+        normalizeModelName(entry.id) === normalizeModelName(staticArenaModelId) &&
+        isLMArenaChatCatalogModel(entry)
+    );
+    if (liveBySeedId?.id) return liveBySeedId.id;
+  }
+
+  return null;
+}
+
+function extractBalancedJsonArray(raw: string): string | null {
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw[i];
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+    if (ch === "\\") {
+      escaped = true;
+      continue;
+    }
+    if (ch === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (inString) continue;
+    if (ch === "[") depth++;
+    else if (ch === "]") {
+      depth--;
+      if (depth === 0) return raw.slice(0, i + 1);
+    }
+  }
+  return null;
+}
+
 export function parseLMArenaInitialModels(html: string): LMArenaModelMetadata[] {
   const escapedMarker = '\\"initialModels\\":[';
   const plainMarker = '"initialModels":[';
-  const marker = html.includes(escapedMarker) ? escapedMarker : plainMarker;
+  const escaped = html.includes(escapedMarker);
+  const marker = escaped ? escapedMarker : plainMarker;
   const markerIndex = html.indexOf(marker);
   if (markerIndex < 0) return [];
 
   const arrayStart = markerIndex + marker.length - 1;
-  const escapedEnd = '],\\"initialModelAId\\"';
-  const plainEnd = '],"initialModelAId"';
-  const arrayEnd = html.indexOf(escapedEnd, arrayStart);
-  const fallbackEnd = html.indexOf(plainEnd, arrayStart);
-  const endIndex = arrayEnd >= 0 ? arrayEnd : fallbackEnd;
-  if (endIndex < 0 || endIndex < arrayStart) return [];
+  let tail = html.slice(arrayStart);
+  if (escaped) tail = tail.replace(/\\"/g, '"');
+  const rawArray = extractBalancedJsonArray(tail);
+  if (!rawArray) return [];
 
-  const rawArray = html.slice(arrayStart, endIndex + 1).replace(/\\"/g, '"');
   try {
     const parsed = JSON.parse(rawArray);
     return Array.isArray(parsed) ? (parsed as LMArenaModelMetadata[]) : [];
@@ -256,7 +324,7 @@ type LogFn = {
   warn?: (scope: string, msg: string) => void;
 };
 
-/** Static Direct-chat allowlist only — no arena.ai network call. */
+/** Static Direct-chat allowlist used for UI/catalog fallback and alias lookup. */
 export async function getLMArenaModels(log?: LogFn): Promise<LMArenaModelMetadata[]> {
   const { LMARENA_DIRECT_MODEL_ENTRIES } =
     await import("../../config/providers/registry/lmarena/directModels.ts");
@@ -277,6 +345,8 @@ export async function getLMArenaModels(log?: LogFn): Promise<LMArenaModelMetadat
         ...(m.category === "Search" ? { web: true } : {}),
       },
     },
+    // Static rows are candidates only. Execution-time live eligibility validation
+    // prevents this placeholder rank from authorizing a stale Arena POST.
     rankByModality: { chat: 1 },
   }));
   log?.debug?.(
