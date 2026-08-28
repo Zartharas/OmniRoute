@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert";
-import { TheOldLlmExecutor, tokenCache } from "../open-sse/executors/theoldllm.ts";
+import { TheOldLlmExecutor } from "../open-sse/executors/theoldllm.ts";
 
 const executor = new TheOldLlmExecutor();
 
@@ -22,16 +22,6 @@ function makeResponse(status: number, body = MOCK_SSE) {
     headers: new Map<string, string>([["content-type", "application/json"]]),
     text: async () => body,
   } as unknown as Response;
-}
-
-function warmTokenCache() {
-  tokenCache.value = "test-token-abc123";
-  tokenCache.expiresAt = Date.now() + 15 * 60 * 1000;
-}
-
-function clearTokenCache() {
-  tokenCache.value = "";
-  tokenCache.expiresAt = 0;
 }
 
 describe("TheOldLlmExecutor", () => {
@@ -105,15 +95,14 @@ describe("TheOldLlmExecutor", () => {
     }
   });
 
-  it("retries once after 401 then succeeds", async () => {
+  it("does not retry a 401 as a stale request token", async () => {
     const originalFetch = globalThis.fetch;
-    warmTokenCache();
     try {
       let calls = 0;
-      const responses = [() => makeResponse(401, MOCK_ERR), () => makeResponse(200, MOCK_SSE)];
-
-      globalThis.fetch = async () =>
-        responses[calls++ < responses.length ? calls - 1 : responses.length - 1]() as any;
+      globalThis.fetch = async () => {
+        calls++;
+        return makeResponse(401, MOCK_ERR) as any;
+      };
 
       const result = await executor.execute({
         model: "gpt-5.4",
@@ -129,11 +118,10 @@ describe("TheOldLlmExecutor", () => {
         },
       });
 
-      assert.strictEqual((result as any).response.status, 200);
-      assert.ok(calls >= 2, `expected >=2 fetch calls, got ${calls}`);
+      assert.strictEqual((result as any).response.status, 401);
+      assert.strictEqual(calls, 1, "401 must not trigger a synthetic-token retry");
     } finally {
       globalThis.fetch = originalFetch;
-      clearTokenCache();
     }
   });
 
@@ -179,7 +167,6 @@ describe("TheOldLlmExecutor", () => {
   it("lets cancellation abort before upstream work", async () => {
     const controller = new AbortController();
     controller.abort(new Error("cancelled"));
-    warmTokenCache();
 
     let fetchCalls = 0;
     const originalFetch = globalThis.fetch;
@@ -206,13 +193,11 @@ describe("TheOldLlmExecutor", () => {
       assert.strictEqual(fetchCalls, 0);
     } finally {
       globalThis.fetch = originalFetch;
-      clearTokenCache();
     }
   });
 
-  it("handles concurrent calls with cached token", async () => {
+  it("handles concurrent anonymous calls", async () => {
     const originalFetch = globalThis.fetch;
-    warmTokenCache();
     try {
       let fetchCalls = 0;
 
@@ -241,13 +226,11 @@ describe("TheOldLlmExecutor", () => {
       assert.ok(fetchCalls >= 1, `expected >=1 fetch calls, got ${fetchCalls}`);
     } finally {
       globalThis.fetch = originalFetch;
-      clearTokenCache();
     }
   });
 
   it("fast fails on network error", async () => {
     const originalFetch = globalThis.fetch;
-    warmTokenCache();
     try {
       globalThis.fetch = async () => {
         const error = new Error("ECONNREFUSED");
@@ -272,7 +255,6 @@ describe("TheOldLlmExecutor", () => {
       assert.strictEqual((result as any).response.status, 502);
     } finally {
       globalThis.fetch = originalFetch;
-      clearTokenCache();
     }
   });
 });

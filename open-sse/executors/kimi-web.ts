@@ -409,9 +409,17 @@ export class KimiWebExecutor extends BaseExecutor {
     if (upstream.status === 401) {
       const refreshToken =
         credentials?.refreshToken || credentials?.providerSpecificData?.refreshToken;
-      if (refreshToken && typeof refreshToken === "string") {
+      if (refreshToken && typeof refreshToken === "string" && input.onCredentialsRefreshed) {
         const refreshRes = await exchangeKimiRefreshToken(refreshToken, getKimiWebBaseUrl());
         if (refreshRes.success && refreshRes.accessToken) {
+          await input.onCredentialsRefreshed({
+            apiKey: refreshRes.accessToken,
+            accessToken: refreshRes.accessToken,
+            refreshToken: refreshRes.refreshToken ?? refreshToken,
+            ...(refreshRes.expiresAtSec
+              ? { expiresAt: new Date(refreshRes.expiresAtSec * 1000).toISOString() }
+              : {}),
+          });
           accessToken = refreshRes.accessToken;
           const retryHeaders = this.buildKimiHeaders(accessToken);
           try {

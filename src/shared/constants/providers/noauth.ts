@@ -86,9 +86,12 @@ export const NOAUTH_PROVIDERS = {
     hasFree: true,
     serviceKinds: ["llm"],
     freeNote:
-      "Free — GPT-5.4, Claude 4.6 Opus/Sonnet/Haiku, + more. No API key — tokens auto-generated via browser.",
+      "Free web workspace — no API key. The current chat route may require interactive browser human verification.",
     authHint:
-      "No credentials required. The executor auto-generates access tokens via an embedded Playwright browser instance.",
+      "No account credential is required. The live web route may require browser-side human verification; OmniRoute does not synthesize or replay that challenge.",
+    notice: {
+      text: "TheOldLLM is a UI-only web service rather than a documented API. If upstream human verification is required, server-side requests fail closed; use the website interactively or another documented provider.",
+    },
   },
   chipotle: {
     id: "chipotle",

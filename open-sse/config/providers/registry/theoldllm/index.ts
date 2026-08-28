@@ -5,7 +5,9 @@ export const theoldllmProvider: RegistryEntry = {
   alias: "tllm",
   format: "openai",
   executor: "theoldllm",
-  // Playwright-backed executor — no standard auth; uses embedded browser for token generation
+  // No account credential is required. The live web route may require interactive
+  // browser human verification; the server executor fails closed rather than
+  // synthesizing or replaying that challenge.
   baseUrl: "https://theoldllm.vercel.app/api/chatgpt",
   baseUrls: ["https://theoldllm.vercel.app/api/chatgpt"],
   authType: "none",

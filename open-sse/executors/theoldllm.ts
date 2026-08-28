@@ -92,21 +92,17 @@ export function mapModel(model: string): string {
   return "GPT_5_4";
 }
 
-// ── Token generation (mirrors client-side rie() from theoldllm.vercel.app) ──
+// ── Anonymous web transport ───────────────────────────────────────────────
 //
-// The SPA generates X-Request-Token via:
-//   const nie = "oldllm-client-2026";
-//   const n = Date.now();
-//   const e = `${n}-${nie}-${navigator.userAgent.slice(0, 20)}`;
-//   let t = djb2_hash(e);
-//   const r = crypto.randomUUID().slice(0, 8);
-//   return `${n.toString(36)}-${Math.abs(t).toString(36)}-${r}`;
+// Live browser contract captured 2026-08-28:
+//   - no Authorization/Bearer on /api/chatgpt
+//   - no X-Request-Token
+//   - the website's own browser fetch wrapper may add x-is-human/x-path/x-method
+//     from an interactive human-verification challenge.
 //
-// Since nie is a static constant and the UA prefix is known, we can generate
-// valid tokens server-side without launching a browser.
-
-const TOKEN_SEED = "oldllm-client-2026";
-const UA_PREFIX = CHROME_UA.slice(0, 20); // "Mozilla/5.0 (Windows"
+// OmniRoute MUST NOT synthesize or replay that challenge material. Requests are
+// sent anonymously; if the upstream requires browser verification, the
+// executor fails closed with an explicit error.
 
 type TheOldLlmProxy = Awaited<
   ReturnType<typeof import("../../src/lib/db/proxies").resolveProxyForProvider>
@@ -120,23 +116,6 @@ interface TheOldLlmFetchDependencies {
 }
 
 class TheOldLlmProxyUnavailableError extends Error {}
-
-export function generateRequestToken(): string {
-  const n = Date.now();
-  const e = `${n}-${TOKEN_SEED}-${UA_PREFIX}`;
-  let t = 0;
-  for (let i = 0; i < e.length; i++) {
-    const s = e.charCodeAt(i);
-    t = (t << 5) - t + s;
-    t = t & t;
-  }
-  const r = crypto.randomUUID().replace(/-/g, "").slice(0, 8);
-  return `${n.toString(36)}-${Math.abs(t).toString(36)}-${r}`;
-}
-
-// Exported for test compatibility — the new server-side token flow generates
-// tokens per-request; this stub satisfies imports that set tokenCache.value.
-export const tokenCache: { value: string; expiresAt: number } = { value: "", expiresAt: 0 };
 
 // ── Direct Node.js fetch ──────────────────────────────────────────────────
 
@@ -169,7 +148,6 @@ export async function fetchTheOldLlmWithProviderProxy(
       headers: {
         "Content-Type": "application/json",
         "X-Client-Version": "3.8.4",
-        "X-Request-Token": generateRequestToken(),
         "User-Agent": CHROME_UA,
       },
       body: JSON.stringify(reqBody),
@@ -212,17 +190,45 @@ export function isVercelMitigationResponse(response: Response, body: string): bo
   );
 }
 
-function isTokenRejected(status: number, body: string): boolean {
-  if (status === 401 || status === 403) return true;
-  try {
-    const p = JSON.parse(body);
-    return (
-      p?.error?.type === "access_denied" ||
-      (typeof p?.error === "string" && /blocked|denied|invalid/i.test(p.error))
-    );
-  } catch {
-    return false;
+export function isHumanVerificationResponse(
+  response: Response,
+  body: string
+): boolean {
+  const marker =
+    /verify you are human|verification (?:failed|required)|human verification|turnstile/i;
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+  const looksLikeSse = contentType.includes("text/event-stream");
+
+  if (!looksLikeSse) {
+    return marker.test(body);
   }
+
+  for (const line of body.split("\n")) {
+    if (!line.startsWith("data: ") || line === "data: [DONE]") continue;
+
+    try {
+      const payload = JSON.parse(line.slice(6));
+      const candidates: unknown[] = [
+        payload?.error,
+        payload?.error?.message,
+        payload?.message,
+        payload?.detail,
+      ];
+
+      for (const value of candidates) {
+        const text =
+          typeof value === "string"
+            ? value
+            : value && typeof value === "object"
+              ? JSON.stringify(value)
+              : "";
+
+        if (text && marker.test(text)) return true;
+      }
+    } catch {}
+  }
+
+  return false;
 }
 
 // ── SSE helpers ───────────────────────────────────────────────────────────
@@ -269,6 +275,17 @@ function buildErrorResponse(status: number, body: string): string {
   });
 }
 
+function buildHumanVerificationError(): string {
+  return JSON.stringify({
+    error: {
+      message:
+        "The Old LLM web chat currently requires browser-side human verification for this request. OmniRoute will not synthesize or replay that challenge. Use the TheOldLLM website interactively or a documented API/provider.",
+      type: "upstream_human_verification_required",
+      code: "THEOLDLLM_HUMAN_VERIFICATION_REQUIRED",
+    },
+  });
+}
+
 function buildVercelMitigationError(): string {
   return JSON.stringify({
     error: {
@@ -291,21 +308,24 @@ function buildProxyUnavailableError(): string {
   });
 }
 
-async function fetchUpstreamWithRetry(
+async function fetchUpstreamOnce(
   reqBody: Record<string, unknown>,
-  signal: AbortSignal | null | undefined,
-  log: ExecuteInput["log"]
-): Promise<{ response: Response; body: string; vercelMitigated: boolean }> {
-  let response = await directFetch(reqBody, signal);
-  let body = await response.text();
-  let vercelMitigated = isVercelMitigationResponse(response, body);
-  if (!vercelMitigated && isTokenRejected(response.status, body)) {
-    log?.warn?.("THEOLDLLM", `Token rejected (${response.status}), retrying with fresh token…`);
-    response = await directFetch(reqBody, signal);
-    body = await response.text();
-    vercelMitigated = isVercelMitigationResponse(response, body);
-  }
-  return { response, body, vercelMitigated };
+  signal: AbortSignal | null | undefined
+): Promise<{
+  response: Response;
+  body: string;
+  vercelMitigated: boolean;
+  humanVerificationRequired: boolean;
+}> {
+  const response = await directFetch(reqBody, signal);
+  const body = await response.text();
+
+  return {
+    response,
+    body,
+    vercelMitigated: isVercelMitigationResponse(response, body),
+    humanVerificationRequired: isHumanVerificationResponse(response, body),
+  };
 }
 
 // ── Executor ──────────────────────────────────────────────────────────────
@@ -358,6 +378,13 @@ export class TheOldLlmExecutor extends BaseExecutor {
         _signal
       );
       const body = await resp.text();
+      if (isHumanVerificationResponse(resp, body)) {
+        log?.warn?.(
+          "THEOLDLLM",
+          "The Old LLM requires browser-side human verification for this request"
+        );
+        return false;
+      }
       if (!resp.ok && isVercelMitigationResponse(resp, body)) {
         log?.warn?.(
           "THEOLDLLM",
@@ -408,7 +435,19 @@ export class TheOldLlmExecutor extends BaseExecutor {
         response: upstream,
         body: finalBody,
         vercelMitigated,
-      } = await fetchUpstreamWithRetry(reqBody, signal, log);
+        humanVerificationRequired,
+      } = await fetchUpstreamOnce(reqBody, signal);
+
+      if (humanVerificationRequired) {
+        return this.executionResult(
+          input,
+          new Response(encoder.encode(buildHumanVerificationError()), {
+            status: 503,
+            headers: { "Content-Type": "application/json" },
+          }),
+          body
+        );
+      }
 
       if (upstream.status === 200 && finalBody) {
         const payload = stream ? finalBody : buildChatCompletion(parseSseContent(finalBody), model);
