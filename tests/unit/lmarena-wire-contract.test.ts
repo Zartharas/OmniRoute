@@ -45,8 +45,9 @@ test("Arena wire contract omits blank challenge-token fields", () => {
   assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), false);
 });
 
-test("Arena wire contract preserves a non-empty operator-supplied token", () => {
+test("Arena wire contract strips legacy challenge-token input", () => {
   const wire = buildLMArenaWireRequest({}, baseBody(" token-value "));
 
-  assert.equal(wire.body.recaptchaV3Token, "token-value");
+  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), false);
+  assert.equal(Object.hasOwn(wire.body, "recaptchaToken"), false);
 });
