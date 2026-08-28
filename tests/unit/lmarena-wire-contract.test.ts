@@ -36,18 +36,23 @@ test("Arena wire contract uses current Direct-mode request shape", () => {
   assert.equal(wire.headers.Referer, "https://arena.ai/?mode=direct");
   assert.equal(wire.body.mode, "direct");
   assert.match(String(wire.body.modelBMessageId || ""), UUID_V7_RE);
-  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), false);
+  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), true);
+  assert.equal(wire.body.recaptchaV3Token, null);
 });
 
-test("Arena wire contract omits blank challenge-token fields", () => {
+test("Arena wire contract normalizes blank challenge-token input to null", () => {
   const wire = buildLMArenaWireRequest({}, baseBody("   "));
 
-  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), false);
+  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), true);
+  assert.equal(wire.body.recaptchaV3Token, null);
 });
 
-test("Arena wire contract strips legacy challenge-token input", () => {
-  const wire = buildLMArenaWireRequest({}, baseBody(" token-value "));
+test("Arena wire contract never forwards legacy challenge-token input", () => {
+  const body = baseBody(" token-value ");
+  body.recaptchaToken = "legacy-token";
+  const wire = buildLMArenaWireRequest({}, body);
 
-  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), false);
+  assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), true);
+  assert.equal(wire.body.recaptchaV3Token, null);
   assert.equal(Object.hasOwn(wire.body, "recaptchaToken"), false);
 });
