@@ -13,6 +13,7 @@ import {
   hasUsableWebSessionCredential,
 } from "../../src/shared/providers/webSessionCredentials.ts";
 import {
+  __clearLMArenaLiveModelCacheForTesting,
   LMArenaExecutor,
   markLMArenaCatalogModelDead,
   normalizeLMArenaModelsForCatalog,
@@ -20,11 +21,57 @@ import {
   parseLMArenaInitialModels,
   pickLMArenaModelId,
 } from "../../open-sse/executors/lmarena.ts";
-import { clearLMArenaDeadCatalogModels } from "../../open-sse/executors/lmarena/models.ts";
-import { __setTlsFetchOverrideForTesting } from "../../open-sse/services/lmarenaTlsClient.ts";
+import {
+  clearLMArenaDeadCatalogModels,
+  LMARENA_DIRECT_URL,
+} from "../../open-sse/executors/lmarena/models.ts";
+import {
+  __setTlsFetchOverrideForTesting as __setRawTlsFetchOverrideForTesting,
+  type TlsFetchOptions,
+  type TlsFetchResult,
+} from "../../open-sse/services/lmarenaTlsClient.ts";
 
 const TEST_ARENA_MODEL_ID = "019e080d-c29d-7d9a-aa54-faed41da0763";
 const UUID_V7_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+type TestTlsOverride = (url: string, options: TlsFetchOptions) => Promise<TlsFetchResult>;
+
+function liveEligibilityFixtureHtml(): string {
+  return `<html><script>window.__arena={"initialModels":[${JSON.stringify({
+    id: TEST_ARENA_MODEL_ID,
+    publicName: "gemini-3.1-pro-preview",
+    name: "gemini-3.1-pro-preview",
+    displayName: "gemini-3.1-pro-preview",
+    organization: "google",
+    provider: "googleVertexGlobal",
+    userSelectable: true,
+    capabilities: {
+      inputCapabilities: { text: true },
+      outputCapabilities: { text: true },
+    },
+    rankByModality: { chat: 23 },
+  })}],"afterInitialModels":true};</script></html>`;
+}
+
+/** Existing executor fixtures now receive the required public live-eligibility GET first. */
+function __setTlsFetchOverrideForTesting(fn: TestTlsOverride | null): void {
+  __clearLMArenaLiveModelCacheForTesting();
+  if (!fn) {
+    __setRawTlsFetchOverrideForTesting(null);
+    return;
+  }
+  __setRawTlsFetchOverrideForTesting(async (url, options) => {
+    if (url === LMARENA_DIRECT_URL && (options.method || "GET") === "GET") {
+      return {
+        status: 200,
+        headers: new Headers({ "Content-Type": "text/html" }),
+        text: liveEligibilityFixtureHtml(),
+        body: null,
+      };
+    }
+    return fn(url, options);
+  });
+}
 
 /** Protected BaseExecutor methods exercised by unit tests without `any`. */
 type LMArenaExecutorTestAccess = {
@@ -474,7 +521,7 @@ describe("LMArena Executor", () => {
     assert.equal(pickLMArenaModelId(TEST_ARENA_MODEL_ID, []), TEST_ARENA_MODEL_ID);
   });
 
-  it("resolves catalog public names via static Direct-chat allowlist (no arena.ai fetch)", async () => {
+  it("resolves catalog public names through one live Direct eligibility GET", async () => {
     const executor = new LMArenaExecutor();
     let arenaHomeFetches = 0;
     __setTlsFetchOverrideForTesting(async (url) => {
@@ -499,21 +546,24 @@ describe("LMArena Executor", () => {
         log: console,
       });
       assert.equal(result.response.status, 200);
-      // Model resolution must not scrape arena.ai home for initialModels.
+      // Eligibility uses /text/direct, never the obsolete Arena home route.
       assert.equal(arenaHomeFetches, 0);
-      // create-evaluation should receive the scraped Arena UUID, not the public name.
       const body = result.transformedBody as { modelAId?: string };
-      assert.match(String(body.modelAId || ""), /^[0-9a-f-]{36}$/i);
+      assert.equal(body.modelAId, TEST_ARENA_MODEL_ID);
     } finally {
       __setTlsFetchOverrideForTesting(null);
     }
   });
 
-  it("returns an empty model list when initialModels end marker is before the array", () => {
-    assert.deepEqual(
-      parseLMArenaInitialModels('"initialModelAId"],"initialModels":[{"id":"bad"}]'),
-      []
-    );
+  it("parses initialModels without requiring a following initialModelAId field", () => {
+    const html = liveEligibilityFixtureHtml();
+    const models = parseLMArenaInitialModels(html);
+    assert.equal(models.length, 1);
+    assert.equal(models[0]?.id, TEST_ARENA_MODEL_ID);
+  });
+
+  it("returns an empty model list when initialModels is malformed", () => {
+    assert.deepEqual(parseLMArenaInitialModels('"initialModels":[{"id":"bad"}'), []);
   });
 
   it("returns 401 when cookie is missing", async () => {
