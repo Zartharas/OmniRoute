@@ -50,7 +50,7 @@ interface OpenAIMessage {
   content?: unknown;
 }
 
-/** Optional browser-issued reCAPTCHA v3 token (operator-supplied). */
+/** Optional browser-issued reCAPTCHA v3 token retained only for legacy input compatibility. */
 function readRecaptchaToken(credentials: unknown, body: unknown): string | null {
   const fromObj = (v: unknown): string | null => {
     if (!v || typeof v !== "object") return null;
@@ -71,6 +71,8 @@ function readRecaptchaToken(credentials: unknown, body: unknown): string | null 
 /**
  * Canonicalize the current Arena Direct-mode network contract at the final POST
  * boundary without changing transformRequest/buildRequestHeaders compatibility.
+ * Challenge tokens are intentionally never serialized; required verification
+ * must be completed in Arena's supported browser experience.
  */
 export function buildLMArenaWireRequest(
   headers: Record<string, string>,
@@ -90,10 +92,8 @@ export function buildLMArenaWireRequest(
         : uuidv7(),
   };
 
-  const recaptcha =
-    typeof wireBody.recaptchaV3Token === "string" ? wireBody.recaptchaV3Token.trim() : "";
-  if (recaptcha) wireBody.recaptchaV3Token = recaptcha;
-  else delete wireBody.recaptchaV3Token;
+  delete wireBody.recaptchaV3Token;
+  delete wireBody.recaptchaToken;
 
   return { headers: wireHeaders, body: wireBody };
 }
@@ -211,8 +211,7 @@ export class LMArenaExecutor extends BaseExecutor {
     const failed = mapFailedTlsResult({
       status: tlsResult.status,
       text: tlsResult.text,
-      hasRecaptcha:
-        typeof wire.body.recaptchaV3Token === "string" && wire.body.recaptchaV3Token.length > 0,
+      hasRecaptcha: false,
       model: ctx.model,
       arenaModelId: ctx.arenaModelId,
       url,
