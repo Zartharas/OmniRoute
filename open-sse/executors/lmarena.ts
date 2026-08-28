@@ -68,6 +68,36 @@ function readRecaptchaToken(credentials: unknown, body: unknown): string | null 
   return fromObj(credentials) ?? fromObj(body);
 }
 
+/**
+ * Canonicalize the current Arena Direct-mode network contract at the final POST
+ * boundary without changing transformRequest/buildRequestHeaders compatibility.
+ */
+export function buildLMArenaWireRequest(
+  headers: Record<string, string>,
+  transformedBody: Record<string, unknown>
+): { headers: Record<string, string>; body: Record<string, unknown> } {
+  const wireHeaders = {
+    ...headers,
+    "Content-Type": "text/plain;charset=UTF-8",
+    Referer: "https://arena.ai/?mode=direct",
+  };
+  const wireBody: Record<string, unknown> = {
+    ...transformedBody,
+    mode: "direct",
+    modelBMessageId:
+      typeof transformedBody.modelBMessageId === "string" && transformedBody.modelBMessageId.trim()
+        ? transformedBody.modelBMessageId
+        : uuidv7(),
+  };
+
+  const recaptcha =
+    typeof wireBody.recaptchaV3Token === "string" ? wireBody.recaptchaV3Token.trim() : "";
+  if (recaptcha) wireBody.recaptchaV3Token = recaptcha;
+  else delete wireBody.recaptchaV3Token;
+
+  return { headers: wireHeaders, body: wireBody };
+}
+
 export class LMArenaExecutor extends BaseExecutor {
   constructor(providerConfig = {}) {
     super("lmarena", { format: "openai", ...providerConfig });
@@ -168,10 +198,11 @@ export class LMArenaExecutor extends BaseExecutor {
       log?: ExecuteInput["log"];
     }
   ) {
+    const wire = buildLMArenaWireRequest(headers, transformedBody);
     const tlsResult = await tlsFetchLMArena(url, {
       method: "POST",
-      headers,
-      body: JSON.stringify(transformedBody),
+      headers: wire.headers,
+      body: JSON.stringify(wire.body),
       signal: ctx.signal,
       stream: ctx.stream,
       streamEofSymbol: "__OMNIROUTE_LMARENA_EOF_NEVER__",
@@ -180,12 +211,13 @@ export class LMArenaExecutor extends BaseExecutor {
     const failed = mapFailedTlsResult({
       status: tlsResult.status,
       text: tlsResult.text,
-      hasRecaptcha: transformedBody.recaptchaV3Token != null,
+      hasRecaptcha:
+        typeof wire.body.recaptchaV3Token === "string" && wire.body.recaptchaV3Token.length > 0,
       model: ctx.model,
       arenaModelId: ctx.arenaModelId,
       url,
-      headers,
-      transformedBody,
+      headers: wire.headers,
+      transformedBody: wire.body,
     });
     if (failed) return failed;
 
@@ -200,7 +232,7 @@ export class LMArenaExecutor extends BaseExecutor {
       ? await this.handleStreamingResponse(upstream, ctx.model, ctx.signal, ctx.log)
       : await handleNonStreamingArenaResponse(upstream, ctx.model);
 
-    return { response, url, headers, transformedBody };
+    return { response, url, headers: wire.headers, transformedBody: wire.body };
   }
 
   private async handleStreamingResponse(
