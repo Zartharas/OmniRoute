@@ -71,8 +71,8 @@ function readRecaptchaToken(credentials: unknown, body: unknown): string | null 
 /**
  * Canonicalize the current Arena Direct-mode network contract at the final POST
  * boundary without changing transformRequest/buildRequestHeaders compatibility.
- * Challenge tokens are intentionally never serialized; required verification
- * must be completed in Arena's supported browser experience.
+ * Arena's request schema expects the verification field to exist, but OmniRoute
+ * never serializes an operator/browser challenge token: the wire value is null.
  */
 export function buildLMArenaWireRequest(
   headers: Record<string, string>,
@@ -90,9 +90,9 @@ export function buildLMArenaWireRequest(
       typeof transformedBody.modelBMessageId === "string" && transformedBody.modelBMessageId.trim()
         ? transformedBody.modelBMessageId
         : uuidv7(),
+    recaptchaV3Token: null,
   };
 
-  delete wireBody.recaptchaV3Token;
   delete wireBody.recaptchaToken;
 
   return { headers: wireHeaders, body: wireBody };
