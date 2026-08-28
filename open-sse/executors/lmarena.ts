@@ -12,6 +12,7 @@ import { BaseExecutor, type ExecuteInput } from "./base.ts";
 import { tlsFetchLMArena, TlsClientUnavailableError } from "../services/lmarenaTlsClient.ts";
 import { readLMArenaCookie, reconstructLMArenaCookie } from "./lmarena/cookie.ts";
 import {
+  LMARENA_DIRECT_URL,
   LMARENA_STREAM_URL,
   LMARENA_USER_AGENT,
   buildLmarenaBrowserHeaders,
@@ -19,6 +20,7 @@ import {
   normalizeLMArenaModelsForCatalog,
   parseLMArenaInitialModels,
   pickLMArenaModelId,
+  resolveLMArenaLiveChatModelId,
   resolveLMArenaModelId,
   type LMArenaModelMetadata,
 } from "./lmarena/models.ts";
@@ -26,6 +28,7 @@ import { formatArenaPrompt, parseArenaSSE } from "./lmarena/stream.ts";
 import {
   buildArenaUpstreamHttpResponse,
   createOpenAIArenaStream,
+  errorResponse,
   handleNonStreamingArenaResponse,
   mapFailedTlsResult,
   mapNetworkError,
@@ -38,6 +41,7 @@ export {
   normalizeLMArenaModelsForCatalog,
   parseLMArenaInitialModels,
   pickLMArenaModelId,
+  resolveLMArenaLiveChatModelId,
   parseArenaSSE,
   markLMArenaCatalogModelDead,
   LMARENA_USER_AGENT,
@@ -48,6 +52,14 @@ export type { LMArenaModelMetadata };
 interface OpenAIMessage {
   role?: string;
   content?: unknown;
+}
+
+const LMARENA_LIVE_MODEL_CACHE_TTL_MS = 10 * 60 * 1000;
+let liveModelCache: { expiresAt: number; models: LMArenaModelMetadata[] } | null = null;
+
+/** Test-only cache reset; no credential/provider state is touched. */
+export function __clearLMArenaLiveModelCacheForTesting(): void {
+  liveModelCache = null;
 }
 
 /** Optional browser-issued reCAPTCHA v3 token retained only for legacy input compatibility. */
@@ -81,7 +93,7 @@ export function buildLMArenaWireRequest(
   const wireHeaders = {
     ...headers,
     "Content-Type": "text/plain;charset=UTF-8",
-    Referer: "https://arena.ai/?mode=direct",
+    Referer: LMARENA_DIRECT_URL,
   };
   const wireBody: Record<string, unknown> = {
     ...transformedBody,
@@ -96,6 +108,66 @@ export function buildLMArenaWireRequest(
   delete wireBody.recaptchaToken;
 
   return { headers: wireHeaders, body: wireBody };
+}
+
+function buildLiveDirectPageHeaders(): Record<string, string> {
+  const headers = buildLmarenaBrowserHeaders({
+    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    Referer: LMARENA_DIRECT_URL,
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "same-origin",
+    "Upgrade-Insecure-Requests": "1",
+  });
+  // Top-level public document navigation does not require an Origin header.
+  delete headers.Origin;
+  delete headers.Cookie;
+  return headers;
+}
+
+async function getCurrentLiveLMArenaModels(
+  signal?: AbortSignal,
+  log?: ExecuteInput["log"]
+): Promise<LMArenaModelMetadata[] | null> {
+  const now = Date.now();
+  if (liveModelCache && liveModelCache.expiresAt > now) return liveModelCache.models;
+
+  try {
+    const result = await tlsFetchLMArena(LMARENA_DIRECT_URL, {
+      method: "GET",
+      headers: buildLiveDirectPageHeaders(),
+      signal,
+      timeoutMs: 15_000,
+      stream: false,
+    });
+    if (result.status < 200 || result.status >= 300 || !result.text) {
+      log?.warn?.(
+        "LMArenaExecutor",
+        `Live Direct model eligibility GET returned HTTP ${result.status}; POST blocked`
+      );
+      return null;
+    }
+
+    const models = parseLMArenaInitialModels(result.text);
+    if (models.length === 0 || normalizeLMArenaModelsForCatalog(models).length === 0) {
+      log?.warn?.(
+        "LMArenaExecutor",
+        "Live Direct model metadata was missing or had no ranked chat models; POST blocked"
+      );
+      return null;
+    }
+
+    liveModelCache = {
+      expiresAt: now + LMARENA_LIVE_MODEL_CACHE_TTL_MS,
+      models,
+    };
+    return models;
+  } catch (error) {
+    if (signal?.aborted) throw error;
+    const message = error instanceof Error ? error.message : String(error);
+    log?.warn?.("LMArenaExecutor", `Live Direct model eligibility GET failed: ${message}; POST blocked`);
+    return null;
+  }
 }
 
 export class LMArenaExecutor extends BaseExecutor {
@@ -144,6 +216,16 @@ export class LMArenaExecutor extends BaseExecutor {
     };
   }
 
+  private buildSafeLocalResultBody(
+    body: unknown,
+    model: string,
+    credentials: unknown,
+    headers: Record<string, string>
+  ): Record<string, unknown> {
+    const transformedBody = this.transformRequest(body, model, credentials) as Record<string, unknown>;
+    return buildLMArenaWireRequest(headers, transformedBody).body;
+  }
+
   async execute(input: ExecuteInput) {
     const { model, body, stream, credentials, signal, log } = input;
     const url = this.buildUrl(model, credentials);
@@ -154,20 +236,52 @@ export class LMArenaExecutor extends BaseExecutor {
       return missingCookieResult(url, headers, this.transformRequest(body, model, credentials));
     }
 
-    const arenaModelId = await resolveLMArenaModelId(model, log);
-    const transformedBody = this.transformRequest(body, arenaModelId, credentials) as Record<
-      string,
-      unknown
-    >;
-
-    log?.info?.(
-      "LMArenaExecutor",
-      arenaModelId === model
-        ? `Executing request for model: ${model}`
-        : `Executing request for model: ${model} (${arenaModelId})`
-    );
-
     try {
+      const staticArenaModelId = await resolveLMArenaModelId(model, log);
+      const liveModels = await getCurrentLiveLMArenaModels(signal, log);
+      const safeLocalBody = this.buildSafeLocalResultBody(body, staticArenaModelId, credentials, headers);
+
+      if (!liveModels) {
+        return {
+          response: errorResponse(
+            503,
+            "Arena current Direct-chat model eligibility could not be verified. The request was not sent.",
+            "upstream_error",
+            "model_eligibility_unverified"
+          ),
+          url,
+          headers,
+          transformedBody: safeLocalBody,
+        };
+      }
+
+      const arenaModelId = resolveLMArenaLiveChatModelId(model, staticArenaModelId, liveModels);
+      if (!arenaModelId) {
+        return {
+          response: errorResponse(
+            422,
+            `Arena does not currently advertise '${model}' as a ranked Direct-chat model. The request was not sent.`,
+            "model_error",
+            "model_not_chat_eligible"
+          ),
+          url,
+          headers,
+          transformedBody: safeLocalBody,
+        };
+      }
+
+      const transformedBody = this.transformRequest(body, arenaModelId, credentials) as Record<
+        string,
+        unknown
+      >;
+
+      log?.info?.(
+        "LMArenaExecutor",
+        arenaModelId === model
+          ? `Executing request for model: ${model}`
+          : `Executing request for model: ${model} (${arenaModelId})`
+      );
+
       return await this.dispatchTls(url, headers, transformedBody, {
         model,
         arenaModelId,
@@ -176,13 +290,14 @@ export class LMArenaExecutor extends BaseExecutor {
         log,
       });
     } catch (error) {
+      const safeLocalBody = this.buildSafeLocalResultBody(body, model, credentials, headers);
       if (error instanceof TlsClientUnavailableError) {
         log?.error?.("LMArenaExecutor", `TLS client unavailable: ${error.message}`);
-        return mapTlsUnavailable(error, url, headers, transformedBody);
+        return mapTlsUnavailable(error, url, headers, safeLocalBody);
       }
       const message = error instanceof Error ? error.message : String(error);
       log?.error?.("LMArenaExecutor", `Request failed: ${message}`);
-      return mapNetworkError(message, url, headers, transformedBody);
+      return mapNetworkError(message, url, headers, safeLocalBody);
     }
   }
 
