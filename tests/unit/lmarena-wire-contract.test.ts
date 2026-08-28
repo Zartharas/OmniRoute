@@ -33,7 +33,7 @@ test("Arena wire contract uses current Direct-mode request shape", () => {
   );
 
   assert.equal(wire.headers["Content-Type"], "text/plain;charset=UTF-8");
-  assert.equal(wire.headers.Referer, "https://arena.ai/?mode=direct");
+  assert.equal(wire.headers.Referer, "https://arena.ai/text/direct");
   assert.equal(wire.body.mode, "direct");
   assert.match(String(wire.body.modelBMessageId || ""), UUID_V7_RE);
   assert.equal(Object.hasOwn(wire.body, "recaptchaV3Token"), true);
