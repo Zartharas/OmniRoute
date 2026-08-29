@@ -25,6 +25,7 @@ type KillByPortDeps = {
   execFileAsync?: (cmd: string, args: string[]) => Promise<{ stdout: string; stderr: string }>;
   processKill?: (pid: number, signal: string | number) => boolean;
   isPidRunning?: (pid: number) => boolean;
+  isOmniRoutePid?: (pid: number) => boolean | Promise<boolean>;
   sleep?: (ms: number) => Promise<void>;
 };
 type KillByPortFn = (port: number, deps?: KillByPortDeps) => Promise<boolean>;
@@ -171,12 +172,15 @@ test("Defect 2: killByPort on win32 must actually kill the port listener via net
       return true;
     },
     isPidRunning: (_p: number) => false, // pretend SIGTERM already killed it
+    // This test exercises Windows netstat/kill mechanics with a synthetic PID.
+    // Under the ownership-safe contract, explicitly mark that PID as OmniRoute-owned.
+    isOmniRoutePid: async (p: number) => p === FAKE_WIN_PID,
     sleep: async (_ms: number) => {},
   };
 
   const { killByPort } = await import("../../bin/cli/commands/stop.mjs");
   const freed = await (killByPort as unknown as KillByPortFn)(20128, deps);
-  assert.equal(freed, true, "port must be reported free after killing the listener");
+  assert.equal(freed, true, "port must be reported free after killing the owned listener");
   assert.ok(
     kills.some((k) => k.pid === FAKE_WIN_PID),
     `win32 killByPort must signal the netstat PID ${FAKE_WIN_PID}; got ${JSON.stringify(kills)}`
@@ -218,12 +222,44 @@ test("netstat parsing: only LISTENING lines matching the exact port are selected
       return true;
     },
     isPidRunning: (_p: number) => false,
+    // These are the only synthetic exact-port LISTENING PIDs and are explicitly owned.
+    isOmniRoutePid: async (p: number) => p === 111 || p === 222,
     sleep: async (_ms: number) => {},
   };
 
   const { killByPort } = await import("../../bin/cli/commands/stop.mjs");
   await (killByPort as unknown as KillByPortFn)(20128, deps);
   const signalled = kills.map((k) => k.pid).sort();
-  assert.deepEqual(signalled, [111, 222], "only exact-port LISTENING PIDs must be killed");
+  assert.deepEqual(signalled, [111, 222], "only exact-port LISTENING owned PIDs must be killed");
   void ORIGINAL_PLATFORM;
+});
+
+test("win32 port fallback refuses a foreign listener and signals nobody (#9455 ownership safety)", async () => {
+  const FOREIGN_PID = 1000790;
+  const kills: Array<{ pid: number; signal: string | number }> = [];
+  const deps = {
+    platform: "win32",
+    execFileAsync: async (cmd: string, _args: string[]) => {
+      if (cmd.endsWith("netstat")) {
+        return {
+          stdout: `  TCP    0.0.0.0:20128    0.0.0.0:0    LISTENING    ${FOREIGN_PID}\r\n`,
+          stderr: "",
+        };
+      }
+      return { stdout: "", stderr: "" };
+    },
+    processKill: (p: number, sig: string | number) => {
+      kills.push({ pid: p, signal: sig });
+      return true;
+    },
+    isPidRunning: (_p: number) => true,
+    isOmniRoutePid: async (_p: number) => false,
+    sleep: async (_ms: number) => {},
+  };
+
+  const { killByPort } = await import("../../bin/cli/commands/stop.mjs");
+  const freed = await (killByPort as unknown as KillByPortFn)(20128, deps);
+
+  assert.equal(freed, false, "foreign listener must not be reported as an OmniRoute stop");
+  assert.deepEqual(kills, [], "foreign Windows listener must receive zero signals");
 });

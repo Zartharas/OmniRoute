@@ -58,12 +58,18 @@ const EFFORT_LEVELS = ["none", "low", "high", "max"] as const;
  * For `opencode-go`, there is no free tier — ALL models require an API key.
  */
 const OPENCODE_FREE_MODELS = new Set([
+  // Non-suffix exception plus the current catalog snapshot. The `-free`
+  // suffix check below remains the forward-compatible source of truth for
+  // rotating additions that arrive before the static registry is refreshed.
   "big-pickle",
   "deepseek-v4-flash-free",
+  "muse-spark-1.2-contributor-free",
   "mimo-v2.5-free",
   "hy3-free",
+  "ling-3.0-flash-fin-free",
   "nemotron-3-ultra-free",
-  "north-mini-code-free",
+  "nemotron-3.5-lightning-free",
+  "laguna-s-2.1-free",
 ]);
 
 /**

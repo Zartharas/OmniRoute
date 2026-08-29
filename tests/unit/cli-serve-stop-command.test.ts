@@ -36,7 +36,10 @@ async function withEnv(fn: (dataDir: string) => Promise<void>) {
 test("stop returns 0 when no server is running (no PID file)", async () => {
   await withEnv(async () => {
     const { runStopCommand } = await import("../../bin/cli/commands/stop.mjs");
-    const result = await runStopCommand({});
+    const result = await runStopCommand({}, {
+      // Test isolation: never inspect or signal a real host listener.
+      killByPort: async () => true,
+    });
     assert.equal(result, 0);
   });
 });
@@ -47,7 +50,10 @@ test("stop returns 0 when PID file exists but process is gone", async (t) => {
     fs.writeFileSync(pidPath, "999999999", "utf8");
 
     const { runStopCommand } = await import("../../bin/cli/commands/stop.mjs");
-    const result = await runStopCommand({});
+    const result = await runStopCommand({}, {
+      // Test isolation: never inspect or signal a real host listener.
+      killByPort: async () => true,
+    });
     assert.equal(result, 0);
   });
 });

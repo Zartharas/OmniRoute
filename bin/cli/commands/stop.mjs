@@ -22,7 +22,8 @@ export function registerStop(program) {
     });
 }
 
-export async function runStopCommand(opts = {}) {
+export async function runStopCommand(opts = {}, deps = {}) {
+  const killByPortFn = deps.killByPort || killByPort;
   const pid = readPidFile("server");
   // #9455: when the server was started with a supervisor (the default), killing only
   // the child lets the supervisor respawn it immediately. The supervisor's PID is
@@ -73,7 +74,7 @@ export async function runStopCommand(opts = {}) {
         process.kill(supervisorPid, "SIGTERM");
       } catch {}
     }
-    const portFreed = await killByPort(port);
+    const portFreed = await killByPortFn(port);
     killAllSubprocesses();
     cleanupPidFile("server");
     cleanupPidFile("supervisor");
@@ -106,36 +107,57 @@ export async function killByPort(port, deps = {}) {
   const running = deps.isPidRunning || isPidRunning;
   const wait = deps.sleep || sleep;
   const platform = deps.platform || process.platform;
+  const getCommand = deps.getProcessCommand || ((pid) => getProcessCommand(pid, { exec, platform }));
+  const ownsPid = deps.isOmniRoutePid || (async (pid) => isOmniRouteServerCommand(await getCommand(pid)));
 
-  if (platform === "win32") {
-    return killByPortWin32(port, { exec, kill, running, wait });
-  }
-  return killByPortPosix(port, { exec, kill, running, wait });
+  if (platform === "win32") return killByPortWin32(port, { exec, kill, running, wait, ownsPid });
+  return killByPortPosix(port, { exec, kill, running, wait, ownsPid });
 }
 
-async function killByPortPosix(port, { exec, kill, running, wait }) {
+function isOmniRouteServerCommand(command) {
+  const normalized = String(command || "").replaceAll("\\", "/").toLowerCase();
+  if (!normalized) return false;
+  const hasRoot = normalized.includes("/node_modules/omniroute/") || /(?:^|\/)omniroute(?:\/|-)/.test(normalized);
+  const hasEntry = /(?:^|\/)(?:server-ws\.mjs|server\.js)(?=$|[\s"'])/.test(normalized);
+  return hasRoot && hasEntry;
+}
+
+async function getProcessCommand(pid, { exec, platform }) {
+  try {
+    if (platform === "win32") {
+      const script = `$p = Get-CimInstance Win32_Process -Filter "ProcessId = ${pid}" -ErrorAction SilentlyContinue; if ($p) { [Console]::Out.Write($p.CommandLine) }`;
+      const { stdout } = await exec("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script]);
+      return String(stdout || "").trim();
+    }
+    const { stdout } = await exec("ps", ["-p", String(pid), "-o", "command="]);
+    return String(stdout || "").trim();
+  } catch { return ""; }
+}
+
+async function allPidsOwnedByOmniRoute(pids, ownsPid) {
+  if (pids.length === 0) return false;
+  for (const pid of pids) {
+    try { if (!(await ownsPid(pid))) return false; } catch { return false; }
+  }
+  return true;
+}
+
+async function killByPortPosix(port, { exec, kill, running, wait, ownsPid }) {
   let pids = [];
   try {
     const { stdout } = await exec("lsof", ["-ti", `:${port}`]);
-    pids = stdout
-      .trim()
-      .split("\n")
-      .map((p) => parseInt(p, 10))
-      .filter((p) => Number.isFinite(p) && p > 0);
-  } catch {
-    // lsof not available or no process on port
-  }
+    pids = stdout.trim().split("\n").map((p) => parseInt(p, 10)).filter((p) => Number.isFinite(p) && p > 0);
+  } catch {}
+  if (pids.length === 0) return true;
+  if (!(await allPidsOwnedByOmniRoute(pids, ownsPid))) return false;
   return terminatePids(pids, { kill, running, wait });
 }
 
-async function killByPortWin32(port, { exec, kill, running, wait }) {
+async function killByPortWin32(port, { exec, kill, running, wait, ownsPid }) {
   let pids = [];
-  try {
-    const { stdout } = await exec("netstat", ["-ano"]);
-    pids = parseNetstatPids(stdout, port);
-  } catch {
-    // netstat not available or empty
-  }
+  try { const { stdout } = await exec("netstat", ["-ano"]); pids = parseNetstatPids(stdout, port); } catch {}
+  if (pids.length === 0) return true;
+  if (!(await allPidsOwnedByOmniRoute(pids, ownsPid))) return false;
   return terminatePids(pids, { kill, running, wait });
 }
 
