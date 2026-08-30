@@ -1,6 +1,7 @@
 /**
  * Tests for noAuth provider validation:
- * - Bug 1: `theoldllm` and `chipotle` missing from providerAllowsOptionalApiKey
+ * - noAuth is a presentation/access category, not an API-key capability
+ * - only explicitly supported free providers may create optional API-key connections
  * - `kimi` API key provider stays on the dedicated Moonshot executor
  */
 import test from "node:test";
@@ -13,16 +14,13 @@ import {
 } from "../../src/shared/constants/providers.ts";
 import { hasSpecializedExecutor } from "../../open-sse/executors/index.ts";
 
-// Bug 1: all noAuth providers should allow optional API key
-for (const provider of [
-  "theoldllm",
-  "chipotle",
-  "opencode",
-  "duckduckgo-web",
-  "veoaifree-web",
-]) {
-  test(`${provider} allows optional API key (noAuth provider)`, () => {
-    assert.equal(providerAllowsOptionalApiKey(provider), true);
+test("OpenCode explicitly allows an optional API key in addition to anonymous use", () => {
+  assert.equal(providerAllowsOptionalApiKey("opencode"), true);
+});
+
+for (const provider of ["theoldllm", "chipotle", "duckduckgo-web", "veoaifree-web"]) {
+  test(`${provider} does not gain optional API-key capability from noAuth membership`, () => {
+    assert.equal(providerAllowsOptionalApiKey(provider), false);
   });
 }
 

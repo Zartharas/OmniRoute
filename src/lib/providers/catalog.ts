@@ -37,6 +37,12 @@ export interface ProviderNotice {
   text?: string;
 }
 
+export type ProviderCredentialOwnership = "none" | "omniroute-optional" | "external";
+export type ProviderUpstreamAccessMode =
+  | "anonymous"
+  | "interactive-human-verification"
+  | "external-auth";
+
 export interface ProviderCatalogMetadata {
   id: string;
   name: string;
@@ -47,6 +53,12 @@ export interface ProviderCatalogMetadata {
   website?: string;
   authHint?: string;
   apiHint?: string;
+  /** Whether this provider explicitly supports a managed API key in addition to no-key use. */
+  supportsOptionalApiKey?: boolean;
+  /** Which component owns any user credential used for this provider. */
+  credentialOwnership?: ProviderCredentialOwnership;
+  /** Upstream access gate, independent of whether OmniRoute stores a credential. */
+  upstreamAccessMode?: ProviderUpstreamAccessMode;
   passthroughModels?: boolean;
   subscriptionRisk?: boolean;
   riskNoticeVariant?: RiskNoticeVariant;

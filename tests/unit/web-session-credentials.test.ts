@@ -129,8 +129,8 @@ test("web session credential validator requires provider-specific non-empty valu
   );
 });
 
-test("no-auth web providers can be saved without an API key", () => {
-  assert.equal(providers.providerAllowsOptionalApiKey("veoaifree-web"), true);
+test("no-auth web providers do not gain managed credential requirements", () => {
+  assert.equal(providers.providerAllowsOptionalApiKey("veoaifree-web"), false);
   assert.equal(webSessionCredentials.requiresWebSessionCredential("veoaifree-web"), false);
   assert.equal(webSessionCredentials.requiresWebSessionCredential("perplexity-web"), true);
 });

@@ -76,6 +76,8 @@ export const createProviderSchema = z
   })
   .superRefine((data, ctx) => {
     const apiKey = typeof data.apiKey === "string" ? data.apiKey.trim() : "";
+    // Optionality is an explicit provider capability. Membership in the no-auth
+    // dashboard category alone must never make a managed credential optional.
     const apiKeyOptional = providerAllowsOptionalApiKey(data.provider);
     if (!apiKeyOptional && apiKey.length === 0) {
       ctx.addIssue({
