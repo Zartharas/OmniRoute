@@ -2,6 +2,8 @@
 
 OmniRoute can open an isolated browser for provider connections that require an interactive web login. The operator signs in through the browser UI, then OmniRoute reads only the credential fields declared for that provider through the Chrome DevTools Protocol (CDP) and writes them to the selected `provider_connections` row.
 
+The bundled Chromium image inherits from LinuxServer's Chromium container, whose web desktop is provided by LinuxServer's **Selkies** base image. In OmniRoute, the existing `vnc-session` route and `VNC` configuration names are compatibility labels for this browser-login subsystem: container port `3000` serves the Selkies browser web UI, while port `9223` serves the local CDP bridge.
+
 The feature is exposed through the management-authenticated `/api/vnc-session` routes. Browser and CDP ports are published on `127.0.0.1` only; they are not intended to be exposed directly to a network.
 
 ## Build the required image
