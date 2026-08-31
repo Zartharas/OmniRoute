@@ -1,5 +1,9 @@
 import { BaseExecutor, type ExecuteInput } from "./base.ts";
 import type { ProviderCredentials } from "./base.ts";
+import {
+  fetchTheOldLlmWithActiveHumanVerification,
+  hasActiveTheOldLlmHumanVerificationSession,
+} from "../services/theOldLlmHumanVerification.ts";
 
 const API_BASE = "https://theoldllm.vercel.app";
 const API_PATH = "/api/chatgpt";
@@ -279,9 +283,11 @@ function buildHumanVerificationError(): string {
   return JSON.stringify({
     error: {
       message:
-        "The Old LLM web chat currently requires browser-side human verification for this request. OmniRoute will not synthesize or replay that challenge. Use the TheOldLLM website interactively or a documented API/provider.",
+        "The Old LLM web chat currently requires browser-side human verification. Start the explicit interactive verification handoff, complete the check in the visible browser, then retry the request.",
       type: "upstream_human_verification_required",
       code: "THEOLDLLM_HUMAN_VERIFICATION_REQUIRED",
+      verification_endpoint: "/api/providers/theoldllm/human-verification",
+      verification_method: "POST",
     },
   });
 }
@@ -430,6 +436,66 @@ export class TheOldLlmExecutor extends BaseExecutor {
         model: mapModel(model),
         stream: true,
       };
+
+      if (hasActiveTheOldLlmHumanVerificationSession()) {
+        const browserResult = await fetchTheOldLlmWithActiveHumanVerification(reqBody, signal);
+        if (browserResult) {
+          const browserUpstream = new Response(browserResult.body, {
+            status: browserResult.status,
+            headers: {
+              "Content-Type": browserResult.contentType || "text/plain",
+            },
+          });
+          const browserHumanVerificationRequired = isHumanVerificationResponse(
+            browserUpstream,
+            browserResult.body
+          );
+          const browserVercelMitigated = isVercelMitigationResponse(
+            browserUpstream,
+            browserResult.body
+          );
+
+          if (browserHumanVerificationRequired) {
+            return this.executionResult(
+              input,
+              new Response(encoder.encode(buildHumanVerificationError()), {
+                status: 503,
+                headers: { "Content-Type": "application/json" },
+              }),
+              body
+            );
+          }
+
+          if (browserResult.status === 200 && browserResult.body) {
+            const payload = stream
+              ? browserResult.body
+              : buildChatCompletion(parseSseContent(browserResult.body), model);
+            return this.executionResult(
+              input,
+              new Response(encoder.encode(payload), {
+                status: 200,
+                headers: {
+                  "Content-Type": stream ? "text/event-stream" : "application/json",
+                  "Cache-Control": "no-cache",
+                },
+              }),
+              body
+            );
+          }
+
+          const browserErrorPayload = browserVercelMitigated
+            ? buildVercelMitigationError()
+            : buildErrorResponse(browserResult.status, browserResult.body);
+          return this.executionResult(
+            input,
+            new Response(encoder.encode(browserErrorPayload), {
+              status: browserResult.status,
+              headers: { "Content-Type": "application/json" },
+            }),
+            body
+          );
+        }
+      }
 
       const {
         response: upstream,
