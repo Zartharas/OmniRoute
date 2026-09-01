@@ -71,6 +71,14 @@ const profileRoot =
   process.env.OMNIROUTE_VNC_PROFILE_DIR ||
   `${process.env.HOME || "/tmp"}/.omniroute/browser-login-profiles`;
 
+const containerProfileDir =
+  process.env.OMNIROUTE_VNC_CONTAINER_PROFILE_DIR || "/config";
+
+function ensureChromiumUserDataDir(args: string): string {
+  if (/(?:^|\s)--user-data-dir(?:=|\s)/.test(args)) return args;
+  return `${args} --user-data-dir=${containerProfileDir}`;
+}
+
 export const VNC_CONFIG = {
   /**
    * This feature uses Chromium CDP only. Build docker/vnc-browser/chromium and
@@ -79,7 +87,7 @@ export const VNC_CONFIG = {
   image: process.env.OMNIROUTE_VNC_IMAGE || "omniroute-vnc-chromium:local",
   containerVncPort: Number(process.env.OMNIROUTE_VNC_CONTAINER_VNC_PORT || 3000),
   containerCdpPort: Number(process.env.OMNIROUTE_VNC_CONTAINER_CDP_PORT || 9223),
-  containerProfileDir: process.env.OMNIROUTE_VNC_CONTAINER_PROFILE_DIR || "/config",
+  containerProfileDir,
   profileDir: profileRoot,
   persistProfiles: envFlag("OMNIROUTE_VNC_PERSIST_PROFILES", false),
   idleTimeoutMs: Number(process.env.OMNIROUTE_VNC_IDLE_MS || 10 * 60 * 1000),
@@ -88,9 +96,10 @@ export const VNC_CONFIG = {
   dockerBin: process.env.OMNIROUTE_DOCKER_BIN || "docker",
   browserReadyTimeoutMs: Number(process.env.OMNIROUTE_VNC_READY_MS || 45_000),
   harvestTimeoutMs: Number(process.env.OMNIROUTE_VNC_HARVEST_MS || 20_000),
-  chromiumArgs:
+  chromiumArgs: ensureChromiumUserDataDir(
     process.env.OMNIROUTE_VNC_CHROMIUM_ARGS ||
-    "--remote-debugging-port=9222 --no-first-run --no-default-browser-check",
+      "--remote-debugging-port=9222 --no-first-run --no-default-browser-check"
+  ),
 } as const;
 
 export const VNC_ROUTE_PREFIX = "/api/vnc-session";

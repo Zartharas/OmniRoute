@@ -21,7 +21,7 @@ docker build -t omniroute-vnc-chromium:local docker/vnc-browser/chromium
 - support for the `CHROME_CLI` environment variable used to pass the provider login URL and Chromium arguments;
 - persistent browser data under the configured profile directory.
 
-The container image includes a local bridge because modern Chromium binds its debugger to loopback inside the container.
+The container image includes a local bridge because modern Chromium binds its debugger to loopback inside the container. Chrome 136+ also requires remote debugging to use a non-default user-data directory, so OmniRoute always supplies `--user-data-dir` for the isolated browser profile mounted at `OMNIROUTE_VNC_CONTAINER_PROFILE_DIR` (default `/config`).
 
 ## Ports and access
 

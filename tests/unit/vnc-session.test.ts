@@ -39,6 +39,7 @@ test("VNC_CONFIG defaults to the bundled Chromium browser image", () => {
   assert.equal(VNC_CONFIG.containerCdpPort, 9223);
   assert.equal(VNC_CONFIG.persistProfiles, false);
   assert.match(VNC_CONFIG.chromiumArgs, /--remote-debugging-port=9222/);
+  assert.match(VNC_CONFIG.chromiumArgs, /--user-data-dir=\/config/);
 });
 
 test("harvestToCredentials builds a cookie header and allowlisted provider data", () => {
