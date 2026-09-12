@@ -856,10 +856,10 @@ Do not weaken dependency parity to make a build run. If no compatible installed 
 
 ## 9.11 A4 R3: canonical Docker differential selected
 
-**Classification:** Pending validation  
-**Status:** Pending operator result as of this refresh
+**Classification:** Canonical validation design  
+**Status:** Superseded by the executed R3 result in 9.12
 
-The final A4 design returns to the proven release environment:
+The A4 design returned to the proven release environment:
 
 - exact R16.31 and A3 commit worktrees;
 - root Dockerfile `builder` stage;
@@ -868,7 +868,7 @@ The final A4 design returns to the proven release environment:
 - `OMNIROUTE_USE_TURBOPACK=0` (canonical webpack path);
 - `OMNIROUTE_BUILD_MEMORY_MB=6144`;
 - no host `node_modules` reuse;
-- candidate 18-test suite executed in the builder environment;
+- candidate 18-test suite intended to execute in the builder environment;
 - `typecheck:core` differential against exact R16.31 baseline;
 - focused ESLint must report zero diagnostics on the two R16.32-A files;
 - both baseline and candidate production builds must succeed;
@@ -878,6 +878,53 @@ The final A4 design returns to the proven release environment:
 **Important baseline rule**
 
 The repository carries inherited TypeScript/lint debt. Acceptance is therefore **no new candidate diagnostics relative to exact R16.31**, plus zero focused lint diagnostics on the R16.32-A changed files. Baseline debt is not silently relabeled as an R16.32 defect.
+
+---
+
+## 9.12 A4 R3 execution: both canonical production builds passed; focused test was absent from the builder image
+
+**Phase:** R16.32-A4 canonical Docker differential R3, 2026-09-12  
+**Classification:** Docker test-materialization / validation-harness failure  
+**Product failure:** No  
+**Status:** Fail closed; R4 required
+
+**Evidence**
+
+- script syntax check passed;
+- exact R16.31 baseline source/tree authority passed;
+- exact A3 candidate source/tree authority passed;
+- baseline and candidate `package.json`, `package-lock.json`, and Dockerfile were identical;
+- dependency authority was the root Dockerfile `builder` stage with lockfile-controlled `npm ci` under Node 26;
+- host `node_modules` was not reused;
+- exact R16.31 canonical webpack builder build returned `baseline_build_rc=0` and `baseline_production_build=PASS`;
+- exact A3 canonical webpack builder build returned `candidate_build_rc=0` and `candidate_production_build=PASS`;
+- the candidate builder image was created successfully;
+- the next gate attempted `node --import tsx/esm --test tests/unit/combo/normalizedCandidateFacts.test.ts` inside the exported builder image;
+- Node returned `Could not find 'tests/unit/combo/normalizedCandidateFacts.test.ts'`;
+- `candidate_focused_test_rc=1` and the script failed closed with `ERROR=CANDIDATE_A3_FOCUSED_TEST_FAILED`;
+- because the focused test gate failed first, later typecheck/lint/poststate acceptance gates were not reached by the main flow.
+
+The webpack `PackFileCacheStrategy` restore messages were non-fatal in this run: both baseline and candidate canonical production builds completed with return code 0. They should be retained as informational build-cache evidence unless a future differential demonstrates candidate-specific behavior.
+
+**Root cause**
+
+The R3 harness assumed that the focused test path would be materialized inside the exported Docker `builder` image. The production source/module was present and built successfully, but the test source was not available at the path the runner invoked. This is a test-source materialization problem, not evidence of a failure in `normalizedCandidateFacts.ts`.
+
+**R4 repair rule**
+
+- preserve the exact same Dockerfile/Node 26/webpack/lockfile-controlled dependency authority;
+- preserve both baseline and candidate production-build gates;
+- use the exact disposable Git worktree as the test-source authority;
+- bind-mount the exact commit's `tests` tree read-only into `/app/tests` for Node test and ESLint execution;
+- hash the source test before the mount and hash it again from inside the container to prove byte-for-byte identity;
+- verify the production module inside the candidate builder image against the accepted SHA before running the focused test;
+- mount baseline and candidate test trees symmetrically for the full lint differential;
+- do not copy or reuse host `node_modules`;
+- do not mutate the accepted A3 worktree, operator checkout, live runtime, or Auth Keeper.
+
+**Prevention rule**
+
+Before running a test inside a production-oriented container stage, independently prove two authorities: **dependency/runtime authority** and **source-under-test materialization authority**. A successful image build does not imply that dev/test files are included in that image.
 
 ---
 
@@ -928,6 +975,8 @@ Existing `shadowRouting.ts` is not suitable for computational-only R16.32 shadow
 - Prove which runner owns a test path before execution.
 - Node-native tests and Vitest must not be treated as interchangeable.
 - Prefer process exit code over parsing human-oriented reporter text.
+- Prove that the test source is actually present in the environment where the runner will execute it.
+- Treat dependency/runtime authority and test-source materialization authority as separate validations.
 - Static validation scripts are production tooling: test their assumptions before asking for another operator run.
 - Property tests should use deterministic loops when adding a new property-test dependency is unnecessary.
 
@@ -993,13 +1042,16 @@ Existing `shadowRouting.ts` is not suitable for computational-only R16.32 shadow
 | A3 tests | 18/18 pass |
 | Runtime wiring | none |
 | Live mutation | none |
-| A4 canonical Docker differential | pending result at record refresh |
+| A4 R3 baseline production build | PASS |
+| A4 R3 candidate production build | PASS |
+| A4 R3 focused test | NOT EXECUTED; source absent from builder image path |
+| A4 overall | pending R4 test-materialization/typecheck/lint completion |
 
 ---
 
 # 13. Open items
 
-1. Complete R16.32-A4 canonical Docker differential and append the accepted evidence/commit-image diagnostics to this ledger.
+1. Complete R16.32-A4 R4 using the exact Docker builder environment plus read-only exact-commit test-source mounts; append the final typecheck/lint/poststate result here.
 2. Only after A4 acceptance, proceed to **R16.32-B pure deterministic disposition/reason evaluator design**.
 3. Keep R16.32-B pure and unwired initially; it must consume normalized facts, not acquire new facts.
 4. Future computational shadow validation must not call the existing real-traffic shadow executor.
