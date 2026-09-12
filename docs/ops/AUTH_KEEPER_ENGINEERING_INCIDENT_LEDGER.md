@@ -928,6 +928,98 @@ Before running a test inside a production-oriented container stage, independentl
 
 ---
 
+## 9.13 A4 R4 execution: focused tests and typecheck differential passed; full-lint RC was misclassified
+
+**Phase:** R16.32-A4 canonical Docker differential R4, 2026-09-12  
+**Classification:** Validation-harness lint acceptance bug  
+**Product failure:** No  
+**Status:** Fail closed; corrected by R5
+
+**Evidence**
+
+- exact baseline and candidate canonical webpack builds passed;
+- accepted candidate module SHA was verified inside the builder image;
+- exact A3 test SHA was verified before and after the read-only test-tree bind mount;
+- the focused A3 suite executed inside the exact candidate builder environment and passed 18/18;
+- baseline and candidate `typecheck:core` each produced the same inherited TS2339 on `src/lib/authKeeper/client.ts` and no candidate-only diagnostic;
+- baseline and candidate full lint each produced the same four inherited errors plus the same unpruned-suppressions condition;
+- the two R16.32-A changed files linted clean with candidate focused-lint RC 0;
+- R4 nevertheless failed because it treated candidate full-lint exit code 2 as `CANDIDATE_FULL_LINT_TOOLING_FAILURE` instead of performing a baseline/candidate differential.
+
+**Root cause**
+
+The R4 lint gate used absolute candidate exit-code severity even though the established A4 policy was differential: inherited baseline debt may remain, but the candidate must introduce no new diagnostics and its changed files must be clean.
+
+**R5 repair rule**
+
+- preserve all successful R4 build, test-materialization, focused-test, and typecheck gates;
+- normalize only unstable npm wrapper/blank-line noise from full-lint logs;
+- require baseline and candidate full-lint exit codes to match;
+- require normalized baseline and candidate full-lint evidence to be byte-for-byte identical;
+- require zero diagnostics on the two R16.32-A changed files;
+- fail closed on any candidate-only lint delta.
+
+**Prevention rule**
+
+When a repository has known inherited quality debt, differential gates must compare stable baseline/candidate evidence rather than reclassifying a shared nonzero exit code as a candidate-specific defect.
+
+---
+
+## 9.14 A4 R5 accepted: R16.32-A normalized-candidate-facts phase accepted
+
+**Phase:** R16.32-A4 canonical Docker differential R5, 2026-09-12  
+**Classification:** Final validation acceptance  
+**Status:** Accepted
+
+**Accepted source authority**
+
+- baseline R16.31 commit: `34bd2fdbb8b04d848a0157d763c70ec241468e1c`;
+- candidate A3 commit: `a8ea7291a868087fc278b2b62d542c931b34e837`;
+- candidate A3 tree: `bf19ca34264b72cee595b92e5e8149c595862b87`;
+- normalized module SHA-256: `804034a91ae29deedd6c5c4e536b2486d057a44a54237da51789a3c14764899a`;
+- focused test SHA-256: `bec3066b9629afb8dd3b2d5cb545f97e9659488bb98b2f6ddf8da5a0286d4c84`.
+
+**Acceptance evidence**
+
+- exact R16.31 canonical Node 26 / webpack production build: PASS, RC 0;
+- exact A3 canonical Node 26 / webpack production build: PASS, RC 0;
+- lockfile-controlled `npm ci` in disposable Docker builder; no host `node_modules` reuse;
+- focused A3 tests executed via read-only exact-commit test-tree mount: 18/18 pass, RC 0;
+- test SHA before and inside the mount matched exactly;
+- baseline and candidate `typecheck:core` each produced the same single inherited TS2339 diagnostic;
+- candidate-only TypeScript diagnostic count: 0;
+- baseline full-lint RC: 2;
+- candidate full-lint RC: 2;
+- R16.32-A changed-files lint RC: 0;
+- normalized baseline full-lint SHA-256: `040995b0637e5b131dab10424d058944e1f00eaab97d07fd6fcdae0445a71cd9`;
+- normalized candidate full-lint SHA-256: `040995b0637e5b131dab10424d058944e1f00eaab97d07fd6fcdae0445a71cd9`;
+- normalized full-lint outputs equal: YES;
+- disposable baseline/candidate contexts remained source-clean;
+- temporary builder images removed;
+- temporary worktrees removed;
+- accepted A3 worktree unchanged;
+- operator checkout unchanged;
+- live R16.31 runtime remained running, healthy, restart count 0;
+- no Auth Keeper calls, provider/model calls, live mutation, dependency reuse from host, or remote push occurred.
+
+**Final disposition**
+
+`R16_32_A4_STATUS=CANONICAL_DOCKER_DIFFERENTIAL_R5_ACCEPTED`
+
+`RESULT=PASS_R16_32_A4_CANONICAL_DOCKER_DIFFERENTIAL_R5`
+
+`R16_32_A_STATUS=NORMALIZED_CANDIDATE_FACTS_PHASE_ACCEPTED`
+
+**Next authorized phase**
+
+`R16_32_B_PURE_DETERMINISTIC_DISPOSITION_REASON_EVALUATOR_DESIGN`
+
+**Prevention rule**
+
+A phase is accepted only when product/source evidence and harness authority agree: exact source identities, canonical production build, focused behavior tests, differential inherited-debt handling, changed-file cleanliness, cleanup, and live/operator non-drift must all be independently proven.
+
+---
+
 # 10. R16.32 routing-intelligence safety invariants
 
 R16.32 must remain provider-neutral and may only rank among candidates that already survive hard policy/admission constraints.
@@ -987,6 +1079,7 @@ Existing `shadowRouting.ts` is not suitable for computational-only R16.32 shadow
 - If exact local dependency parity cannot be proven, use the lockfile-controlled Docker builder.
 - Do not install/update dependencies into an accepted worktree merely to satisfy validation.
 - Validate production behavior through the same bundler/build path intended for release.
+- For inherited quality debt, compare stable baseline/candidate diagnostics and separately require zero diagnostics on changed files.
 
 ## Browser/session providers
 
@@ -1031,7 +1124,7 @@ Existing `shadowRouting.ts` is not suitable for computational-only R16.32 shadow
 | Accepted health | running / healthy / restart 0 |
 | Auth Keeper probe | unauthorized 401 / authorized 200 |
 
-## R16.32-A candidate authority
+## R16.32-A accepted authority
 
 | Gate | Authority |
 |---|---|
@@ -1039,21 +1132,24 @@ Existing `shadowRouting.ts` is not suitable for computational-only R16.32 shadow
 | A2 tree | `229c08bf84e1c2f94a4cc14e3c96165a1a17d0a0` |
 | A3 test-hardening commit | `a8ea7291a868087fc278b2b62d542c931b34e837` |
 | A3 tree | `bf19ca34264b72cee595b92e5e8149c595862b87` |
-| A3 tests | 18/18 pass |
+| A3 tests | 18/18 pass in canonical builder |
 | Runtime wiring | none |
 | Live mutation | none |
-| A4 R3 baseline production build | PASS |
-| A4 R3 candidate production build | PASS |
-| A4 R3 focused test | NOT EXECUTED; source absent from builder image path |
-| A4 overall | pending R4 test-materialization/typecheck/lint completion |
+| A4 baseline production build | PASS |
+| A4 candidate production build | PASS |
+| A4 typecheck differential | PASS, 0 candidate-only diagnostics |
+| A4 changed-files lint | PASS, RC 0 |
+| A4 full-lint differential | PASS, normalized outputs byte-identical |
+| A4 final status | `CANONICAL_DOCKER_DIFFERENTIAL_R5_ACCEPTED` |
+| R16.32-A final status | `NORMALIZED_CANDIDATE_FACTS_PHASE_ACCEPTED` |
 
 ---
 
 # 13. Open items
 
-1. Complete R16.32-A4 R4 using the exact Docker builder environment plus read-only exact-commit test-source mounts; append the final typecheck/lint/poststate result here.
-2. Only after A4 acceptance, proceed to **R16.32-B pure deterministic disposition/reason evaluator design**.
-3. Keep R16.32-B pure and unwired initially; it must consume normalized facts, not acquire new facts.
+1. Proceed to **R16.32-B pure deterministic disposition/reason evaluator design**.
+2. Keep R16.32-B pure and unwired initially; it must consume normalized facts, not acquire new facts.
+3. Preserve the hard-gate hierarchy and the invariant `R16.32 output eligibility ⊆ R16.31 input eligibility`.
 4. Future computational shadow validation must not call the existing real-traffic shadow executor.
 5. Continue reconciling upstream provider fixes semantically while keeping named-provider logic outside the R16.32 intelligence core.
 
