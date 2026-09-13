@@ -8,9 +8,9 @@ This file defines the authority order for the `Zartharas/OmniRoute` fork.
 
 For the fork's product goal and architecture, the canonical authority is:
 
-1. [`docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md`](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
-2. [`docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
-3. [`docs/project/MASTER_ROADMAP.md`](docs/project/MASTER_ROADMAP.md)
+1. [Architecture Source of Truth](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
+2. [Engineering Source of Truth](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
+3. [Master Roadmap](docs/project/MASTER_ROADMAP.md)
 
 These documents describe the fork-specific system. The upstream OmniRoute README and `ROADMAP.md` remain useful upstream references, but they do **not** define this fork's end goal.
 
