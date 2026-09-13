@@ -13,6 +13,10 @@ Those documents are authoritative for the fork's product goal, architecture, eng
 
 The historical/upstream agent guide has been preserved at [Upstream Agent Guide](docs/upstream/AGENTS_UPSTREAM.md). Read it for repository-local commands, code conventions, quality gates, file placement, security rules and upstream workflow details. Where it conflicts with the canonical fork documents above about product intent or architecture authority, the canonical fork documents win.
 
+## Upstream repository snapshot
+
+The current upstream release line exposes **340 LLM providers** through OmniRoute's canonical provider inventory. Treat count claims as implementation facts that must follow the repository's count-validation gates; they are not part of the fork's architectural identity.
+
 ## Five-pillar project goal
 
 Do not infer the project from only the currently active branch or R16.x phase. The product has five pillars:
