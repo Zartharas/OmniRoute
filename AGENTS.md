@@ -4,14 +4,14 @@ This file is the mandatory entry point for AI/coding agents working in the `Zart
 
 ## Read these canonical documents first
 
-1. [`SOURCE_OF_TRUTH.md`](SOURCE_OF_TRUTH.md)
-2. [`docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md`](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
-3. [`docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
-4. [`docs/project/MASTER_ROADMAP.md`](docs/project/MASTER_ROADMAP.md)
+1. [Fork Source of Truth](SOURCE_OF_TRUTH.md)
+2. [Architecture Source of Truth](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
+3. [Engineering Source of Truth](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
+4. [Master Roadmap](docs/project/MASTER_ROADMAP.md)
 
 Those documents are authoritative for the fork's product goal, architecture, engineering method and roadmap.
 
-The historical/upstream agent guide has been preserved at [`docs/upstream/AGENTS_UPSTREAM.md`](docs/upstream/AGENTS_UPSTREAM.md). Read it for repository-local commands, code conventions, quality gates, file placement, security rules and upstream workflow details. Where it conflicts with the canonical fork documents above about product intent or architecture authority, the canonical fork documents win.
+The historical/upstream agent guide has been preserved at [Upstream Agent Guide](docs/upstream/AGENTS_UPSTREAM.md). Read it for repository-local commands, code conventions, quality gates, file placement, security rules and upstream workflow details. Where it conflicts with the canonical fork documents above about product intent or architecture authority, the canonical fork documents win.
 
 ## Five-pillar project goal
 
