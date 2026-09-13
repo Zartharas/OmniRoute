@@ -1,13 +1,25 @@
 ---
 title: "OmniRoute Roadmap"
 version: 3.8.50
-lastUpdated: 2026-08-06
+lastUpdated: 2026-09-13
 ---
+
+> [!IMPORTANT]
+> **Fork alignment note:** This file tracks the upstream OmniRoute release/modularization roadmap. It is **not** the product roadmap for the `Zartharas/OmniRoute` fork.
+>
+> The fork-specific product goal, architecture and engineering roadmap are canonical in:
+>
+> - [`SOURCE_OF_TRUTH.md`](SOURCE_OF_TRUTH.md)
+> - [`docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md`](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
+> - [`docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
+> - [`docs/project/MASTER_ROADMAP.md`](docs/project/MASTER_ROADMAP.md)
+>
+> Upstream release planning below remains valuable and should continue to inform reconciliation work, but it must not be used to redefine or narrow the fork's five-pillar end goal.
 
 # OmniRoute Roadmap
 
 > Version-gated, not date-gated: each milestone ships when its quality gates pass.
-> Current line: **v3.8.x** (this branch). Last updated: 2026-08-06.
+> Current line: **v3.8.x** (this branch). Upstream roadmap baseline: 2026-08-06.
 
 OmniRoute is heading from a monolithic router to a **modular AI platform**: a lightweight
 core engine, a typed SDK, and everything else as installable modules and plugins. The path
