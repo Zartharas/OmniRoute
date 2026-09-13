@@ -9,10 +9,10 @@ lastUpdated: 2026-09-13
 >
 > The fork-specific product goal, architecture and engineering roadmap are canonical in:
 >
-> - [`SOURCE_OF_TRUTH.md`](SOURCE_OF_TRUTH.md)
-> - [`docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md`](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
-> - [`docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
-> - [`docs/project/MASTER_ROADMAP.md`](docs/project/MASTER_ROADMAP.md)
+> - [Fork Source of Truth](SOURCE_OF_TRUTH.md)
+> - [Architecture Source of Truth](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
+> - [Engineering Source of Truth](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
+> - [Master Roadmap](docs/project/MASTER_ROADMAP.md)
 >
 > Upstream release planning below remains valuable and should continue to inform reconciliation work, but it must not be used to redefine or narrow the fork's five-pillar end goal.
 
