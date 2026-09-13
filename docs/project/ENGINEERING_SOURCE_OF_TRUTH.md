@@ -7,7 +7,7 @@ This document governs how architecture changes are implemented, qualified and pr
 
 ## 1. Engineering objective
 
-Engineering work must advance the architecture defined in `ARCHITECTURE_SOURCE_OF_TRUTH.md` without silently narrowing the product into a single provider, single model, single branch or single R16.x subproject.
+Engineering work must advance the [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) without silently narrowing the product into a single provider, single model, single branch or single R16.x subproject.
 
 The engineering system should make it possible to improve OmniRoute, Auth Keeper, Codex Unified and Operations Floor independently while preserving their shared contracts.
 
@@ -15,9 +15,9 @@ The engineering system should make it possible to improve OmniRoute, Auth Keeper
 
 Use the following precedence when facts conflict:
 
-1. `docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md` for product intent and architecture invariants.
+1. [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) for product intent and architecture invariants.
 2. This document for engineering method and non-regression rules.
-3. `docs/project/MASTER_ROADMAP.md` for current implementation status and next work.
+3. [Master Roadmap](MASTER_ROADMAP.md) for current implementation status and next work.
 4. Accepted Git objects, tests, build evidence and runtime evidence for implementation reality.
 5. Upstream README/ROADMAP for upstream OmniRoute direction only.
 6. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
