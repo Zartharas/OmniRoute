@@ -1,16 +1,17 @@
 # OmniRoute Fork Source of Truth
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-14
 
 This file defines the authority order for the `Zartharas/OmniRoute` fork.
 
 ## Canonical documents
 
-For the fork's product goal and architecture, the canonical authority is:
+For the fork's product goal, architecture, engineering method and current checkpoint, the canonical authority is:
 
 1. [Architecture Source of Truth](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
 2. [Engineering Source of Truth](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
 3. [Master Roadmap](docs/project/MASTER_ROADMAP.md)
+4. [Current Project Status](docs/project/CURRENT_STATUS.md)
 
 These documents describe the fork-specific system. The upstream OmniRoute README and `ROADMAP.md` remain useful upstream references, but they do **not** define this fork's end goal.
 
@@ -21,9 +22,12 @@ These documents describe the fork-specific system. The upstream OmniRoute README
 | What are we building? | Architecture Source of Truth |
 | What must never regress? | Architecture + Engineering Source of Truth |
 | How do we implement and qualify changes? | Engineering Source of Truth |
-| What is finished, active, or planned? | Master Roadmap + accepted Git/evidence state |
+| What is the long-range implementation plan? | Master Roadmap |
+| What is the latest accepted checkpoint and next phase? | Current Project Status + accepted Git/evidence state |
 | What does the software actually do now? | Accepted Git objects, tests, build evidence, and runtime evidence |
 | What does upstream OmniRoute plan? | Upstream `README.md` and `ROADMAP.md` |
+
+The Current Project Status is deliberately subordinate to accepted Git/test/build/runtime evidence when a more specific accepted artifact exists. It is a checkpoint summary, not a replacement for machine evidence.
 
 ## Stale-information policy
 
@@ -31,7 +35,7 @@ Chat messages, old branch notes, issue comments, temporary scripts, screenshots,
 
 A decision is not considered retired merely because it disappears from a newer conversation or branch. Retirement/deprecation must be explicit in the Architecture Source of Truth or in an accepted decision recorded there.
 
-When implementation changes the architecture, the architecture and engineering source-of-truth documents must be updated in the same engineering cycle before the change is considered complete.
+When implementation changes the architecture, engineering invariants, roadmap status or accepted project checkpoint, the relevant canonical documents must be updated in the same engineering cycle before the change is considered complete.
 
 ## Cross-repository authority
 
@@ -41,4 +45,4 @@ The private `Zartharas/omniroute-auth-keeper` repository is the canonical implem
 
 ## Non-negotiable alignment rule
 
-R16.x phases, provider integrations, Auth Keeper work, Operations Floor work, and Codex Unified work are subprojects of the same product goal. No single subproject is the product by itself.
+R16.x phases, provider integrations, Auth Keeper work, Operations Floor work, Codex Unified work, and external model-intelligence enrichment are subprojects of the same product goal. No single subproject is the product by itself.
