@@ -1,6 +1,6 @@
 # Architecture Source of Truth
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-14
 Status: Canonical for the `Zartharas/OmniRoute` fork
 
 ## 1. Product goal
@@ -81,6 +81,39 @@ The system may use multi-model orchestration patterns such as Fusion, Pipeline, 
 
 R16.32 belongs under this pillar. It is a subproject that builds provider-neutral candidate facts, deterministic disposition, computational shadowing, observability, compatibility provenance and later preference intelligence. R16.32 is not the product by itself.
 
+The current accepted checkpoint and activation boundary are recorded in [Current Project Status](CURRENT_STATUS.md).
+
+#### Unified Model Intelligence Registry
+
+A future Unified Model Intelligence Registry may enrich the orchestration plane with source-backed model architecture metadata in addition to provider capability/runtime evidence.
+
+Potential enrichment dimensions include:
+
+- dense versus sparse/MoE decoder structure;
+- total and active parameter scale when available;
+- context-window metadata;
+- attention family and layer mix;
+- KV-cache footprint estimates where source-backed;
+- source/config/technical-report links;
+- benchmark metadata as a separately labeled evidence class.
+
+Sebastian Raschka's LLM Architecture Gallery is a useful candidate external enrichment source:
+
+- <https://sebastianraschka.com/llm-architecture-gallery/>
+
+This kind of external metadata is **not** a routing hard-gate authority. The evidence precedence for routing must remain:
+
+1. actual provider/account availability and explicit request/policy state;
+2. official provider/API capability facts;
+3. verified OmniRoute model/catalog facts;
+4. request-local runtime compatibility/health/quota evidence;
+5. external model-architecture enrichment;
+6. external benchmark/intelligence metadata.
+
+External architecture or benchmark metadata may later inform soft preference among candidates that have already survived harder gates. It may not override Auth Keeper denial, workload isolation, request/context incompatibility, cooldown/breaker state, quota cutoff, explicit pinning or other harder authority.
+
+Any future external ingestion should be pinned/versioned, schema-validated, alias-reconciled, provenance-labeled and independent of request-time external network availability.
+
 ### Pillar 5 — Operations Floor
 
 Operations Floor is the visual/operator representation of the AI workforce.
@@ -98,6 +131,8 @@ It should make the system understandable in real time by exposing, without leaki
 - evidence supporting routing/fallback decisions;
 - protected-native/OpenAI preservation state;
 - personal versus isolated enterprise/MTA workload visibility where applicable.
+
+Operations Floor may also display provenance-labeled model-intelligence enrichment such as architecture class, context metadata, attention type or KV-cache characteristics, but those visual fields remain descriptive evidence rather than routing authority.
 
 Historical implementation branches include:
 
@@ -197,6 +232,7 @@ The following are architecture invariants unless this document is deliberately r
 - Codex Unified remains the intended single user-facing engineering agent/workspace.
 - free/keyless operation must not be broken by managed-auth support;
 - hard-gate rejection cannot be undone by preference intelligence;
+- external model-architecture/benchmark metadata cannot override harder routing evidence;
 - no extra provider/model probes are added merely for scoring when existing evidence is available;
 - no extra Auth Keeper fetch is added merely for scoring when request-local evidence is available;
 - secret material must not become routing telemetry;
@@ -223,11 +259,12 @@ The following statements are explicitly stale or incomplete if presented as the 
 - "The project is only a multi-provider proxy."
 - "TheOldLLM/human-verification is retired because it is absent from a newer branch."
 - "Codex must manually switch models/providers for every task."
+- "An external model gallery or benchmark becomes routing truth."
 
-Each is either a subproject, provider lane, operator surface or implementation detail within the larger architecture.
+Each is either a subproject, provider lane, operator surface, enrichment source or implementation detail within the larger architecture.
 
 ## 10. Change control
 
-Any proposal that changes the five pillars, routing authority, Auth Keeper authority, protected-native policy, workload isolation, single-agent goal or Operations Floor role requires an explicit update to this document.
+Any proposal that changes the five pillars, routing authority, Auth Keeper authority, protected-native policy, workload isolation, single-agent goal, Operations Floor role or model-intelligence evidence precedence requires an explicit update to this document.
 
 A chat message, temporary branch, issue comment or omitted feature is not sufficient to redefine the architecture.
