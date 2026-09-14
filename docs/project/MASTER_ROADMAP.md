@@ -1,9 +1,11 @@
 # Master Roadmap — Fork Product Goal
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-14
 Status: Canonical status/roadmap for the `Zartharas/OmniRoute` fork
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
+
+For the latest accepted engineering checkpoint and exact current phase, also read [Current Project Status](CURRENT_STATUS.md).
 
 ## 1. Goal
 
@@ -79,7 +81,7 @@ Remaining:
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: Active major workstream
+Status: Active major workstream; compatibility-provenance foundation canonically qualified
 
 Completed or accepted in the R16.32 lineage:
 
@@ -96,24 +98,45 @@ Completed or accepted in the R16.32 lineage:
 - corrected context composition with three components:
   - `generic_request_context`
   - `configured_context`
-  - `auto_estimated_input_context`
+  - `auto_estimated_input_context`;
+- D14 R6 isolated request/context compatibility-provenance implementation accepted at local commit `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b` / tree `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`;
+- D15 R2 canonical qualification accepted for that exact candidate;
+- baseline and candidate production builder builds passed;
+- typecheck/full-lint/changed-file lint differentials passed with no candidate-only diagnostics;
+- focused regression moved from baseline 141/141 to candidate 155/155;
+- routing compatibility parity passed 34/34 on both baseline and candidate;
+- protected acquisition/dispatch topology remained unchanged;
+- no additional Auth Keeper fetches or provider/model probes were introduced;
+- no routing readback from compatibility provenance was introduced;
+- pure qualification reached structural 14/14 known hard facts and a synthetic eligible/match comparable-proceed case.
 
 Current checkpoint:
 
-- D14 request/context compatibility provenance implementation is the active implementation line; D14 R1 failed safely on a declaration-scoped harness ambiguity before mutation and the corrected R2 path is the next execution step.
+- `R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT` is next.
+- D16 must re-audit the original D7 blocker set after structural hard-fact completeness was achieved.
+- production activation remains blocked; D15 synthetic evidence is not production activation authority.
 
-Remaining after D14/D15:
+Remaining R16.32 evidence/activation work:
 
-- canonical compatibility-provenance qualification;
-- safe aggregate evidence/readout;
-- empirical shadow evidence collection;
-- activation-readiness reassessment;
-- provider-neutral preference signal inventory;
-- pure preference evaluator;
-- preference computational shadow;
-- evidence qualification;
-- restricted activation design;
-- canary and production promotion only after explicit authorization.
+- qualify a safe production evidence readout;
+- collect live candidate evidence without changing routing authority;
+- measure empirical comparable-proceed coverage;
+- measure empirical eligible coverage;
+- measure mismatch, contained-error and not-ready rates;
+- derive any future activation criteria from observed evidence instead of arbitrary thresholds;
+- only after those gates, proceed to conservative provider-neutral preference intelligence.
+
+Planned Model Intelligence Enrichment subproject:
+
+- define a Unified Model Intelligence Registry;
+- enrich the verified model catalog with provenance-labeled architecture metadata;
+- support fields such as dense/MoE structure, active/total scale, context, attention/layer mix and KV-cache estimates where source-backed;
+- evaluate Sebastian Raschka's LLM Architecture Gallery as an external enrichment input: <https://sebastianraschka.com/llm-architecture-gallery/>;
+- ingest external metadata offline/pinned rather than through request-time network calls;
+- reconcile provider/model aliases explicitly;
+- keep external benchmark scores in a separately labeled evidence class;
+- never let external metadata override official provider/API capability, request-local runtime evidence, Auth Keeper admission, workload policy, explicit pins, context compatibility, quota cutoffs or cooldown/breaker state;
+- make the enrichment useful to both future soft preference intelligence and Operations Floor worker cards.
 
 ### Pillar 5 — Operations Floor
 
@@ -147,6 +170,7 @@ Remaining:
 - surface Auth Keeper state without leaking secrets;
 - surface Codex Unified task/worker assignment;
 - show multi-model reasoning/judging versus the designated acting model;
+- optionally surface provenance-labeled model-intelligence metadata for worker understanding/capacity planning;
 - preserve protected-native and workload-isolation semantics;
 - make the floor an operational control/inspection surface without becoming a router.
 
@@ -171,18 +195,38 @@ Each access mode must define ownership, eligibility, recovery and routing semant
 
 ### Phase C — Complete orchestration evidence foundation
 
-- finish D14/D15;
-- complete shadow evidence readout;
-- collect empirical agreement/mismatch/not-ready/error evidence;
-- establish activation thresholds from evidence rather than inventing them.
+Completed:
 
-### Phase D — Preference intelligence
+- D14 request/context compatibility-provenance implementation;
+- D15 canonical compatibility-provenance qualification;
+- structural 14/14 hard-fact coverage in pure qualification.
+
+Current/remaining:
+
+- D16 post-completeness activation-readiness re-audit;
+- production-safe shadow evidence readout;
+- live empirical agreement/mismatch/not-ready/error evidence;
+- evidence-derived activation criteria.
+
+### Phase D — Model intelligence and preference intelligence
+
+#### D0 — Model intelligence enrichment
+
+- define the Unified Model Intelligence Registry contract;
+- identify official versus external evidence classes;
+- support pinned/offline external architecture metadata ingestion;
+- reconcile model aliases and immutable source provenance;
+- keep architecture/benchmark enrichment non-authoritative for hard gates;
+- expose safe metadata to Operations Floor.
+
+#### D1 — Provider-neutral preference intelligence
 
 - identify source-backed preference signals;
 - score only candidates that survived hard gates;
 - keep core evaluator provider-neutral;
 - shadow preference ordering before activation;
-- protect explicit pins, workload isolation, Auth Keeper denial, capability/context checks, cooldowns and quota cutoffs.
+- protect explicit pins, workload isolation, Auth Keeper denial, capability/context checks, cooldowns and quota cutoffs;
+- qualify preference evidence before restricted activation.
 
 ### Phase E — Codex Unified reintegration
 
@@ -197,7 +241,8 @@ Each access mode must define ownership, eligibility, recovery and routing semant
 - display live worker assignments, routing, fallback, auth, quota, health and evidence;
 - display protected-native state separately;
 - preserve personal/MTA isolation;
-- add operator actions only where they cannot bypass routing/auth authority.
+- add operator actions only where they cannot bypass routing/auth authority;
+- integrate provenance-labeled model intelligence without turning visual metadata into routing authority.
 
 ### Phase G — Product acceptance and promotion
 
@@ -217,16 +262,20 @@ The following must not be used as the master roadmap:
 - Auth Keeper's local provider/recovery roadmap by itself;
 - the Operations Floor branch roadmap by itself;
 - OpenCode integration by itself;
-- a single provider catalog by itself.
+- a single provider catalog by itself;
+- an external model-architecture gallery or benchmark by itself.
 
-Each is a component of the five-pillar plan.
+Each is a component, evidence source or subproject of the five-pillar plan.
+
+The statement "D14 is the current implementation step" is stale. D14 R6 and D15 R2 are accepted; D16 is the next R16.32 phase.
 
 ## 5. Status update rule
 
 When a phase is accepted:
 
-1. update the current checkpoint here if the milestone changes the master status;
-2. update the Architecture Source of Truth if an authority boundary or product goal changes;
-3. update the Engineering Source of Truth if the engineering method/invariants change;
-4. record exact Git/evidence authority in the relevant implementation repository;
-5. do not treat chat history as a substitute for these updates.
+1. update [Current Project Status](CURRENT_STATUS.md) with the exact checkpoint if it changes;
+2. update the current checkpoint here if the milestone changes the master status;
+3. update the Architecture Source of Truth if an authority boundary, evidence precedence or product goal changes;
+4. update the Engineering Source of Truth if the engineering method/invariants change;
+5. record exact Git/evidence authority in the relevant implementation repository;
+6. do not treat chat history as a substitute for these updates.
