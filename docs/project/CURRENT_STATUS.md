@@ -25,25 +25,11 @@ Do not resume D19 automatically.
 - parent `1c4da240883e729d38a356ec83919ad7f6637623`
 - evidence ZIP SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 
-R8 is local accepted engineering authority; do not claim release-branch publication without later Git evidence.
+R8 is local accepted authority; do not claim release-branch publication without later Git evidence.
 
 ## Accepted R8 summary
 
-- 7 feature-contract + 9 support = 16 transplanted paths;
-- current-owned files overwritten: 0;
-- unresolved project-local imports: 0;
-- bounded readout external runtime consumers: 0;
-- 15 files byte-exact to D18;
-- 1 test-only runtime-erased TypeScript compatibility adaptation;
-- production-source adaptation count: 0;
-- focused tests: 35/35 pass;
-- changed-file ESLint: pass;
-- changed-file TypeScript diagnostics: 0;
-- current 10 routed + 3 protected-native contract: pass;
-- default Webpack production build: pass;
-- BUILD_ID/standalone: present;
-- output files: 22,645;
-- Turbopack panic: absent.
+16 paths (7 contract + 9 support); current-owned overwrite 0; unresolved local imports 0; bounded readout runtime consumers 0; 15 byte-exact files + one test-only runtime-erased TypeScript adaptation; production-source adaptation 0; focused tests 35/35; lint/type pass; 10 routed + 3 protected-native preserved; default Webpack production build/BUILD_ID/standalone pass; 22,645 output files; Turbopack panic absent.
 
 D18 remains passive/unwired.
 
@@ -61,32 +47,26 @@ D18 remains passive/unwired.
 
 ## Workload/provider authority
 
-- routed: 10;
-- personal: 6;
-- MTA/enterprise: 4;
+- routed 10: personal 6 + MTA/enterprise 4;
 - protected-native: GPT-5.6 Sol, Terra, Luna;
 - protected-native routeability: none;
-- OpenCode and TheOldLLM: retired from active scope.
+- OpenCode/TheOldLLM: retired from active scope.
 
 ## Build policy
 
 - plain `npm run build` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack requalification only.
+- `OMNIROUTE_USE_TURBOPACK=1` → explicit requalification only.
 
 ## Active full E2E phase
 
-Target path:
-
-`Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
+Target: `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`.
 
 Next deliverable: one consolidated, non-destructive, prevalidated E2E harness with read-only preflight, fail-closed guards, mocks/fixtures/deterministic failure injection where possible, evidence packaging and final non-drift.
 
-Qualification should cover source/tree lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth boundaries, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack production identity and evidence continuity.
+Cover source/tree lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity and evidence continuity.
 
-### Safety boundary
-
-Current authorization does not permit uncontrolled live provider/model calls, credential-value reads, live Auth Keeper mutation, production routing/provider mutation, D18/preference activation, live container/image/database mutation, remote push/deployment or live cutover.
+Safety: no uncontrolled live provider/model calls, credential-value reads, live Auth Keeper mutation, production routing/provider mutation, D18/preference activation, live container/image/database mutation, remote push/deploy/cutover unless later explicitly authorized.
 
 ## New-chat continuation
 
@@ -94,4 +74,4 @@ Read [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FUL
 
 Last accepted local script: `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`.
 
-If its output/evidence is supplied again, verify against accepted R8 rather than reopening R1-R7. If a newer E2E harness output is supplied, identify it by header/hash and continue from that evidence.
+If its output/evidence is supplied again, verify against accepted R8 rather than reopening R1-R7. If a newer E2E harness output is supplied, identify by header/hash and continue from that evidence.
