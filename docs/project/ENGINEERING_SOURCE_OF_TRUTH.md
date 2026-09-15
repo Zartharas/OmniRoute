@@ -20,9 +20,10 @@ Use this precedence when facts conflict:
 3. [Master Roadmap](MASTER_ROADMAP.md) for long-range sequencing.
 4. [Current Project Status](CURRENT_STATUS.md) for the latest accepted checkpoint summary.
 5. [Engineering Tracker](ENGINEERING_TRACKER.md) for active work items, completed phases and known blockers.
-6. Accepted Git objects, tests, build evidence and runtime evidence for implementation reality.
-7. Upstream README/ROADMAP for upstream OmniRoute direction only.
-8. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
+6. [Full E2E Chat Handoff](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) for new-conversation continuation at the current checkpoint.
+7. Accepted Git objects, tests, build evidence and runtime evidence for implementation reality.
+8. Upstream README/ROADMAP for upstream OmniRoute direction only.
+9. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
 
 If implementation reality contradicts architecture, surface the contradiction. Do not silently reinterpret architecture to match accidental code state.
 
@@ -36,11 +37,13 @@ Before mutating source:
 - identify protected call counts and side effects;
 - validate historical object availability instead of assuming an old checkout exists;
 - create isolated candidates/worktrees where practical;
-- syntax-check Bash for macOS Bash compatibility;
+- syntax-check Bash for macOS `/bin/bash` compatibility;
 - compile embedded Python/Node/TypeScript harness blocks;
-- exercise high-risk parser/decision logic before operator execution;
+- execute high-risk parser/regex/decision self-tests, not syntax compilation alone;
 - use AST/semantic guards for structured source where structure matters;
-- fail closed on unexpected source shape.
+- derive complete missing-only dependency closure before mutation when a historical transplant requires inherited support;
+- require project-local static imports to resolve before running feature tests;
+- fail closed on unexpected source shape or unresolved authority.
 
 After mutation:
 
@@ -48,6 +51,7 @@ After mutation:
 - prove parent/source authority;
 - rerun semantic guards and focused regressions;
 - distinguish baseline diagnostics from candidate-only diagnostics;
+- independently forbid changed-file diagnostics unless a bounded compatibility adaptation is explicitly qualified;
 - run changed-file lint/type gates;
 - run production build qualification using the current canonical builder policy;
 - prove operator/live/non-target worktrees and host sentinels were not mutated;
@@ -62,6 +66,7 @@ After mutation:
 - Current workload authority is 10 routed models: 6 personal + 4 MTA/enterprise, plus 3 protected-native.
 - Operations Floor must not become a router.
 - Auth Keeper must not redefine OmniRoute routing policy.
+- OmniRoute orchestration may consume Auth Keeper eligibility contracts while Auth Keeper retains credential/session/account authority.
 - preference intelligence may rank only candidates that survived harder gates.
 
 ## 5. Build qualification policy
@@ -76,7 +81,7 @@ Reason: repeated production qualification exposed a deterministic Turbopack inva
 
 Permanent rule:
 
-- do not repeatedly rediscover the same Turbopack failure during every narrow engineering phase;
+- do not repeatedly rediscover the same Turbopack failure during ordinary engineering qualification;
 - qualify ordinary acceptance/release builds with the proven Webpack path;
 - retain Turbopack as an explicit experiment/requalification path;
 - treat future Turbopack reactivation as evidence-based, not assumed.
@@ -91,11 +96,17 @@ When reintegrating old feature branches:
 2. do not depend on old local checkout paths;
 3. test whether objects exist in the current local Git object database;
 4. if not, use a disposable historical object store from exact authorized branch refs rather than mutating an accepted repo's object database;
-5. classify candidate files as missing/identical/divergent;
-6. copy historical blobs byte-exact before applying any bounded current-compatibility adaptation;
-7. preserve current implementations when a historical transitive dependency is not itself patch authority;
-8. never resurrect retired provider/runtime surface merely because it exists in historical reachability;
-9. qualify the result against current contracts, tests, workload policy and builder.
+5. separate final commit diff, feature-owned frozen contract, minimal missing support closure, full historical reachability and current implementation authority;
+6. use TypeScript/parser/module-resolution authority for real module edges rather than regex text scanning;
+7. stop historical support traversal at current-owned implementations;
+8. classify candidate files as missing/identical/divergent;
+9. copy historical blobs byte-exact before bounded compatibility adaptation;
+10. do not use path namespace alone as architectural legitimacy;
+11. do not materialize a complete historical transitive graph merely because it is reachable;
+12. safety-classify the complete copy set before mutation;
+13. require assembled-candidate static import resolution before tests;
+14. never resurrect retired provider/runtime surface merely because it exists in historical reachability;
+15. qualify the result against current contracts, tests, workload policy and builder.
 
 ## 7. Operations Floor lessons
 
@@ -105,8 +116,8 @@ Accepted Operations Floor work established these permanent rules:
 - historical 14-model assumptions must be reconciled to the current 10-routed + 3-protected-native authority;
 - component prop/interface drift is a compatibility problem, not permission to alter unrelated current contracts;
 - absence of preview telemetry must be represented as absence, not invented data;
-- sidebar description maps must use the semantic ID domain actually represented (`SidebarItemId` where always-visible items such as `proxy` are valid), not a narrower hideable-only domain;
-- TypeScript differentials must compare structured diagnostic identity (path/line/column/code) and independently forbid changed-file diagnostics;
+- sidebar description maps must use the semantic ID domain actually represented;
+- TypeScript differentials must compare structured diagnostic identity and independently forbid changed-file diagnostics;
 - multiline/wrapped message drift from unrelated baseline diagnostics is not a candidate regression by itself.
 
 Accepted Operations Floor local authority:
@@ -114,37 +125,60 @@ Accepted Operations Floor local authority:
 - commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`;
 - tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`.
 
-## 8. D18 bounded-foundation rules
+## 8. D18 bounded-foundation rules and accepted authority
 
-D18 exposed three distinct failure classes that are now permanent lessons:
+D18 is complete and accepted at R8.
 
-### R1 — final-diff scope can be too narrow
+Accepted local authority:
 
-The final D18 commit changed only two files, but one of those files depended on earlier foundation work. A final-commit diff is not automatically the complete transplant contract.
+- branch `feat/d18-orchestration-foundation-transplant-r8`;
+- commit `58452140ffc8122a26a387638f8a38d7d80f5024`;
+- tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`;
+- parent `1c4da240883e729d38a356ec83919ad7f6637623`;
+- evidence SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
 
-Rule: determine source-backed feature contract/dependency ownership before assuming the final diff is sufficient.
+Accepted transplant structure:
 
-### R2 — regex import scanning is not module authority
+- 7 feature-contract files;
+- 9 missing support files;
+- 16 total files;
+- current-owned files overwritten: 0;
+- unresolved project-local imports: 0;
+- bounded readout external runtime consumers: 0;
+- 15 files byte-exact to D18;
+- one test-only runtime-erased TypeScript compatibility adaptation;
+- production-source adaptation count: 0.
 
-A regex scanner matched import-looking text that was not a real module edge.
+Accepted regressions/build:
 
-Rule: use the TypeScript parser/module resolver for actual module-graph questions. Comments/strings/examples must not become fake dependencies.
+- 35/35 focused tests pass;
+- changed-file ESLint pass;
+- changed-file TypeScript diagnostics: 0;
+- current 10-routed + 3-protected-native contract preserved;
+- default Webpack build/BUILD_ID/standalone qualification pass;
+- Turbopack panic absent.
 
-### R3 — complete transitive reachability can be too broad
+R8 acceptance does not activate D18. D18 remains passive/unwired until a later explicit activation gate.
 
-A correct TypeScript AST/module-resolver closure reached 1,164 historical files, 63 missing current files, retired OpenCode inventory and network-capable historical services. That graph was useful evidence, but it was not valid D18 patch authority.
+### Permanent D18 failure lessons
 
-Rule: distinguish **dependency reachability** from **feature patch authority**. A historical transitive graph must not be blindly materialized when the feature's frozen contract is explicitly bounded.
+R1: final commit diff can be too narrow.
 
-Current D18 transplant direction:
+R2: regex import scanning is not module authority.
 
-- exact frozen seven-file contract boundary;
-- classify those seven as missing/identical/divergent-existing;
-- copy missing files byte-exact only;
-- preserve divergent newer current implementations;
-- require zero external production consumers of the bounded readout;
-- require the three bounded D18 tests to pass;
-- no provider calls, credentials, DB writes or routing activation.
+R3: complete transitive reachability can be too broad and is not patch authority.
+
+R4: feature-owned contract and executable/testable support set are different sets.
+
+R5: hard path namespaces can reject legitimate architecture-owned cross-pillar support.
+
+R6: dynamically assembled regexes must be runtime-compiled/behavior-smoked during harness prevalidation.
+
+R7: historical runtime success does not waive current compiler compatibility.
+
+R8: test-only TypeScript compatibility may be accepted only when exact diagnostic identity, AST target, runtime-erased change, emitted-JavaScript parity, zero production-source adaptation, full regression pass and current build qualification are all proven.
+
+Detailed history is in [D18 Orchestration Foundation Failure Modes](D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md).
 
 ## 9. Harness regression register
 
@@ -170,6 +204,9 @@ Permanent known failure classes include:
 - stale hideable-only sidebar ID domains;
 - regex module-edge false positives;
 - unbounded historical dependency closure treated as patch authority;
+- hard namespace allowlists treated as architecture authority;
+- dynamically constructed Python regex flags not runtime-qualified;
+- historical test-only TypeScript constructs rejected by current compiler;
 - Turbopack with external `node_modules` symlinks;
 - Turbopack invariant panic repeatedly rediscovered after Webpack success already proved source/build viability.
 
@@ -190,7 +227,36 @@ Unless explicitly revised:
 - routing experiments begin shadow/observational and activate only after evidence;
 - external architecture/benchmark metadata is enrichment, not a hard-gate authority.
 
-## 11. Codex Unified and Auth Keeper boundaries
+## 11. Full end-to-end qualification policy — active phase
+
+The active phase is full end-to-end qualification on accepted R8 authority.
+
+The user authorized engineering qualification, not live cutover.
+
+Preferred implementation model:
+
+- one consolidated harness per phase;
+- complete read-only preflight before runtime exercise;
+- fail-closed authority/safety guards;
+- mocks, fixtures or deterministic failure injection for quota/cooldown/outage/auth-expiry cases where available;
+- no uncontrolled external provider traffic;
+- no credential-value reads;
+- no live Auth Keeper session/account mutation;
+- no production routing/provider mutation;
+- no D18/preference activation;
+- no live image/container/database mutation;
+- no remote push/deploy/cutover;
+- evidence packaging and final non-drift.
+
+Target path:
+
+`Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
+
+Qualification must cover source/tree lineage, host sentinels, workload isolation, protected-native preservation, eligibility boundaries, fallback/error behavior, restart/recovery, rollback readiness, evidence continuity and Webpack production identity.
+
+If a required behavior cannot be qualified safely without expanding authorization, fail closed and record the gap rather than silently making live calls.
+
+## 12. Codex Unified and Auth Keeper boundaries
 
 Codex Unified remains the intended user-facing agent. Multiple reasoning workers do not imply uncontrolled multi-writer repository execution.
 
@@ -202,7 +268,7 @@ Accepted Auth Keeper R11 authority:
 - tree `9377fe6afe21f098861f32c751f05c8a72882211`;
 - 457/457 tests pass.
 
-## 12. Upstream integration policy
+## 13. Upstream integration policy
 
 Continue absorbing compatible upstream OmniRoute changes.
 
@@ -214,7 +280,7 @@ When upstream overlaps custom architecture:
 4. keep Codex Unified, Auth Keeper and Operations Floor contracts intact;
 5. document deliberate divergence.
 
-## 13. Release/live-cutover boundary
+## 14. Release/live-cutover boundary
 
 Development/qualification authorization does not imply production authorization.
 
@@ -227,8 +293,8 @@ Live cutover requires separate explicit approval after:
 - rollback image/state is known;
 - live health checks and observation criteria are defined.
 
-## 14. Documentation completion rule
+## 15. Documentation completion rule
 
 A technically passing phase is incomplete if the repo still describes removed providers, stale phases or contradictory sequencing.
 
-Update the canonical docs and tracker in the same engineering cycle whenever accepted authority or current phase materially changes.
+Update canonical docs, tracker and the new-chat handoff in the same engineering cycle whenever accepted authority or current phase materially changes.
