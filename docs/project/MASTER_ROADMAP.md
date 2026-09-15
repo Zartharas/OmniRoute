@@ -3,7 +3,7 @@
 Last reviewed: 2026-09-15
 Status: Canonical roadmap for `Zartharas/OmniRoute`
 
-New-chat continuation: [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+**New-chat continuation:** `docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md`.
 
 Goal: five-pillar Codex-centered system with OmniRoute routing/orchestration, Auth Keeper credential/session authority, unified AI workforce, protected-native capacity and Operations Floor observability.
 
@@ -17,8 +17,8 @@ Build: Webpack default; Turbopack explicit requalification only.
 
 Active E2E target: `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`.
 
-Next deliverable: one consolidated non-destructive prevalidated harness covering lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity and evidence continuity.
+Next deliverable: one consolidated, non-destructive, prevalidated harness covering lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity and evidence continuity.
 
 Safety: no uncontrolled live provider/model calls, credential-value reads, live Auth Keeper mutation, production routing/provider mutation, D18/preference activation, live image/container/database mutation, remote push/deploy/cutover unless later explicitly authorized.
 
-Later: model/preference intelligence remains planned/subordinate to hard gates. Live promotion requires full E2E, canary/shadow evidence, rollback readiness and explicit cutover authorization.
+Later model/preference intelligence remains subordinate to hard gates. Live promotion requires full E2E, canary/shadow evidence, rollback readiness and explicit cutover authorization.
