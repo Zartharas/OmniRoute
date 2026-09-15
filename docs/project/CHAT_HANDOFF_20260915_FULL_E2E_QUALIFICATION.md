@@ -7,13 +7,11 @@ Docs branch/PR: `docs/engineering-failure-mode-register-20260915` / PR #15
 
 ## Current architecture
 
-Five pillars remain unchanged: Codex Unified Agent; Unified OmniRoute AI Workforce; Auth Keeper; Intelligent Multi-Model Orchestration; Operations Floor.
+Five pillars: Codex Unified Agent; Unified OmniRoute AI Workforce; Auth Keeper; Intelligent Multi-Model Orchestration; Operations Floor.
 
-Canonical path:
+Canonical path: `User → Codex Unified → OmniRoute → Auth Keeper + AI workforce/protected capacity → orchestration/fallback → response → Operations Floor evidence`.
 
-`User → Codex Unified → OmniRoute → Auth Keeper + AI workforce/protected capacity → orchestration/fallback → response → Operations Floor evidence`
-
-OmniRoute owns routing/provider/orchestration policy. Auth Keeper owns credential/session/account lifecycle and may expose eligibility contracts. Operations Floor is observer/operator plane. GPT-5.6 Sol/Terra/Luna are protected-native/non-routeable. OpenCode and TheOldLLM are retired from active scope.
+OmniRoute owns routing/provider/orchestration policy. Auth Keeper owns credential/session/account lifecycle and may expose eligibility contracts. Operations Floor is observer/operator plane. GPT-5.6 Sol/Terra/Luna are protected-native/non-routeable. OpenCode/TheOldLLM are retired.
 
 ## Current sequence
 
@@ -32,7 +30,7 @@ Not authorized: live activation/cutover. Do not resume D19 automatically.
 - evidence SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 - accepted worktree `/Users/zarthras/Documents/Development Projects/omniroute-d18-orchestration-foundation-transplant-r8`
 
-R8 acceptance: 16 paths (7 contract + 9 support); current-owned overwrite 0; unresolved local imports 0; bounded readout runtime consumers 0; 15 byte-exact files + 1 test-only runtime-erased adaptation; production-source adaptation 0; focused tests 35/35; lint/type pass; 10 routed + 3 protected-native preserved; default Webpack build passed; BUILD_ID/standalone present; 22,645 output files; Turbopack panic absent.
+R8 acceptance: 16 paths (7 contract + 9 support); current-owned overwrite 0; unresolved local imports 0; bounded readout runtime consumers 0; 15 byte-exact files + one test-only runtime-erased compatibility adaptation; production-source adaptation 0; 35/35 focused tests; lint/type pass; 10 routed + 3 protected-native preserved; default Webpack build passed; BUILD_ID/standalone present; 22,645 output files; Turbopack panic absent.
 
 Test-only adaptation: `Record<string, unknown>` around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`, accepted after exact TS2698/AST identity and emitted-JavaScript parity proof.
 
@@ -48,9 +46,9 @@ Webpack-default parent: commit `1c4da240883e729d38a356ec83919ad7f6637623`, tree 
 
 ## Anti-repeat D18 history
 
-R1 final diff too narrow; R2 regex import false positives; R3 full graph valid but too broad; R4 feature contract not self-contained; R5 hard namespace rejected legitimate Auth Keeper support; R6 correct 16-file closure then Python regex runtime bug; R7 mechanics/tests passed then one historical TS2698; R8 accepted.
+R1 final diff too narrow; R2 regex import false positives; R3 valid graph too broad for patch authority; R4 feature contract not self-contained; R5 hard namespace rejected legitimate Auth Keeper support; R6 correct 16-file closure then Python regex runtime bug; R7 mechanics/tests passed then one historical TS2698; R8 accepted.
 
-Permanent rules: complete missing-only closure before mutation; stop at current-owned code; TypeScript AST/module authority; path namespace is not architecture authority; runtime-smoke regex catalogs; pre-test static import resolution; classify compiler diagnostics before adaptation; runtime-erased test-only fixes require emitted-JS parity; resolve variants in one run; production source stays exact unless separately justified.
+Permanent rules: complete missing-only closure before mutation; stop at current-owned code; TypeScript AST/module authority; path namespace is not architecture authority; runtime-smoke regex catalogs; pre-test static import resolution; classify compiler diagnostics before adaptation; runtime-erased test fixes require emitted-JS parity; resolve variants in one run; production source stays exact unless separately justified.
 
 ## Host/workload authority
 
@@ -58,12 +56,7 @@ Permanent rules: complete missing-only closure before mutation; stop at current-
 - protected-native: GPT-5.6 Sol, Terra, Luna;
 - protected-native routeability: none.
 
-Sentinels:
-- router `da5599b7c8cb0c6d755657069e5d2090b9e7d83edd4cbad4af3ed44c8495de97`
-- config `2d731cb44980792ba010e51a865e1b11a99dc50b2c2ca0a50aaf903e5d8ae690`
-- catalog `6e88a9611dbc8978d2795fb14ce4fff0eabb82c2e68609b8c3994da92489250d`
-- workload policy `2bf6ecd48cd4d1e604c71af28dbf4a0606aba34fbd1c33c16762836b45d47a31`
-- prior ingress `127.0.0.1:22129`
+Sentinels: router `da5599b7c8cb0c6d755657069e5d2090b9e7d83edd4cbad4af3ed44c8495de97`; config `2d731cb44980792ba010e51a865e1b11a99dc50b2c2ca0a50aaf903e5d8ae690`; catalog `6e88a9611dbc8978d2795fb14ce4fff0eabb82c2e68609b8c3994da92489250d`; workload policy `2bf6ecd48cd4d1e604c71af28dbf4a0606aba34fbd1c33c16762836b45d47a31`; prior ingress `127.0.0.1:22129`.
 
 Do not read credential values merely to prove sentinels.
 
@@ -75,11 +68,9 @@ Plain `npm run build` and `OMNIROUTE_USE_TURBOPACK=0` use Webpack. `OMNIROUTE_US
 
 Next deliverable: **one consolidated, non-destructive, prevalidated E2E qualification harness** from accepted R8.
 
-Target:
+Target: `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`.
 
-`Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
-
-Cover lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity, evidence continuity and final non-drift.
+Qualify lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity, evidence continuity and final non-drift.
 
 Safety: no uncontrolled live provider/model calls; no secret/token/credential-value reads; no live Auth Keeper mutation; no production routing/provider mutation; no D18/preference activation; no live image/container/database mutation; no remote push/deploy/cutover unless later explicitly authorized. Prefer read-only probes, tests, mocks, fixtures and deterministic failure injection. Fail closed if safe qualification is not possible.
 
@@ -89,11 +80,9 @@ Evidence-first; shortest discriminator-first path; due diligence before scripts;
 
 ## Last local script to recognize
 
-`omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`
+`omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh` → `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`.
 
-Accepted result: `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`.
-
-If its output/evidence is shared again, verify against R8 and do not reopen R1-R7. If a newer E2E harness output is shared, identify by header/hash and continue from it.
+If its output/evidence is shared again, verify against R8 and do not reopen R1-R7. If newer E2E output is shared, identify by header/hash and continue from it.
 
 ## New-chat action
 
