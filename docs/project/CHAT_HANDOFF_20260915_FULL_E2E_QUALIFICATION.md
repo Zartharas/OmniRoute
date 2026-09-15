@@ -23,11 +23,11 @@ Canonical path:
 
 Authority boundaries:
 
-- OmniRoute: routing/provider/orchestration policy.
-- Auth Keeper: credential/session/account lifecycle and eligibility contracts.
-- Operations Floor: observer/operator plane, never routing authority.
-- GPT-5.6 Sol/Terra/Luna: protected-native, non-routeable in normal fleet.
-- OpenCode/TheOldLLM: retired from active scope.
+- OmniRoute owns routing/provider/orchestration policy.
+- Auth Keeper owns credential/session/account lifecycle and may expose eligibility contracts consumed by orchestration.
+- Operations Floor is observer/operator plane, not routing authority.
+- GPT-5.6 Sol/Terra/Luna are protected-native/non-routeable in the normal fleet.
+- OpenCode/TheOldLLM are retired from active scope.
 
 ## Current sequence
 
@@ -48,7 +48,9 @@ Do not resume D19 automatically.
 - tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`
 - parent `1c4da240883e729d38a356ec83919ad7f6637623`
 - evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
-- accepted local worktree `/Users/zarthras/Documents/Development Projects/omniroute-d18-orchestration-foundation-transplant-r8`
+- accepted worktree `/Users/zarthras/Documents/Development Projects/omniroute-d18-orchestration-foundation-transplant-r8`
+
+R8 is local accepted authority; do not claim release-branch publication without later Git evidence.
 
 ### Webpack-default parent
 
@@ -66,28 +68,14 @@ Do not resume D19 automatically.
 - commit `b3b0d137369038d22820947729233deaec19e166`
 - tree `9377fe6afe21f098861f32c751f05c8a72882211`
 - parent `9419532db2d37218778343b66f5667ea6e437b43`
-- 457/457 tests pass
+- tests 457/457 pass
 - evidence `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`
 
 ## Accepted R8 result
 
-- 7 feature-contract + 9 support = 16 paths.
-- current-owned overwrite 0.
-- unresolved local imports 0.
-- bounded readout external runtime consumers 0.
-- 15 byte-exact files + 1 test-only runtime-erased compatibility adaptation.
-- production-source adaptation 0.
-- selected test adaptation: `Record<string, unknown>` around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`.
-- emitted JavaScript parity pass.
-- focused tests 35/35 pass.
-- changed-file ESLint pass.
-- changed-file TypeScript diagnostics 0.
-- 10 routed + 3 protected-native preserved.
-- plain `npm run build` used Webpack and passed.
-- static pages 591/591.
-- BUILD_ID/standalone present.
-- output files 22,645.
-- Turbopack panic absent.
+16 paths (7 contract + 9 support); current-owned overwrite 0; unresolved local imports 0; bounded readout external runtime consumers 0; 15 byte-exact files + one test-only runtime-erased compatibility adaptation; production-source adaptation 0; 35/35 focused tests; lint/type pass; 10 routed + 3 protected-native preserved; plain Webpack build passed; BUILD_ID/standalone present; 22,645 output files; Turbopack panic absent.
+
+The test-only adaptation was `Record<string, unknown>` around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`, accepted only after exact TS2698/AST identity and emitted-JavaScript parity proof.
 
 D18 remains passive/unwired.
 
@@ -104,7 +92,7 @@ D18 remains passive/unwired.
 
 Permanent rules: derive complete missing-only support before mutation; stop at current-owned code; TypeScript AST/module resolution for module authority; path namespace is not architecture authority; runtime-smoke regex catalogs; pre-test static import resolution; classify compiler diagnostics before adaptation; runtime-erased test fixes require emitted-JS parity; resolve variants in one run; keep production source exact unless separately justified.
 
-## Current workload/host authority
+## Workload/host authority
 
 - routed 10: 6 personal + 4 MTA/enterprise.
 - protected-native: GPT-5.6 Sol, Terra, Luna.
@@ -118,19 +106,19 @@ Host sentinels:
 - workload policy `2bf6ecd48cd4d1e604c71af28dbf4a0606aba34fbd1c33c16762836b45d47a31`
 - prior ingress `127.0.0.1:22129`
 
-Do not read credential values merely to prove these sentinels.
+Do not read credential values merely to prove sentinels.
 
 ## Builder authority
 
 - plain `npm run build` → Webpack.
 - `OMNIROUTE_USE_TURBOPACK=0` → Webpack.
-- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack requalification only.
+- `OMNIROUTE_USE_TURBOPACK=1` → explicit requalification only.
 
 Known Turbopack panic: `internal error: entered unreachable code: there must be a path to a root`.
 
 ## Active full E2E phase
 
-Next deliverable: **one consolidated, non-destructive, prevalidated E2E qualification harness** starting from accepted R8.
+Next deliverable: **one consolidated, non-destructive, prevalidated E2E qualification harness** from accepted R8.
 
 Target:
 
@@ -154,7 +142,7 @@ Evidence-first. Shortest discriminator-first path. Due diligence before scripts.
 
 Accepted result: `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`.
 
-If its output/evidence is shared, verify against R8 and do not reopen R1-R7. If a newer E2E harness output is shared, identify it by header/hash and continue from it.
+If its output/evidence is shared, verify against R8 and do not reopen R1-R7. If a newer E2E harness output is shared, identify by header/hash and continue from it.
 
 ## New-chat action
 
