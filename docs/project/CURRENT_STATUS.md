@@ -1,15 +1,15 @@
 # Current Project Status
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-15
 Status: Canonical checkpoint summary for the `Zartharas/OmniRoute` fork
 
-This document records the latest accepted engineering checkpoint. It is a status snapshot, not the product architecture authority. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), and the long-range plan remains in [Master Roadmap](MASTER_ROADMAP.md).
+This document records the latest accepted engineering checkpoint. Product architecture remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing in [Master Roadmap](MASTER_ROADMAP.md), and detailed work-state in [Engineering Tracker](ENGINEERING_TRACKER.md).
 
-Accepted Git objects, tests, build evidence and runtime evidence remain the implementation authority when they are more specific than this summary.
+Accepted Git objects, tests, build evidence and runtime evidence remain implementation authority when more specific than this summary.
 
-## 1. Overall product status
+## 1. Five-pillar product status
 
-The five-pillar product goal remains unchanged:
+The product goal remains unchanged:
 
 1. Codex Unified Agent
 2. Unified OmniRoute AI Workforce
@@ -17,161 +17,171 @@ The five-pillar product goal remains unchanged:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-The currently active engineering program is R16.32 under Pillar 4. Completing R16.32 does not complete the overall product.
+The engineering program has advanced beyond the previous D14/D15 checkpoint. The current sequence is:
 
-## 2. Live production authority
+1. Codex Unified repository reintegration — complete for the current integration lineage.
+2. Auth Keeper final contract reconciliation — complete at R11.
+3. Operations Floor selective reintegration — complete and qualified.
+4. Webpack-default production build policy — complete and qualified.
+5. D18 bounded orchestration/evidence foundation transplant — active current phase.
+6. Full end-to-end qualification — next after D18 acceptance.
+7. Live activation/cutover — later explicit gate only.
 
-The production runtime has not been changed by D14 or D15.
+Do not automatically resume D19. D18 is the bounded foundation authority for the current orchestration step.
 
-- live authority remains R16.31;
-- live image ID: `sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa`;
-- observed state during D15 qualification: running, healthy, restart count 0;
-- D14/D15 remote push: not performed as part of the engineering qualification lineage;
-- D14/D15 live runtime mutation: none.
+## 2. Current OmniRoute integration authority
 
-Do not infer that the locally accepted D14 candidate is deployed merely because it passed canonical qualification.
+Latest accepted local integration authority before the D18 transplant:
 
-## 3. Accepted R16.32 compatibility-provenance implementation
+- commit: `1c4da240883e729d38a356ec83919ad7f6637623`
+- tree: `569335188af0ec7c20d43b2a9ecc98bca83a1e9b`
+- branch/worktree lineage: `fix/production-webpack-default-r1`
+- parent Operations Floor authority: `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
 
-D14 R6 is the accepted isolated implementation checkpoint.
+This authority is local engineering authority and is not claimed to be published to the fork release branch.
 
-Local accepted Git authority:
+## 3. Auth Keeper authority
 
-- commit: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- tree: `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`
-- parent: `50b9ab47e01439e33c0411fff0a880242582724d`
-- changed files: 11
+Auth Keeper final contract reconciliation is closed in the private repository.
 
-The accepted request/context compatibility model is:
+Accepted R11 authority:
 
-- request components: `generic_request`, `auto_tool`
-- context components: `generic_request_context`, `configured_context`, `auto_estimated_input_context`
-- carrier: request-local sidecar
-- carrier key: `target.executionKey`
-- candidate presence does not upgrade unknown compatibility
-- object-identity keying is forbidden
-- compatibility recomputation is not used
-- `ResolvedComboTarget` is not widened for this provenance
-- routing readback is absent
-- routing activation is absent
+- commit: `b3b0d137369038d22820947729233deaec19e166`
+- tree: `9377fe6afe21f098861f32c751f05c8a72882211`
+- parent: `9419532db2d37218778343b66f5667ea6e437b43`
+- full suite: 457/457 pass, 0 failures
+- accepted evidence ZIP SHA-256: `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`
 
-D14 R6 qualification included:
+Auth Keeper remains credential/session authority; OmniRoute remains routing/provider authority.
 
-- protected call counts unchanged;
-- no extra compatibility lookup calls;
-- snapshot topology preserved as 13 observer-bound plus 1 standalone snapshot;
-- typecheck differential: no candidate-only diagnostics;
-- lint differential: no candidate-only diagnostics;
-- worktree/preview lint parity: pass;
-- shadow/provenance focused tests: 155/155 pass;
-- existing routing compatibility regressions: pass;
-- operator checkout, accepted D10 worktree and live runtime unchanged.
+## 4. Operations Floor reintegration authority
 
-The D14 implementation object is recorded here as accepted local engineering authority; it should not be described as remotely published or production-promoted until a later publication/promotion phase explicitly proves that state.
+Operations Floor selective reintegration is closed at:
 
-## 4. Accepted D15 canonical qualification
+- commit: `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
+- tree: `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`
 
-D15 R2 is accepted as the canonical compile/lint/build differential and compatibility-provenance parity qualification for the D14 candidate.
+The reintegration was derived from pinned historical Operations Floor authority and a 27-file selective union rather than a wholesale merge.
 
-Baseline authority:
+Important accepted compatibility outcomes:
 
-- D10 commit: `50b9ab47e01439e33c0411fff0a880242582724d`
-- D10 tree: `385de9ef26be2d833ef6d416939e02663cd4d5e5`
+- historical source authority and current component compatibility were treated as separate gates;
+- the current 10-routed + 3-protected-native workload model replaced stale historical 14-model assumptions;
+- GPT-5.6 Sol/Terra/Luna remain protected-native and non-routeable;
+- OpenCode and TheOldLLM were not reactivated;
+- current component contracts were preserved through bounded adaptations;
+- Operations Floor remains an observability/operator plane, not routing authority.
 
-Candidate authority:
+## 5. Production build qualification policy
 
-- D14 commit: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- D14 tree: `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`
+The recurring Turbopack production-build failure was isolated from source correctness: the same accepted tree qualified successfully with Webpack.
 
-Accepted D15 R2 results include:
+Current build policy:
 
-- exact 11-file candidate scope and manifest hashes: pass;
-- D10 positive-fact regression: 12 exact source-backed positive facts;
-- compatibility component wiring: 5 exact components;
-- compatibility resolver production call topology: exactly one gate-only consumption path;
-- compatibility fact consumption: shadow-only, two writes;
-- compatibility routing readback: none;
-- `ResolvedComboTarget` mutation: none;
-- extra Auth Keeper fetches: none;
-- extra provider/model probes: none;
-- credential acquisition: none;
-- dispatch-symbol drift: none;
-- real-traffic shadow reuse: none;
-- baseline production builder build: pass;
-- candidate production builder build: pass;
-- typecheck differential: no new diagnostics;
-- full lint differential: no new diagnostics;
-- changed-file lint differential: no new diagnostics;
-- baseline focused tests: 141/141 pass;
-- candidate focused tests: 155/155 pass;
-- routing compatibility regression parity: 34/34 pass on both baseline and candidate;
-- pure runtime hard-fact structural coverage improved from 2 unknowns to 0 unknowns;
-- pure runtime structural 14/14 hard facts known: pass;
-- synthetic comparable proceed case: eligible/match;
-- temporary qualification builder images removed;
-- temporary Git-archive contexts removed;
-- live runtime unchanged.
+- default `npm run build` → Webpack;
+- `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
+- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in/testing.
 
-Synthetic evidence is explicitly not production activation authority.
+Webpack production qualification evidence:
 
-## 5. Current activation boundary
+- Operations Floor Webpack qualification ZIP SHA-256: `bf3c658cd0590d49cdc54b77ec671560701ffdd2f25aab3caa5d3fa4cefebbad`;
+- Webpack-default standardization evidence ZIP SHA-256: `891bcfab81173eb86d5b9ab478eec6f3108c644f51dbf9440f970b63f5f5efeb`;
+- default production build: pass;
+- standalone output: present;
+- Turbopack panic in Webpack log: absent.
 
-R16.32 hard-fact architecture is structurally complete for all 14 hard facts in the pure qualification probe, but production activation remains blocked.
+This policy avoids repeatedly rediscovering the same Turbopack invariant panic while preserving explicit opt-in for future requalification.
 
-Remaining empirical/production evidence gaps after D15 R2 are:
+## 6. Current routed/protected workload authority
 
-- production evidence readout is not yet qualified;
-- live candidate evidence has not yet been collected;
-- empirical comparable-proceed coverage has not yet been measured;
-- empirical eligible coverage has not yet been measured;
-- empirical mismatch rate has not yet been measured;
-- empirical contained-error rate has not yet been measured;
-- empirical not-ready rate has not yet been measured.
+Current host-side workload authority remains:
 
-No numeric activation threshold should be invented merely to unblock routing.
+- routed models: 10;
+- personal: 6;
+- MTA/enterprise: 4;
+- protected-native: 3;
+- protected-native names: GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.6 Luna;
+- protected-native routeability: none.
 
-## 6. Next phase
+The host configuration/catalog/workload policy/router are sentinels for current integration qualification, not substitutes for repository architecture documents.
 
-The next R16.32 phase is:
+## 7. Active-provider scope
 
-`R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT`
+OpenCode and TheOldLLM are retired from active product scope.
 
-D16 should re-evaluate the original D7 activation blockers after D10 + D14 + D15 and determine, from evidence, which blockers are now structurally resolved and which require production readout/live empirical evidence.
+They must not be present as active providers/workers/routes/bootstrap candidates/fallback candidates or Auth Keeper activation targets. Historical references, negative tests and tombstones may remain when non-reachable.
 
-D16 remains a readiness/re-audit step. It must not activate routing merely because D15 reached structural 14/14 coverage.
+This status supersedes earlier documentation that treated them as active architectural lanes.
 
-## 7. Model-intelligence enrichment direction
+## 8. D18 current phase
 
-A separate planned subproject under Pillar 4 is a Unified Model Intelligence Registry.
+Frozen D18 source authority:
 
-Its purpose is to enrich model/workload reasoning and Operations Floor presentation with architecture metadata such as:
+- commit: `0f13a6d6df0251d9fa39e70aff78c0b58766845d`
+- tree: `71e1f60cd349599df0e9c4f800af6e6a3f719fd4`
+- parent: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
+- branch: `feat/r16-32d18-bounded-production-evidence-readout`
 
-- dense versus sparse/MoE decoder structure;
-- total and active parameter scale when available;
-- context-window metadata;
-- attention family;
-- layer-mix characteristics;
-- KV-cache footprint estimates where source-backed;
-- source/config/report links;
-- external benchmark metadata as a separately labeled evidence class.
+D18 is local-only source authority and is not currently resolvable from the fork remote by that commit SHA.
 
-Sebastian Raschka's LLM Architecture Gallery is a useful candidate external enrichment source:
+The first read-only transplant audit established:
 
-- <https://sebastianraschka.com/llm-architecture-gallery/>
+- D18 final commit changed 2 files;
+- both were missing from the current OmniRoute integration tree;
+- zero divergent files;
+- zero deletion files;
+- zero external runtime inbound edges;
+- zero retired-provider/protected-routeability/DB-write/network/credential review hits in that two-file surface;
+- decision: selective transplant required.
 
-It is not a routing authority. Any future ingestion should be offline/pinned, schema-validated, alias-reconciled and provenance-labeled. External architecture or benchmark metadata must not override harder evidence such as actual provider/account availability, official provider/API capabilities, verified OmniRoute catalog facts, request-local compatibility evidence, workload policy, Auth Keeper admission, breaker/cooldown state or explicit request/pinning.
+Subsequent candidate work exposed an important contract-boundary lesson:
 
-Operations Floor may display this enrichment with provenance, but copied external diagrams/assets should not be assumed reusable without separate licensing review.
+- R1 was too narrow: the final two-file D18 diff omitted earlier D18 foundation dependencies;
+- R2 regex import scanning produced false module edges;
+- R3 TypeScript AST resolution correctly found the full historical graph, but that graph expanded to 1,164 files with 63 missing files and reached retired-provider/network-capable historical surface;
+- therefore the unbounded historical transitive graph is not D18 patch authority;
+- current R4 direction is the exact source-backed seven-file D18 frozen contract boundary, copying only missing contract files and preserving newer current implementations.
 
-## 8. Publication rule
+D18 must remain passive/unwired during transplant. No live provider calls, credential acquisition, production DB writes or routing activation are authorized by this phase.
 
-This status document must be updated when a later accepted phase changes any of the following:
+## 9. Next phase
 
-- accepted R16.32 Git authority;
-- current next phase;
-- activation blocker set;
-- live production authority;
-- publication/promotion state;
-- model-intelligence enrichment authority.
+Current next step:
 
-Historical chat output is supporting evidence only once the accepted status is recorded here.
+`D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R4`
+
+Acceptance requirements include:
+
+- exact seven-file frozen contract classification;
+- missing-only byte-exact materialization;
+- no overwrite of newer divergent current implementations;
+- zero external production consumers of the bounded readout;
+- three bounded D18 contract tests passing;
+- zero changed-file TypeScript diagnostics;
+- changed-file lint pass;
+- 10+3 workload/protected-native invariants preserved;
+- default Webpack production build pass;
+- no Turbopack panic in the Webpack build;
+- no live/runtime/provider/credential mutation;
+- no remote push.
+
+If R4 is accepted, the next program step is `FULL_END_TO_END_QUALIFICATION`.
+
+## 10. Live activation boundary
+
+No current D18/Operations Floor/Webpack-default qualification authorizes production cutover or preference-routing activation.
+
+Live activation remains a separate explicit decision after canonical source authority, end-to-end qualification, canary/shadow evidence, rollback state and live health checks are reviewed.
+
+## 11. Publication rule
+
+Update this document whenever a later accepted phase changes:
+
+- current OmniRoute integration authority;
+- Auth Keeper authority;
+- Operations Floor authority;
+- current D18 phase;
+- build qualification policy;
+- active-provider scope;
+- protected-native/workload authority;
+- full-E2E/live-cutover status.
