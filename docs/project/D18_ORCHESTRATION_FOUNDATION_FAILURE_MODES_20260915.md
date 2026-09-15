@@ -50,7 +50,7 @@ Classification:
 
 `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`
 
-Regex discovery reported apparent internal module edges that were not real TypeScript dependencies. TypeScript AST/module resolution later proved the false positives.
+Regex discovery misclassified import-looking strings as module edges. TypeScript AST/module resolution later proved the false positives.
 
 Permanent lesson: comments/strings/import-looking text are not module-graph authority.
 
@@ -94,72 +94,86 @@ Classification:
 
 `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`
 
-R4 proved:
+R4 proved all seven feature-contract files were missing from current OmniRoute and copied them byte-exact with zero overwrite or semantic adaptation. The first regression then failed during module loading because `gatePathCandidateDispositionShadowObservability.ts` imports missing `gatePathCandidateDispositionShadowBinding.ts`.
 
-- all seven feature-contract files are missing from current OmniRoute;
-- all seven were copied byte-exact;
-- zero current files were overwritten;
-- semantic adaptation remained none;
-- retired-provider, protected-routeability, DB-write and network-call scans were clean for those seven;
-- the bounded readout had zero external production consumer.
+Permanent lesson: feature-owned contract and minimal executable/testable support set are different sets.
 
-The first bounded-readout regression then failed during module loading:
+## 8. Candidate R5 — hard namespace boundary rejected a legitimate architecture dependency
 
-`gatePathCandidateDispositionShadowObservability.ts` imports missing `gatePathCandidateDispositionShadowBinding.ts`.
+Classification:
 
-This establishes a new distinction:
+`HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`
 
-**feature-owned contract** is not necessarily the same as **minimal support set required to independently load and test that feature against the current tree**.
+R5 improved the traversal rule by stopping at every dependency already owned by current OmniRoute, but it still imposed a hard missing-support namespace allowlist:
 
-R4 therefore remained too narrow for qualification even though its seven-file feature boundary was source-correct.
+- `open-sse/services/combo/`
+- `tests/unit/combo/`
 
-## 8. Candidate R5 — bounded missing-only support closure
+The read-only closure preflight correctly rediscovered the R4 blocker, then also found two real missing edges into the Auth Keeper eligibility contract:
 
-R5 keeps the seven files as feature authority and derives only support that is absent from current implementation authority.
+- `open-sse/services/combo/executeTargetGates.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`
+- `open-sse/services/combo/attemptLoopTypes.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`
+
+R5 failed before candidate creation with `D18_R5_MISSING_SUPPORT_OUTSIDE_BOUNDED_NAMESPACE`.
+
+This was a policy/harness failure, not evidence that the Auth Keeper dependency is architecturally invalid. The path is consistent with the five-pillar authority boundary: orchestration may consume an Auth Keeper eligibility contract while Auth Keeper retains credential/session/account authority.
+
+Permanent lesson: directory namespaces are not a reliable proxy for architectural legitimacy.
+
+## 9. Candidate R6 — complete missing-only closure with effect/risk policy
+
+R6 keeps the seven-file feature contract as ownership authority but removes the hard path allowlist.
 
 Traversal rule:
 
 `STOP_AT_CURRENT_OWNED_DEPENDENCIES`
 
-Algorithm:
+R6 preflight algorithm:
 
-1. seed the TypeScript AST/module resolver with the seven contract files;
-2. resolve real project-local module edges against the pinned D18 tree;
-3. if the resolved target already exists in current OmniRoute, record a boundary edge and **do not recurse through the historical version**;
-4. if the target is missing from current and is one of the seven contract files, keep it in the contract set;
-5. if the target is missing and lies under `open-sse/services/combo/` or `tests/unit/combo/`, classify it as bounded missing support and recurse only through that missing file;
-6. if a missing dependency falls outside those bounded namespaces, fail closed instead of importing it;
-7. require the derived closure to rediscover the concrete R4 blocker `gatePathCandidateDispositionShadowBinding.ts`;
-8. safety-scan the final copy set before candidate mutation;
-9. copy only missing files byte-exact;
-10. overwrite zero current files;
-11. preserve passive/unwired bounded-readout semantics;
-12. run the three D18 regressions, changed-file lint/type gates, current 10+3 workload invariants and the default Webpack production build.
+1. seed the TypeScript AST/module resolver with the seven feature-contract files;
+2. resolve real project-local module edges against pinned D18;
+3. if a resolved target already exists in current OmniRoute, record an authority-boundary edge and stop traversal there;
+4. if a target is missing from current, add it to the missing-only support set and recurse through that missing file regardless of directory namespace;
+5. require zero unresolved project-local imports;
+6. require the closure to rediscover both known concrete blockers: `gatePathCandidateDispositionShadowBinding.ts` and `src/lib/authKeeper/comboRoutingEligibility.ts`;
+7. inventory the entire derived copy set before any candidate is created;
+8. reject the whole set if it contains retired OpenCode/TheOldLLM production references, routeable protected-native state, DB writes, network calls, child-process/server side effects, or known historical provider/usage/fetcher/quota application surfaces;
+9. only after the complete copy set passes those gates may an isolated candidate worktree be created;
+10. copy only missing files byte-exact and overwrite zero current files;
+11. before tests, re-run TypeScript module resolution against the assembled candidate and require every project-local import from every copied source file to resolve;
+12. this pre-test resolution gate is specifically intended to prevent another static `ERR_MODULE_NOT_FOUND` cycle;
+13. then run the three D18 regressions, changed-file lint/type gates, 10+3 workload invariants and default Webpack production build.
 
-This is deliberately different from R3: R5 does **not** traverse through current-owned files into their historical dependencies.
+R6 does not weaken the architectural boundary. It replaces path-based legitimacy with evidence-based behavior and current-authority boundaries.
 
-## 9. Permanent transplant-set model
+## 10. Permanent anti-repeat engineering rules
 
-Historical feature transplant work must distinguish at least five sets:
+Historical feature transplant work must distinguish at least these sets:
 
 1. final commit diff;
 2. feature-owned frozen contract;
-3. minimal missing support closure relative to current authority;
+3. complete missing-only support closure relative to current authority;
 4. complete transitive historical reachability graph;
 5. current implementation authority.
 
-None may be silently substituted for another.
+Additional rules:
 
-The correct candidate patch surface is the smallest source-backed feature contract plus required missing support that can be qualified against current authority without overwriting current implementations or resurrecting unrelated historical behavior.
+- never add missing dependencies one-by-one through repeated test failures when a parser-backed closure can be derived first;
+- never treat a directory namespace as architectural authority by itself;
+- stop traversal at current-owned implementations rather than walking through their historical dependency graph;
+- compute and safety-classify the whole missing copy set before candidate mutation;
+- require an assembled-candidate static import-resolution pass before executing tests;
+- preserve unresolved runtime-computed dependency failures as genuine qualification failures rather than hiding them;
+- do not resurrect retired providers or network-capable historical application services merely because they are reachable historically.
 
-## 10. Architecture sanity conclusion
+## 11. Architecture sanity conclusion
 
 The D18 work remains aligned with the five-pillar architecture.
 
-R1 through R4 refined engineering authority; they did not redefine the product:
+R1 through R5 refined engineering authority; they did not redefine the product:
 
 - OmniRoute remains routing/orchestration authority;
-- Auth Keeper remains credential/session authority;
+- Auth Keeper remains credential/session/account authority and may expose eligibility contracts consumed by orchestration;
 - Operations Floor remains observer/operator plane;
 - GPT-5.6 Sol/Terra/Luna remain protected-native and non-routeable in the normal fleet;
 - OpenCode and TheOldLLM remain retired from active product scope;
