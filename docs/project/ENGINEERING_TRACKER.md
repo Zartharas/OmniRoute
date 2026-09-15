@@ -3,227 +3,102 @@
 Last reviewed: 2026-09-15
 Status: Durable work tracker for the `Zartharas/OmniRoute` fork
 
-This tracker records completed, active and pending engineering work across the five-pillar product. It is subordinate to accepted Git/test/build/runtime evidence and the canonical architecture/engineering documents.
+For new-chat continuation, use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
 
-For continuation in a new conversation, use [Full E2E New-Chat Handoff](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+## Current sequence
 
-## 1. Current product sequence
-
-| Order | Workstream | Status | Current authority / next action |
+| Order | Workstream | Status | Authority / next action |
 | --- | --- | --- | --- |
-| 1 | Codex Unified repository reintegration | Complete | Current integrated host/repository authority preserved through later phases |
+| 1 | Codex Unified repository reintegration | Complete | Preserved through current integration lineage |
 | 2 | Auth Keeper final contract reconciliation | Complete | R11 `b3b0d137369038d22820947729233deaec19e166` |
 | 3 | Operations Floor selective reintegration | Complete | `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c` |
-| 4 | Production build-policy hardening | Complete | Webpack-default successor `1c4da240883e729d38a356ec83919ad7f6637623` |
-| 5 | D18 bounded orchestration/evidence foundation transplant | **Complete** | Accepted R8 `58452140ffc8122a26a387638f8a38d7d80f5024` / tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d` |
-| 6 | Full end-to-end qualification | **Active / authorized for non-destructive engineering qualification** | Build one consolidated prevalidated harness from accepted R8; no live cutover/provider mutation |
-| 7 | Live activation / cutover | Not authorized | Separate explicit gate after full E2E/canary/rollback review |
+| 4 | Production build-policy hardening | Complete | Webpack-default parent `1c4da240883e729d38a356ec83919ad7f6637623` |
+| 5 | D18 bounded orchestration/evidence transplant | Complete | R8 `58452140ffc8122a26a387638f8a38d7d80f5024` / tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d` |
+| 6 | Full end-to-end qualification | **Active / authorized non-destructive engineering qualification** | Build one consolidated prevalidated harness from R8 |
+| 7 | Live activation / cutover | Not authorized | Separate explicit gate after E2E/canary/rollback review |
 
-Do **not** resume D19 automatically.
+Do not resume D19 automatically.
 
-## 2. Current workload/provider authority
+## Current workload/provider authority
 
 - routed models: 10;
-- personal lane: 6;
-- MTA/enterprise lane: 4;
+- personal: 6;
+- MTA/enterprise: 4;
 - protected-native: GPT-5.6 Sol, Terra, Luna;
 - protected-native routeability: none;
-- OpenCode: retired from active product scope;
-- TheOldLLM: retired from active product scope.
+- OpenCode and TheOldLLM: retired from active scope.
 
-Historical references, tombstones and negative tests may remain if non-reachable.
+## Accepted R8
 
-## 3. Accepted completed work
+- branch `feat/d18-orchestration-foundation-transplant-r8`
+- commit `58452140ffc8122a26a387638f8a38d7d80f5024`
+- tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`
+- parent `1c4da240883e729d38a356ec83919ad7f6637623`
+- evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 
-### Codex Unified
+Acceptance:
 
-- repository reintegration complete for the current integration lineage;
-- host configuration/catalog/workload policy/router remain qualification sentinels;
-- current 10-routed + 3-protected-native authority established;
-- personal versus MTA/enterprise split preserved;
-- protected-native Sol/Terra/Luna excluded from normal routed IDs.
+- 7 contract + 9 support = 16 paths;
+- current-owned overwrite 0;
+- unresolved project-local imports 0;
+- bounded readout external runtime consumers 0;
+- 15 byte-exact files + 1 test-only runtime-erased compatibility adaptation;
+- production-source adaptation 0;
+- focused tests 35/35 pass;
+- lint/type pass;
+- 10+3 workload contract preserved;
+- default Webpack production build pass;
+- BUILD_ID/standalone present;
+- 22,645 build output files;
+- Turbopack panic absent.
 
-### Auth Keeper R11
+D18 remains passive/unwired.
 
-Accepted private-repo authority:
+## Auth Keeper R11
 
-- commit `b3b0d137369038d22820947729233deaec19e166`;
-- tree `9377fe6afe21f098861f32c751f05c8a72882211`;
-- parent `9419532db2d37218778343b66f5667ea6e437b43`;
-- full suite 457/457 pass;
-- evidence ZIP SHA-256 `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`.
+- commit `b3b0d137369038d22820947729233deaec19e166`
+- tree `9377fe6afe21f098861f32c751f05c8a72882211`
+- 457/457 tests pass
+- evidence `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`
 
-Boundary remains: OmniRoute owns routing/provider policy; Auth Keeper owns credential/session/account lifecycle.
+## Operations Floor
 
-### Operations Floor
+- commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
+- tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`
 
-Accepted local authority:
+## D18 failure sequence
 
-- commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`;
-- tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`.
+- R1: final diff too narrow.
+- R2: regex import false positives.
+- R3: full historical graph valid but too broad for patch authority.
+- R4: feature contract not self-contained for tests.
+- R5: hard path namespace rejected legitimate Auth Keeper support.
+- R6: correct 16-file closure found; Python regex runtime bug.
+- R7: mechanics/tests passed; one historical test TS2698 remained.
+- R8: accepted after runtime-erased test-only compatibility adaptation with emitted-JS parity.
 
-Accepted outcomes:
+Permanent lessons are in `D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md`.
 
-- 27-file selective reintegration;
-- bounded current-contract adaptations only;
-- current 10+3 workload authority preserved;
-- protected-native routeability zero;
-- OpenCode/TheOldLLM not reactivated;
-- targeted tests/lint/type differential passed;
-- Operations Floor remains observer/operator plane.
+## Active full E2E qualification
 
-### Production build policy
+Accepted baseline: R8.
 
-Webpack-default successor:
-
-- commit `1c4da240883e729d38a356ec83919ad7f6637623`;
-- tree `569335188af0ec7c20d43b2a9ecc98bca83a1e9b`;
-- parent `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`.
-
-Policy:
-
-- plain `npm run build` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in.
-
-Standardization evidence ZIP SHA-256: `891bcfab81173eb86d5b9ab478eec6f3108c644f51dbf9440f970b63f5f5efeb`.
-
-### D18 bounded orchestration/evidence foundation — accepted R8
-
-Accepted local authority:
-
-- branch `feat/d18-orchestration-foundation-transplant-r8`;
-- commit `58452140ffc8122a26a387638f8a38d7d80f5024`;
-- tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`;
-- parent `1c4da240883e729d38a356ec83919ad7f6637623`;
-- evidence ZIP SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
-
-Accepted transplant shape:
-
-- 7 feature-contract files + 9 missing support files = 16 total files;
-- traversal stopped at current-owned dependencies;
-- project-local unresolved imports: 0;
-- current-owned files overwritten: 0;
-- bounded-readout external runtime consumers: 0;
-- 15 files byte-exact to frozen D18;
-- one test-only TypeScript compatibility adaptation;
-- production-source adaptation count: 0;
-- compatibility variant: `Record<string, unknown>` assertion around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`;
-- emitted JavaScript parity for the adapted test: pass;
-- adapted test SHA-256 `b79a2df559db085aba1562ca67f83bfb3df2fe7e454384a3d2d5ea60d8a43964`.
-
-Qualification results:
-
-- copy-set risk gate: pass;
-- retired-provider hits: 0;
-- protected-native routeable hits: 0;
-- DB-write/network/process/server/historical-path risk hits: 0;
-- bounded readout tests: 10/10 pass;
-- accumulator tests: 16/16 pass;
-- observability-adapter tests: 9/9 pass;
-- focused total: 35/35 pass;
-- changed-file ESLint: pass;
-- changed-file TypeScript diagnostics after adaptation: 0;
-- current 10-routed + 3-protected-native invariants: pass;
-- default Webpack production build: pass;
-- build output file count: 22,645;
-- standalone artifact: present;
-- Turbopack panic signatures: absent;
-- live runtime mutation/provider calls/credential reads/dependency install/remote push: none.
-
-The uploaded R8 evidence package was independently rechecked after the run: outer ZIP SHA matched, all manifest-tracked files matched their internal SHA-256 values, all `evidence-hashes.txt` entries validated, the patch contained exactly 16 added paths, focused test logs showed 10/10 + 16/16 + 9/9 with zero failures, and the selected test-only assertion preserved the emitted-JavaScript SHA.
-
-D18 remains passive/unwired. R8 acceptance is **not** live activation authority.
-
-## 4. D18 source authority
-
-Frozen local D18 source authority remains:
-
-- branch `feat/r16-32d18-bounded-production-evidence-readout`;
-- commit `0f13a6d6df0251d9fa39e70aff78c0b58766845d`;
-- tree `71e1f60cd349599df0e9c4f800af6e6a3f719fd4`;
-- parent `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`.
-
-D18 source is local-only authority and must not be described as published to the fork remote by that SHA.
-
-Read-only transplant audit evidence ZIP SHA-256:
-
-`69104b926e96801a17f70d1da2c02d28bc678d0c717d6f200003cefceb1d4c13`
-
-## 5. D18 candidate history
-
-### R1 — failed safely
-Classification: `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`.
-
-### R2 — failed safely
-Classification: `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`.
-
-### R3 — failed safely
-Classification: `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`.
-
-### R4 — failed safely
-Classification: `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`.
-
-### R5 — failed safely
-Classification: `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`.
-
-### R6 — failed safely after closure discovery
-Classification: `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`.
-
-### R7 — failed safely after transplant mechanics passed
-Classification: `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`.
-
-### R8 — accepted
-
-R8 preserved the R7 closure and repaired only the exact historical test typing incompatibility. Acceptance achieved exact TS2698 classification, AST target identity, runtime-erased type-assertion trials, emitted-JavaScript parity, zero changed-file diagnostics, full focused regressions, no production-source adaptation, 10+3 preservation and Webpack production qualification.
-
-Detailed history and permanent lessons are in [D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md](D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md).
-
-## 6. Permanent transplant-set and anti-repeat rules
-
-For historical feature reintegration, keep these sets separate:
-
-1. final commit diff;
-2. feature-owned frozen contract;
-3. minimal missing support closure relative to current authority;
-4. full transitive historical reachability graph;
-5. current implementation authority.
-
-Permanent rules:
-
-- do not add missing dependencies one-by-one when a parser-backed missing-only closure can be derived first;
-- regex text matching is not module-graph authority;
-- directory namespaces are not architectural legitimacy by themselves;
-- stop historical traversal at current-owned implementations;
-- safety-classify the complete copy set before candidate mutation;
-- require static project-local import resolution before tests;
-- runtime-compile and behavior-smoke qualification regex catalogs;
-- classify changed-file compiler diagnostics before compatibility edits;
-- test-only compiler compatibility adaptations require runtime-erased changes plus emitted-JavaScript parity;
-- production source remains exact unless separately justified;
-- compatibility variants should be resolved inside one qualification run rather than repeated operator reruns;
-- historical reachability must not resurrect retired providers or unrelated network-capable application services.
-
-## 7. Full end-to-end qualification — active
-
-The accepted baseline is D18 R8 commit `58452140ffc8122a26a387638f8a38d7d80f5024`.
-
-Target path:
+Target:
 
 `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-The user explicitly authorized the next **non-destructive engineering qualification phase**.
+The user explicitly authorized non-destructive engineering qualification.
 
-The next deliverable should be one consolidated prevalidated harness with read-only preflight, fail-closed safety guards, deterministic/mocked failure injection where possible, evidence packaging and final non-drift.
+Next deliverable: one consolidated prevalidated harness with read-only preflight, fail-closed safety guards, mocks/fixtures/deterministic failure injection where possible, evidence packaging and final non-drift.
 
-Qualification must cover quota/cooldown behavior, provider outage handling, auth expiry/re-auth boundaries, fallback behavior, workload isolation, protected-native preservation, Operations Floor evidence contracts, restart/recovery, rollback readiness, Webpack production identity and evidence continuity.
+Qualification scope: source/tree lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack production identity and evidence continuity.
 
-No uncontrolled live-provider calls, credential-value reads, live Auth Keeper mutation, production routing mutation, D18 activation, live image/container/database mutation, remote push, deployment or cutover are authorized by this phase.
+Safety: no uncontrolled live provider/model calls, credential-value reads, live Auth Keeper mutation, production routing/provider mutation, D18/preference activation, live image/container/database mutation, remote push/deploy/cutover unless later explicitly authorized.
 
-## 8. Live activation — not authorized
+## Last accepted local script
 
-No current acceptance authorizes production cutover, D18 readout activation or preference-routing activation.
+`omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`
 
-## 9. New-chat handoff
+Result: `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`.
 
-Use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) when continuing in a new conversation. It contains exact accepted R8 authority, D18 failure history, host sentinels, E2E authorization/safety boundaries and immediate next action.
+If its output is shared again, verify against R8; do not reopen R1-R7. If a newer E2E harness output is supplied, identify by header/hash and continue from it.
