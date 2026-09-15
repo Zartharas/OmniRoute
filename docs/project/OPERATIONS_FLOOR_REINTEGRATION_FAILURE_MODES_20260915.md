@@ -111,3 +111,86 @@ Before delivering any historical-lineage audit script:
 - perform final non-drift checks after temporary history cleanup.
 
 Operations Floor Audit R3 implements this stronger model.
+
+## 7. R3 established the exact reintegration set
+
+Audit R3 passed with the disposable historical-store model and established the current reintegration authority:
+
+- historical selective union: 27 files;
+- missing from accepted R10: 23;
+- identical to accepted R10: 0;
+- divergent shared integration files: 4;
+- retired-provider hits: 0;
+- protected-native routeability hits: 0;
+- legacy hard-coded route/model-count hits: 0;
+- decision: `SELECTIVE_PORT_REQUIRED`.
+
+The four divergent shared files are:
+
+- `src/server/ws/liveServerAllowList.ts`
+- `src/shared/components/Header.tsx`
+- `src/shared/constants/sidebarVisibility/sections.ts`
+- `src/shared/constants/sidebarVisibility/types.ts`
+
+The accepted R3 evidence ZIP SHA-256 is:
+
+`1942377bc4a8a3a81faaad0933824117779b6ece3e7435729c5e03978ecef512`
+
+This classification is the source authority for selective candidate construction. Do not replace it with a later broad file discovery unless evidence shows the R3 authority itself is stale.
+
+## 8. Historical source authority and current-contract compatibility are separate gates
+
+Operations Floor Selective Reintegration Candidate R1 correctly imported all 23 missing historical blobs and three-way merged all four divergent shared files. It then failed TypeScript differential qualification before commit.
+
+R1 candidate failure classification:
+
+`GENUINE_HISTORICAL_COMPONENT_CONTRACT_INCOMPATIBILITY_PLUS_LINEWISE_TYPESCRIPT_DIFF_ARTIFACT`
+
+Four diagnostics represented real historical/current contract incompatibilities:
+
+1. `OperationsFloorClient.tsx` did not pass the already-loaded `workloads` collection to `OperationsFloorInspector`, even though the Inspector contract requires it.
+2. `PixelOfficePreviewClient.tsx` did not pass `systemSignals` to `OperationsFloorTiledOffice`.
+3. `PixelOfficePreviewClient.tsx` did not pass `workloads` to `OperationsFloorInspector`.
+4. the merged `Header.tsx` retained a parent `settings` description key while the reintegrated `HideableSidebarItemId` authority no longer contains a parent `settings` item; the valid configuration IDs are the `settings-*` child pages.
+
+A fifth reported candidate-only line was not an independent diagnostic. It was a wrapped continuation line from a Playwright type diagnostic that the line-by-line differential comparator separated from its parent diagnostic.
+
+Prevention:
+
+- byte-exact historical import is only the first gate; historical code must still satisfy the current accepted component contracts;
+- apply compatibility changes only after proving the exact historical source blob was imported;
+- keep the compatibility adaptation set explicit and minimal;
+- distinguish "historical source authority" from "final current-compatible candidate authority";
+- compare TypeScript diagnostics as complete diagnostic blocks, not individual output lines;
+- never treat an indented/wrapped continuation line as a separate candidate-only error without identifying its parent diagnostic.
+
+## 9. Bounded compatibility-adaptation rule
+
+For Candidate R2, the 27-file reintegration authority remains unchanged. Only three already-authorized files may receive compatibility adaptations:
+
+- `src/app/(dashboard)/dashboard/operations-floor/OperationsFloorClient.tsx`
+- `src/app/(dashboard)/dashboard/operations-floor/pixel/PixelOfficePreviewClient.tsx`
+- `src/shared/components/Header.tsx`
+
+Of the 23 originally missing historical files, 21 must remain byte-identical to their R3 historical authority. The two historical files allowed to diverge are the main Operations Floor client and the pixel preview, and only for the current component-contract fixes above.
+
+The pixel preview has no workload-policy or system-event acquisition path. Therefore its compatibility behavior must represent absence explicitly:
+
+- `workloads={[]}` for the Inspector;
+- `systemSignals={{ auth: null, compression: null }}` for the tiled office.
+
+Do not invent workload entries or telemetry merely to satisfy a component prop contract.
+
+## 10. Permanent TypeScript differential rule
+
+For baseline/candidate TypeScript comparison:
+
+1. normalize worktree-root paths;
+2. identify canonical diagnostic starts such as `file(line,column): error TS####:`;
+3. group every wrapped continuation/source excerpt with its parent diagnostic;
+4. compare complete normalized diagnostic blocks;
+5. if baseline passes and candidate fails, fail immediately;
+6. if both fail, candidate-only diagnostic blocks must still be zero;
+7. preserve the candidate-only block report in evidence.
+
+A linewise set difference is not a reliable TypeScript differential when diagnostics can wrap across lines.
