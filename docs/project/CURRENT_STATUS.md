@@ -3,7 +3,7 @@
 Last reviewed: 2026-09-15
 Status: Canonical checkpoint summary for the `Zartharas/OmniRoute` fork
 
-This document records the latest accepted engineering checkpoint. Product architecture remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing in [Master Roadmap](MASTER_ROADMAP.md), and detailed work-state in [Engineering Tracker](ENGINEERING_TRACKER.md).
+This document records the latest accepted engineering checkpoint. Product architecture remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing in [Master Roadmap](MASTER_ROADMAP.md), detailed work-state in [Engineering Tracker](ENGINEERING_TRACKER.md), and new-chat continuation state in [Full E2E Chat Handoff](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
 
 Accepted Git objects, tests, build evidence and runtime evidence remain implementation authority when more specific than this summary.
 
@@ -17,30 +17,77 @@ The product goal remains unchanged:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-The engineering program has advanced beyond the previous D14/D15 checkpoint. The current sequence is:
+Current sequence:
 
 1. Codex Unified repository reintegration — complete for the current integration lineage.
 2. Auth Keeper final contract reconciliation — complete at R11.
 3. Operations Floor selective reintegration — complete and qualified.
 4. Webpack-default production build policy — complete and qualified.
-5. D18 bounded orchestration/evidence foundation transplant — active current phase.
-6. Full end-to-end qualification — next after D18 acceptance.
+5. D18 bounded orchestration/evidence foundation transplant — complete and accepted at R8.
+6. Full end-to-end qualification — **active current phase**.
 7. Live activation/cutover — later explicit gate only.
 
-Do not automatically resume D19. D18 is the bounded foundation authority for the current orchestration step.
+Do not automatically resume D19.
 
-## 2. Current OmniRoute integration authority
+## 2. Current accepted OmniRoute integration authority
 
-Latest accepted local integration authority before the D18 transplant:
+Accepted local D18 R8 successor:
 
-- commit: `1c4da240883e729d38a356ec83919ad7f6637623`
-- tree: `569335188af0ec7c20d43b2a9ecc98bca83a1e9b`
-- branch/worktree lineage: `fix/production-webpack-default-r1`
-- parent Operations Floor authority: `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
+- branch: `feat/d18-orchestration-foundation-transplant-r8`
+- commit: `58452140ffc8122a26a387638f8a38d7d80f5024`
+- tree: `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`
+- parent: `1c4da240883e729d38a356ec83919ad7f6637623`
+- evidence ZIP SHA-256: `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 
-This authority is local engineering authority and is not claimed to be published to the fork release branch.
+This is accepted local engineering authority. Do not describe it as published to the fork release branch unless later Git evidence proves publication.
 
-## 3. Auth Keeper authority
+## 3. D18 R8 acceptance
+
+R8 closed the D18 transplant workstream.
+
+Accepted shape:
+
+- 7 feature-contract files + 9 missing support files = 16 total files;
+- current-owned files overwritten: 0;
+- project-local unresolved imports before tests: 0;
+- bounded-readout external runtime consumers: 0;
+- retired-provider/protected-routeability/DB-write/network/process/server/historical-path risk hits: 0;
+- 15 files remained byte-exact to D18;
+- one historical test-only TypeScript compatibility adaptation;
+- production-source adaptation count: 0.
+
+Compatibility adaptation:
+
+- file: `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`;
+- exact pre-adaptation failure: line-109 TS2698 on `...evidence()`;
+- selected type-only compatibility variant: `Record<string, unknown>`;
+- emitted JavaScript parity: pass;
+- changed-file TypeScript diagnostics after adaptation: 0.
+
+Focused regressions:
+
+- bounded readout: 10/10 pass;
+- accumulator: 16/16 pass;
+- observability adapter: 9/9 pass;
+- focused total: 35/35 pass;
+- changed-file ESLint: pass.
+
+Production build qualification:
+
+- plain `npm run build` used Webpack;
+- build rc: 0;
+- Next.js 16.3.2 Webpack compile: pass;
+- static pages: 591/591;
+- BUILD_ID: present;
+- standalone output: present;
+- output files: 22,645;
+- Turbopack panic signatures: absent.
+
+Independent evidence review verified the outer ZIP SHA, all manifest/evidence hashes, exact 16-path patch, 35/35 focused tests and emitted-JavaScript parity.
+
+D18 remains passive/unwired. R8 acceptance is not live activation authority.
+
+## 4. Auth Keeper authority
 
 Auth Keeper final contract reconciliation is closed in the private repository.
 
@@ -49,139 +96,98 @@ Accepted R11 authority:
 - commit: `b3b0d137369038d22820947729233deaec19e166`
 - tree: `9377fe6afe21f098861f32c751f05c8a72882211`
 - parent: `9419532db2d37218778343b66f5667ea6e437b43`
-- full suite: 457/457 pass, 0 failures
-- accepted evidence ZIP SHA-256: `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`
+- full suite: 457/457 pass
+- evidence ZIP SHA-256: `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`
 
-Auth Keeper remains credential/session authority; OmniRoute remains routing/provider authority.
+Auth Keeper remains credential/session/account authority; OmniRoute remains routing/provider/orchestration authority.
 
-## 4. Operations Floor reintegration authority
+## 5. Operations Floor authority
 
 Operations Floor selective reintegration is closed at:
 
 - commit: `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
 - tree: `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`
 
-The reintegration was derived from pinned historical Operations Floor authority and a 27-file selective union rather than a wholesale merge.
+Operations Floor remains observability/operator plane, not routing authority.
 
-Important accepted compatibility outcomes:
-
-- historical source authority and current component compatibility were treated as separate gates;
-- the current 10-routed + 3-protected-native workload model replaced stale historical 14-model assumptions;
-- GPT-5.6 Sol/Terra/Luna remain protected-native and non-routeable;
-- OpenCode and TheOldLLM were not reactivated;
-- current component contracts were preserved through bounded adaptations;
-- Operations Floor remains an observability/operator plane, not routing authority.
-
-## 5. Production build qualification policy
-
-The recurring Turbopack production-build failure was isolated from source correctness: the same accepted tree qualified successfully with Webpack.
+## 6. Production build qualification policy
 
 Current build policy:
 
-- default `npm run build` → Webpack;
+- plain `npm run build` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in/testing.
 
-Webpack production qualification evidence:
+Reason: repeated Turbopack production qualification hit a deterministic invariant panic while the same accepted source qualified successfully with Webpack.
 
-- Operations Floor Webpack qualification ZIP SHA-256: `bf3c658cd0590d49cdc54b77ec671560701ffdd2f25aab3caa5d3fa4cefebbad`;
-- Webpack-default standardization evidence ZIP SHA-256: `891bcfab81173eb86d5b9ab478eec6f3108c644f51dbf9440f970b63f5f5efeb`;
-- default production build: pass;
-- standalone output: present;
-- Turbopack panic in Webpack log: absent.
+Do not repeatedly rediscover the known Turbopack failure during ordinary acceptance work.
 
-This policy avoids repeatedly rediscovering the same Turbopack invariant panic while preserving explicit opt-in for future requalification.
-
-## 6. Current routed/protected workload authority
+## 7. Current workload/provider authority
 
 Current host-side workload authority remains:
 
 - routed models: 10;
 - personal: 6;
 - MTA/enterprise: 4;
-- protected-native: 3;
-- protected-native names: GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.6 Luna;
+- protected-native: GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.6 Luna;
 - protected-native routeability: none.
 
-The host configuration/catalog/workload policy/router are sentinels for current integration qualification, not substitutes for repository architecture documents.
+OpenCode and TheOldLLM are retired from active product scope. Historical references, negative tests and tombstones may remain only when non-reachable.
 
-## 7. Active-provider scope
+## 8. Full end-to-end qualification — active
 
-OpenCode and TheOldLLM are retired from active product scope.
+The user explicitly authorized continuation into full end-to-end qualification.
 
-They must not be present as active providers/workers/routes/bootstrap candidates/fallback candidates or Auth Keeper activation targets. Historical references, negative tests and tombstones may remain when non-reachable.
+Accepted baseline: D18 R8 commit `58452140ffc8122a26a387638f8a38d7d80f5024`.
 
-This status supersedes earlier documentation that treated them as active architectural lanes.
+Target path:
 
-## 8. D18 current phase
+`Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-Frozen D18 source authority:
+The next engineering deliverable should be one consolidated, non-destructive, prevalidated E2E qualification harness rather than multiple incremental diagnostic scripts.
 
-- commit: `0f13a6d6df0251d9fa39e70aff78c0b58766845d`
-- tree: `71e1f60cd349599df0e9c4f800af6e6a3f719fd4`
-- parent: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- branch: `feat/r16-32d18-bounded-production-evidence-readout`
+Qualification should cover, using mocks/fixtures/read-only probes where needed:
 
-D18 is local-only source authority and is not currently resolvable from the fork remote by that commit SHA.
+- exact source/tree lineage and host-sentinel non-drift;
+- Codex Unified ingress/config/catalog/workload contracts;
+- OmniRoute/Auth Keeper eligibility boundary;
+- routing/fallback decision semantics;
+- quota/cooldown and provider-outage behavior without uncontrolled external calls;
+- auth-expiry/re-auth boundary semantics without credential-value reads;
+- personal versus MTA/enterprise workload isolation;
+- protected-native preservation/non-routeability;
+- Operations Floor observer/evidence contracts;
+- restart/recovery-safe state and rollback readiness;
+- default Webpack production build identity and standalone output;
+- evidence continuity and final non-drift.
 
-The first read-only transplant audit established:
+## 9. Explicit safety boundary for E2E qualification
 
-- D18 final commit changed 2 files;
-- both were missing from the current OmniRoute integration tree;
-- zero divergent files;
-- zero deletion files;
-- zero external runtime inbound edges;
-- zero retired-provider/protected-routeability/DB-write/network/credential review hits in that two-file surface;
-- decision: selective transplant required.
+Current authorization does **not** authorize live cutover.
 
-Subsequent candidate work exposed an important contract-boundary lesson:
+Unless later explicitly expanded, qualification must not:
 
-- R1 was too narrow: the final two-file D18 diff omitted earlier D18 foundation dependencies;
-- R2 regex import scanning produced false module edges;
-- R3 TypeScript AST resolution correctly found the full historical graph, but that graph expanded to 1,164 files with 63 missing files and reached retired-provider/network-capable historical surface;
-- therefore the unbounded historical transitive graph is not D18 patch authority;
-- current R4 direction is the exact source-backed seven-file D18 frozen contract boundary, copying only missing contract files and preserving newer current implementations.
+- make uncontrolled live provider/model calls;
+- read or print credential/token/secret values;
+- mutate live Auth Keeper sessions/accounts;
+- change production routing/provider state;
+- activate D18/preference routing in production;
+- mutate a live container/image/database;
+- push branches/commits/remotes;
+- deploy or cut over production traffic.
 
-D18 must remain passive/unwired during transplant. No live provider calls, credential acquisition, production DB writes or routing activation are authorized by this phase.
+Prefer mocks, fixtures, read-only contract probes and deterministic failure injection. Fail closed if a required qualification cannot be performed safely.
 
-## 9. Next phase
+## 10. New-chat continuation
 
-Current next step:
+For conversation handoff, read:
 
-`D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R4`
+[CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md)
 
-Acceptance requirements include:
+The last accepted local script is `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`. If its output/evidence is supplied again, verify it against accepted R8 rather than reopening R1-R7 debugging.
 
-- exact seven-file frozen contract classification;
-- missing-only byte-exact materialization;
-- no overwrite of newer divergent current implementations;
-- zero external production consumers of the bounded readout;
-- three bounded D18 contract tests passing;
-- zero changed-file TypeScript diagnostics;
-- changed-file lint pass;
-- 10+3 workload/protected-native invariants preserved;
-- default Webpack production build pass;
-- no Turbopack panic in the Webpack build;
-- no live/runtime/provider/credential mutation;
-- no remote push.
+## 11. Live activation boundary
 
-If R4 is accepted, the next program step is `FULL_END_TO_END_QUALIFICATION`.
+No current qualification authorizes production cutover, D18 readout activation or preference-routing activation.
 
-## 10. Live activation boundary
-
-No current D18/Operations Floor/Webpack-default qualification authorizes production cutover or preference-routing activation.
-
-Live activation remains a separate explicit decision after canonical source authority, end-to-end qualification, canary/shadow evidence, rollback state and live health checks are reviewed.
-
-## 11. Publication rule
-
-Update this document whenever a later accepted phase changes:
-
-- current OmniRoute integration authority;
-- Auth Keeper authority;
-- Operations Floor authority;
-- current D18 phase;
-- build qualification policy;
-- active-provider scope;
-- protected-native/workload authority;
-- full-E2E/live-cutover status.
+Live activation remains a separate explicit decision after full E2E qualification, canary/shadow evidence, rollback state and live health/observation criteria are reviewed.
