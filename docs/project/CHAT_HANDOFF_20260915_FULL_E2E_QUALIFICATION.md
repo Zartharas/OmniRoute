@@ -126,18 +126,7 @@ Focused regressions after final compatibility adaptation:
 - changed-file ESLint: pass;
 - changed-file TypeScript diagnostics: 0.
 
-R8 permitted one test-only compatibility adaptation:
-
-`tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`
-
-The historical helper returned an evidence object with `as never`, while a later negative-leakage test spread `...evidence()`. Current TypeScript raised TS2698 even though historical runtime tests were valid. R8 selected a runtime-erased `Record<string, unknown>` type assertion after proving:
-
-- pre-adaptation diagnostic set contained exactly the expected TS2698;
-- AST identity was exactly the `...evidence()` spread;
-- all tested assertion variants emitted byte-identical JavaScript;
-- selected variant removed changed-file TypeScript diagnostics;
-- production source adaptation count remained 0;
-- 15 other transplanted files remained byte-exact to D18.
+R8 permitted one test-only compatibility adaptation in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`. The historical helper returned an evidence object with `as never`, while a later negative-leakage test spread `...evidence()`. Current TypeScript raised TS2698. R8 selected a runtime-erased `Record<string, unknown>` assertion after proving exact diagnostic identity, AST target identity, byte-identical emitted JavaScript, zero production-source adaptation and full regression compatibility.
 
 Production build qualification:
 
@@ -150,32 +139,18 @@ Production build qualification:
 - output files: 22,645;
 - Turbopack panic absent.
 
-Independent evidence review verified:
-
-- outer evidence ZIP SHA matches `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`;
-- all manifest-tracked evidence files matched SHA-256;
-- all `evidence-hashes.txt` entries matched;
-- patch contained exactly 16 added paths;
-- focused tests totaled 35 with zero failures;
-- selected compatibility variant preserved emitted-JavaScript parity.
+Independent evidence review verified the evidence ZIP hash/internals, exact 16-path patch, 35 focused passes and emitted-JavaScript parity.
 
 ## 5. D18 failure history that must not be repeated
 
-R1 — `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`: final two-file D18 diff was too narrow.
-
-R2 — `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`: regex import scanning treated import-looking strings as module edges.
-
-R3 — `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`: the valid TypeScript AST graph expanded to 1,164 files / 2,924 edges / 63 missing files and crossed retired-provider/network-capable historical surface.
-
-R4 — `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`: the seven-file feature contract was not self-contained for execution/tests.
-
-R5 — `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`: a directory allowlist rejected legitimate `src/lib/authKeeper/comboRoutingEligibility.ts` support.
-
-R6 — `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`: the correct 7 + 9 = 16 missing-only closure was found, but a Python regex catalog had repeated global inline flags.
-
-R7 — `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`: transplant mechanics passed, 35/35 tests and lint passed, but current TypeScript rejected one historical test spread with TS2698.
-
-R8 — accepted.
+- R1 `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`: final two-file diff too narrow.
+- R2 `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`: regex import scanning created false edges.
+- R3 `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`: valid 1,164-file graph was too broad for patch authority.
+- R4 `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`: feature contract was not self-contained for execution/tests.
+- R5 `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`: path allowlist rejected legitimate Auth Keeper eligibility support.
+- R6 `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`: correct 16-file closure found; regex catalog runtime bug stopped preflight.
+- R7 `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`: mechanics/test runtime passed; one historical test TS2698 remained.
+- R8 accepted.
 
 Permanent anti-repeat rules:
 
@@ -202,7 +177,7 @@ Host-side authority remains:
 - protected-native names: GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.6 Luna;
 - protected-native routeability: none.
 
-Host sentinel hashes used during accepted qualification:
+Host sentinel hashes:
 
 - router `~/Library/Application Support/mer-gateway/codex-unified-router/router.py`: `da5599b7c8cb0c6d755657069e5d2090b9e7d83edd4cbad4af3ed44c8495de97`
 - config `~/.codex-unified/config.toml`: `2d731cb44980792ba010e51a865e1b11a99dc50b2c2ca0a50aaf903e5d8ae690`
@@ -217,19 +192,13 @@ Do not read credential values merely to prove these sentinels.
 
 Current acceptance/release builder is Webpack.
 
-Policy:
-
 - plain `npm run build` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack experiment/requalification only.
 
-Known Turbopack panic:
+Known Turbopack panic: `internal error: entered unreachable code: there must be a path to a root`.
 
-`internal error: entered unreachable code: there must be a path to a root`
-
-Do not repeatedly rediscover this in ordinary acceptance work. Webpack is the current qualified production path.
-
-Known nonfatal Webpack warnings include fumadocs/next-intl dynamic import cache warnings and critical-dependency warnings in browser/TLS/runtime-token helper modules. Build-stage `JWT_SECRET is not set`, Redis fallback and missing external-credential messages have also appeared without failing the accepted build. Treat them as blockers only if new evidence shows material build/runtime impact.
+Do not repeatedly rediscover it in ordinary acceptance work.
 
 ## 8. Full E2E qualification — current authorized engineering phase
 
@@ -237,92 +206,51 @@ The user explicitly authorized continuation into full end-to-end qualification.
 
 The next engineering deliverable should be **one consolidated, non-destructive, prevalidated E2E qualification harness** starting from accepted R8 authority.
 
-The harness should qualify the integrated path:
+Target path:
 
 `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-Qualification should cover, where safely testable without live-provider mutation:
+Qualification should cover canonical lineage, host sentinel non-drift, Codex Unified contracts, Auth Keeper eligibility boundary, routing/fallback semantics, quota/cooldown, provider outage, auth-expiry/re-auth boundaries, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack build identity, evidence continuity and final non-drift.
 
-- canonical source/tree lineage;
-- host sentinel non-drift;
-- Codex Unified ingress/config/catalog/workload contracts;
-- OmniRoute/Auth Keeper eligibility boundary;
-- routing/fallback decision semantics;
-- quota/cooldown behavior using deterministic/mocked/fixture-backed paths where available;
-- provider outage behavior without uncontrolled external calls;
-- auth-expiry/re-auth boundary semantics without reading credential values;
-- workload isolation: personal vs MTA/enterprise;
-- protected-native preservation/non-routeability;
-- Operations Floor evidence/observer-plane contracts;
-- restart/recovery-safe state and rollback readiness;
-- default Webpack production build identity and standalone output;
-- evidence continuity and exact non-drift of accepted authorities.
+### Safety boundary
 
-### Explicit safety boundary for this phase
+Authorization is for engineering qualification, **not live cutover**. Unless later explicitly expanded, the harness must not make uncontrolled live provider/model calls, read or print secret/token/credential values, mutate live Auth Keeper accounts/sessions, change production routing/provider state, activate D18/preference routing, mutate a live image/container/database, push/deploy or cut over traffic.
 
-The user's authorization is for engineering qualification, **not live cutover**.
-
-Unless a later message explicitly expands authorization, the E2E harness must not:
-
-- make uncontrolled live provider/model calls;
-- read or print credential/token/secret values;
-- mutate live Auth Keeper sessions/accounts;
-- change production routing/provider state;
-- activate D18 readout/preference routing in production;
-- mutate a live container/image/database;
-- install dependencies if a matching qualified dependency donor is available;
-- push branches/commits/remotes;
-- deploy or cut over production traffic.
-
-Prefer mocks, fixtures, read-only contract probes, existing tests and deterministic failure injection. Fail closed if a required qualification cannot be performed safely under these limits.
+Prefer mocks, fixtures, read-only contract probes and deterministic failure injection. Fail closed if qualification cannot be performed safely.
 
 ## 9. Operator workflow preference
 
-The user requires evidence-first engineering:
-
-- shortest path from symptom → discriminator → fix → targeted validation;
-- due diligence before delivering scripts;
+- evidence-first;
+- shortest path symptom → discriminator → fix → targeted validation;
+- due diligence before scripts;
 - avoid multiple incremental diagnostic/recovery scripts;
-- prefer one consolidated script per phase with read-only preflight, fail-closed guards, cleanup/recovery and evidence packaging;
-- macOS `/bin/bash` compatibility matters;
-- prevalidate Bash syntax, embedded Python/Node code, parser/decision logic and forbidden side effects before delivery;
-- if a run fails, classify the exact failure before the next revision;
+- one consolidated script per phase where feasible;
+- macOS `/bin/bash` compatibility;
+- prevalidate Bash, embedded Python/Node, parser/decision logic and forbidden side effects;
+- classify exact failure before any successor;
 - no remote push unless explicitly authorized.
 
-## 10. Last local script / evidence to recognize in a new chat
+## 10. Last local script / evidence to recognize
 
 Last accepted local engineering script:
 
 `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`
 
-Accepted result:
+Accepted result: `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`.
 
-`PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`
-
-Accepted commit/tree/evidence are listed in section 3 above.
-
-If the user pastes or uploads terminal output/evidence from this script again, verify it against the accepted R8 authority rather than reopening R1-R7 debugging. If the output instead belongs to a newer full-E2E harness, identify it from its header/hash and continue from the evidence without asking the user to repeat already-provided context.
+If its terminal output/evidence is supplied again, verify it against accepted R8 rather than reopening R1-R7. If a newer full-E2E harness output is supplied, identify it from its header/hash and continue from that evidence.
 
 ## 11. Immediate next action in a new chat
 
-1. Read this handoff plus:
-   - `SOURCE_OF_TRUTH.md`
-   - `docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md`
-   - `docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`
-   - `docs/project/MASTER_ROADMAP.md`
-   - `docs/project/CURRENT_STATUS.md`
-   - `docs/project/ENGINEERING_TRACKER.md`
-   - `docs/project/D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md`
-2. Treat accepted R8 as the current local OmniRoute integration authority.
-3. If the user supplies local script output/evidence, analyze that first and classify exact status/failure.
-4. If no newer E2E harness has already been run, build one consolidated non-destructive full-E2E qualification harness with the safety rules above.
+1. Read this handoff and the canonical docs.
+2. Treat R8 as the current local OmniRoute authority.
+3. Analyze any supplied local script output/evidence first.
+4. If no newer E2E harness has been run, build one consolidated non-destructive full-E2E qualification harness with these safety rules.
 5. Do not reactivate D19, OpenCode or TheOldLLM.
-6. Do not authorize live cutover merely because E2E development qualification passes.
+6. Do not infer live-cutover authority from E2E development qualification.
 
 ## 12. Documentation PR
 
-PR #15 is the fork-local documentation/failure-mode synchronization PR:
-
-`https://github.com/Zartharas/OmniRoute/pull/15`
+PR #15: `https://github.com/Zartharas/OmniRoute/pull/15`
 
 It is documentation-only and should remain separate from runtime/source promotion unless explicitly changed later.
