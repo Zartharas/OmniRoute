@@ -1,219 +1,234 @@
 # Engineering Source of Truth
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-15
 Status: Canonical engineering governance for the `Zartharas/OmniRoute` fork
 
 This document governs how architecture changes are implemented, qualified and promoted.
 
 ## 1. Engineering objective
 
-Engineering work must advance the [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) without silently narrowing the product into a single provider, single model, single branch or single R16.x subproject.
+Engineering work must advance the five-pillar architecture without silently narrowing the product into a single provider, model, branch or R16.x subproject.
 
-The engineering system should make it possible to improve OmniRoute, Auth Keeper, Codex Unified and Operations Floor independently while preserving their shared contracts.
+OmniRoute, Auth Keeper, Codex Unified and Operations Floor may evolve independently, but their shared contracts and authority boundaries must remain explicit and testable.
 
 ## 2. Source-of-truth precedence
 
-Use the following precedence when facts conflict:
+Use this precedence when facts conflict:
 
 1. [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) for product intent and architecture invariants.
 2. This document for engineering method and non-regression rules.
-3. [Master Roadmap](MASTER_ROADMAP.md) for long-range implementation sequencing.
+3. [Master Roadmap](MASTER_ROADMAP.md) for long-range sequencing.
 4. [Current Project Status](CURRENT_STATUS.md) for the latest accepted checkpoint summary.
-5. Accepted Git objects, tests, build evidence and runtime evidence for implementation reality.
-6. Upstream README/ROADMAP for upstream OmniRoute direction only.
-7. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
+5. [Engineering Tracker](ENGINEERING_TRACKER.md) for active work items, completed phases and known blockers.
+6. Accepted Git objects, tests, build evidence and runtime evidence for implementation reality.
+7. Upstream README/ROADMAP for upstream OmniRoute direction only.
+8. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
 
-If implementation reality contradicts architecture, the contradiction must be surfaced. Do not silently reinterpret the architecture to match an accidental implementation state.
+If implementation reality contradicts architecture, surface the contradiction. Do not silently reinterpret architecture to match accidental code state.
 
 ## 3. Evidence-first workflow
 
 Before mutating source:
 
-- identify the exact accepted source commit/tree/branch or upstream authority;
-- inspect the exact declaration/function/type shapes being changed;
+- pin exact accepted source branch/head/tree/evidence authority;
+- separate repository-import authority from live/runtime sentinel authority;
+- inspect exact declarations/functions/types being changed;
 - identify protected call counts and side effects;
-- generate candidate changes in an isolated preview where practical;
-- parse/compile embedded Bash, Python, Node and TypeScript used by the harness;
-- run semantic/AST guards rather than brittle raw occurrence-count assumptions;
-- run focused tests before creating an implementation worktree when feasible;
+- validate historical object availability instead of assuming an old checkout exists;
+- create isolated candidates/worktrees where practical;
+- syntax-check Bash for macOS Bash compatibility;
+- compile embedded Python/Node/TypeScript harness blocks;
+- exercise high-risk parser/decision logic before operator execution;
+- use AST/semantic guards for structured source where structure matters;
 - fail closed on unexpected source shape.
 
 After mutation:
 
-- prove the changed-file scope;
+- prove exact changed-file scope using `--untracked-files=all`;
 - prove parent/source authority;
 - rerun semantic guards and focused regressions;
-- run type/lint/build differential qualification;
-- prove operator/live/non-target worktrees were not mutated;
-- record commit/tree/file hashes for accepted phases;
-- do not push/deploy/live-cutover merely because a development phase passed.
+- distinguish baseline diagnostics from candidate-only diagnostics;
+- run changed-file lint/type gates;
+- run production build qualification using the current canonical builder policy;
+- prove operator/live/non-target worktrees and host sentinels were not mutated;
+- record commit/tree/evidence hashes for accepted phases;
+- do not push/deploy/live-cutover merely because development qualification passes.
 
-## 4. Harness regression register
+## 4. Current product-scope invariants
 
-The following bug classes are permanent lessons and must remain covered by future validators where relevant:
+- OpenCode and TheOldLLM are retired from active product scope.
+- Historical references/tombstones/negative tests do not reactivate a provider.
+- GPT-5.6 Sol, Terra and Luna remain protected-native and non-routeable in the normal fleet.
+- Current workload authority is 10 routed models: 6 personal + 4 MTA/enterprise, plus 3 protected-native.
+- Operations Floor must not become a router.
+- Auth Keeper must not redefine OmniRoute routing policy.
+- preference intelligence may rank only candidates that survived harder gates.
 
-- unset `legacyOutcome` sentinel is `null`, not `undefined`;
-- trailing whitespace and final-newline hygiene must be checked before worktree mutation;
-- nested callbacks may belong to an outer lexical semantic owner; nearest-function ownership is not automatically semantic ownership;
-- wrapper types such as `Readonly<T>` must be resolved before generic identifier aliases in AST type resolvers;
-- identical declaration suffixes in multiple interfaces/types must be patched by exact declaration scope, not global text replacement;
-- callback-binding completeness must be proven when inserted code references values such as `target`; a nearby lexical value is not evidence that the callback actually binds it;
-- outer factory returns must be located by semantic ownership, not by the first textual `return Object.freeze(...)` or similar surface pattern;
-- a hypothesized ambiguity must not be turned into a required invariant; semantic locators should work whether irrelevant neighboring/nested syntax exists or not;
-- runtime imports and type-only imports must be distinguished;
-- snapshot calls with different semantic roles must be classified, not globally counted as interchangeable;
-- positive hard facts may only be captured in the applicability scope in which the corresponding blocker/check was actually evaluated;
-- candidate presence is never sufficient compatibility proof;
-- object identity must not be assumed when a stable request-local key such as `executionKey` already exists;
-- JavaScript/ESM config files and the dependency tree used to load them are one toolchain authority; do not combine a historical config with unrelated current dependencies without an explicit compatibility model;
-- historical baselines may carry inherited lint/type diagnostics under a newer toolchain; compare baseline and candidate under the same toolchain and reject candidate-only drift instead of requiring an artificial zero-diagnostic baseline or silently editing unrelated debt;
-- named TypeScript contracts must have their exact declaration shape proven before member assertions; a semantic contract name does not imply `interface` rather than `type` alias, wrapper, intersection or other shape;
-- Markdown prose is explanatory unless explicitly designated as machine authority; exact JSON/source/Git evidence should carry machine semantics.
+## 5. Build qualification policy
 
-## 5. Routing and orchestration non-regression rules
+Production qualification currently defaults to Webpack:
 
-Unless an explicitly reviewed architecture change says otherwise:
+- plain `npm run build` → Webpack;
+- `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
+- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in/testing.
 
-- explicit request/pinning wins where contractually applicable;
-- Auth Keeper admission and credential eligibility are harder gates than preference;
-- exclusion/workload-policy restrictions are harder gates than preference;
-- capability/context compatibility is a harder gate than preference;
-- breaker/cooldown/unavailability is a harder gate than preference;
-- preference intelligence may only rank survivors;
-- preference intelligence may not re-admit a rejected candidate;
-- compatibility evidence should be retained from existing evaluations rather than recomputed merely for shadow/scoring;
-- no extra Auth Keeper/provider/model/credential acquisition should be introduced solely for scoring when existing request-local evidence is available;
-- routing experiments begin as computational shadow/observation and only activate after evidence;
-- external model-architecture or benchmark metadata is enrichment only and must not override harder routing facts.
+Reason: repeated production qualification exposed a deterministic Turbopack invariant panic on accepted source trees while the same source qualified successfully with Webpack.
 
-## 6. R16.32 position
+Permanent rule:
 
-R16.32 is an implementation program under Pillar 4: Intelligent Multi-Model Orchestration.
+- do not repeatedly rediscover the same Turbopack failure during every narrow engineering phase;
+- qualify ordinary acceptance/release builds with the proven Webpack path;
+- retain Turbopack as an explicit experiment/requalification path;
+- treat future Turbopack reactivation as evidence-based, not assumed.
 
-Accepted work includes:
+## 6. Historical-source reintegration rules
 
-- normalized candidate hard facts;
-- deterministic disposition evaluation;
-- computational shadowing that does not send additional traffic;
-- explainability reason taxonomy;
-- bounded in-memory observability;
-- request-local gate-path blocker and positive-fact capture;
-- compatibility source discovery;
-- request/context compatibility provenance contract;
-- corrected three-component context model: `generic_request_context`, `configured_context`, `auto_estimated_input_context`;
-- executionKey-keyed request-local sidecar design;
-- isolated D14 R6 request/context compatibility-provenance implementation;
-- D15 R2 canonical compile/lint/build differential and compatibility-provenance parity qualification.
+Historical source authority and current compatibility are separate gates.
 
-The accepted D14 R6 local candidate authority is commit `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`, tree `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`, parent `50b9ab47e01439e33c0411fff0a880242582724d`.
+When reintegrating old feature branches:
 
-D15 R2 qualified that exact candidate and established, among other things:
+1. pin exact historical commit/tree/branch authority;
+2. do not depend on old local checkout paths;
+3. test whether objects exist in the current local Git object database;
+4. if not, use a disposable historical object store from exact authorized branch refs rather than mutating an accepted repo's object database;
+5. classify candidate files as missing/identical/divergent;
+6. copy historical blobs byte-exact before applying any bounded current-compatibility adaptation;
+7. preserve current implementations when a historical transitive dependency is not itself patch authority;
+8. never resurrect retired provider/runtime surface merely because it exists in historical reachability;
+9. qualify the result against current contracts, tests, workload policy and builder.
 
-- baseline and candidate production builder builds pass;
-- typecheck, full-lint and changed-file lint differentials show no candidate-only diagnostics;
-- baseline focused regression suite passes 141/141;
-- candidate focused regression suite passes 155/155;
-- routing-compatibility parity passes 34/34 on both baseline and candidate;
-- protected acquisition/dispatch call topology remains unchanged;
-- additional Auth Keeper fetches: none;
-- additional provider/model probes: none;
-- credential acquisition for qualification: none;
-- routing readback from compatibility provenance: none;
-- pure qualification reaches structural 14/14 known hard facts and a synthetic eligible/match comparable-proceed case.
+## 7. Operations Floor lessons
 
-Synthetic structural completeness is not production activation authority.
+Accepted Operations Floor work established these permanent rules:
 
-The current next phase is `R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT`. D16 must re-audit the original D7 blockers after D10 + D14 + D15 and identify exactly which remaining blockers require production readout/live empirical evidence.
+- wholesale historical merges are forbidden; use selective source-backed reintegration;
+- historical 14-model assumptions must be reconciled to the current 10-routed + 3-protected-native authority;
+- component prop/interface drift is a compatibility problem, not permission to alter unrelated current contracts;
+- absence of preview telemetry must be represented as absence, not invented data;
+- sidebar description maps must use the semantic ID domain actually represented (`SidebarItemId` where always-visible items such as `proxy` are valid), not a narrower hideable-only domain;
+- TypeScript differentials must compare structured diagnostic identity (path/line/column/code) and independently forbid changed-file diagnostics;
+- multiline/wrapped message drift from unrelated baseline diagnostics is not a candidate regression by itself.
 
-Production activation remains blocked until evidence supports it. Current unresolved evidence classes include production evidence readout, live candidate evidence, empirical comparable-proceed coverage, empirical eligible coverage, and empirical mismatch/contained-error/not-ready rates.
+Accepted Operations Floor local authority:
 
-The exact accepted checkpoint is summarized in [Current Project Status](CURRENT_STATUS.md).
+- commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`;
+- tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`.
 
-## 7. Model-intelligence enrichment engineering policy
+## 8. D18 bounded-foundation rules
 
-A future Unified Model Intelligence Registry may combine verified OmniRoute/provider facts with external architecture metadata.
+D18 exposed three distinct failure classes that are now permanent lessons:
 
-Sebastian Raschka's LLM Architecture Gallery is a useful candidate enrichment reference:
+### R1 — final-diff scope can be too narrow
 
-- <https://sebastianraschka.com/llm-architecture-gallery/>
+The final D18 commit changed only two files, but one of those files depended on earlier foundation work. A final-commit diff is not automatically the complete transplant contract.
 
-External enrichment must follow these rules:
+Rule: determine source-backed feature contract/dependency ownership before assuming the final diff is sufficient.
 
-- no request-time dependency on an external gallery/site for routing;
-- pin/version the imported source and record a hash or immutable revision where practical;
-- validate any imported schema before use;
-- reconcile provider/model aliases explicitly rather than by fuzzy identity assumptions;
-- preserve provenance for every external field;
-- treat architecture metadata and benchmark scores as soft evidence classes, not hard capability/eligibility truth;
-- official provider/API facts, verified OmniRoute catalog data and request-local runtime evidence take precedence over external metadata;
-- external metadata may inform preference among already-eligible survivors but may not re-admit a hard-gate rejection;
-- Operations Floor may display enrichment with provenance, but copied external diagrams/assets require separate licensing review.
+### R2 — regex import scanning is not module authority
 
-## 8. Operations Floor engineering authority
+A regex scanner matched import-looking text that was not a real module edge.
 
-Historical branches containing significant Operations Floor implementation include:
+Rule: use the TypeScript parser/module resolver for actual module-graph questions. Comments/strings/examples must not become fake dependencies.
 
-- `feat/operations-floor-openai-preservation`
-- `feat/operations-floor-protected-native`
+### R3 — complete transitive reachability can be too broad
 
-Operations Floor implementation concepts that remain architecturally live include:
+A correct TypeScript AST/module-resolver closure reached 1,164 historical files, 63 missing current files, retired OpenCode inventory and network-capable historical services. That graph was useful evidence, but it was not valid D18 patch authority.
 
-- routed workload fleet visibility;
-- protected-native/OpenAI presentation;
-- personal versus isolated MTA/enterprise visibility;
-- provider/request inspection;
-- routing/fallback animation;
-- operator attention queues;
-- auth/compression/system telemetry evidence;
-- zero-call simulation/testing paths;
-- provider test actions;
-- pixel-office representation of worker state.
+Rule: distinguish **dependency reachability** from **feature patch authority**. A historical transitive graph must not be blindly materialized when the feature's frozen contract is explicitly bounded.
 
-Absence from the current upstream release branch does not deprecate these concepts.
+Current D18 transplant direction:
 
-## 9. Codex Unified engineering authority
+- exact frozen seven-file contract boundary;
+- classify those seven as missing/identical/divergent-existing;
+- copy missing files byte-exact only;
+- preserve divergent newer current implementations;
+- require zero external production consumers of the bounded readout;
+- require the three bounded D18 tests to pass;
+- no provider calls, credentials, DB writes or routing activation.
 
-The intended Codex-facing control plane historically used host-side artifacts under `.codex-unified` and a `codex-unified-router` implementation.
+## 9. Harness regression register
 
-Engineering changes must preserve the single-agent goal: Codex is the user-facing working agent while OmniRoute can delegate analysis/review/synthesis to multiple eligible workers behind it.
+Permanent known failure classes include:
 
-Multiple reasoning workers do not imply uncontrolled multi-writer execution. Repository/tool mutation should remain owned by an explicitly selected acting model/agent unless a reviewed architecture change says otherwise.
+- `null` versus `undefined` sentinel assumptions;
+- trailing whitespace/final-newline hygiene;
+- incorrect lexical semantic ownership of nested callbacks/returns;
+- wrapper/generic type-resolution order;
+- global text replacement where declaration-scoped transforms are required;
+- missing callback bindings for inserted references;
+- runtime versus type-only import confusion;
+- global snapshot-call counting instead of semantic-role classification;
+- treating candidate presence as compatibility proof;
+- object-identity assumptions where stable request-local keys exist;
+- mixing historical config with unrelated current dependencies;
+- requiring a zero-diagnostic historical baseline rather than baseline/candidate differential parity;
+- guessing TypeScript declaration shape from semantic naming;
+- treating Markdown prose as machine authority;
+- old-checkout-path assumptions for historical Git authority;
+- assuming accepted current object databases contain all historical objects;
+- linewise TypeScript diagnostic comparison;
+- stale hideable-only sidebar ID domains;
+- regex module-edge false positives;
+- unbounded historical dependency closure treated as patch authority;
+- Turbopack with external `node_modules` symlinks;
+- Turbopack invariant panic repeatedly rediscovered after Webpack success already proved source/build viability.
 
-## 10. Auth Keeper engineering boundary
+Detailed failures are recorded in [Engineering Failure-Mode Register](FAILURE_MODE_REGISTER.md).
 
-Auth Keeper is developed in the private `Zartharas/omniroute-auth-keeper` repository.
+## 10. Routing/orchestration non-regression rules
 
-The private repository is authoritative for Auth Keeper implementation, service/recovery mechanics, secret handling and release evidence. It must not redefine routing policy independently of the public architecture source of truth.
+Unless explicitly revised:
 
-## 11. Upstream integration policy
+- explicit request/pinning wins where applicable;
+- Auth Keeper admission is harder than preference;
+- exclusion/workload policy is harder than preference;
+- capability/context compatibility is harder than preference;
+- breaker/cooldown/unavailability is harder than preference;
+- preference ranks survivors only;
+- compatibility evidence should be reused, not recomputed solely for scoring;
+- no extra Auth Keeper/provider/model/credential acquisition solely for scoring when request-local evidence exists;
+- routing experiments begin shadow/observational and activate only after evidence;
+- external architecture/benchmark metadata is enrichment, not a hard-gate authority.
 
-The fork should continue to ingest compatible upstream OmniRoute changes.
+## 11. Codex Unified and Auth Keeper boundaries
 
-When upstream changes overlap custom architecture:
+Codex Unified remains the intended user-facing agent. Multiple reasoning workers do not imply uncontrolled multi-writer repository execution.
 
-1. preserve upstream behavior unless a fork invariant requires a controlled override;
-2. prove whether the custom behavior can be expressed as an extension rather than a fork-only rewrite;
-3. re-run architectural non-regression tests after reconciliation;
-4. keep Operations Floor, Auth Keeper and Codex Unified contracts intact;
+Auth Keeper is implemented in the private `Zartharas/omniroute-auth-keeper` repository. The private repo owns Auth Keeper implementation/release evidence; the public fork owns cross-product architecture/routing policy.
+
+Accepted Auth Keeper R11 authority:
+
+- commit `b3b0d137369038d22820947729233deaec19e166`;
+- tree `9377fe6afe21f098861f32c751f05c8a72882211`;
+- 457/457 tests pass.
+
+## 12. Upstream integration policy
+
+Continue absorbing compatible upstream OmniRoute changes.
+
+When upstream overlaps custom architecture:
+
+1. preserve upstream behavior unless a fork invariant requires a bounded override;
+2. prefer extension/adaptation over fork-only rewrite;
+3. rerun architectural non-regression tests;
+4. keep Codex Unified, Auth Keeper and Operations Floor contracts intact;
 5. document deliberate divergence.
 
-## 12. Release and live-cutover boundary
+## 13. Release/live-cutover boundary
 
 Development/qualification authorization does not imply production authorization.
 
-A live cutover requires a separate explicit decision after:
+Live cutover requires separate explicit approval after:
 
 - canonical source/tree authority is frozen;
+- end-to-end qualification passes;
 - production build identity is proven;
-- tests/type/lint/build gates pass;
 - canary/shadow evidence is reviewed;
-- rollback image/state is known and tested;
-- live health checks are defined.
+- rollback image/state is known;
+- live health checks and observation criteria are defined.
 
-The accepted D14/D15 work did not change the live R16.31 runtime and must not be described as deployed until a later publication/promotion phase proves that fact.
+## 14. Documentation completion rule
 
-## 13. Documentation completion rule
+A technically passing phase is incomplete if the repo still describes removed providers, stale phases or contradictory sequencing.
 
-A phase that materially changes architecture, authority boundaries, provider access modes, workload policy, Operations Floor semantics, Codex Unified behavior, accepted engineering checkpoint or permanent harness rule is incomplete until the canonical docs are updated.
-
-If a later engineer or assistant can read the repo and reasonably infer the wrong product goal or wrong current phase, the documentation work is not complete.
+Update the canonical docs and tracker in the same engineering cycle whenever accepted authority or current phase materially changes.
