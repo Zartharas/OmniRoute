@@ -3,37 +3,19 @@
 Last reviewed: 2026-09-15
 Status: Durable tracker for `Zartharas/OmniRoute`
 
-For continuation, read [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+New-chat continuation: [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
 
-## Current sequence
+Current sequence: Codex Unified complete; Auth Keeper R11 complete; Operations Floor complete; Webpack-default build policy complete; D18 R8 complete/accepted; full E2E **active and user-authorized for non-destructive engineering qualification**; live cutover not authorized. Do not resume D19 automatically.
 
-1. Codex Unified reintegration — complete.
-2. Auth Keeper R11 — complete at `b3b0d137369038d22820947729233deaec19e166`.
-3. Operations Floor — complete at `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`.
-4. Webpack-default build policy — complete at parent `1c4da240883e729d38a356ec83919ad7f6637623`.
-5. D18 — complete/accepted at R8 `58452140ffc8122a26a387638f8a38d7d80f5024`, tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`.
-6. Full E2E qualification — **active; user authorized non-destructive engineering qualification**.
-7. Live cutover — not authorized.
+R8 authority: commit `58452140ffc8122a26a387638f8a38d7d80f5024`, tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`, evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
 
-Do not resume D19 automatically.
+R8 acceptance: 16 paths (7 contract + 9 support), current-owned overwrite 0, unresolved local imports 0, bounded readout runtime consumers 0, 15 byte-exact files + one test-only runtime-erased typing adaptation, production-source adaptation 0, 35/35 focused tests, lint/type pass, 10+3 preserved, Webpack/BUILD_ID/standalone pass. D18 remains passive/unwired.
 
-## R8 acceptance
+Workload authority: 10 routed = 6 personal + 4 MTA/enterprise; GPT-5.6 Sol/Terra/Luna protected-native/non-routeable; OpenCode/TheOldLLM retired.
 
-Evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
+D18 anti-repeat history: R1 final diff too narrow; R2 regex import false positives; R3 valid graph too broad; R4 feature contract not self-contained; R5 hard namespace rejected legitimate Auth Keeper support; R6 correct 16-file closure then Python regex runtime bug; R7 mechanics/tests passed then historical test TS2698; R8 accepted.
 
-16 paths (7 contract + 9 support); current-owned overwrite 0; unresolved local imports 0; bounded readout runtime consumers 0; 15 byte-exact files + one test-only runtime-erased adaptation; production-source adaptation 0; focused tests 35/35; lint/type pass; 10+3 preserved; Webpack/BUILD_ID/standalone pass; Turbopack panic absent. D18 remains passive/unwired.
-
-## Workload/provider authority
-
-10 routed = 6 personal + 4 MTA/enterprise; GPT-5.6 Sol/Terra/Luna protected-native/non-routeable; OpenCode/TheOldLLM retired.
-
-## Anti-repeat D18 sequence
-
-R1 final diff too narrow; R2 regex import false positives; R3 valid graph too broad; R4 feature contract not self-contained; R5 hard namespace rejected legitimate Auth Keeper support; R6 correct 16-file closure then Python regex runtime bug; R7 mechanics/tests passed then historical test TS2698; R8 accepted.
-
-## Active full E2E phase
-
-Target: `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`.
+Active E2E target: `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`.
 
 Next deliverable: one consolidated prevalidated non-destructive harness. Cover lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity and evidence continuity.
 
