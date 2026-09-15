@@ -5,6 +5,8 @@ Status: Durable work tracker for the `Zartharas/OmniRoute` fork
 
 This tracker records completed, active and pending engineering work across the five-pillar product. It is subordinate to accepted Git/test/build/runtime evidence and the canonical architecture/engineering documents.
 
+For continuation in a new conversation, use [Full E2E New-Chat Handoff](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+
 ## 1. Current product sequence
 
 | Order | Workstream | Status | Current authority / next action |
@@ -14,7 +16,7 @@ This tracker records completed, active and pending engineering work across the f
 | 3 | Operations Floor selective reintegration | Complete | `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c` |
 | 4 | Production build-policy hardening | Complete | Webpack-default successor `1c4da240883e729d38a356ec83919ad7f6637623` |
 | 5 | D18 bounded orchestration/evidence foundation transplant | **Complete** | Accepted R8 `58452140ffc8122a26a387638f8a38d7d80f5024` / tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d` |
-| 6 | Full end-to-end qualification | **Active** | Qualify the five-pillar path on the accepted R8 successor without authorizing live cutover |
+| 6 | Full end-to-end qualification | **Active / authorized for non-destructive engineering qualification** | Build one consolidated prevalidated harness from accepted R8; no live cutover/provider mutation |
 | 7 | Live activation / cutover | Not authorized | Separate explicit gate after full E2E/canary/rollback review |
 
 Do **not** resume D19 automatically.
@@ -238,16 +240,24 @@ Permanent rules:
 
 ## 7. Full end-to-end qualification — active
 
-The accepted baseline is now D18 R8 commit `58452140ffc8122a26a387638f8a38d7d80f5024`.
+The accepted baseline is D18 R8 commit `58452140ffc8122a26a387638f8a38d7d80f5024`.
 
 Target path:
 
-`Codex Unified → OmniRoute → Auth Keeper/provider → orchestration/fallback → response → Operations Floor evidence`
+`Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-Qualification must cover quota/cooldown behavior, provider outage handling, auth expiry/re-auth boundaries, fallback behavior, workload isolation, protected-native preservation, restart/recovery, rollback readiness and evidence continuity.
+The user explicitly authorized the next **non-destructive engineering qualification phase**.
 
-Full E2E qualification must distinguish non-destructive/offline qualification from any live-provider or production-runtime exercise. No live-provider calls, credential-value reads, production mutation or cutover are authorized merely by entering this phase.
+The next deliverable should be one consolidated prevalidated harness with read-only preflight, fail-closed safety guards, deterministic/mocked failure injection where possible, evidence packaging and final non-drift.
+
+Qualification must cover quota/cooldown behavior, provider outage handling, auth expiry/re-auth boundaries, fallback behavior, workload isolation, protected-native preservation, Operations Floor evidence contracts, restart/recovery, rollback readiness, Webpack production identity and evidence continuity.
+
+No uncontrolled live-provider calls, credential-value reads, live Auth Keeper mutation, production routing mutation, D18 activation, live image/container/database mutation, remote push, deployment or cutover are authorized by this phase.
 
 ## 8. Live activation — not authorized
 
 No current acceptance authorizes production cutover, D18 readout activation or preference-routing activation.
+
+## 9. New-chat handoff
+
+Use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) when continuing in a new conversation. It contains the exact accepted R8 authority, D18 failure history, host sentinels, E2E authorization/safety boundaries and immediate next action.
