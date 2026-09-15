@@ -13,7 +13,7 @@ This tracker records completed, active and pending engineering work across the f
 | 2 | Auth Keeper final contract reconciliation | Complete | R11 `b3b0d137369038d22820947729233deaec19e166` |
 | 3 | Operations Floor selective reintegration | Complete | `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c` |
 | 4 | Production build-policy hardening | Complete | Webpack-default successor `1c4da240883e729d38a356ec83919ad7f6637623` |
-| 5 | D18 bounded orchestration/evidence foundation transplant | Active | R5 seven-file feature contract + bounded missing-only support closure |
+| 5 | D18 bounded orchestration/evidence foundation transplant | Active | R6 complete missing-only support closure + effect/risk gate |
 | 6 | Full end-to-end qualification | Pending | Begins only after D18 acceptance |
 | 7 | Live activation / cutover | Not authorized | Separate explicit gate after full E2E/canary/rollback review |
 
@@ -121,75 +121,75 @@ Regex discovery misclassified import-looking strings as module edges. TypeScript
 
 Classification: `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`.
 
-The TypeScript AST/module graph was structurally valid and found:
-
-- 1,164 files;
-- 2,924 edges;
-- 63 files missing from current;
-- 841 identical current files;
-- 260 divergent current files;
-- 0 unresolved internal imports.
-
-But the graph crossed retired OpenCode inventory and network-capable historical services. Reachability evidence is not automatic patch authority.
+The TypeScript AST/module graph was structurally valid and found 1,164 files, 2,924 edges, 63 files missing from current, 841 identical current files, 260 divergent current files and 0 unresolved internal imports. The graph crossed retired OpenCode inventory and network-capable historical services, so reachability evidence was rejected as automatic patch authority.
 
 ### R4 — failed safely
 
 Classification: `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`.
 
-R4 correctly froze the exact seven-file D18 feature contract and proved:
+R4 correctly froze the exact seven-file D18 feature contract and copied all seven byte-exact with no current overwrite or semantic adaptation. The first regression failed at module load because `gatePathCandidateDispositionShadowObservability.ts` requires missing `gatePathCandidateDispositionShadowBinding.ts`.
 
-- all 7 contract files are missing from the current integrated tree;
-- all 7 copied byte-exact;
-- no current files overwritten;
-- no retired-provider/protected-routeability/DB-write/network-call hits in the seven files;
-- zero external runtime consumer of the bounded readout.
+### R5 — failed safely
 
-The first regression then failed at module load because:
+Classification: `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`.
 
-`gatePathCandidateDispositionShadowObservability.ts` → missing `gatePathCandidateDispositionShadowBinding.ts`.
+R5 correctly used `STOP_AT_CURRENT_OWNED_DEPENDENCIES`, but still required all missing support to stay under `open-sse/services/combo/` or `tests/unit/combo/`. Read-only closure derivation then found real missing edges:
 
-This proves the seven-file feature contract is source-correct but not self-contained as a transplant support set.
+- `open-sse/services/combo/executeTargetGates.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`;
+- `open-sse/services/combo/attemptLoopTypes.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`.
 
-### R5 — active
+R5 stopped before candidate creation. This is a harness/policy boundary failure, not evidence that the Auth Keeper eligibility dependency is invalid. Directory namespace alone is not architectural authority.
 
-Patch authority remains the seven-file feature contract, plus a **minimal missing-only support closure** derived from the pinned D18 tree.
+### R6 — active
 
-R5 rules:
+Patch authority remains the seven-file D18 feature contract plus the **complete missing-only support closure relative to current authority**.
 
-1. start from the seven feature-contract files;
-2. resolve real module edges with the TypeScript compiler AST/module resolver;
-3. if a target already exists in current OmniRoute, stop traversal at that target;
-4. if a target is missing and belongs to `open-sse/services/combo/` or `tests/unit/combo/`, classify it as bounded support and continue only through that missing file;
-5. if a missing target escapes those namespaces, fail closed rather than copy it;
-6. require the derived support closure to rediscover `gatePathCandidateDispositionShadowBinding.ts`;
-7. safety-scan the combined copy set for retired providers, routeable protected-native state, DB writes and network calls;
-8. copy only missing files byte-exact;
-9. overwrite zero current files and perform no semantic adaptation;
-10. keep the bounded readout passive/unwired;
-11. run all three D18 regression files;
-12. require changed-file lint pass and zero changed-file TypeScript diagnostics;
-13. preserve 10 routed + 3 protected-native workload authority;
-14. run the default Webpack production build;
-15. no live/provider/credential/dependency-install/remote-push side effects.
+R6 rules:
 
-This is the intended middle ground:
+1. seed the TypeScript AST/module resolver with the seven D18 feature-contract files;
+2. resolve all real project-local module edges against pinned D18;
+3. stop traversal at every target already owned by current OmniRoute;
+4. recurse through every target missing from current regardless of directory namespace;
+5. require zero unresolved project-local imports;
+6. require the derived closure to rediscover both known blockers: `gatePathCandidateDispositionShadowBinding.ts` and `src/lib/authKeeper/comboRoutingEligibility.ts`;
+7. inventory the complete copy set before candidate creation;
+8. reject the copy set if it contains retired OpenCode/TheOldLLM production references, routeable protected-native state, DB writes, network calls, child-process/server side effects, or known historical provider/usage/fetcher/quota application surfaces;
+9. create an isolated candidate only after that complete preflight passes;
+10. copy missing files byte-exact and overwrite zero current files;
+11. before tests, run a second TypeScript module-resolution pass against the assembled candidate and require every project-local import from every copied source file to resolve;
+12. this pre-test gate is intended to prevent repeated static `ERR_MODULE_NOT_FOUND` failures;
+13. run the three D18 regression files only after import closure is proven complete;
+14. require changed-file lint pass and zero changed-file TypeScript diagnostics;
+15. preserve the 10 routed + 3 protected-native workload authority;
+16. run the default Webpack production build;
+17. no live/provider/credential/dependency-install/remote-push side effects.
 
-- R1/final-diff-only was too narrow;
-- R3/full historical reachability was too broad;
-- R4/seven feature files captured ownership correctly but omitted required missing support;
-- R5 keeps feature ownership bounded while deriving only support that is absent from current authority.
+R6 specifically rejects both previous extremes and the R5 mistake:
 
-## 6. Permanent transplant-set distinction
+- final-diff-only is too narrow;
+- full historical reachability is too broad;
+- hard directory allowlisting is not architectural authority;
+- the accepted support model is complete missing-only closure bounded by current implementation authority and effect/risk policy.
+
+## 6. Permanent anti-repeat transplant rules
 
 For historical feature reintegration, keep these sets separate:
 
 1. final commit diff;
 2. feature-owned frozen contract;
-3. minimal missing support closure relative to current authority;
+3. complete missing-only support closure relative to current authority;
 4. full transitive historical reachability graph;
 5. current implementation authority.
 
-The patch surface is not automatically any one of those sets in isolation. It must be source-backed, bounded, compatible with current authority and free of unrelated historical application resurrection.
+Permanent execution rules:
+
+- do not add missing dependencies one-by-one when parser-backed closure can derive them first;
+- do not use directory namespace as a proxy for architectural legitimacy;
+- stop dependency traversal at current-owned implementations;
+- compute and safety-classify the entire missing copy set before candidate mutation;
+- require an assembled-candidate static import-resolution pass before executing tests;
+- preserve runtime-computed dependency failures as genuine qualification failures rather than masking them;
+- never resurrect retired providers or network-capable historical application surfaces merely because they are historically reachable.
 
 ## 7. Full end-to-end qualification — pending
 
