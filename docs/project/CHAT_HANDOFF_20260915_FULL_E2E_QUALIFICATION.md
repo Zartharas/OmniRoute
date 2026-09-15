@@ -41,7 +41,7 @@ Completed:
 
 Active next phase:
 
-6. Full end-to-end qualification.
+6. Full end-to-end qualification — the user explicitly authorized the next non-destructive engineering qualification phase.
 
 Later only after separate explicit authorization:
 
@@ -60,11 +60,11 @@ Do **not** resume D19 automatically.
 - commit message: `feat(orchestration): transplant D18 foundation with test type compatibility`
 - evidence ZIP SHA-256: `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 
-The accepted R8 worktree was:
+Accepted R8 worktree:
 
 `/Users/zarthras/Documents/Development Projects/omniroute-d18-orchestration-foundation-transplant-r8`
 
-R8 is local accepted engineering authority. Do not claim it is published to the fork release branch unless later Git evidence proves that publication.
+R8 is local accepted engineering authority. Do not claim it is published to the fork release branch unless later Git evidence proves publication.
 
 ### Pre-D18 integrated parent / Webpack-default authority
 
@@ -153,41 +153,27 @@ Production build qualification:
 Independent evidence review verified:
 
 - outer evidence ZIP SHA matches `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`;
-- 33/33 manifest-tracked evidence files matched hashes;
-- 34/34 `evidence-hashes.txt` entries matched;
+- all manifest-tracked evidence files matched SHA-256;
+- all `evidence-hashes.txt` entries matched;
 - patch contained exactly 16 added paths;
 - focused tests totaled 35 with zero failures;
 - selected compatibility variant preserved emitted-JavaScript parity.
 
 ## 5. D18 failure history that must not be repeated
 
-R1 — `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`
+R1 — `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`: final two-file D18 diff was too narrow.
 
-- final two-file D18 diff was too narrow.
+R2 — `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`: regex import scanning treated import-looking strings as module edges.
 
-R2 — `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`
+R3 — `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`: the valid TypeScript AST graph expanded to 1,164 files / 2,924 edges / 63 missing files and crossed retired-provider/network-capable historical surface.
 
-- regex import scanning treated import-looking strings as module edges.
+R4 — `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`: the seven-file feature contract was not self-contained for execution/tests.
 
-R3 — `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`
+R5 — `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`: a directory allowlist rejected legitimate `src/lib/authKeeper/comboRoutingEligibility.ts` support.
 
-- TypeScript AST graph was valid but expanded to 1,164 files / 2,924 edges / 63 missing files and crossed retired-provider/network-capable historical surface.
+R6 — `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`: the correct 7 + 9 = 16 missing-only closure was found, but a Python regex catalog had repeated global inline flags.
 
-R4 — `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`
-
-- seven-file feature contract was not self-contained for execution/tests.
-
-R5 — `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`
-
-- directory namespace was incorrectly used as architecture authority; legitimate `src/lib/authKeeper/comboRoutingEligibility.ts` support was rejected.
-
-R6 — `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`
-
-- missing-only closure correctly converged to 7 contract + 9 support = 16 files, but a Python regex catalog failed because adjacent patterns contained repeated global inline `(?i)` flags.
-
-R7 — `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`
-
-- transplant mechanics passed, 35/35 tests and lint passed, but current TypeScript rejected one historical test spread with TS2698.
+R7 — `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`: transplant mechanics passed, 35/35 tests and lint passed, but current TypeScript rejected one historical test spread with TS2698.
 
 R8 — accepted.
 
