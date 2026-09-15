@@ -3,6 +3,8 @@
 Date: 2026-09-15
 Status: Durable fork engineering appendix — D18 transplant accepted at R8
 
+For continuation in a new conversation, use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+
 This document records the engineering failures and decisions discovered while transplanting the frozen D18 bounded production-evidence/orchestration foundation onto the current integrated OmniRoute authority.
 
 It is not activation authority. D18 remains passive/unwired until later evidence explicitly authorizes otherwise.
@@ -66,36 +68,19 @@ Final focused qualification:
 Independent evidence review verified the outer evidence ZIP SHA, all manifest/evidence-hash entries, exact 16-path patch, focused test totals and emitted-JavaScript parity.
 
 ## 3. Candidate R1 — final-diff closure omission
-
 Classification: `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`.
-
-The final D18 commit changed only two files, but the bounded-readout regression required earlier foundation code, including `computationalShadowObservabilityAccumulator.ts`.
 
 Permanent lesson: final commit diff and feature transplant boundary are different sets.
 
 ## 4. Candidate R2 — regex import scanner false positives
-
 Classification: `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`.
-
-Regex discovery misclassified import-looking strings as module edges. TypeScript AST/module resolution later proved the false positives.
 
 Permanent lesson: comments/strings/import-looking text are not module-graph authority.
 
 ## 5. Candidate R3 — full reachability mistaken for patch authority
-
 Classification: `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`.
 
-TypeScript AST/module resolution correctly produced a full historical reachability graph:
-
-- seed files: 7;
-- closure files: 1,164;
-- graph edges: 2,924;
-- missing in current: 63;
-- identical current files: 841;
-- divergent current files: 260;
-- unresolved internal imports: 0.
-
-That graph crossed unrelated historical application surface, including retired OpenCode provider inventory and network-capable provider/runtime services.
+The valid TypeScript AST/module graph reached 1,164 files / 2,924 edges / 63 missing files and crossed unrelated historical application surface.
 
 Permanent lesson: a correct dependency graph is evidence, not automatic transplant ownership.
 
@@ -111,89 +96,48 @@ The source-backed feature-owned contract was:
 6. `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`
 7. `tests/unit/combo/gatePathCandidateDispositionShadowObservability.test.ts`
 
-The seven files defined feature ownership but did not imply ownership of every historical module transitively reachable from them.
-
 ## 7. Candidate R4 — feature contract not self-contained as support set
-
 Classification: `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`.
-
-R4 proved all seven feature-contract files were missing from current OmniRoute and copied them byte-exact with zero overwrite or semantic adaptation. Regression loading failed because `gatePathCandidateDispositionShadowObservability.ts` imported missing `gatePathCandidateDispositionShadowBinding.ts`.
 
 Permanent lesson: feature-owned contract and minimal executable/testable support set are different sets.
 
 ## 8. Candidate R5 — hard namespace boundary rejected legitimate architecture support
-
 Classification: `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`.
-
-R5 stopped traversal at current-owned files but imposed a hard missing-support namespace allowlist. It rejected legitimate cross-pillar support:
-
-- `executeTargetGates.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`;
-- `attemptLoopTypes.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`.
 
 Permanent lesson: directory namespaces are not a reliable proxy for architectural legitimacy.
 
 ## 9. Candidate R6 — complete missing-only closure, then regex harness failure
-
 Classification: `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`.
 
-R6 converged before mutation on:
-
-- 7 feature-contract files;
-- 9 missing support files;
-- 16 total copy candidates;
-- `gatePathCandidateDispositionShadowBinding.ts` rediscovered;
-- `src/lib/authKeeper/comboRoutingEligibility.ts` rediscovered;
-- 0 unresolved project-local imports.
-
-The effect/risk block then failed because adjacent Python regex strings contained repeated global inline `(?i)` flags.
+R6 converged before mutation on 7 feature-contract + 9 support = 16 files with 0 unresolved project-local imports.
 
 Permanent lesson: regex catalogs must be runtime-compiled and behavior-smoked during harness prevalidation.
 
 ## 10. Candidate R7 — mechanics pass, historical test typing fails current TypeScript
-
 Classification: `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`.
 
-R7 proved the transplant mechanics were healthy:
-
-- complete copy-set risk preflight pass;
-- all safety hit counts zero;
-- exact parent `1c4da240883e729d38a356ec83919ad7f6637623`;
-- 16 files materialized byte-exact;
-- current-owned files overwritten: 0;
-- bounded-readout external runtime consumers: 0;
-- pre-test project-local unresolved imports: 0;
-- bounded readout tests: 10/10 pass;
-- accumulator tests: 16/16 pass;
-- observability-adapter tests: 9/9 pass;
-- focused total: 35/35 pass;
-- changed-file ESLint: pass.
-
-The only remaining changed-file TypeScript diagnostic was:
-
-`tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts(109,5): error TS2698: Spread types may only be created from object types.`
+R7 proved copy-set risk, static import resolution, 35/35 focused tests and lint, then stopped on the single line-109 TS2698 in the historical accumulator test.
 
 Permanent lesson: historical runtime success does not waive current compiler compatibility.
 
 ## 11. Candidate R8 — accepted compatibility strategy
 
-R8 did not reopen dependency discovery. It preserved the R7 7 + 9 = 16-file closure and zero-unresolved-import result.
+R8 preserved the R7 16-file closure and zero-unresolved-import result.
 
-R8 acceptance procedure:
+Acceptance procedure required:
 
-1. required the pre-adaptation changed-file diagnostic set to contain exactly one diagnostic;
-2. required that diagnostic to be the known line-109 TS2698;
-3. AST-confirmed the failing spread assignment was exactly `...evidence()`;
-4. generated only TypeScript type-assertion alternatives for that operand;
-5. required non-empty transpiled JavaScript and byte-identical emitted JavaScript for all candidate assertions;
-6. selected the first assertion producing zero changed-file TypeScript diagnostics and passing ESLint;
-7. allowed exactly one adapted file under `tests/`;
-8. required the other 15 transplanted files to remain byte-exact;
-9. required production-source adaptation count to remain zero;
-10. re-ran all 35 focused regressions;
-11. re-ran changed-file lint/type gates;
-12. preserved current 10-routed + 3-protected-native invariants;
-13. ran default Webpack production build and artifact qualification;
-14. committed only after every gate passed.
+1. exact pre-adaptation TS2698 classification;
+2. AST identity of the `...evidence()` spread;
+3. runtime-erased TypeScript type-assertion alternatives only;
+4. non-empty, byte-identical emitted JavaScript;
+5. exactly one adapted test file;
+6. 15 byte-exact transplant files;
+7. production-source adaptation count zero;
+8. 35/35 focused regressions;
+9. changed-file lint/type pass;
+10. current 10+3 invariants;
+11. default Webpack production build and standalone qualification;
+12. commit/evidence/non-drift pass.
 
 Accepted selected variant: runtime-erased `Record<string, unknown>` assertion.
 
@@ -233,7 +177,5 @@ The D18 work remains aligned with the five-pillar architecture.
 - GPT-5.6 Sol/Terra/Luna remain protected-native and non-routeable in the normal fleet;
 - OpenCode and TheOldLLM remain retired from active product scope;
 - D18 remains passive/unwired;
-- full end-to-end qualification is now the active phase;
+- full end-to-end qualification is now the active, user-authorized non-destructive engineering phase;
 - live cutover remains separately gated and unauthorized.
-
-For new-chat continuation, use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
