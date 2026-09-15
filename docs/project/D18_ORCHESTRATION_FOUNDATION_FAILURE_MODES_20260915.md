@@ -120,33 +120,109 @@ This was a policy/harness failure, not evidence that the Auth Keeper dependency 
 
 Permanent lesson: directory namespaces are not a reliable proxy for architectural legitimacy.
 
-## 9. Candidate R6 — complete missing-only closure with effect/risk policy
+## 9. Candidate R6 — complete missing-only closure, then regex harness failure
 
-R6 keeps the seven-file feature contract as ownership authority but removes the hard path allowlist.
+Classification:
+
+`HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`
+
+R6 kept the seven-file feature contract as ownership authority, removed the hard path allowlist, and changed support discovery to a complete missing-only closure relative to the current integrated tree.
 
 Traversal rule:
 
 `STOP_AT_CURRENT_OWNED_DEPENDENCIES`
 
-R6 preflight algorithm:
+R6 successfully converged before mutation on:
 
-1. seed the TypeScript AST/module resolver with the seven feature-contract files;
-2. resolve real project-local module edges against pinned D18;
-3. if a resolved target already exists in current OmniRoute, record an authority-boundary edge and stop traversal there;
-4. if a target is missing from current, add it to the missing-only support set and recurse through that missing file regardless of directory namespace;
-5. require zero unresolved project-local imports;
-6. require the closure to rediscover both known concrete blockers: `gatePathCandidateDispositionShadowBinding.ts` and `src/lib/authKeeper/comboRoutingEligibility.ts`;
-7. inventory the entire derived copy set before any candidate is created;
-8. reject the whole set if it contains retired OpenCode/TheOldLLM production references, routeable protected-native state, DB writes, network calls, child-process/server side effects, or known historical provider/usage/fetcher/quota application surfaces;
-9. only after the complete copy set passes those gates may an isolated candidate worktree be created;
-10. copy only missing files byte-exact and overwrite zero current files;
-11. before tests, re-run TypeScript module resolution against the assembled candidate and require every project-local import from every copied source file to resolve;
-12. this pre-test resolution gate is specifically intended to prevent another static `ERR_MODULE_NOT_FOUND` cycle;
-13. then run the three D18 regressions, changed-file lint/type gates, 10+3 workload invariants and default Webpack production build.
+- 7 feature-contract files;
+- 9 missing support files;
+- 16 total copy candidates;
+- `gatePathCandidateDispositionShadowBinding.ts` rediscovered;
+- `src/lib/authKeeper/comboRoutingEligibility.ts` rediscovered;
+- 0 unresolved project-local imports.
 
-R6 does not weaken the architectural boundary. It replaces path-based legitimacy with evidence-based behavior and current-authority boundaries.
+The next effect/risk block failed before candidate creation because one Python regex was assembled from adjacent strings that each carried a global inline `(?i)` flag. Python 3.11 rejected the second global flag because it was no longer at pattern position zero.
 
-## 10. Permanent anti-repeat engineering rules
+This was harness-only. The 16-file missing-only closure remained valid.
+
+Permanent lesson: regex catalogs must be runtime-compiled and behavior-smoked during harness prevalidation. Shell syntax and Python bytecode compilation do not prove dynamically assembled regex validity.
+
+## 10. Candidate R7 — transplant mechanics pass, historical test typing fails current TypeScript
+
+Classification:
+
+`HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`
+
+R7 preserved the R6 closure algorithm and added a runtime regex-catalog self-test using `re.I` flags rather than inline global flags.
+
+R7 then proved the transplant mechanics end-to-end up to the TypeScript gate:
+
+- risk regex catalog: 8/8 compile and behavior smoke pass;
+- complete copy-set risk gate: pass;
+- retired-provider hits: 0;
+- protected-native routeable hits: 0;
+- DB-write hits: 0;
+- network-call hits: 0;
+- child-process side-effect hits: 0;
+- server side-effect hits: 0;
+- historical application-path risk hits: 0;
+- isolated candidate parent: exact `1c4da240883e729d38a356ec83919ad7f6637623`;
+- copied files: 16;
+- byte identity before compatibility adaptation: pass;
+- current-owned files overwritten: 0;
+- bounded-readout external runtime consumers: 0;
+- pre-test unresolved project-local imports: 0;
+- `ERR_MODULE_NOT_FOUND` prevention gate: pass;
+- bounded readout tests: 10/10 pass;
+- accumulator tests: 16/16 pass;
+- observability-adapter tests: 9/9 pass;
+- focused total: 35/35 pass;
+- changed-file ESLint: pass.
+
+The only changed-file TypeScript diagnostic was:
+
+`tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts(109,5): error TS2698: Spread types may only be created from object types.`
+
+The historical test helper returns its synthetic evidence object with `as never`; line 109 then spreads `...evidence()` while adding deliberately sensitive extra keys for a negative-leakage regression. Current TypeScript rejects spreading a value typed as `never`, although the runtime JavaScript and the focused regression behavior remain valid.
+
+The exact historical test SHA-256 is:
+
+`d1813972782f5fe56fc0212dcffab0aa234e8f2b239147099231403907ceadf8`
+
+Earlier D2 evidence recorded that exact generated test identity and 16/16 accumulator regression pass. The production accumulator itself remains source-correct and runtime-clean.
+
+Permanent lesson: historical runtime success does not waive current compiler compatibility. If the incompatibility is test-only, a compatibility adaptation may be acceptable only when it is narrowly gated, runtime-erased, and production source remains exact.
+
+## 11. Candidate R8 — active compatibility strategy
+
+R8 does not reopen dependency discovery. The R7 7 + 9 = 16-file closure, zero unresolved-import result, risk classification and passive/unwired boundary remain the transplant authority.
+
+R8 permits at most one compatibility adaptation:
+
+`tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`
+
+R8 must fail closed unless the pre-adaptation changed-file diagnostic set contains exactly the known line-109 `TS2698` diagnostic.
+
+Compatibility procedure:
+
+1. verify the historical test still has SHA-256 `d1813972782f5fe56fc0212dcffab0aa234e8f2b239147099231403907ceadf8`;
+2. run current `tsc --noEmit` before adaptation and require exactly one changed-file diagnostic, the known line-109 TS2698;
+3. use the TypeScript AST to require the diagnostic node to be the spread assignment whose operand is exactly `evidence()`;
+4. generate only type-assertion alternatives for that operand;
+5. force `transpileModule` to emit non-empty JavaScript and require every candidate assertion to produce JavaScript byte-identical to the unadapted test;
+6. try the variants inside the same qualification run and select the first variant that yields zero changed-file TypeScript diagnostics and passes ESLint;
+7. allow exactly one adapted file and require it to be under `tests/`;
+8. require the other 15 transplanted files to remain byte-exact to D18;
+9. require production-source adaptation count to remain zero;
+10. re-run all 35 focused regressions after adaptation;
+11. re-run all changed-file lint/type gates;
+12. preserve current 10-routed + 3-protected-native invariants;
+13. run the default Webpack production build and artifact qualification;
+14. commit only after every gate passes.
+
+This is a type-system compatibility repair only. Emitted runtime JavaScript parity is an explicit acceptance condition.
+
+## 12. Permanent anti-repeat engineering rules
 
 Historical feature transplant work must distinguish at least these sets:
 
@@ -163,14 +239,19 @@ Additional rules:
 - stop traversal at current-owned implementations rather than walking through their historical dependency graph;
 - compute and safety-classify the whole missing copy set before candidate mutation;
 - require an assembled-candidate static import-resolution pass before executing tests;
+- runtime-compile and behavior-smoke regex catalogs before using them as a qualification gate;
+- classify changed-file compiler diagnostics before attempting compatibility edits;
+- for test-only TypeScript compatibility, require runtime-erased adaptation plus emitted-JavaScript parity;
+- production source must remain exact unless a separately justified adaptation is explicitly authorized;
+- compatibility variants should be tested automatically inside one qualification run rather than through repeated operator reruns;
 - preserve unresolved runtime-computed dependency failures as genuine qualification failures rather than hiding them;
 - do not resurrect retired providers or network-capable historical application services merely because they are reachable historically.
 
-## 11. Architecture sanity conclusion
+## 13. Architecture sanity conclusion
 
 The D18 work remains aligned with the five-pillar architecture.
 
-R1 through R5 refined engineering authority; they did not redefine the product:
+R1 through R7 refined engineering authority; they did not redefine the product:
 
 - OmniRoute remains routing/orchestration authority;
 - Auth Keeper remains credential/session/account authority and may expose eligibility contracts consumed by orchestration;
