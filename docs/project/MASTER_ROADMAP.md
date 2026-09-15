@@ -5,6 +5,8 @@ Status: Canonical roadmap for the `Zartharas/OmniRoute` fork
 
 This roadmap tracks the fork's five-pillar goal and current sequencing. Upstream OmniRoute `ROADMAP.md` remains upstream-only context.
 
+For continuation in a new engineering conversation, use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+
 ## 1. Goal
 
 Deliver one Codex-centered AI engineering agent backed by a heterogeneous AI workforce, with OmniRoute as routing/orchestration authority, Auth Keeper as credential/session authority, evidence-driven multi-model orchestration, protected OpenAI/Codex capacity and an Operations Floor that makes the organization understandable in real time.
@@ -12,25 +14,9 @@ Deliver one Codex-centered AI engineering agent backed by a heterogeneous AI wor
 ## 2. Pillar status
 
 ### Pillar 1 — Codex Unified Agent
-
 Status: **Repository reintegration complete; full integrated E2E qualification active.**
 
-Completed/proven:
-
-- unified Codex configuration/catalog/workload-policy authority;
-- codex-unified-router lineage;
-- personal versus isolated MTA/enterprise lanes;
-- protected-native preservation model;
-- repository reintegration and current host-sentinel qualification.
-
-Remaining:
-
-- full integrated qualification against accepted OmniRoute R8 + Auth Keeper R11 + Operations Floor lineage;
-- final release/promotion authority;
-- live operational validation after explicit cutover authorization.
-
 ### Pillar 2 — Unified OmniRoute AI Workforce
-
 Status: **Strong current foundation; full integrated qualification active.**
 
 Current active fleet authority:
@@ -39,10 +25,9 @@ Current active fleet authority:
 - 3 protected-native ChatGPT models: GPT-5.6 Sol, Terra, Luna;
 - protected-native models remain non-routeable in the normal fleet.
 
-OpenCode and TheOldLLM are retired from active product scope. Historical references/tombstones may remain but must not become active routing/bootstrap/workload/Operations Floor/Auth Keeper authority.
+OpenCode and TheOldLLM are retired from active product scope.
 
 ### Pillar 3 — Auth Keeper
-
 Status: **Final contract reconciliation complete at R11; full integrated qualification active.**
 
 Accepted authority:
@@ -52,7 +37,6 @@ Accepted authority:
 - 457/457 tests pass.
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
-
 Status: **D18 bounded foundation transplant complete at R8; full E2E qualification active.**
 
 Accepted R8 authority:
@@ -85,7 +69,6 @@ Important sequencing rule:
 - later activation/preference phases require separate evidence and authorization.
 
 ### Pillar 5 — Operations Floor
-
 Status: **Selective reintegration complete and qualified; full integrated qualification active.**
 
 Accepted local authority:
@@ -105,49 +88,38 @@ Accepted current production build policy:
 - `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in.
 
-Reason: repeated Turbopack production builds hit a deterministic invariant panic while the same accepted source built successfully with Webpack.
-
 Do not spend future ordinary qualification cycles rediscovering the same known Turbopack failure unless the purpose is specifically to re-evaluate Turbopack.
 
 ## 4. Current cross-cutting sequence
 
 ### Phase A — Upstream compatibility
-
 Status: **Ongoing continuously.**
 
 ### Phase B — Codex Unified reintegration
-
 Status: **Complete for current integration lineage.**
 
 ### Phase C — Auth Keeper final reconciliation
-
 Status: **Complete at R11.**
 
 ### Phase D — Operations Floor selective reintegration
-
 Status: **Complete.**
 
 ### Phase E — Production build-policy hardening
-
 Status: **Complete: Webpack default / Turbopack explicit opt-in.**
 
 ### Phase F — D18 bounded orchestration/evidence foundation
-
 Status: **Complete and accepted at R8.**
 
 Accepted authority: `58452140ffc8122a26a387638f8a38d7d80f5024` / tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`.
 
 ### Phase G — Full end-to-end qualification
-
-Status: **Active.**
+Status: **Active and authorized for non-destructive engineering qualification.**
 
 Accepted baseline: D18 R8.
 
 Qualify the integrated product path:
 
 `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
-
-Current authorization is for a **non-destructive engineering qualification harness**, not live cutover.
 
 The preferred execution model is one consolidated harness with read-only preflight, fail-closed guards, deterministic/mocked failure injection where possible, evidence packaging and final non-drift.
 
@@ -178,13 +150,11 @@ Safety boundary unless explicitly expanded later:
 - no remote push/deploy/cutover.
 
 ### Phase H — Model intelligence / preference intelligence
-
 Status: **Planned, not activation authority.**
 
 Preference intelligence may rank only candidates that already survived hard gates.
 
 ### Phase I — Product acceptance and live promotion
-
 Status: **Not authorized.**
 
 Requires:
