@@ -3,80 +3,36 @@
 Last reviewed: 2026-09-15
 Status: Canonical engineering governance for the `Zartharas/OmniRoute` fork
 
-For continuation in a new conversation, read [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
+For new-chat continuation, read [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md).
 
-## Engineering objective
+## Objective
 
-Advance the five-pillar architecture without silently narrowing the product into a provider, model, branch or R16.x subproject. OmniRoute, Auth Keeper, Codex Unified and Operations Floor may evolve independently, but their contracts and authority boundaries must remain explicit and testable.
+Advance the five-pillar architecture while preserving explicit, testable contracts among Codex Unified, OmniRoute, Auth Keeper and Operations Floor.
 
-## Source-of-truth precedence
+## Authority precedence
 
-1. Architecture Source of Truth — product intent/invariants.
-2. Engineering Source of Truth — engineering method/non-regression.
-3. Master Roadmap — sequencing.
-4. Current Project Status — latest accepted checkpoint.
-5. Engineering Tracker — detailed work/history.
-6. Full E2E Chat Handoff — new-conversation continuation.
-7. Accepted Git objects/tests/build/runtime evidence — implementation reality.
+Architecture Source of Truth → Engineering Source of Truth → Master Roadmap → Current Status → Engineering Tracker → Full E2E Handoff → accepted Git/test/build/runtime evidence.
 
-If implementation reality contradicts architecture, surface the contradiction.
+Implementation evidence remains authoritative for concrete implementation facts.
 
-## Evidence-first workflow
+## Evidence-first method
 
-Before mutation:
+Before mutation: pin exact authority; separate repo authority from live sentinels; inspect exact contracts/side effects; create isolated candidates; prevalidate macOS `/bin/bash`, embedded Python/Node and high-risk parser/regex logic; use AST/semantic guards; derive complete missing-only support before historical transplant mutation; require local static import resolution before tests; fail closed on drift.
 
-- pin exact branch/head/tree/evidence authority;
-- separate repository authority from live/runtime sentinels;
-- inspect exact source/type contracts and side effects;
-- create isolated candidates where practical;
-- prevalidate macOS `/bin/bash` syntax;
-- compile and execute high-risk embedded parser/regex/decision self-tests;
-- use AST/semantic guards where structure matters;
-- derive complete missing-only support closure before historical transplant mutation;
-- require static project-local imports to resolve before feature tests;
-- fail closed on unexpected source shape or authority drift.
-
-After mutation:
-
-- prove exact changed scope including untracked files;
-- prove parent/source authority;
-- rerun semantic/focused regressions;
-- distinguish baseline diagnostics from candidate-only diagnostics;
-- independently gate changed-file diagnostics;
-- run changed-file lint/type gates;
-- use current canonical production builder;
-- prove host/non-target non-drift;
-- record commit/tree/evidence hashes;
-- do not push/deploy/cutover merely because qualification passes.
+After mutation: prove exact scope; parent/source authority; semantic/focused regressions; candidate-only diagnostics; changed-file lint/type; canonical Webpack production build; host/non-target non-drift; commit/tree/evidence recording; never infer push/deploy/cutover authority from development qualification.
 
 ## Current invariants
 
-- OpenCode and TheOldLLM are retired from active product scope.
-- GPT-5.6 Sol, Terra and Luna are protected-native/non-routeable in the normal fleet.
+- OpenCode/TheOldLLM retired from active scope.
+- GPT-5.6 Sol/Terra/Luna protected-native/non-routeable.
 - Workload authority: 10 routed (6 personal + 4 MTA) + 3 protected-native.
-- Operations Floor is not a router.
-- Auth Keeper owns credential/session/account lifecycle and may expose eligibility contracts; OmniRoute owns routing/provider/orchestration policy.
-- preference ranks only candidates surviving harder gates.
+- Operations Floor not routing authority.
+- Auth Keeper owns credential/session/account lifecycle; OmniRoute owns routing/provider/orchestration.
+- preference ranks only survivors of harder gates.
 
-## Builder policy
+## Build policy
 
-- plain `npm run build` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack requalification.
-
-Do not repeatedly rediscover the known Turbopack invariant panic during ordinary qualification.
-
-## Historical reintegration rules
-
-Keep separate:
-
-1. final commit diff;
-2. feature-owned contract;
-3. minimal missing support closure relative to current authority;
-4. full historical reachability graph;
-5. current implementation authority.
-
-Use parser/module authority rather than regex text for module edges; stop traversal at current-owned implementations; do not use path namespace as architectural legitimacy; safety-classify the complete copy set before mutation; require static import resolution before tests; do not resurrect retired provider/runtime surface because it is historically reachable.
+Webpack is the acceptance path. Turbopack is explicit requalification only. Do not repeatedly rediscover the known Turbopack invariant panic during ordinary qualification.
 
 ## Accepted D18 R8 authority
 
@@ -86,48 +42,34 @@ Use parser/module authority rather than regex text for module edges; stop traver
 - parent `1c4da240883e729d38a356ec83919ad7f6637623`
 - evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 
-Accepted facts: 16-path bounded transplant (7 contract + 9 support), current-owned overwrite 0, unresolved local imports 0, bounded readout runtime consumers 0, 15 byte-exact files + one test-only runtime-erased typing adaptation, production-source adaptation 0, 35/35 focused tests, lint/type pass, 10+3 preserved, default Webpack/BUILD_ID/standalone pass.
+Accepted facts: 16 paths (7 contract + 9 support), current-owned overwrite 0, unresolved local imports 0, bounded readout runtime consumers 0, 15 byte-exact files + 1 test-only runtime-erased adaptation, production-source adaptation 0, 35/35 focused tests, lint/type pass, 10+3 preserved, Webpack/BUILD_ID/standalone pass.
 
 D18 remains passive/unwired.
 
-## Permanent D18 / harness lessons
+## Permanent historical-transplant rules
 
-- final diff may be too narrow;
-- regex import scanning is not module authority;
-- full transitive reachability may be too broad and is not patch authority;
-- feature contract and executable support set differ;
-- hard path namespaces can reject legitimate cross-pillar support;
-- dynamically assembled regexes require runtime compile/smoke prevalidation;
-- historical runtime success does not waive current compiler compatibility;
-- test-only typing fixes require exact diagnostic/AST identity, runtime-erased change, emitted-JS parity, zero production-source adaptation, full regression and current build qualification;
-- compatibility variants should resolve in one qualification run rather than repeated operator reruns.
+Distinguish final diff, feature contract, missing support closure, full historical reachability and current implementation authority. Use parser/module authority rather than regex for module edges. Stop at current-owned implementations. Do not use path namespace as architecture authority. Safety-classify complete copy sets before mutation. Require static import resolution before tests. Runtime-smoke qualification regexes. Classify compiler diagnostics before compatibility edits. Test-only typing adaptations require runtime-erased changes and emitted-JS parity. Resolve variants in one run. Keep production source exact unless separately justified.
 
-## Active full E2E qualification policy
+## Active full E2E qualification
 
-The user explicitly authorized non-destructive engineering qualification on accepted R8. This is not live-cutover authorization.
+User authorization: non-destructive engineering qualification only, not live cutover.
 
-Preferred model:
+Preferred model: one consolidated harness with complete read-only preflight, fail-closed authority/safety guards, mocks/fixtures/deterministic failure injection, evidence packaging and final non-drift.
 
-- one consolidated harness;
-- complete read-only preflight;
-- fail-closed authority/safety guards;
-- mocks/fixtures/deterministic failure injection for quota/cooldown/outage/auth-expiry where possible;
-- evidence packaging and final non-drift.
-
-Target path:
+Target:
 
 `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-Cover source/tree lineage, host sentinels, workload isolation, protected-native preservation, eligibility boundary, routing/fallback/error behavior, quota/cooldown, provider outage, auth-expiry/re-auth semantics, Operations Floor evidence, restart/recovery, rollback readiness, evidence continuity and Webpack production identity.
+Cover lineage, host sentinels, workload isolation, protected-native preservation, eligibility boundaries, routing/fallback/error behavior, quota/cooldown, provider outage, auth-expiry/re-auth semantics, Operations Floor evidence, restart/recovery, rollback readiness, evidence continuity and Webpack identity.
 
-Do not make uncontrolled live provider/model calls, read/print secret/token/credential values, mutate live Auth Keeper state, mutate production routing/provider state, activate D18/preference routing, mutate live image/container/database state, push/deploy or cut over traffic unless later explicitly authorized.
+Do not make uncontrolled live provider/model calls, read/print secrets or credential values, mutate live Auth Keeper state, mutate production routing/provider state, activate D18/preference routing, mutate live image/container/database state, push/deploy or cut over traffic unless later explicitly authorized.
 
 If a behavior cannot be qualified safely, fail closed and record the gap.
 
-## Release/live-cutover boundary
+## Release boundary
 
-Development qualification does not imply production authorization. Live cutover requires separate explicit approval after full E2E, production identity, canary/shadow evidence, rollback state and live health criteria are reviewed.
+Live cutover requires separate explicit approval after full E2E, production identity, canary/shadow evidence, rollback readiness and live health criteria are reviewed.
 
-## Documentation completion rule
+## Documentation rule
 
-A technically passing phase is incomplete if canonical docs, tracker and new-chat handoff are stale. Update them in the same engineering cycle whenever authority or current phase changes materially.
+Update canonical docs, tracker and handoff in the same engineering cycle whenever accepted authority or current phase materially changes.
