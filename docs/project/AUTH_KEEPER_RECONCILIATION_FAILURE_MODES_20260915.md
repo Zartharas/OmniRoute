@@ -89,7 +89,24 @@ Do not weaken a graph guard just to obtain a green result. Refine the validator 
 
 The Auth Keeper reconciliation sequence demonstrated the correct behavior: the graph finding `server.mjs -> service.mjs -> opencodeApiKeyAcceptance.mjs` was treated as a genuine source gap and expanded the repair boundary instead of being suppressed.
 
-## 9. Pre-delivery reconciliation checklist
+## 9. Active generic modules can silently retain retired ownership
+
+Observed during Candidate R3: provider-specific routes and runtimes were removed from `server.mjs`, but active generic modules still kept the retired implementations loaded:
+
+- `service.mjs -> opencodeApiKeyAcceptance.mjs`;
+- `service.mjs -> opencodeCredentialCacheHooks.mjs`;
+- `dashboard.mjs -> opencodeApiKeyAcceptance.mjs`;
+- `dashboard.mjs -> opencodeCredentialCacheHooks.mjs`;
+- `browser.mjs -> theoldllmVisibleBrowserPolicy.mjs`.
+
+Prevention:
+
+- compute transitive imports from the active service entrypoint after every retirement transform;
+- include shared service/dashboard/browser modules in the active ownership boundary;
+- when a generic invariant is implemented inside a retired-provider module, extract only that generic invariant to a neutral module and leave the old provider implementation unreachable;
+- migrate source-wiring tests that assert the retired active hooks, while leaving direct dormant-module regression tests unchanged.
+
+## 10. Pre-delivery reconciliation checklist
 
 Before delivering another provider-retirement/reconciliation script:
 
