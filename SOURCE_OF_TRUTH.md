@@ -6,18 +6,13 @@ This file defines the authority order for the `Zartharas/OmniRoute` fork.
 
 ## Canonical documents
 
-For the fork's product goal, architecture, engineering method and current checkpoint, the canonical authority is:
-
 1. [Architecture Source of Truth](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
 2. [Engineering Source of Truth](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
 3. [Master Roadmap](docs/project/MASTER_ROADMAP.md)
 4. [Current Project Status](docs/project/CURRENT_STATUS.md)
-
-Supporting durable project-control documents are:
-
-5. [Engineering Tracker](docs/project/ENGINEERING_TRACKER.md) — completed/current/pending engineering work and exact accepted authorities.
-6. [Engineering Failure-Mode Register](docs/project/FAILURE_MODE_REGISTER.md) — permanent harness, authority, build and transplant lessons.
-7. [Full E2E New-Chat Handoff](docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) — exact continuation checkpoint for a new engineering conversation, including accepted R8 authority, safety boundaries and immediate next action.
+5. [Engineering Tracker](docs/project/ENGINEERING_TRACKER.md)
+6. [Engineering Failure-Mode Register](docs/project/FAILURE_MODE_REGISTER.md)
+7. [Full E2E New-Chat Handoff](docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md)
 
 The upstream OmniRoute README and `ROADMAP.md` remain useful upstream references, but they do **not** define this fork's end goal.
 
