@@ -24,7 +24,7 @@ Current sequence:
 3. Operations Floor selective reintegration — complete and qualified.
 4. Webpack-default production build policy — complete and qualified.
 5. D18 bounded orchestration/evidence foundation transplant — complete and accepted at R8.
-6. Full end-to-end qualification — **active current phase**.
+6. Full end-to-end qualification — **active current phase; user authorized non-destructive engineering qualification**.
 7. Live activation/cutover — later explicit gate only.
 
 Do not automatically resume D19.
@@ -184,7 +184,7 @@ For conversation handoff, read:
 
 [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md)
 
-The last accepted local script is `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`. If its output/evidence is supplied again, verify it against accepted R8 rather than reopening R1-R7 debugging.
+The last accepted local script is `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`. If its output/evidence is supplied again, verify it against accepted R8 rather than reopening R1-R7 debugging. If a newer full-E2E harness output is supplied, identify it from its header/hash and continue from that evidence.
 
 ## 11. Live activation boundary
 
