@@ -9,7 +9,7 @@ It is not an activation authority. D18 remains passive/unwired until later evide
 
 ## 1. Authorities
 
-Current OmniRoute parent authority before D18 transplant:
+Current OmniRoute parent before D18 transplant:
 
 - commit `1c4da240883e729d38a356ec83919ad7f6637623`;
 - tree `569335188af0ec7c20d43b2a9ecc98bca83a1e9b`.
@@ -25,25 +25,14 @@ Read-only transplant audit evidence ZIP SHA-256:
 
 `69104b926e96801a17f70d1da2c02d28bc678d0c717d6f200003cefceb1d4c13`
 
-## 2. Read-only audit result
+## 2. Audit result
 
-The final D18 commit changed exactly two files, both missing from the current integrated OmniRoute tree:
+The final D18 commit changed exactly two files, both absent from the current integrated tree:
 
 - `open-sse/services/combo/boundedProductionEvidenceReadout.ts`
 - `tests/unit/combo/boundedProductionEvidenceReadout.test.ts`
 
-Audit result:
-
-- missing: 2;
-- identical: 0;
-- divergent: 0;
-- deletions: 0;
-- external runtime inbound edges: 0;
-- source safety blockers: 0;
-- review flags: 0;
-- decision: `SELECTIVE_D18_TRANSPLANT_REQUIRED`.
-
-The audit was correct about the final commit diff but did not yet prove that the final diff was the full feature dependency contract.
+The audit correctly described the final commit diff and proved no inbound runtime wiring, safety blocker or deletion. It did not prove that those two files were the complete transplant support set.
 
 ## 3. Candidate R1 — final-diff closure omission
 
@@ -51,17 +40,9 @@ Classification:
 
 `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`
 
-The two final D18 blobs were copied byte-exact, but the bounded readout regression immediately failed because its historical dependency `computationalShadowObservabilityAccumulator.ts` was not present in the current integration tree.
+The two final D18 blobs were copied byte-exact, but the bounded-readout regression failed because earlier D18 foundation code, including `computationalShadowObservabilityAccumulator.ts`, was absent.
 
-Lesson:
-
-A final-commit diff is not automatically a complete feature transplant boundary. Earlier accepted lineage may contain foundation code required by the final feature.
-
-Prevention:
-
-- establish the source-backed feature contract before candidate construction;
-- do not add dependencies one at a time through repeated trial-and-error runs;
-- distinguish final-commit change surface from inherited feature contract.
+Permanent lesson: final commit diff and feature transplant boundary are different sets.
 
 ## 4. Candidate R2 — regex import scanner false positives
 
@@ -69,69 +50,33 @@ Classification:
 
 `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`
 
-R2 attempted to compute a recursive internal import closure with regex matching. It failed on two apparent internal dependencies:
+Regex discovery reported apparent internal module edges that were not real TypeScript dependencies. TypeScript AST/module resolution later proved the false positives.
 
-- `open-sse/utils/publicCreds.ts` → `./open-sse/utils/publicCreds.ts`;
-- `open-sse/services/combo/autoStrategy.ts` → `../services/combo`.
+Permanent lesson: comments/strings/import-looking text are not module-graph authority.
 
-R3 later proved both strings were not actual TypeScript module edges.
-
-Lesson:
-
-Regex occurrence matching is not module-graph authority. Comments, examples, strings or unrelated syntax can resemble imports.
-
-Prevention:
-
-- use TypeScript compiler AST for import/export/require/import-type discovery;
-- use TypeScript module resolution with the repository tsconfig for actual module targets;
-- preserve unresolved real project-local module edges as fail-closed errors.
-
-## 5. Candidate R3 — unbounded dependency graph mistaken for patch authority
+## 5. Candidate R3 — full reachability mistaken for patch authority
 
 Classification:
 
 `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`
 
-The TypeScript AST/module resolver worked correctly and produced a complete historical reachability graph:
+TypeScript AST/module resolution correctly produced a full historical reachability graph:
 
 - seed files: 7;
 - closure files: 1,164;
 - graph edges: 2,924;
-- missing in current integration: 63;
+- missing in current: 63;
 - identical current files: 841;
 - divergent current files: 260;
 - unresolved internal imports: 0.
 
-The graph then reached historical application surface that was not appropriate to transplant as D18 authority, including:
+That graph crossed unrelated historical application surface, including retired OpenCode provider inventory and network-capable provider/runtime services.
 
-- retired OpenCode provider inventory;
-- provider-usage/fetcher code;
-- quota/network fetchers;
-- ChatGPT web helper/network-capable code.
+Permanent lesson: a correct dependency graph is evidence, not automatic transplant ownership.
 
-Examples of retired-provider hits included:
+## 6. Seven-file D18 feature contract
 
-- `open-sse/services/usage/fetcherProviders.ts` — `opencode-go`, `opencode`, `opencode-zen`;
-- `open-sse/services/usage/supportedProviders.ts` — `opencode-go`.
-
-This did **not** mean the TypeScript graph was wrong. It meant complete reachability was the wrong patch-authority model.
-
-Lesson:
-
-Dependency reachability and feature patch authority are different concepts.
-
-A correct transitive graph may cross shared utilities, provider catalogs and application services that a bounded feature never intended to own or transplant.
-
-Prevention:
-
-- use graph discovery as evidence, not automatic materialization authority;
-- prefer an explicit frozen feature contract when one exists;
-- do not resurrect retired providers or network-capable historical services merely because they are reachable from historical source;
-- preserve newer current implementations unless the feature contract explicitly owns them and compatibility evidence requires change.
-
-## 6. R4 bounded contract authority
-
-The corrected candidate direction is the exact source-backed seven-file D18 contract boundary:
+The source-backed feature-owned contract remains:
 
 1. `open-sse/services/combo/boundedProductionEvidenceReadout.ts`
 2. `tests/unit/combo/boundedProductionEvidenceReadout.test.ts`
@@ -141,53 +86,82 @@ The corrected candidate direction is the exact source-backed seven-file D18 cont
 6. `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`
 7. `tests/unit/combo/gatePathCandidateDispositionShadowObservability.test.ts`
 
-R4 rules:
+The seven files define feature ownership. They do not imply ownership of every historical module transitively reachable from them.
 
-- verify exact D18 hashes for all seven contract files;
-- classify each against current OmniRoute as missing / identical / divergent-existing;
-- materialize **missing only**;
-- copy missing files byte-exact;
-- overwrite zero existing current files;
-- preserve newer divergent current implementations and prove compatibility through tests;
-- reject the 1,164-file historical graph as patch authority;
-- reject retired-provider, protected-routeability, DB-write or network-call behavior in transplanted production files;
-- require zero external production consumers of `boundedProductionEvidenceReadout.ts`;
-- run all three bounded D18 regression files;
-- require changed-file lint pass and zero changed-file TypeScript diagnostics;
-- preserve the current 10 routed + 3 protected-native workload authority;
-- run the default Webpack production build;
-- perform no live/provider/credential/dependency-install/remote-push side effects.
+## 7. Candidate R4 — feature contract not self-contained as support set
 
-## 7. Architecture sanity conclusion
+Classification:
 
-The D18 work remains aligned with the five-pillar architecture.
+`SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`
 
-R1, R2 and R3 did not redefine the architecture; they progressively improved our understanding of the correct transplant boundary:
+R4 proved:
 
-- R1 proved two files were too narrow;
-- R2 proved regex module discovery was unreliable;
-- R3 proved the complete transitive graph was too broad as patch authority;
-- R4 returns to the frozen bounded D18 feature contract.
+- all seven feature-contract files are missing from current OmniRoute;
+- all seven were copied byte-exact;
+- zero current files were overwritten;
+- semantic adaptation remained none;
+- retired-provider, protected-routeability, DB-write and network-call scans were clean for those seven;
+- the bounded readout had zero external production consumer.
 
-This preserves:
+The first bounded-readout regression then failed during module loading:
 
-- OmniRoute routing authority;
-- Auth Keeper credential/session authority;
-- protected-native separation;
-- retired OpenCode/TheOldLLM status;
-- passive/unwired D18 evidence semantics;
-- Operations Floor observer/operator semantics;
-- later full end-to-end qualification before activation.
+`gatePathCandidateDispositionShadowObservability.ts` imports missing `gatePathCandidateDispositionShadowBinding.ts`.
 
-## 8. Permanent engineering rule
+This establishes a new distinction:
 
-For historical feature transplants, always distinguish four different sets:
+**feature-owned contract** is not necessarily the same as **minimal support set required to independently load and test that feature against the current tree**.
+
+R4 therefore remained too narrow for qualification even though its seven-file feature boundary was source-correct.
+
+## 8. Candidate R5 — bounded missing-only support closure
+
+R5 keeps the seven files as feature authority and derives only support that is absent from current implementation authority.
+
+Traversal rule:
+
+`STOP_AT_CURRENT_OWNED_DEPENDENCIES`
+
+Algorithm:
+
+1. seed the TypeScript AST/module resolver with the seven contract files;
+2. resolve real project-local module edges against the pinned D18 tree;
+3. if the resolved target already exists in current OmniRoute, record a boundary edge and **do not recurse through the historical version**;
+4. if the target is missing from current and is one of the seven contract files, keep it in the contract set;
+5. if the target is missing and lies under `open-sse/services/combo/` or `tests/unit/combo/`, classify it as bounded missing support and recurse only through that missing file;
+6. if a missing dependency falls outside those bounded namespaces, fail closed instead of importing it;
+7. require the derived closure to rediscover the concrete R4 blocker `gatePathCandidateDispositionShadowBinding.ts`;
+8. safety-scan the final copy set before candidate mutation;
+9. copy only missing files byte-exact;
+10. overwrite zero current files;
+11. preserve passive/unwired bounded-readout semantics;
+12. run the three D18 regressions, changed-file lint/type gates, current 10+3 workload invariants and the default Webpack production build.
+
+This is deliberately different from R3: R5 does **not** traverse through current-owned files into their historical dependencies.
+
+## 9. Permanent transplant-set model
+
+Historical feature transplant work must distinguish at least five sets:
 
 1. final commit diff;
 2. feature-owned frozen contract;
-3. transitive dependency/reachability graph;
-4. current implementation authority.
+3. minimal missing support closure relative to current authority;
+4. complete transitive historical reachability graph;
+5. current implementation authority.
 
-None of those sets may be silently substituted for another.
+None may be silently substituted for another.
 
-The correct patch surface is the smallest source-backed feature-owned contract that can be qualified against current implementation authority without resurrecting unrelated historical application behavior.
+The correct candidate patch surface is the smallest source-backed feature contract plus required missing support that can be qualified against current authority without overwriting current implementations or resurrecting unrelated historical behavior.
+
+## 10. Architecture sanity conclusion
+
+The D18 work remains aligned with the five-pillar architecture.
+
+R1 through R4 refined engineering authority; they did not redefine the product:
+
+- OmniRoute remains routing/orchestration authority;
+- Auth Keeper remains credential/session authority;
+- Operations Floor remains observer/operator plane;
+- GPT-5.6 Sol/Terra/Luna remain protected-native and non-routeable in the normal fleet;
+- OpenCode and TheOldLLM remain retired from active product scope;
+- D18 remains passive/unwired;
+- full end-to-end qualification remains required before any activation or cutover.
