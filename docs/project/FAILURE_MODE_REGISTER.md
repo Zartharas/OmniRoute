@@ -7,6 +7,8 @@ This register records harness, authority, source-shape and qualification failure
 
 This document is not a substitute for the Architecture or Engineering Source of Truth. It is a permanent implementation checklist used together with those documents.
 
+For Auth Keeper retirement/reachability lessons discovered during final reconciliation, also see [Auth Keeper Reconciliation Failure Modes — 2026-09-15](AUTH_KEEPER_RECONCILIATION_FAILURE_MODES_20260915.md).
+
 ## 1. Authority and provenance failures
 
 ### 1.1 Historical runtime state treated as current authority
@@ -78,274 +80,164 @@ Observed failure: a route-count regex missed the first key in a top-level dictio
 
 Prevention:
 
-- use AST/semantic parsing for source structures when syntax is available;
-- do not count route identities with line/regex assumptions when object shape is executable code;
-- include synthetic fixtures where the first key begins on the declaration line.
+- use AST/semantic extraction for structural Python authority;
+- never make route identity depend on pretty-print layout or line position.
 
-### 2.4 Interface/type-alias declaration shape assumed
+## 3. Harness and worktree failure classes
 
-Observed failure class: a named TypeScript contract was assumed to be an `interface` when the actual declaration could be a type alias/wrapper/intersection.
+### 3.1 Synthetic fixtures with escaped newlines
 
-Prevention:
-
-- inspect exact declaration kind before member assertions;
-- resolve wrapper types such as `Readonly<T>` before generic identifiers;
-- patch exact declaration scope rather than suffix/global text matches.
-
-### 2.5 Symbolic source structures parsed with literal-only tools
-
-Observed risk: `ast.literal_eval` or equivalent literal-only parsing is unsafe for structures containing symbolic references.
+Observed failure: an embedded Python parser fixture contained literal `\\n` text rather than real newlines, causing a syntax error before product code was evaluated.
 
 Prevention:
 
-- use AST traversal or controlled module loading with side-effect guards;
-- prove module-load side effects are absent before importing source for discovery.
+- execute synthetic fixtures, do not only compile the harness;
+- verify the exact bytes/strings passed to embedded parsers.
 
-## 3. Harness implementation failures
+### 3.2 Git untracked-directory collapse
 
-### 3.1 Embedded fixture newline escaped as literal `\n`
-
-Observed failure: generated Python source contained a literal escaped newline and failed with `SyntaxError` before any source mutation.
+Observed failure: `git status --porcelain=v1` summarized new nested directories instead of listing the individual files expected by an exact scope validator.
 
 Prevention:
 
-- execute synthetic fixture paths, not only compile the outer shell script;
-- compile every embedded Python block;
-- include parser self-tests using actual newline-bearing source strings.
+- use `git status --porcelain=v1 --untracked-files=all` for file-level scope authority.
 
-### 3.2 `git status` collapsed untracked directories
+### 3.3 Validator-created `__pycache__` artifacts
 
-Observed failure: exact changed-file scope expected individual files, while default `git status` collapsed newly created directories.
+Observed failure: `python -m py_compile` inside an isolated worktree created `__pycache__` and caused the exact changeset gate to fail.
 
 Prevention:
 
-- use `git status --porcelain=v1 --untracked-files=all` for exact file inventories;
-- compare normalized file sets, not display-oriented status output.
+- use in-memory `compile()` for validation when target directories must remain pristine;
+- set `sys.dont_write_bytecode = True` during semantic loading where appropriate;
+- explicitly reject bytecode artifacts before scope validation.
 
-### 3.3 Python compile created `__pycache__` inside candidate scope
+### 3.4 Clean-status false failure under `set -euo pipefail`
 
-Observed failure: qualifying a repository Python artifact with bytecode generation created an unexpected tracked-scope artifact.
-
-Prevention:
-
-- compile source in memory or use a bytecode-disabled method for repository validation;
-- explicitly scan for `__pycache__`/`.pyc` after qualification;
-- do not let validation mutate the candidate tree.
-
-### 3.4 Clean-repository pipeline failed under `set -euo pipefail`
-
-Observed failure: a `grep -v`-based clean-status counter returned exit code 1 on zero matches and aborted a successful clean-repository path.
+Observed failure: `grep -v` returned status 1 because a clean repository produced no matching lines, causing a clean-state pipeline to fail.
 
 Prevention:
 
-- use counters that return success for zero rows, for example `awk 'END { print NR + 0 }'`;
-- test both dirty and perfectly clean fixtures under the same shell options used in production.
+- use counters such as `awk 'END { print NR + 0 }'` when zero rows are a valid success state;
+- avoid grep pipelines whose exit status conflates "no rows" with "error".
 
-### 3.5 Function parser matched parameter-destructuring brace instead of body brace
+### 3.5 Linked-worktree `.git` assumption
 
-Observed failure: a source-removal parser selected the first `{` associated with a function signature and accidentally treated parameter destructuring as the function body.
-
-Prevention:
-
-- locate function body using syntax-aware parsing or balanced-token logic after the complete parameter list;
-- include destructured-parameter fixtures in parser tests.
-
-### 3.6 Nearest lexical function/return assumed to be semantic owner
-
-Observed failure class: nested callbacks and repeated `return Object.freeze(...)` patterns were associated with the wrong semantic owner.
+Observed failure: a guard tested `.git` with `-d`, but linked worktrees store `.git` as a file.
 
 Prevention:
 
-- resolve lexical/AST ownership explicitly;
-- do not patch the nearest textual function/return without proving semantic scope.
+- use `-e` when checking whether a path is a Git worktree unless the exact representation is part of the invariant.
 
-### 3.7 Brittle exact test-title dependency
+### 3.6 Brittle exact test-title transforms
 
-Observed failure: a reconciliation candidate required the exact historical title `TheOldLLM requires managed same-browser-context policy`; the frozen test had evolved and the transform failed before validation.
-
-Prevention:
-
-- transform tests by semantic structure and assertions, not display titles;
-- titles are descriptive text, not machine authority;
-- post-check that positive retired-provider assertions are gone regardless of title wording.
-
-### 3.8 Over-broad textual retired-provider guard
-
-Observed failure: a candidate rejected any occurrence of a retired provider name in an entire contract file, even when executable provider-policy tables were already empty and remaining text was historical/comment/tombstone material.
+Observed failure: a candidate transform depended on a historical human-readable test title and stopped when the test had already been renamed.
 
 Prevention:
 
-- guard executable authority structurally: provider tables, registry entries, imports, bootstrap calls and reachable graph;
-- allow historical comments, negative tests and tombstones when they cannot re-enable routing;
-- prove both positive behavior (harmless text tolerated) and negative behavior (active policy/import reintroduction fails closed).
+- select tests by semantic behavior/source contract rather than display title;
+- post-check that the old positive behavior is gone.
 
-### 3.9 Dormant implementation family assumed to exist
+### 3.7 Whole-file retired-provider scans
 
-Observed failure risk: a cleanup harness required each retired implementation family to be present even though a prior accepted takedown may already have removed one.
-
-Prevention:
-
-- preserve the exact hash-locked dormant inventory discovered in the accepted audit;
-- never recreate a missing retired implementation merely to satisfy a harness expectation;
-- report per-family counts, but make preservation source-backed rather than hardcoded.
-
-### 3.10 Bare `tllm` case-insensitive regex matched unrelated `getLLM` symbols
-
-Observed failure: a takedown guard used an unbounded case-insensitive `tllm` pattern and matched unrelated generic LLM identifiers.
+Observed failure: a guard rejected any textual occurrence of a retired provider name even when executable provider authority was already empty.
 
 Prevention:
 
-- match provider aliases as bounded tokens/identities;
-- test near-collision identifiers such as `getLLM` and generic `llm` helpers.
+- distinguish executable policy, registry/bootstrap/import reachability and historical/tombstone text;
+- allow negative regression assertions and historical comments while blocking active reachability.
 
-### 3.11 Title-only structural test cleanup and global provider substitution
+## 4. Build and qualification failure classes
 
-Observed failure: provider-specific test cleanup by title/global substitution left structural references and introduced incorrect semantic replacements.
+### 4.1 External `node_modules` symlink with Turbopack
 
-Prevention:
-
-- remove provider-specific imports, helpers, properties and assertions structurally;
-- do not substitute one provider name for another simply to make a test pass;
-- require zero surviving active references after semantic cleanup.
-
-## 4. Build and dependency qualification failures
-
-### 4.1 External `node_modules` symlink rejected by Turbopack
-
-Observed failure: a disposable worktree symlinked `node_modules` from another filesystem location; Turbopack rejected the symlink because it pointed outside the project filesystem root.
+Observed failure: a disposable worktree symlinked `node_modules` to a sibling checkout; Turbopack rejected the symlink because it pointed outside the project filesystem root.
 
 Prevention:
 
-- do not use external dependency symlinks for Next/Turbopack production qualification;
-- use a local copy-on-write dependency clone where supported;
-- verify representative hash parity, distinct inodes and symlink topology;
-- remove the clone after qualification.
+- prefer a local APFS copy-on-write clone of an already-qualified dependency tree;
+- verify representative files have identical hashes but different inodes;
+- audit cloned symlink targets and fail closed on external/broken links;
+- remove the dependency clone before commit.
 
-### 4.2 Candidate artifact changed Next/Turbopack project graph
+### 4.2 Pre-existing baseline build failures
 
-Observed failure class: a raw Python repository artifact was introduced into a project whose Next/Turbopack graph then observed it unexpectedly.
-
-Prevention:
-
-- repository representations should match the host project/toolchain expectations;
-- when source must be preserved but not treated as a project module, use an inert source capsule/data representation with integrity validation;
-- prove packaged artifact presence without unintentionally making it an application module.
-
-### 4.3 Baseline production build already fails
-
-Observed failure: exact baseline and candidate builds both returned non-zero due inherited repository/toolchain failures.
+Observed failure class: the accepted repository baseline may already have unrelated full-build failures.
 
 Prevention:
 
-- compare exact base versus candidate under the same toolchain and dependency tree;
-- candidate qualification should reject candidate-only fatal signatures, not require an artificial clean baseline;
-- do not silently edit unrelated inherited build debt.
+- run baseline and candidate under the same build/toolchain topology;
+- compare normalized fatal signatures;
+- fail on candidate-only signatures or changed-path fatal hits;
+- do not silently fix unrelated baseline debt as part of a narrow candidate.
 
-### 4.4 ANSI escape sequences broke fatal-signature parser
+### 4.3 ANSI-decorated build logs
 
-Observed failure: build-log parsing failed to detect the baseline fatal signature because terminal ANSI escape sequences were not normalized.
-
-Prevention:
-
-- strip ANSI/control sequences before machine classification;
-- bind reused build evidence to exact log hashes and candidate package identity;
-- test parsers with colored and non-colored logs.
-
-### 4.5 Human-oriented error counts treated as stable machine contract
-
-Observed failure: qualification expected an exact Turbopack error-count token that was not stable in preserved logs.
+Observed failure: a fatal-signature parser treated visibly clean terminal text as raw text, but saved logs still contained ANSI escapes, leaving the parser with an empty signature set.
 
 Prevention:
 
-- classify stable normalized fatal signatures rather than UI-oriented counts;
-- prefer exact semantic error messages plus hashed evidence over presentation-layer cardinality.
+- strip ANSI/OSC terminal decorations before signature extraction;
+- test the parser against actual captured build output, not only synthetic plain text.
 
-## 5. Git/worktree and transaction failures
+## 5. Provider retirement and active-scope rules
 
-### 5.1 Linked worktree `.git` assumed to be a directory
+### 5.1 Dormant implementation must not be resurrected
 
-Observed failure: a linked worktree was rejected because `.git` is a file, not a directory.
-
-Prevention:
-
-- use existence checks such as `-e` and Git commands to prove worktree identity;
-- do not use `-d .git` as a worktree predicate.
-
-### 5.2 Residue cleanup without exact authority would be unsafe
-
-Required rule:
-
-- a failed candidate may remove only a branch/worktree it created;
-- verify branch head, worktree registration and changed-file scope before cleanup;
-- if a commit exists or unexpected files are present, preserve state for inspection instead of force-cleaning it.
-
-### 5.3 Validation artifact polluted exact changeset
-
-Observed failures include bytecode and untracked-directory presentation artifacts.
+Observed failure risk: a harness can assume that both historical retired implementation families must exist even though an accepted prior takedown already removed one.
 
 Prevention:
 
-- changed-file scope must be checked after all materialization/static validation and again immediately before commit;
-- temporary dependency trees and validation outputs must be outside tracked scope or removed before the precommit gate.
+- preserve the exact observed hash-locked dormant inventory;
+- do not recreate absent retired code merely to satisfy an inferred topology.
 
-## 6. Scope and product-boundary failures
+### 5.2 Short provider aliases require bounded matching
 
-### 6.1 Retired provider lane retained in executable router data
-
-Observed failure: active router model-policy data still retained a retired provider-backed route after broader Codex Unified functional qualification passed.
+Observed failure risk: a short retired alias such as `tllm` can match unrelated identifiers such as `getLLM` under an unbounded substring search.
 
 Prevention:
 
-- distinguish functional qualification from canonical/scope completion;
-- scan executable route/policy tables separately from comments/docs;
-- run a final active-scope cleanup before declaring a product workstream accepted.
+- use token/path/provider-table semantics, not arbitrary substring matching.
 
-### 6.2 Canonical documentation lagged accepted implementation
+### 5.3 Retirement is about executable authority
 
-Observed failure: canonical docs still described an earlier R16 phase and retained retired provider lanes after later local work had advanced.
+A retired provider is out of active scope when it is absent from executable routing/provider policy, registries, bootstrap and active import reachability. Historical docs, tombstones, removal tests and unreachable implementation files do not by themselves reactivate a provider.
 
-Prevention:
+## 6. Transaction and evidence rules
 
-- architecture/status documentation is part of phase completion;
-- after an accepted material change, reconcile active workstream, provider scope, accepted checkpoint and next dependency order;
-- stale canonical status is a real blocker for handoff even when source tests pass.
+- precommit failures may remove only worktrees/branches created by the current failed run and only after exact parent/scope proof;
+- a branch containing a non-base commit must never be silently deleted by automatic residue recovery;
+- authoritative evidence ZIP and Downloads copy must have identical SHA-256;
+- source, D18, host/runtime sentinels and unrelated worktrees must be proven unchanged;
+- a PASS token is not accepted without its corresponding evidence/commit/non-drift gates.
 
-### 6.3 Provider retirement confused with total string deletion
+## 7. Canonical documentation rule
 
-Required distinction:
+A technically passing implementation is not canonical-complete if project documents still describe removed providers, stale phases or contradictory sequencing.
 
-- active route/provider policy, registry, server bootstrap and import reachability must be removed;
-- historical changelog entries, negative regression tests and tombstone documentation may remain;
-- dormant implementation may remain only when explicitly source-backed and unreachable;
-- prior accepted takedowns must not be reversed to satisfy a cleanup harness.
+Canonical cleanup must distinguish current product authority from historical prose. The next engineer should not be able to read the repository and infer a provider or phase is active when it is not.
 
-## 7. Permanent pre-delivery checklist for generated engineering scripts
+## 8. Pre-delivery generated-script checklist
 
-Before asking an operator to run a non-trivial script:
+Before a generated engineering script is given to the operator:
 
-1. Pin every repository/branch/head/tree/evidence authority used by the phase.
-2. Verify current versus historical authority roles separately.
-3. Confirm exact source schema/declaration shapes.
-4. Run `/bin/bash -n` under macOS Bash-compatible syntax.
-5. Compile every embedded Python block.
-6. Execute important parser/transform/recovery paths on synthetic fixtures.
-7. Include at least one near-miss fixture for every structural matcher.
-8. Test clean and dirty Git status paths.
-9. Ensure validation creates no bytecode/build artifacts in tracked scope.
-10. Verify exact untracked-file mode when comparing changed paths.
-11. Avoid dependency symlinks for Next/Turbopack worktrees.
-12. When baseline build is red, use exact base/candidate differential evidence.
-13. Normalize ANSI/control sequences before log classification.
-14. Prefer structural/AST/reachability guards over whole-file word scans.
-15. Preserve exact source-backed dormant inventories; do not require retired code to exist.
-16. Fail closed before mutation on unexpected source shape.
-17. Use transactional cleanup only for exact uncommitted state created by the script.
-18. Recheck changed-file scope immediately before commit.
-19. Prove non-target/live/host artifacts remain unchanged.
-20. Do not push or live-cutover unless that action is explicitly authorized by the phase.
-
-## 8. Relationship to current product work
-
-The lessons in this register apply across all five product pillars. They are especially relevant to Codex Unified repository reintegration, Auth Keeper contract reconciliation, Operations Floor selective reintegration and later orchestration-foundation transplantation.
-
-The register intentionally records failures as engineering knowledge, not as product features. A failure that was caused by a harness assumption must not be reclassified as a product defect unless source-backed evidence proves the product itself was wrong.
+1. pin exact branch/head/tree/evidence authorities;
+2. classify repository-import authority separately from live sentinels;
+3. inspect exact schemas before writing parity logic;
+4. use semantic/AST locators for structured source;
+5. syntax-check Bash with macOS Bash compatibility in mind;
+6. compile every embedded Python block;
+7. execute high-risk embedded parser/transform logic on synthetic fixtures;
+8. execute at least one negative/fail-closed fixture where practical;
+9. avoid validator filesystem pollution;
+10. use `--untracked-files=all` for exact Git scope;
+11. test linked-worktree handling;
+12. ensure clean-state zero rows do not fail under `pipefail`;
+13. verify rollback/residue recovery only deletes known uncommitted state;
+14. avoid dependency installation when an exact qualified dependency authority can be reused;
+15. do not symlink `node_modules` outside a Turbopack project root;
+16. distinguish baseline diagnostics from candidate-only regressions;
+17. strip terminal escape sequences before log-signature parsing;
+18. distinguish executable retired-provider authority from historical references;
+19. preserve observed dormant source without resurrecting absent retired code;
+20. re-check canonical docs and roadmap sequencing before calling a phase complete.
