@@ -46,7 +46,7 @@ D18 bounded orchestration/evidence transplant is accepted at local R8 authority:
 - tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`;
 - evidence ZIP SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
 
-The active next phase is **full end-to-end qualification**. D18 remains passive/unwired. Live activation/cutover is not authorized.
+The active next phase is **full end-to-end qualification**, and the user explicitly authorized the non-destructive engineering qualification phase. D18 remains passive/unwired. Live activation/cutover is not authorized.
 
 ## Current scope clarification
 
