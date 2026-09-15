@@ -131,7 +131,7 @@ Qualification results:
 - Turbopack panic signatures: absent;
 - live runtime mutation/provider calls/credential reads/dependency install/remote push: none.
 
-The uploaded R8 evidence package was independently rechecked after the run: outer ZIP SHA matched, all 33 manifest-tracked files matched their internal SHA-256 values, all 34 `evidence-hashes.txt` entries validated, the patch contained exactly 16 added paths, focused test logs showed 10/10 + 16/16 + 9/9 with zero failures, and the selected test-only assertion preserved the emitted-JavaScript SHA.
+The uploaded R8 evidence package was independently rechecked after the run: outer ZIP SHA matched, all manifest-tracked files matched their internal SHA-256 values, all `evidence-hashes.txt` entries validated, the patch contained exactly 16 added paths, focused test logs showed 10/10 + 16/16 + 9/9 with zero failures, and the selected test-only assertion preserved the emitted-JavaScript SHA.
 
 D18 remains passive/unwired. R8 acceptance is **not** live activation authority.
 
@@ -153,65 +153,31 @@ Read-only transplant audit evidence ZIP SHA-256:
 ## 5. D18 candidate history
 
 ### R1 — failed safely
-
 Classification: `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`.
 
-The final D18 commit changed only two files, but the bounded-readout regression required earlier foundation code such as `computationalShadowObservabilityAccumulator.ts`.
-
 ### R2 — failed safely
-
 Classification: `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`.
 
-Regex discovery misclassified import-looking strings as module edges. TypeScript AST/module resolution is required for real dependency authority.
-
 ### R3 — failed safely
-
 Classification: `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`.
 
-The TypeScript AST/module graph was structurally valid and found 1,164 files / 2,924 edges / 63 missing files, but crossed retired-provider and network-capable historical application surface. Reachability evidence is not automatic patch authority.
-
 ### R4 — failed safely
-
 Classification: `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`.
 
-The seven-file contract was source-correct but not self-contained; `gatePathCandidateDispositionShadowBinding.ts` was the first concrete missing support dependency.
-
 ### R5 — failed safely
-
 Classification: `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`.
 
-A hard combo/test namespace rejected legitimate `src/lib/authKeeper/comboRoutingEligibility.ts` support. Directory paths are not architectural authority.
-
 ### R6 — failed safely after closure discovery
-
 Classification: `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`.
 
-R6 converged on the stable 7 + 9 = 16-file missing-only closure with zero unresolved project-local imports, then stopped before mutation on a Python regex construction defect.
-
 ### R7 — failed safely after transplant mechanics passed
-
 Classification: `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`.
-
-R7 assembled the 16-file candidate, passed copy-set risk, import-resolution, 35/35 focused tests and lint, then stopped on the single historical test-only line-109 TS2698 diagnostic.
 
 ### R8 — accepted
 
-R8 preserved the R7 closure and repaired only the exact historical test typing incompatibility. Acceptance required and achieved:
+R8 preserved the R7 closure and repaired only the exact historical test typing incompatibility. Acceptance achieved exact TS2698 classification, AST target identity, runtime-erased type-assertion trials, emitted-JavaScript parity, zero changed-file diagnostics, full focused regressions, no production-source adaptation, 10+3 preservation and Webpack production qualification.
 
-- exact pre-adaptation TS2698 classification;
-- AST identity of the `...evidence()` spread;
-- runtime-erased type-assertion trials;
-- byte-identical emitted JavaScript for every trial;
-- selected `record` variant;
-- zero changed-file diagnostics after adaptation;
-- adapted-test ESLint pass;
-- runtime-JavaScript parity pass;
-- 35/35 focused regressions pass;
-- 15 byte-exact transplant files + 1 test-only adapted file;
-- production-source adaptation: none;
-- current 10+3 contract preserved;
-- default Webpack production build and standalone artifact qualification pass;
-- commit/evidence/non-drift gates pass.
+Detailed history and permanent lessons are in [D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md](D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md).
 
 ## 6. Permanent transplant-set and anti-repeat rules
 
@@ -260,4 +226,4 @@ No current acceptance authorizes production cutover, D18 readout activation or p
 
 ## 9. New-chat handoff
 
-Use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) when continuing in a new conversation. It contains the exact accepted R8 authority, D18 failure history, host sentinels, E2E authorization/safety boundaries and immediate next action.
+Use [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) when continuing in a new conversation. It contains exact accepted R8 authority, D18 failure history, host sentinels, E2E authorization/safety boundaries and immediate next action.
