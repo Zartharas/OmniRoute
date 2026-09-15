@@ -106,13 +106,27 @@ Prevention:
 - when a generic invariant is implemented inside a retired-provider module, extract only that generic invariant to a neutral module and leave the old provider implementation unreachable;
 - migrate source-wiring tests that assert the retired active hooks, while leaving direct dormant-module regression tests unchanged.
 
-## 10. Pre-delivery reconciliation checklist
+## 10. A clean invariant is not a mandatory diff
+
+Observed during Candidate R4: `src/browser.mjs` was included in the planned Auth Keeper changeset because an older inspected source branch had contained a retired-provider browser import. Against the exact pinned reconciliation authority, the browser source was already clean. The transform correctly produced no browser diff, but the harness still failed because its planned changeset required the file to change.
+
+Prevention:
+
+- distinguish a file that must satisfy an invariant from a file that must be mutated;
+- inspect and hash-lock the exact current prestate before deciding that a file belongs in the expected diff;
+- when the current source is already compliant, prove the invariant and treat the transform as a valid no-op;
+- never rewrite or touch an already-correct file merely to satisfy a historical planned-file list;
+- derive or validate the exact expected changeset against the pinned source authority and fail on any unexpected addition or omission;
+- if an earlier candidate produces an authoritative actual changeset before failing later, use that evidence to tighten the next candidate's expected plan.
+
+## 11. Pre-delivery reconciliation checklist
 
 Before delivering another provider-retirement/reconciliation script:
 
 - hash-lock the accepted source/tree and evidence package;
 - inspect the complete active module graph from real entrypoints;
 - inventory executable policy tables and exposed provider registries;
+- distinguish invariant-only files from mutation-required files;
 - distinguish direct/dormant unit tests from source-wiring tests;
 - preserve generic security behavior in provider-neutral modules;
 - preserve exact observed dormant implementation bytes;
