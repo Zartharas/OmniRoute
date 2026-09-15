@@ -1,281 +1,263 @@
 # Master Roadmap — Fork Product Goal
 
-Last reviewed: 2026-09-14
-Status: Canonical status/roadmap for the `Zartharas/OmniRoute` fork
+Last reviewed: 2026-09-15
+Status: Canonical roadmap for the `Zartharas/OmniRoute` fork
 
-This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
-
-For the latest accepted engineering checkpoint and exact current phase, also read [Current Project Status](CURRENT_STATUS.md).
+This roadmap tracks the fork's five-pillar goal and current sequencing. Upstream OmniRoute `ROADMAP.md` remains upstream-only context.
 
 ## 1. Goal
 
-Deliver one Codex-centered AI engineering agent backed by a heterogeneous AI workforce, with OmniRoute as the routing/orchestration authority, Auth Keeper as the credential/session authority, workload-aware multi-model orchestration, protected OpenAI/Codex capacity, and a Dunder-Mifflin-inspired Operations Floor that makes the organization observable in real time.
+Deliver one Codex-centered AI engineering agent backed by a heterogeneous AI workforce, with OmniRoute as routing/orchestration authority, Auth Keeper as credential/session authority, evidence-driven multi-model orchestration, protected OpenAI/Codex capacity and an Operations Floor that makes the organization understandable in real time.
 
 ## 2. Pillar status
 
 ### Pillar 1 — Codex Unified Agent
 
-Status: Partially implemented / needs reintegration and final productization
+Status: **Current repository reintegration complete; final end-to-end product acceptance still pending.**
 
-Completed or proven historically:
+Completed/proven:
 
-- unified Codex configuration/catalog/workload-policy artifacts;
-- host-side `codex-unified-router` lineage;
-- multi-model catalog/workload curation;
+- unified Codex configuration/catalog/workload-policy authority;
+- codex-unified-router lineage;
 - personal versus isolated MTA/enterprise lanes;
-- protected OpenAI/Codex preservation concepts;
-- model aliases and workload-policy driven routing concepts.
+- protected-native preservation model;
+- repository reintegration and current host-sentinel qualification.
 
 Remaining:
 
-- make the unified Codex control plane a first-class maintained part of the repository/release story rather than primarily host-side state;
-- reconcile it with the current OmniRoute/Auth Keeper lineage;
-- define the final one-agent task-delegation contract;
-- ensure model/provider switching does not require manual session restarts;
-- add end-to-end tests from Codex request through OmniRoute/Auth Keeper/provider and back.
+- full end-to-end qualification against the accepted OmniRoute + Auth Keeper + Operations Floor + D18 lineage;
+- final release/promotion authority;
+- live operational validation after explicit cutover authorization.
 
 ### Pillar 2 — Unified OmniRoute AI Workforce
 
-Status: Strong foundation / ongoing expansion and upstream reconciliation
+Status: **Strong current foundation; continuing upstream/provider maintenance.**
 
-Completed or proven:
+Current active fleet authority:
 
-- large upstream provider/model catalog and multiple routing strategies;
-- free/keyless routing foundations;
-- API-provider routing;
-- combos/fallback/resilience;
-- provider/model capability work;
-- custom provider/access integrations developed across fork branches;
-- OpenCode free/keyless behavior preserved while managed access can be added separately.
+- 10 routed models: 6 personal + 4 MTA/enterprise;
+- 3 protected-native ChatGPT models: GPT-5.6 Sol, Terra, Luna;
+- protected-native models remain non-routeable in the normal fleet.
+
+OpenCode and TheOldLLM are retired from active product scope. Historical references/tombstones may remain but must not become active routing/bootstrap/workload/Operations Floor/Auth Keeper authority.
 
 Remaining:
 
-- normalize provider access modes and adapters so free/API/subscription/web/human-verification lanes are represented consistently;
-- complete final provider/account eligibility contract with Auth Keeper;
-- make provider additions avoid unnecessary core coupling;
-- keep absorbing compatible upstream provider/catalog improvements.
+- continue compatible upstream provider/catalog ingestion;
+- maintain access-mode normalization without reactivating retired lanes;
+- preserve free/keyless behavior where applicable;
+- requalify provider/account eligibility after major upstream changes.
 
 ### Pillar 3 — Auth Keeper
 
-Status: Mature implementation foundation / still expanding toward full multi-provider session plane
+Status: **Final contract reconciliation complete at R11.**
 
-Completed or proven:
+Accepted authority:
 
-- standalone local service and dashboard;
-- account/browser-profile isolation;
-- exact provider/account/connection binding;
-- safe sync/recovery contracts;
-- macOS persistent service/install/rollback mechanics;
-- bounded automatic recovery watcher;
-- provider auth probes and secret-handling boundaries;
-- private implementation repository with release/validation discipline;
-- later work on request-local transport/admission integration with OmniRoute.
+- commit `b3b0d137369038d22820947729233deaec19e166`;
+- tree `9377fe6afe21f098861f32c751f05c8a72882211`;
+- 457/457 tests pass.
 
 Remaining:
 
-- finish all provider modes needed by the unified workforce;
-- keep free/keyless providers independent from managed-auth paths;
-- complete browser/session lifecycle support where policy allows;
-- preserve interactive-human-verification as a distinct lane where no reusable credential should be owned;
-- complete end-to-end qualification against the final Codex Unified control plane.
+- participate in full end-to-end acceptance;
+- preserve current provider/account/session boundaries during future upstream changes;
+- live-cutover/recovery validation only after explicit authorization.
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: Active major workstream; compatibility-provenance foundation canonically qualified
+Status: **Active current major workstream; D18 bounded foundation transplant in progress.**
 
-Completed or accepted in the R16.32 lineage:
+Completed/proven across the R16.32 lineage:
 
 - normalized candidate facts;
-- deterministic candidate disposition;
-- computational shadow with no additional real traffic;
-- explainability/evidence taxonomy;
-- bounded observability accumulator;
-- contained observational wiring;
-- source-backed blocker capture;
-- source-backed positive hard-fact capture;
-- request/context compatibility discovery;
-- executionKey-keyed request-local provenance design;
-- corrected context composition with three components:
-  - `generic_request_context`
-  - `configured_context`
-  - `auto_estimated_input_context`;
-- D14 R6 isolated request/context compatibility-provenance implementation accepted at local commit `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b` / tree `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`;
-- D15 R2 canonical qualification accepted for that exact candidate;
-- baseline and candidate production builder builds passed;
-- typecheck/full-lint/changed-file lint differentials passed with no candidate-only diagnostics;
-- focused regression moved from baseline 141/141 to candidate 155/155;
-- routing compatibility parity passed 34/34 on both baseline and candidate;
-- protected acquisition/dispatch topology remained unchanged;
-- no additional Auth Keeper fetches or provider/model probes were introduced;
-- no routing readback from compatibility provenance was introduced;
-- pure qualification reached structural 14/14 known hard facts and a synthetic eligible/match comparable-proceed case.
+- deterministic disposition;
+- computational shadow without extra real traffic;
+- explainability taxonomy;
+- bounded observability;
+- request-local blocker/positive-fact capture;
+- request/context compatibility provenance;
+- executionKey-keyed sidecar design;
+- D14/D15 compatibility-provenance qualification;
+- post-D15 activation-readiness work through D18 source freeze;
+- D18 passive/unwired bounded production-evidence readout authority frozen locally.
 
-Current checkpoint:
+Current D18 source authority:
 
-- `R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT` is next.
-- D16 must re-audit the original D7 blocker set after structural hard-fact completeness was achieved.
-- production activation remains blocked; D15 synthetic evidence is not production activation authority.
+- commit `0f13a6d6df0251d9fa39e70aff78c0b58766845d`;
+- tree `71e1f60cd349599df0e9c4f800af6e6a3f719fd4`.
 
-Remaining R16.32 evidence/activation work:
+Current engineering step:
 
-- qualify a safe production evidence readout;
-- collect live candidate evidence without changing routing authority;
-- measure empirical comparable-proceed coverage;
-- measure empirical eligible coverage;
-- measure mismatch, contained-error and not-ready rates;
-- derive any future activation criteria from observed evidence instead of arbitrary thresholds;
-- only after those gates, proceed to conservative provider-neutral preference intelligence.
+- exact seven-file frozen D18 contract classification/transplant;
+- missing-only byte-exact materialization;
+- preserve newer divergent current implementations;
+- zero external production consumers of the bounded readout;
+- three bounded D18 tests;
+- changed-file lint/type gates;
+- current 10+3 contract preservation;
+- default Webpack production build qualification.
 
-Planned Model Intelligence Enrichment subproject:
+Important sequencing rule:
 
-- define a Unified Model Intelligence Registry;
-- enrich the verified model catalog with provenance-labeled architecture metadata;
-- support fields such as dense/MoE structure, active/total scale, context, attention/layer mix and KV-cache estimates where source-backed;
-- evaluate Sebastian Raschka's LLM Architecture Gallery as an external enrichment input: <https://sebastianraschka.com/llm-architecture-gallery/>;
-- ingest external metadata offline/pinned rather than through request-time network calls;
-- reconcile provider/model aliases explicitly;
-- keep external benchmark scores in a separately labeled evidence class;
-- never let external metadata override official provider/API capability, request-local runtime evidence, Auth Keeper admission, workload policy, explicit pins, context compatibility, quota cutoffs or cooldown/breaker state;
-- make the enrichment useful to both future soft preference intelligence and Operations Floor worker cards.
+- **do not resume D19 automatically**;
+- D18 acceptance is followed by **full end-to-end qualification**;
+- any later activation/preference phase requires separate evidence and authorization.
 
 ### Pillar 5 — Operations Floor
 
-Status: Significant historical implementation exists / reintegration required
+Status: **Selective reintegration complete and qualified in the current local integration lineage.**
 
-Historical implementation branches:
+Accepted local authority:
 
-- `feat/operations-floor-openai-preservation`
-- `feat/operations-floor-protected-native`
-
-Implemented concepts include:
-
-- provider/workload floor visualization;
-- routing/fallback lanes and animation;
-- inspectable provider/request state;
-- operator attention items;
-- evidence inspector;
-- pixel-office representation;
-- local pixel agents;
-- provider test action;
-- auth/compression/system telemetry;
-- zero-call routing simulation;
-- unified routed workload fleet;
-- personal versus isolated MTA visibility;
-- separate Protected Native ChatGPT presentation.
-
-Remaining:
-
-- reconcile Operations Floor branches with the current upstream and R16.x lineage;
-- reconnect the floor to the final request-local routing/evidence model;
-- surface Auth Keeper state without leaking secrets;
-- surface Codex Unified task/worker assignment;
-- show multi-model reasoning/judging versus the designated acting model;
-- optionally surface provenance-labeled model-intelligence metadata for worker understanding/capacity planning;
-- preserve protected-native and workload-isolation semantics;
-- make the floor an operational control/inspection surface without becoming a router.
-
-## 3. Cross-cutting phases
-
-### Phase A — Preserve upstream compatibility
-
-- continuously track compatible upstream OmniRoute releases;
-- reconcile rather than overwrite fork-specific architecture;
-- keep fork divergence explicit and small where practical.
-
-### Phase B — Normalize access modes
-
-- free/keyless;
-- API credential;
-- managed external credential/session;
-- subscription/coding-plan;
-- interactive human verification;
-- protected native.
-
-Each access mode must define ownership, eligibility, recovery and routing semantics.
-
-### Phase C — Complete orchestration evidence foundation
+- commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`;
+- tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`.
 
 Completed:
 
-- D14 request/context compatibility-provenance implementation;
-- D15 canonical compatibility-provenance qualification;
-- structural 14/14 hard-fact coverage in pure qualification.
+- selective historical reintegration from pinned Operations Floor branches;
+- 27-file source authority classified and reconciled;
+- bounded compatibility adaptations for current component contracts;
+- 10-routed + 3-protected-native workload model preserved;
+- protected-native routeability remained zero;
+- retired OpenCode/TheOldLLM remained inactive;
+- Operations Floor remained observability/operator plane, not router;
+- production build qualified successfully with Webpack.
 
-Current/remaining:
+Remaining:
 
-- D16 post-completeness activation-readiness re-audit;
-- production-safe shadow evidence readout;
-- live empirical agreement/mismatch/not-ready/error evidence;
-- evidence-derived activation criteria.
+- consume/visualize later accepted orchestration evidence only after D18/full-E2E contracts are proven;
+- continue preserving secret isolation and routing authority boundaries;
+- live operational validation after explicit promotion.
 
-### Phase D — Model intelligence and preference intelligence
+## 3. Build qualification workstream
 
-#### D0 — Model intelligence enrichment
+Status: **Complete for current lineage.**
 
-- define the Unified Model Intelligence Registry contract;
-- identify official versus external evidence classes;
-- support pinned/offline external architecture metadata ingestion;
-- reconcile model aliases and immutable source provenance;
-- keep architecture/benchmark enrichment non-authoritative for hard gates;
-- expose safe metadata to Operations Floor.
+Accepted current production build policy:
 
-#### D1 — Provider-neutral preference intelligence
+- `npm run build` defaults to Webpack;
+- `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
+- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in.
 
-- identify source-backed preference signals;
-- score only candidates that survived hard gates;
-- keep core evaluator provider-neutral;
-- shadow preference ordering before activation;
-- protect explicit pins, workload isolation, Auth Keeper denial, capability/context checks, cooldowns and quota cutoffs;
-- qualify preference evidence before restricted activation.
+Reason: repeated Turbopack production builds hit a deterministic invariant panic while the same accepted source built successfully with Webpack.
 
-### Phase E — Codex Unified reintegration
+Do not spend future narrow qualification cycles rediscovering the same known Turbopack failure unless the purpose of the phase is specifically to re-evaluate Turbopack.
 
-- bring the unified model catalog/workload policy under maintained repository/release authority;
-- define Codex as the user-facing agent and OmniRoute as the delegation brain;
-- support multiple reasoning/review workers behind one controlled acting model;
-- qualify tool ownership and mutation safety.
+## 4. Current cross-cutting sequence
 
-### Phase F — Operations Floor reintegration
+### Phase A — Upstream compatibility
 
-- merge/reconcile historical floor work with current architecture;
-- display live worker assignments, routing, fallback, auth, quota, health and evidence;
-- display protected-native state separately;
-- preserve personal/MTA isolation;
-- add operator actions only where they cannot bypass routing/auth authority;
-- integrate provenance-labeled model intelligence without turning visual metadata into routing authority.
+Ongoing continuously:
 
-### Phase G — Product acceptance and promotion
+- absorb compatible upstream OmniRoute releases;
+- preserve fork invariants;
+- keep deliberate divergence explicit.
 
-- full end-to-end acceptance across Codex Unified → OmniRoute → Auth Keeper/provider → response;
-- failure tests for quota, cooldown, provider outage, auth expiry, re-auth, fallback, restart and rollback;
-- canonical build provenance;
-- canary/shadow review;
+### Phase B — Codex Unified reintegration
+
+Status: **Complete for current integration lineage.**
+
+### Phase C — Auth Keeper final reconciliation
+
+Status: **Complete at R11.**
+
+### Phase D — Operations Floor selective reintegration
+
+Status: **Complete.**
+
+### Phase E — Production build-policy hardening
+
+Status: **Complete: Webpack default / Turbopack explicit opt-in.**
+
+### Phase F — D18 bounded orchestration/evidence foundation
+
+Status: **Active.**
+
+Current candidate direction: R4 exact frozen seven-file contract boundary.
+
+Acceptance must prove:
+
+- no retired-provider resurrection;
+- no provider/network side effects in transplanted missing contract files;
+- no routing activation;
+- no external production consumer of the bounded readout;
+- no overwrite of newer current implementations;
+- bounded D18 tests pass;
+- changed-file lint/type gate passes;
+- 10+3 workload/protected-native authority preserved;
+- default Webpack production build passes.
+
+### Phase G — Full end-to-end qualification
+
+Status: **Pending D18 acceptance.**
+
+Qualify the integrated product path:
+
+`Codex Unified → OmniRoute → Auth Keeper/provider → orchestration/fallback → response → Operations Floor evidence`
+
+Include controlled failure cases for:
+
+- quota/cooldown;
+- provider outage;
+- auth expiry/re-auth;
+- fallback;
+- workload isolation;
+- protected-native preservation;
+- restart/recovery;
+- production build identity;
+- rollback readiness.
+
+### Phase H — Model intelligence / preference intelligence
+
+Status: **Planned, not activation authority.**
+
+A Unified Model Intelligence Registry may add provenance-labeled architecture metadata and later soft preference signals. External architecture/benchmark data remains subordinate to hard routing evidence.
+
+Preference intelligence may rank only candidates that already survived hard gates.
+
+### Phase I — Product acceptance and live promotion
+
+Status: **Not authorized.**
+
+Requires:
+
+- accepted integrated source/tree authority;
+- full-E2E qualification;
+- canary/shadow evidence;
+- evidence-derived activation criteria;
+- rollback state and health checks;
 - explicit live-cutover authorization;
-- post-cutover observation and rollback validation.
+- post-cutover observation.
 
-## 4. Explicitly stale/incomplete framings
+## 5. Explicitly stale/incomplete framings
 
-The following must not be used as the master roadmap:
+Do not use any of these as the master roadmap:
 
-- upstream `ROADMAP.md` by itself;
-- R16.32 by itself;
-- Auth Keeper's local provider/recovery roadmap by itself;
-- the Operations Floor branch roadmap by itself;
-- OpenCode integration by itself;
-- a single provider catalog by itself;
-- an external model-architecture gallery or benchmark by itself.
+- upstream `ROADMAP.md` alone;
+- R16.32 alone;
+- Auth Keeper alone;
+- Operations Floor alone;
+- OpenCode integration;
+- TheOldLLM integration;
+- a single provider catalog;
+- an external model gallery/benchmark.
 
-Each is a component, evidence source or subproject of the five-pillar plan.
+Also stale:
 
-The statement "D14 is the current implementation step" is stale. D14 R6 and D15 R2 are accepted; D16 is the next R16.32 phase.
+- “D16 is the next phase”;
+- “Operations Floor reintegration is still pending”;
+- “Codex Unified still needs initial reintegration”;
+- “OpenCode/TheOldLLM remain active planned lanes.”
 
-## 5. Status update rule
+## 6. Status-update rule
 
 When a phase is accepted:
 
-1. update [Current Project Status](CURRENT_STATUS.md) with the exact checkpoint if it changes;
-2. update the current checkpoint here if the milestone changes the master status;
-3. update the Architecture Source of Truth if an authority boundary, evidence precedence or product goal changes;
-4. update the Engineering Source of Truth if the engineering method/invariants change;
-5. record exact Git/evidence authority in the relevant implementation repository;
-6. do not treat chat history as a substitute for these updates.
+1. update [Current Project Status](CURRENT_STATUS.md);
+2. update [Engineering Tracker](ENGINEERING_TRACKER.md);
+3. update this roadmap if sequencing/status changed;
+4. update [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) if product/authority/provider scope changed;
+5. update [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md) and [Failure-Mode Register](FAILURE_MODE_REGISTER.md) for permanent engineering lessons;
+6. record exact Git/evidence authority;
+7. never use chat history as a substitute for these updates.
