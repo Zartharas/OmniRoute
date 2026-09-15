@@ -13,7 +13,7 @@ Deliver one Codex-centered AI engineering agent backed by a heterogeneous AI wor
 
 ### Pillar 1 — Codex Unified Agent
 
-Status: **Current repository reintegration complete; final end-to-end product acceptance still pending.**
+Status: **Repository reintegration complete; full integrated E2E qualification active.**
 
 Completed/proven:
 
@@ -25,13 +25,13 @@ Completed/proven:
 
 Remaining:
 
-- full end-to-end qualification against the accepted OmniRoute + Auth Keeper + Operations Floor + D18 lineage;
+- full integrated qualification against accepted OmniRoute R8 + Auth Keeper R11 + Operations Floor lineage;
 - final release/promotion authority;
 - live operational validation after explicit cutover authorization.
 
 ### Pillar 2 — Unified OmniRoute AI Workforce
 
-Status: **Strong current foundation; continuing upstream/provider maintenance.**
+Status: **Strong current foundation; full integrated qualification active.**
 
 Current active fleet authority:
 
@@ -41,16 +41,9 @@ Current active fleet authority:
 
 OpenCode and TheOldLLM are retired from active product scope. Historical references/tombstones may remain but must not become active routing/bootstrap/workload/Operations Floor/Auth Keeper authority.
 
-Remaining:
-
-- continue compatible upstream provider/catalog ingestion;
-- maintain access-mode normalization without reactivating retired lanes;
-- preserve free/keyless behavior where applicable;
-- requalify provider/account eligibility after major upstream changes.
-
 ### Pillar 3 — Auth Keeper
 
-Status: **Final contract reconciliation complete at R11.**
+Status: **Final contract reconciliation complete at R11; full integrated qualification active.**
 
 Accepted authority:
 
@@ -58,77 +51,49 @@ Accepted authority:
 - tree `9377fe6afe21f098861f32c751f05c8a72882211`;
 - 457/457 tests pass.
 
-Remaining:
-
-- participate in full end-to-end acceptance;
-- preserve current provider/account/session boundaries during future upstream changes;
-- live-cutover/recovery validation only after explicit authorization.
-
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: **Active current major workstream; D18 bounded foundation transplant in progress.**
+Status: **D18 bounded foundation transplant complete at R8; full E2E qualification active.**
 
-Completed/proven across the R16.32 lineage:
+Accepted R8 authority:
 
-- normalized candidate facts;
-- deterministic disposition;
-- computational shadow without extra real traffic;
-- explainability taxonomy;
-- bounded observability;
-- request-local blocker/positive-fact capture;
-- request/context compatibility provenance;
-- executionKey-keyed sidecar design;
-- D14/D15 compatibility-provenance qualification;
-- post-D15 activation-readiness work through D18 source freeze;
-- D18 passive/unwired bounded production-evidence readout authority frozen locally.
+- branch `feat/d18-orchestration-foundation-transplant-r8`;
+- commit `58452140ffc8122a26a387638f8a38d7d80f5024`;
+- tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`;
+- parent `1c4da240883e729d38a356ec83919ad7f6637623`;
+- evidence SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
 
-Current D18 source authority:
+Accepted R8 outcomes:
 
-- commit `0f13a6d6df0251d9fa39e70aff78c0b58766845d`;
-- tree `71e1f60cd349599df0e9c4f800af6e6a3f719fd4`.
-
-Current engineering step:
-
-- exact seven-file frozen D18 contract classification/transplant;
-- missing-only byte-exact materialization;
-- preserve newer divergent current implementations;
-- zero external production consumers of the bounded readout;
-- three bounded D18 tests;
-- changed-file lint/type gates;
-- current 10+3 contract preservation;
-- default Webpack production build qualification.
+- 7 feature-contract + 9 missing-support files = 16-file bounded transplant;
+- no overwrite of current-owned implementations;
+- zero unresolved project-local imports;
+- zero external runtime consumer for bounded readout;
+- zero retired-provider/protected-routeability/DB-write/network/process/server/historical-path risk hits;
+- 35/35 focused regressions pass;
+- changed-file lint pass;
+- changed-file TypeScript diagnostics zero after one test-only runtime-erased compatibility adaptation;
+- production-source adaptation count zero;
+- current 10+3 workload contract preserved;
+- default Webpack production build/standalone qualification pass.
 
 Important sequencing rule:
 
 - **do not resume D19 automatically**;
-- D18 acceptance is followed by **full end-to-end qualification**;
-- any later activation/preference phase requires separate evidence and authorization.
+- D18 remains passive/unwired;
+- next step is full end-to-end qualification;
+- later activation/preference phases require separate evidence and authorization.
 
 ### Pillar 5 — Operations Floor
 
-Status: **Selective reintegration complete and qualified in the current local integration lineage.**
+Status: **Selective reintegration complete and qualified; full integrated qualification active.**
 
 Accepted local authority:
 
 - commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`;
 - tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`.
 
-Completed:
-
-- selective historical reintegration from pinned Operations Floor branches;
-- 27-file source authority classified and reconciled;
-- bounded compatibility adaptations for current component contracts;
-- 10-routed + 3-protected-native workload model preserved;
-- protected-native routeability remained zero;
-- retired OpenCode/TheOldLLM remained inactive;
-- Operations Floor remained observability/operator plane, not router;
-- production build qualified successfully with Webpack.
-
-Remaining:
-
-- consume/visualize later accepted orchestration evidence only after D18/full-E2E contracts are proven;
-- continue preserving secret isolation and routing authority boundaries;
-- live operational validation after explicit promotion.
+Operations Floor remains an observability/operator plane, not routing authority.
 
 ## 3. Build qualification workstream
 
@@ -142,17 +107,13 @@ Accepted current production build policy:
 
 Reason: repeated Turbopack production builds hit a deterministic invariant panic while the same accepted source built successfully with Webpack.
 
-Do not spend future narrow qualification cycles rediscovering the same known Turbopack failure unless the purpose of the phase is specifically to re-evaluate Turbopack.
+Do not spend future ordinary qualification cycles rediscovering the same known Turbopack failure unless the purpose is specifically to re-evaluate Turbopack.
 
 ## 4. Current cross-cutting sequence
 
 ### Phase A — Upstream compatibility
 
-Ongoing continuously:
-
-- absorb compatible upstream OmniRoute releases;
-- preserve fork invariants;
-- keep deliberate divergence explicit.
+Status: **Ongoing continuously.**
 
 ### Phase B — Codex Unified reintegration
 
@@ -172,47 +133,53 @@ Status: **Complete: Webpack default / Turbopack explicit opt-in.**
 
 ### Phase F — D18 bounded orchestration/evidence foundation
 
-Status: **Active.**
+Status: **Complete and accepted at R8.**
 
-Current candidate direction: R4 exact frozen seven-file contract boundary.
-
-Acceptance must prove:
-
-- no retired-provider resurrection;
-- no provider/network side effects in transplanted missing contract files;
-- no routing activation;
-- no external production consumer of the bounded readout;
-- no overwrite of newer current implementations;
-- bounded D18 tests pass;
-- changed-file lint/type gate passes;
-- 10+3 workload/protected-native authority preserved;
-- default Webpack production build passes.
+Accepted authority: `58452140ffc8122a26a387638f8a38d7d80f5024` / tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`.
 
 ### Phase G — Full end-to-end qualification
 
-Status: **Pending D18 acceptance.**
+Status: **Active.**
+
+Accepted baseline: D18 R8.
 
 Qualify the integrated product path:
 
-`Codex Unified → OmniRoute → Auth Keeper/provider → orchestration/fallback → response → Operations Floor evidence`
+`Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-Include controlled failure cases for:
+Current authorization is for a **non-destructive engineering qualification harness**, not live cutover.
 
-- quota/cooldown;
-- provider outage;
-- auth expiry/re-auth;
-- fallback;
-- workload isolation;
-- protected-native preservation;
-- restart/recovery;
-- production build identity;
-- rollback readiness.
+The preferred execution model is one consolidated harness with read-only preflight, fail-closed guards, deterministic/mocked failure injection where possible, evidence packaging and final non-drift.
+
+Qualification should cover:
+
+- canonical source/tree authority and host-sentinel non-drift;
+- Codex Unified ingress/config/catalog/workload contracts;
+- Auth Keeper eligibility boundary without credential-value reads;
+- routing/fallback decision semantics;
+- quota/cooldown behavior;
+- provider outage behavior without uncontrolled external traffic;
+- auth-expiry/re-auth semantics without mutating live sessions;
+- personal versus MTA/enterprise isolation;
+- protected-native preservation/non-routeability;
+- Operations Floor evidence/observer-plane contracts;
+- restart/recovery and rollback readiness;
+- Webpack production build identity/standalone output;
+- evidence continuity.
+
+Safety boundary unless explicitly expanded later:
+
+- no uncontrolled live provider/model calls;
+- no secret/token/credential-value reads or printing;
+- no live Auth Keeper account/session mutation;
+- no production routing/provider mutation;
+- no D18/preference activation;
+- no live image/container/database mutation;
+- no remote push/deploy/cutover.
 
 ### Phase H — Model intelligence / preference intelligence
 
 Status: **Planned, not activation authority.**
-
-A Unified Model Intelligence Registry may add provenance-labeled architecture metadata and later soft preference signals. External architecture/benchmark data remains subordinate to hard routing evidence.
 
 Preference intelligence may rank only candidates that already survived hard gates.
 
@@ -246,11 +213,21 @@ Do not use any of these as the master roadmap:
 Also stale:
 
 - “D16 is the next phase”;
+- “D18 transplant is still active”;
+- “R4 is the current D18 candidate”;
 - “Operations Floor reintegration is still pending”;
 - “Codex Unified still needs initial reintegration”;
 - “OpenCode/TheOldLLM remain active planned lanes.”
 
-## 6. Status-update rule
+## 6. Continuation / handoff
+
+For a new engineering chat, use:
+
+[CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md)
+
+It records exact accepted Git/evidence authority, D18 R1-R8 failure history, anti-repeat rules, current authorization and E2E safety boundaries.
+
+## 7. Status-update rule
 
 When a phase is accepted:
 
@@ -259,5 +236,6 @@ When a phase is accepted:
 3. update this roadmap if sequencing/status changed;
 4. update [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) if product/authority/provider scope changed;
 5. update [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md) and [Failure-Mode Register](FAILURE_MODE_REGISTER.md) for permanent engineering lessons;
-6. record exact Git/evidence authority;
-7. never use chat history as a substitute for these updates.
+6. update the new-chat handoff when current authority/phase changes materially;
+7. record exact Git/evidence authority;
+8. never use chat history as a substitute for these updates.
