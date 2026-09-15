@@ -89,8 +89,6 @@ D18 remains passive/unwired. R8 acceptance is not live activation authority.
 
 ## 4. Auth Keeper authority
 
-Auth Keeper final contract reconciliation is closed in the private repository.
-
 Accepted R11 authority:
 
 - commit: `b3b0d137369038d22820947729233deaec19e166`
@@ -118,13 +116,9 @@ Current build policy:
 - `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
 - `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack opt-in/testing.
 
-Reason: repeated Turbopack production qualification hit a deterministic invariant panic while the same accepted source qualified successfully with Webpack.
-
 Do not repeatedly rediscover the known Turbopack failure during ordinary acceptance work.
 
 ## 7. Current workload/provider authority
-
-Current host-side workload authority remains:
 
 - routed models: 10;
 - personal: 6;
@@ -180,9 +174,7 @@ Prefer mocks, fixtures, read-only contract probes and deterministic failure inje
 
 ## 10. New-chat continuation
 
-For conversation handoff, read:
-
-[CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md)
+Read [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) first in a new conversation.
 
 The last accepted local script is `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`. If its output/evidence is supplied again, verify it against accepted R8 rather than reopening R1-R7 debugging. If a newer full-E2E harness output is supplied, identify it from its header/hash and continue from that evidence.
 
