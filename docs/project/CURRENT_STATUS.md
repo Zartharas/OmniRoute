@@ -3,7 +3,7 @@
 Last reviewed: 2026-09-15
 Status: Canonical checkpoint summary for `Zartharas/OmniRoute`
 
-**New-chat continuation:** read [CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md](CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md) first.
+**New-chat continuation:** `docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md`.
 
 Current sequence: Codex Unified complete; Auth Keeper R11 complete; Operations Floor complete; Webpack-default build policy complete; D18 R8 complete/accepted; full E2E **active and user-authorized for non-destructive engineering qualification**; live cutover not authorized. Do not resume D19 automatically.
 
