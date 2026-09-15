@@ -119,7 +119,32 @@ Prevention:
 - derive or validate the exact expected changeset against the pinned source authority and fail on any unexpected addition or omission;
 - if an earlier candidate produces an authoritative actual changeset before failing later, use that evidence to tighten the next candidate's expected plan.
 
-## 11. Pre-delivery reconciliation checklist
+## 11. Tombstone tests must evolve with product scope
+
+Observed during Candidate R5: all structural, reachability, packaging and targeted gates passed, but the full Auth Keeper suite failed in `r16-17-theoldllm-operator-takedown.node.test.mjs`. The test encoded an older scope assumption: TheOldLLM must be absent while an `opencode:` transport policy must still remain active. Once both provider lanes were intentionally retired, the runtime contract was correct to expose an empty provider policy and the tombstone assertion became stale.
+
+Prevention:
+
+- treat takedown/tombstone tests as executable product-scope documentation, not timeless assertions;
+- whenever retirement scope expands, search existing negative tests for assumptions about which sibling provider is expected to survive;
+- migrate only the stale scope assertion and preserve the rest of the historical takedown test;
+- require the stale positive assertion to be present before rewriting it, then prove no positive retired-provider assertion remains;
+- add the migrated tombstone to the targeted validation set before running the full suite;
+- targeted tests never replace the mandatory full-suite gate.
+
+## 12. Full-suite failures must surface even with non-TAP reporters
+
+Observed during Candidate R5 forensics: the full suite exited nonzero with an `ERR_ASSERTION`, but the forensic parser found zero `not ok` TAP entries. The useful failure appeared in the reporter output and stack trace instead.
+
+Prevention:
+
+- do not infer success or failure from TAP `not ok` counts alone;
+- preserve the actual process return code as the primary authority;
+- capture `ERR_ASSERTION`, stack traces, `failureType`, error codes and the final log tail for non-TAP/spec-style reporters;
+- on a failed full-suite command, print a bounded log tail immediately before exiting so a second forensic run is usually unnecessary;
+- hash the preserved full-suite log when it becomes authority for a successor candidate.
+
+## 13. Pre-delivery reconciliation checklist
 
 Before delivering another provider-retirement/reconciliation script:
 
@@ -128,11 +153,14 @@ Before delivering another provider-retirement/reconciliation script:
 - inventory executable policy tables and exposed provider registries;
 - distinguish invariant-only files from mutation-required files;
 - distinguish direct/dormant unit tests from source-wiring tests;
+- inspect historical tombstone tests for assumptions invalidated by the new scope;
 - preserve generic security behavior in provider-neutral modules;
 - preserve exact observed dormant implementation bytes;
 - run positive synthetic transformation/reachability fixtures;
 - run a negative fixture that deliberately reintroduces a retired active import and confirm fail-closed behavior;
 - compile every embedded Python block and syntax-check Bash/Node artifacts;
+- run targeted tests and then the complete suite;
+- surface bounded full-suite failure context for both TAP and non-TAP reporters;
 - prove transactional cleanup of uncommitted worktrees/branches;
 - never install dependencies merely to validate an isolated worktree when an exact copy-on-write dependency authority is available;
 - do not push, deploy or contact provider services as part of source qualification.
