@@ -7,7 +7,7 @@ Docs branch/PR: `docs/engineering-failure-mode-register-20260915` / PR #15
 
 ## Current architecture
 
-Five pillars: Codex Unified Agent; Unified OmniRoute AI Workforce; Auth Keeper; Intelligent Multi-Model Orchestration; Operations Floor.
+Five pillars remain: Codex Unified Agent; Unified OmniRoute AI Workforce; Auth Keeper; Intelligent Multi-Model Orchestration; Operations Floor.
 
 Canonical path: `User → Codex Unified → OmniRoute → Auth Keeper + AI workforce/protected capacity → orchestration/fallback → response → Operations Floor evidence`.
 
