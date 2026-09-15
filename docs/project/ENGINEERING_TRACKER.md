@@ -13,8 +13,8 @@ This tracker records completed, active and pending engineering work across the f
 | 2 | Auth Keeper final contract reconciliation | Complete | R11 `b3b0d137369038d22820947729233deaec19e166` |
 | 3 | Operations Floor selective reintegration | Complete | `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c` |
 | 4 | Production build-policy hardening | Complete | Webpack-default successor `1c4da240883e729d38a356ec83919ad7f6637623` |
-| 5 | D18 bounded orchestration/evidence foundation transplant | Active | R8 preserves the proven 16-file R7 closure and allows only one runtime-erased historical-test TypeScript compatibility adaptation |
-| 6 | Full end-to-end qualification | Pending | Begins only after D18 acceptance |
+| 5 | D18 bounded orchestration/evidence foundation transplant | **Complete** | Accepted R8 `58452140ffc8122a26a387638f8a38d7d80f5024` / tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d` |
+| 6 | Full end-to-end qualification | **Active** | Qualify the five-pillar path on the accepted R8 successor without authorizing live cutover |
 | 7 | Live activation / cutover | Not authorized | Separate explicit gate after full E2E/canary/rollback review |
 
 Do **not** resume D19 automatically.
@@ -86,16 +86,63 @@ Policy:
 
 Standardization evidence ZIP SHA-256: `891bcfab81173eb86d5b9ab478eec6f3108c644f51dbf9440f970b63f5f5efeb`.
 
+### D18 bounded orchestration/evidence foundation — accepted R8
+
+Accepted local authority:
+
+- branch `feat/d18-orchestration-foundation-transplant-r8`;
+- commit `58452140ffc8122a26a387638f8a38d7d80f5024`;
+- tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`;
+- parent `1c4da240883e729d38a356ec83919ad7f6637623`;
+- evidence ZIP SHA-256 `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
+
+Accepted transplant shape:
+
+- 7 feature-contract files + 9 missing support files = 16 total files;
+- traversal stopped at current-owned dependencies;
+- project-local unresolved imports: 0;
+- current-owned files overwritten: 0;
+- bounded-readout external runtime consumers: 0;
+- 15 files byte-exact to frozen D18;
+- one test-only TypeScript compatibility adaptation;
+- production-source adaptation count: 0;
+- compatibility variant: `Record<string, unknown>` assertion around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`;
+- emitted JavaScript parity for the adapted test: pass;
+- adapted test SHA-256 `b79a2df559db085aba1562ca67f83bfb3df2fe7e454384a3d2d5ea60d8a43964`.
+
+Qualification results:
+
+- copy-set risk gate: pass;
+- retired-provider hits: 0;
+- protected-native routeable hits: 0;
+- DB-write/network/process/server/historical-path risk hits: 0;
+- bounded readout tests: 10/10 pass;
+- accumulator tests: 16/16 pass;
+- observability-adapter tests: 9/9 pass;
+- focused total: 35/35 pass;
+- changed-file ESLint: pass;
+- changed-file TypeScript diagnostics after adaptation: 0;
+- current 10-routed + 3-protected-native invariants: pass;
+- default Webpack production build: pass;
+- build output file count: 22,645;
+- standalone artifact: present;
+- Turbopack panic signatures: absent;
+- live runtime mutation/provider calls/credential reads/dependency install/remote push: none.
+
+The uploaded R8 evidence package was independently rechecked after the run: outer ZIP SHA matched, all 33 manifest-tracked files matched their internal SHA-256 values, all 34 `evidence-hashes.txt` entries validated, the patch contained exactly 16 added paths, focused test logs showed 10/10 + 16/16 + 9/9 with zero failures, and the selected test-only assertion preserved the emitted-JavaScript SHA.
+
+D18 remains passive/unwired. R8 acceptance is **not** live activation authority.
+
 ## 4. D18 source authority
 
-Frozen local D18 authority:
+Frozen local D18 source authority remains:
 
 - branch `feat/r16-32d18-bounded-production-evidence-readout`;
 - commit `0f13a6d6df0251d9fa39e70aff78c0b58766845d`;
 - tree `71e1f60cd349599df0e9c4f800af6e6a3f719fd4`;
 - parent `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`.
 
-D18 is local-only authority and must not be described as published to the fork remote by that SHA.
+D18 source is local-only authority and must not be described as published to the fork remote by that SHA.
 
 Read-only transplant audit evidence ZIP SHA-256:
 
@@ -109,8 +156,6 @@ Classification: `GENUINE_OUTBOUND_DEPENDENCY_CLOSURE_OMISSION`.
 
 The final D18 commit changed only two files, but the bounded-readout regression required earlier foundation code such as `computationalShadowObservabilityAccumulator.ts`.
 
-Lesson: final commit diff is not automatically the complete transplant boundary.
-
 ### R2 — failed safely
 
 Classification: `HARNESS_ONLY_REGEX_IMPORT_SCANNER_FALSE_POSITIVE`.
@@ -121,100 +166,52 @@ Regex discovery misclassified import-looking strings as module edges. TypeScript
 
 Classification: `UNBOUNDED_TRANSITIVE_GRAPH_IS_NOT_D18_PATCH_AUTHORITY`.
 
-The TypeScript AST/module graph was structurally valid and found:
-
-- 1,164 files;
-- 2,924 edges;
-- 63 files missing from current;
-- 841 identical current files;
-- 260 divergent current files;
-- 0 unresolved internal imports.
-
-But the graph crossed retired OpenCode inventory and network-capable historical services. Reachability evidence is not automatic patch authority.
+The TypeScript AST/module graph was structurally valid and found 1,164 files / 2,924 edges / 63 missing files, but crossed retired-provider and network-capable historical application surface. Reachability evidence is not automatic patch authority.
 
 ### R4 — failed safely
 
 Classification: `SEVEN_FILE_FEATURE_CONTRACT_REQUIRES_BOUNDED_MISSING_SUPPORT_CLOSURE`.
 
-R4 correctly froze the exact seven-file D18 feature contract and proved all seven were missing, copied byte-exact, and passive/unwired. Its first regression then failed because `gatePathCandidateDispositionShadowObservability.ts` imports missing `gatePathCandidateDispositionShadowBinding.ts`.
+The seven-file contract was source-correct but not self-contained; `gatePathCandidateDispositionShadowBinding.ts` was the first concrete missing support dependency.
 
 ### R5 — failed safely
 
 Classification: `HARD_NAMESPACE_BOUNDARY_REJECTED_LEGITIMATE_AUTH_KEEPER_SUPPORT_DEPENDENCY`.
 
-R5 correctly derived a missing-only support closure that stopped at current-owned files, but its hard support namespace rule rejected legitimate cross-pillar support:
+A hard combo/test namespace rejected legitimate `src/lib/authKeeper/comboRoutingEligibility.ts` support. Directory paths are not architectural authority.
 
-- `open-sse/services/combo/executeTargetGates.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`;
-- `open-sse/services/combo/attemptLoopTypes.ts` → `src/lib/authKeeper/comboRoutingEligibility.ts`.
-
-Permanent lesson: path namespaces are not architectural authority. Cross-pillar dependencies must be evaluated by ownership/effect semantics, not rejected solely by directory.
-
-### R6 — failed safely after successful closure discovery
+### R6 — failed safely after closure discovery
 
 Classification: `HARNESS_ONLY_PYTHON_REGEX_INLINE_FLAG_PLACEMENT`.
 
-R6 replaced the hard namespace rule with a complete missing-only support closure plus effect/risk gating. Before any candidate creation it successfully converged on:
-
-- 7 feature-contract files;
-- 9 missing support files;
-- 16 total byte-exact copy candidates;
-- `gatePathCandidateDispositionShadowBinding.ts` rediscovered;
-- `src/lib/authKeeper/comboRoutingEligibility.ts` rediscovered;
-- 0 unresolved project-local imports;
-- traversal stopped at current-owned dependencies.
-
-The next risk-preflight block failed before mutation because one Python regex was built from two implicitly concatenated strings that both contained global inline `(?i)` flags. Python 3.11 rejected the second flag because it was not at the beginning of the combined expression.
-
-This was a harness-only failure. The 16-file dependency boundary is retained as the current derived support result.
-
-Permanent lesson: regex syntax must be runtime-compiled during prevalidation; shell/Python syntax compilation alone is insufficient for dynamically constructed regex patterns.
+R6 converged on the stable 7 + 9 = 16-file missing-only closure with zero unresolved project-local imports, then stopped before mutation on a Python regex construction defect.
 
 ### R7 — failed safely after transplant mechanics passed
 
 Classification: `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`.
 
-R7 preserved the R6 closure and proved the transplant mechanics were healthy:
+R7 assembled the 16-file candidate, passed copy-set risk, import-resolution, 35/35 focused tests and lint, then stopped on the single historical test-only line-109 TS2698 diagnostic.
 
-- complete copy-set risk preflight passed with zero retired-provider, protected-routeable, DB-write, network, process, server or historical-application-path hits;
-- isolated candidate created from `1c4da240883e729d38a356ec83919ad7f6637623`;
-- 16 derived files materialized byte-exact;
-- current-owned files overwritten: 0;
-- bounded readout external runtime consumers: 0;
-- pre-test project-local unresolved imports: 0;
-- focused bounded-readout tests: 10/10 pass;
-- accumulator tests: 16/16 pass;
-- observability-adapter tests: 9/9 pass;
-- focused total: 35/35 pass;
-- changed-file ESLint: pass.
+### R8 — accepted
 
-The only remaining changed-file TypeScript diagnostic was:
+R8 preserved the R7 closure and repaired only the exact historical test typing incompatibility. Acceptance required and achieved:
 
-`tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts(109,5): error TS2698: Spread types may only be created from object types.`
+- exact pre-adaptation TS2698 classification;
+- AST identity of the `...evidence()` spread;
+- runtime-erased type-assertion trials;
+- byte-identical emitted JavaScript for every trial;
+- selected `record` variant;
+- zero changed-file diagnostics after adaptation;
+- adapted-test ESLint pass;
+- runtime-JavaScript parity pass;
+- 35/35 focused regressions pass;
+- 15 byte-exact transplant files + 1 test-only adapted file;
+- production-source adaptation: none;
+- current 10+3 contract preserved;
+- default Webpack production build and standalone artifact qualification pass;
+- commit/evidence/non-drift gates pass.
 
-The exact historical test file SHA-256 is `d1813972782f5fe56fc0212dcffab0aa234e8f2b239147099231403907ceadf8`. Its helper returns an evidence object with a historical `as never` assertion; line 109 later spreads `...evidence()`. Current TypeScript rejects spreading `never`, even though the runtime test behavior remains valid. Historical D2 evidence recorded the same test identity and 16/16 runtime pass.
-
-Permanent lesson: runtime tests and lint can pass while a newer/current compiler rejects a historical test-only typing construct. Current-base requalification may require a narrowly bounded, runtime-erased test typing adaptation, but production source must remain exact unless separately justified.
-
-### R8 — active
-
-R8 does **not** reopen dependency discovery. It preserves the accepted R7 7 + 9 = 16-file closure and the zero-unresolved-import result.
-
-R8 adaptation gate:
-
-1. require the pre-adaptation changed-file diagnostic set to contain exactly one diagnostic;
-2. require that diagnostic to be the exact line-109 `TS2698` above;
-3. AST-confirm the failing spread assignment is exactly `...evidence()`;
-4. generate only TypeScript type-assertion variants for that one historical test expression;
-5. require non-empty transpiled JavaScript and byte-identical emitted JavaScript before/after every candidate assertion;
-6. try all safe assertion variants within the same run, selecting the first that produces zero changed-file TypeScript diagnostics and passes ESLint;
-7. allow exactly one adapted file, under `tests/` only;
-8. require the other 15 transplanted files to remain byte-exact to D18;
-9. require production-source adaptation count to remain zero;
-10. re-run all 35 focused tests, all changed-file lint/type gates, 10+3 workload invariants and the default Webpack production build before commit.
-
-The anti-repeat rule is now stronger: complete dependency closure, static import resolution, runtime regex compilation, exact diagnostic classification and runtime-JavaScript parity must all complete before source acceptance. Compatibility fixes must be resolved inside one qualification run rather than through repeated user reruns.
-
-## 6. Permanent transplant-set distinction
+## 6. Permanent transplant-set and anti-repeat rules
 
 For historical feature reintegration, keep these sets separate:
 
@@ -224,18 +221,33 @@ For historical feature reintegration, keep these sets separate:
 4. full transitive historical reachability graph;
 5. current implementation authority.
 
-The patch surface is not automatically any one of those sets in isolation. It must be source-backed, bounded, compatible with current authority and free of unrelated historical application resurrection.
+Permanent rules:
 
-## 7. Full end-to-end qualification — pending
+- do not add missing dependencies one-by-one when a parser-backed missing-only closure can be derived first;
+- regex text matching is not module-graph authority;
+- directory namespaces are not architectural legitimacy by themselves;
+- stop historical traversal at current-owned implementations;
+- safety-classify the complete copy set before candidate mutation;
+- require static project-local import resolution before tests;
+- runtime-compile and behavior-smoke qualification regex catalogs;
+- classify changed-file compiler diagnostics before compatibility edits;
+- test-only compiler compatibility adaptations require runtime-erased changes plus emitted-JavaScript parity;
+- production source remains exact unless separately justified;
+- compatibility variants should be resolved inside one qualification run rather than repeated operator reruns;
+- historical reachability must not resurrect retired providers or unrelated network-capable application services.
 
-Begins only after an accepted bounded D18 candidate succeeds.
+## 7. Full end-to-end qualification — active
+
+The accepted baseline is now D18 R8 commit `58452140ffc8122a26a387638f8a38d7d80f5024`.
 
 Target path:
 
 `Codex Unified → OmniRoute → Auth Keeper/provider → orchestration/fallback → response → Operations Floor evidence`
 
-Qualification must include quota, cooldown, provider outage, auth expiry/re-auth, fallback, workload isolation, protected-native preservation, restart/recovery and rollback readiness.
+Qualification must cover quota/cooldown behavior, provider outage handling, auth expiry/re-auth boundaries, fallback behavior, workload isolation, protected-native preservation, restart/recovery, rollback readiness and evidence continuity.
+
+Full E2E qualification must distinguish non-destructive/offline qualification from any live-provider or production-runtime exercise. No live-provider calls, credential-value reads, production mutation or cutover are authorized merely by entering this phase.
 
 ## 8. Live activation — not authorized
 
-No current local acceptance authorizes production cutover, D18 readout activation or preference-routing activation.
+No current acceptance authorizes production cutover, D18 readout activation or preference-routing activation.
