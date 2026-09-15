@@ -20,4 +20,4 @@ Scope: five pillars unchanged; OpenCode/TheOldLLM retired; workload authority 10
 
 Public fork is product/architecture authority. Private `Zartharas/omniroute-auth-keeper` is Auth Keeper implementation/release authority and may not redefine routing policy independently.
 
-For a new chat, read the Full E2E New-Chat Handoff first. Accepted Git/test/build/runtime evidence remains implementation authority when more specific than documentation.
+For a new chat, read `docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md` first. Accepted Git/test/build/runtime evidence remains implementation authority when more specific than documentation.
