@@ -23,14 +23,53 @@ Known historical authority:
 Prevention:
 
 - treat Git commit/tree objects as historical source authority, not a specific local worktree path;
-- when the accepted current repository shares the relevant object database, read historical paths with `git show <commit>:<path>` and compare with `git diff <base>..<head>`;
-- verify the exact historical commits with `git cat-file -e <sha>^{commit}` before use;
+- verify the exact historical commits before use;
 - verify ancestry explicitly when the feature base matters;
-- do not issue a network fetch merely because an old checkout directory is absent;
 - do not recreate historical worktrees just to perform a read-only source audit;
 - a missing historical working directory is not evidence that the historical commit is unavailable.
 
-## 2. Repository object authority and working-copy authority are different concepts
+## 2. Remote historical authority and local object availability are separate facts
+
+Operations Floor Audit R2 corrected the old-worktree assumption by trying to read the historical objects from the accepted R10 repository's local Git object database. That also failed: the exact historical commits still existed in the `Zartharas/OmniRoute` fork, but `git cat-file -e` in the local R10 object store could not resolve the first Operations Floor commit.
+
+R2 failure classification:
+
+`HARNESS_ONLY_ACCEPTED_R10_OBJECT_DB_DID_NOT_CONTAIN_HISTORICAL_COMMITS`
+
+The important distinction is:
+
+- remote repository lineage proves the historical commit exists in the fork;
+- local object-database availability proves whether a specific checkout can inspect that object without network access.
+
+One does not imply the other. A current checkout can be shallow, selectively fetched, pruned, or created from a lineage that does not retain every historical object locally.
+
+Prevention:
+
+1. test local object availability explicitly with `git cat-file -e`;
+2. if absent, do not reinterpret that as missing historical authority;
+3. do not mutate the accepted repository's object database merely to satisfy a read-only audit;
+4. instead, create a disposable bare Git store outside the accepted worktree;
+5. fetch only exact advertised historical branch refs from the same authorized fork;
+6. verify fetched branch heads against pinned commit SHAs;
+7. verify the feature-base parent relationship after fetch;
+8. run all historical comparisons against that temporary object store;
+9. remove the temporary store before final non-drift checks.
+
+## 3. Exact branch refs are preferable to arbitrary SHA fetches
+
+For the Operations Floor lineage, the fork still exposes these exact branches:
+
+- `feat/operations-floor-openai-preservation`
+- `feat/operations-floor-protected-native`
+
+Audit R3 therefore fetches those exact advertised refs into a temporary bare repository and requires their heads to equal the pinned historical authority:
+
+- OpenAI-preservation head: `71a5faac8bfaac93a9ca23db63b104f24ab7d829`
+- protected-native head: `ecebb6253a8581516a2b12622724838c790c4ed8`
+
+This is safer than fetching arbitrary unadvertised SHA objects because branch identity and commit identity are both verified.
+
+## 4. Repository object authority and working-copy authority are different concepts
 
 A working copy is an operator convenience. A commit/tree is immutable source authority.
 
@@ -38,16 +77,17 @@ For read-only reintegration audits:
 
 1. pin the current accepted repository branch/head/tree;
 2. pin each historical commit/tree or feature-base commit;
-3. prove those objects are available in the selected repository object database;
-4. read historical files directly from the pinned objects;
-5. classify current files as missing, identical, or divergent;
-6. never require an old branch checkout to remain mounted merely because it once produced accepted evidence.
+3. prove whether those objects are available locally;
+4. if not local, build a disposable historical object store from exact authorized branch refs;
+5. read historical files directly from pinned objects;
+6. classify current files as missing, identical, or divergent;
+7. delete the temporary object store before final non-drift validation.
 
-If historical objects are truly absent from the local object database, stop and classify that condition separately. Do not silently substitute a different branch, stale exported copy, or unpinned remote state.
+Never silently substitute a different branch, stale exported copy, or unpinned remote state.
 
-## 3. Operations Floor reintegration remains selective
+## 5. Operations Floor reintegration remains selective
 
-The checkout-path failure does not change the reintegration policy:
+The R1/R2 authority-location failures do not change the reintegration policy:
 
 - wholesale merge remains forbidden;
 - shared integration files must be reviewed semantically;
@@ -56,14 +96,18 @@ The checkout-path failure does not change the reintegration policy:
 - historical 14-model assumptions must be reconciled to the current Codex Unified authority before porting;
 - accepted OmniRoute and Auth Keeper authorities must remain unchanged during the read-only audit.
 
-## 4. Permanent generated-script rule
+## 6. Permanent generated-script rule
 
 Before delivering any historical-lineage audit script:
 
-- search the script for hard-coded historical checkout paths;
-- distinguish paths needed because they are active accepted authorities from paths used only as historical Git-object containers;
-- prefer one existing accepted Git object database when it already contains the pinned history;
-- prevalidate that no unnecessary `git fetch`, clone, worktree creation, or source mutation is introduced;
-- fail closed on object absence, not directory absence.
+- search for hard-coded historical checkout paths;
+- distinguish active accepted paths from historical-object containers;
+- preflight local object availability rather than assuming it;
+- if local history is absent, isolate network retrieval in a temporary bare store;
+- pin the remote repository and exact branch refs;
+- verify fetched branch heads and ancestry before reading source;
+- ensure fetch does not touch accepted repositories;
+- ensure the temporary object store is removed on both success and failure;
+- perform final non-drift checks after temporary history cleanup.
 
-Operations Floor Audit R2 implements this correction by resolving all historical Operations Floor commits from the accepted R10 OmniRoute repository object database with no fetch and no historical checkout dependency.
+Operations Floor Audit R3 implements this stronger model.
