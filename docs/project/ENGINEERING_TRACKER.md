@@ -13,7 +13,7 @@ This tracker records completed, active and pending engineering work across the f
 | 2 | Auth Keeper final contract reconciliation | Complete | R11 `b3b0d137369038d22820947729233deaec19e166` |
 | 3 | Operations Floor selective reintegration | Complete | `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c` |
 | 4 | Production build-policy hardening | Complete | Webpack-default successor `1c4da240883e729d38a356ec83919ad7f6637623` |
-| 5 | D18 bounded orchestration/evidence foundation transplant | Active | R7 preserves the accepted R6 16-file closure and fixes only a harness regex runtime defect |
+| 5 | D18 bounded orchestration/evidence foundation transplant | Active | R8 preserves the proven 16-file R7 closure and allows only one runtime-erased historical-test TypeScript compatibility adaptation |
 | 6 | Full end-to-end qualification | Pending | Begins only after D18 acceptance |
 | 7 | Live activation / cutover | Not authorized | Separate explicit gate after full E2E/canary/rollback review |
 
@@ -169,19 +169,50 @@ This was a harness-only failure. The 16-file dependency boundary is retained as 
 
 Permanent lesson: regex syntax must be runtime-compiled during prevalidation; shell/Python syntax compilation alone is insufficient for dynamically constructed regex patterns.
 
-### R7 — active
+### R7 — failed safely after transplant mechanics passed
 
-R7 preserves the R6 closure algorithm and the derived 7 + 9 = 16 file support result. It changes only harness qualification around the risk catalog:
+Classification: `HISTORICAL_TEST_TYPESCRIPT_COMPATIBILITY_DIAGNOSTIC`.
 
-1. remove inline global regex flags from case-insensitive patterns;
-2. pass `re.I` through `re.compile(..., re.I)` instead;
-3. runtime-compile the full risk regex catalog before the real risk gate;
-4. run behavior smoke assertions for every risk regex;
-5. require zero inline global `(?i)` flags in embedded Python;
-6. safely recover any uncommitted R6 residue;
-7. preserve the complete missing-only closure, pre-test static import-resolution gate, passive/unwired boundary, 10+3 invariants and default Webpack build qualification.
+R7 preserved the R6 closure and proved the transplant mechanics were healthy:
 
-The anti-repeat engineering rule is now explicit: dependency discovery, static import resolution, and runtime regex compilation must all complete before tests or source acceptance. Do not fix missing dependencies one-at-a-time when a complete parser-backed closure can be derived first.
+- complete copy-set risk preflight passed with zero retired-provider, protected-routeable, DB-write, network, process, server or historical-application-path hits;
+- isolated candidate created from `1c4da240883e729d38a356ec83919ad7f6637623`;
+- 16 derived files materialized byte-exact;
+- current-owned files overwritten: 0;
+- bounded readout external runtime consumers: 0;
+- pre-test project-local unresolved imports: 0;
+- focused bounded-readout tests: 10/10 pass;
+- accumulator tests: 16/16 pass;
+- observability-adapter tests: 9/9 pass;
+- focused total: 35/35 pass;
+- changed-file ESLint: pass.
+
+The only remaining changed-file TypeScript diagnostic was:
+
+`tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts(109,5): error TS2698: Spread types may only be created from object types.`
+
+The exact historical test file SHA-256 is `d1813972782f5fe56fc0212dcffab0aa234e8f2b239147099231403907ceadf8`. Its helper returns an evidence object with a historical `as never` assertion; line 109 later spreads `...evidence()`. Current TypeScript rejects spreading `never`, even though the runtime test behavior remains valid. Historical D2 evidence recorded the same test identity and 16/16 runtime pass.
+
+Permanent lesson: runtime tests and lint can pass while a newer/current compiler rejects a historical test-only typing construct. Current-base requalification may require a narrowly bounded, runtime-erased test typing adaptation, but production source must remain exact unless separately justified.
+
+### R8 — active
+
+R8 does **not** reopen dependency discovery. It preserves the accepted R7 7 + 9 = 16-file closure and the zero-unresolved-import result.
+
+R8 adaptation gate:
+
+1. require the pre-adaptation changed-file diagnostic set to contain exactly one diagnostic;
+2. require that diagnostic to be the exact line-109 `TS2698` above;
+3. AST-confirm the failing spread assignment is exactly `...evidence()`;
+4. generate only TypeScript type-assertion variants for that one historical test expression;
+5. require non-empty transpiled JavaScript and byte-identical emitted JavaScript before/after every candidate assertion;
+6. try all safe assertion variants within the same run, selecting the first that produces zero changed-file TypeScript diagnostics and passes ESLint;
+7. allow exactly one adapted file, under `tests/` only;
+8. require the other 15 transplanted files to remain byte-exact to D18;
+9. require production-source adaptation count to remain zero;
+10. re-run all 35 focused tests, all changed-file lint/type gates, 10+3 workload invariants and the default Webpack production build before commit.
+
+The anti-repeat rule is now stronger: complete dependency closure, static import resolution, runtime regex compilation, exact diagnostic classification and runtime-JavaScript parity must all complete before source acceptance. Compatibility fixes must be resolved inside one qualification run rather than through repeated user reruns.
 
 ## 6. Permanent transplant-set distinction
 
