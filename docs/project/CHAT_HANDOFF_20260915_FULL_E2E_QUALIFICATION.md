@@ -5,17 +5,11 @@ Status: Canonical handoff checkpoint for continuation in a new ChatGPT conversat
 Repository: `Zartharas/OmniRoute`
 Documentation branch / PR: `docs/engineering-failure-mode-register-20260915` / PR #15
 
-This file exists so a new engineering chat can recover the current OmniRoute state from the repository without depending on prior conversation history.
+Use this file to resume the project without relying on prior chat history.
 
-## Start here in a new chat
+## Architecture and scope
 
-Ask the new chat to read this file first, then `SOURCE_OF_TRUTH.md`, `docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`, `docs/project/MASTER_ROADMAP.md`, `docs/project/CURRENT_STATUS.md`, `docs/project/ENGINEERING_TRACKER.md`, and `docs/project/D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md`.
-
-If terminal output from the last local script is pasted/uploaded, analyze that evidence first. The last accepted local script is `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh`; if its output appears again, verify against accepted R8 instead of reopening R1-R7.
-
-## Architecture
-
-Five-pillar goal:
+Five pillars:
 
 1. Codex Unified Agent
 2. Unified OmniRoute AI Workforce
@@ -23,29 +17,29 @@ Five-pillar goal:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-Canonical flow:
+Canonical path:
 
 `User → Codex Unified → OmniRoute → Auth Keeper + AI workforce/protected capacity → orchestration/fallback → response → Operations Floor evidence`
 
 Authority boundaries:
 
-- OmniRoute owns routing/provider/orchestration policy.
-- Auth Keeper owns credential/session/account lifecycle and may expose eligibility contracts consumed by orchestration.
-- Operations Floor is observer/operator plane, not routing authority.
-- GPT-5.6 Sol, Terra and Luna are protected-native/non-routeable in the normal fleet.
-- OpenCode and TheOldLLM are retired from active scope.
+- OmniRoute: routing/provider/orchestration policy.
+- Auth Keeper: credential/session/account lifecycle and eligibility contracts.
+- Operations Floor: observer/operator plane, never routing authority.
+- GPT-5.6 Sol/Terra/Luna: protected-native, non-routeable in normal fleet.
+- OpenCode/TheOldLLM: retired from active scope.
 
 ## Current sequence
 
-Complete: Codex Unified reintegration; Auth Keeper R11; Operations Floor selective reintegration; Webpack-default build policy; D18 transplant at R8.
+Complete: Codex Unified reintegration; Auth Keeper R11; Operations Floor reintegration; Webpack-default build policy; D18 transplant at R8.
 
-Active: full end-to-end qualification — user explicitly authorized non-destructive engineering qualification.
+Active: **full end-to-end qualification**, explicitly authorized for non-destructive engineering qualification.
 
 Not authorized: live activation/cutover.
 
 Do not resume D19 automatically.
 
-## Accepted authorities
+## Accepted local authorities
 
 ### Current OmniRoute R8
 
@@ -56,7 +50,16 @@ Do not resume D19 automatically.
 - evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`
 - accepted local worktree `/Users/zarthras/Documents/Development Projects/omniroute-d18-orchestration-foundation-transplant-r8`
 
-R8 is local accepted authority; do not claim release-branch publication without later Git evidence.
+### Webpack-default parent
+
+- commit `1c4da240883e729d38a356ec83919ad7f6637623`
+- tree `569335188af0ec7c20d43b2a9ecc98bca83a1e9b`
+- evidence `891bcfab81173eb86d5b9ab478eec6f3108c644f51dbf9440f970b63f5f5efeb`
+
+### Operations Floor
+
+- commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
+- tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`
 
 ### Auth Keeper R11
 
@@ -66,58 +69,48 @@ R8 is local accepted authority; do not claim release-branch publication without 
 - 457/457 tests pass
 - evidence `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`
 
-### Operations Floor
+## Accepted R8 result
 
-- commit `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`
-- tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`
-
-### Webpack-default parent
-
-- commit `1c4da240883e729d38a356ec83919ad7f6637623`
-- tree `569335188af0ec7c20d43b2a9ecc98bca83a1e9b`
-- evidence `891bcfab81173eb86d5b9ab478eec6f3108c644f51dbf9440f970b63f5f5efeb`
-
-## R8 acceptance facts
-
-- 7 feature-contract + 9 support = 16 paths;
-- current-owned overwrite 0;
-- unresolved local imports 0;
-- bounded readout external runtime consumers 0;
-- 15 byte-exact files + 1 test-only runtime-erased compatibility adaptation;
-- production-source adaptation 0;
-- 35/35 focused tests pass;
-- changed-file ESLint pass;
-- changed-file TypeScript diagnostics 0;
-- 10 routed + 3 protected-native preserved;
-- plain `npm run build` used Webpack and passed;
-- BUILD_ID/standalone present;
-- output files 22,645;
+- 7 feature-contract + 9 support = 16 paths.
+- current-owned overwrite 0.
+- unresolved local imports 0.
+- bounded readout external runtime consumers 0.
+- 15 byte-exact files + 1 test-only runtime-erased compatibility adaptation.
+- production-source adaptation 0.
+- selected test adaptation: `Record<string, unknown>` around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`.
+- emitted JavaScript parity pass.
+- focused tests 35/35 pass.
+- changed-file ESLint pass.
+- changed-file TypeScript diagnostics 0.
+- 10 routed + 3 protected-native preserved.
+- plain `npm run build` used Webpack and passed.
+- static pages 591/591.
+- BUILD_ID/standalone present.
+- output files 22,645.
 - Turbopack panic absent.
-
-The test-only adaptation was `Record<string, unknown>` around `evidence()` in `tests/unit/combo/computationalShadowObservabilityAccumulator.test.ts`, accepted only after exact TS2698/AST identity and emitted-JavaScript parity proof.
 
 D18 remains passive/unwired.
 
-## Anti-repeat failure history
+## D18 anti-repeat history
 
 - R1: final diff too narrow.
-- R2: regex import scanner false positives.
-- R3: valid full graph too broad for patch authority.
-- R4: feature contract not self-contained for tests.
+- R2: regex import false positives.
+- R3: full historical graph valid but too broad for patch authority.
+- R4: feature contract not self-contained for execution/tests.
 - R5: hard namespace rejected legitimate Auth Keeper support.
-- R6: Python regex inline-flag runtime bug after correct 16-file closure discovery.
-- R7: historical test-only TS2698 after transplant mechanics/tests passed.
+- R6: correct 16-file closure found; Python regex runtime bug.
+- R7: mechanics/runtime tests passed; one historical test TS2698.
 - R8: accepted.
 
-Permanent rules: complete missing-only closure first; stop at current-owned code; TypeScript AST for module authority; path namespace is not architecture authority; runtime-smoke regex catalogs; pre-test static import resolution; classify diagnostics before adaptation; runtime-erased test fixes require emitted-JS parity; solve compatibility variants in one run; production source stays exact unless separately justified.
+Permanent rules: derive complete missing-only support before mutation; stop at current-owned code; TypeScript AST/module resolution for module authority; path namespace is not architecture authority; runtime-smoke regex catalogs; pre-test static import resolution; classify compiler diagnostics before adaptation; runtime-erased test fixes require emitted-JS parity; resolve variants in one run; keep production source exact unless separately justified.
 
-## Workload/host authority
+## Current workload/host authority
 
-- routed 10: personal 6 + MTA 4;
-- protected-native: GPT-5.6 Sol, Terra, Luna;
+- routed 10: 6 personal + 4 MTA/enterprise.
+- protected-native: GPT-5.6 Sol, Terra, Luna.
 - protected-native routeability: none.
 
-Host sentinel hashes:
+Host sentinels:
 
 - router `da5599b7c8cb0c6d755657069e5d2090b9e7d83edd4cbad4af3ed44c8495de97`
 - config `2d731cb44980792ba010e51a865e1b11a99dc50b2c2ca0a50aaf903e5d8ae690`
@@ -129,9 +122,9 @@ Do not read credential values merely to prove these sentinels.
 
 ## Builder authority
 
-- plain `npm run build` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=0` → Webpack;
-- `OMNIROUTE_USE_TURBOPACK=1` → explicit requalification only.
+- plain `npm run build` → Webpack.
+- `OMNIROUTE_USE_TURBOPACK=0` → Webpack.
+- `OMNIROUTE_USE_TURBOPACK=1` → explicit Turbopack requalification only.
 
 Known Turbopack panic: `internal error: entered unreachable code: there must be a path to a root`.
 
@@ -143,7 +136,7 @@ Target:
 
 `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`
 
-Qualify source/tree lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack build identity, evidence continuity and final non-drift.
+Qualify canonical lineage, host sentinels, Codex Unified contracts, Auth Keeper eligibility, routing/fallback, quota/cooldown, provider outage, auth-expiry/re-auth semantics, workload isolation, protected-native preservation, Operations Floor evidence, restart/recovery, rollback readiness, Webpack identity, evidence continuity and final non-drift.
 
 ### Safety boundary
 
@@ -153,7 +146,7 @@ Prefer read-only probes, existing tests, mocks, fixtures and deterministic failu
 
 ## Operator workflow
 
-Evidence-first. Shortest discriminator-first path. Due diligence before scripts. Avoid multiple incremental diagnostics. Prefer one consolidated script per phase. macOS `/bin/bash` compatibility. Prevalidate Bash/embedded Python/Node/parser logic/forbidden side effects. Classify exact failure before a successor. Package evidence. No remote push unless explicitly authorized.
+Evidence-first. Shortest discriminator-first path. Due diligence before scripts. Avoid multiple incremental diagnostics. Prefer one consolidated script per phase. macOS `/bin/bash` compatibility. Prevalidate Bash/embedded Python/Node/parser logic/forbidden side effects. Classify exact failure before successor. Package evidence. No remote push unless explicitly authorized.
 
 ## Last local script to recognize
 
@@ -161,10 +154,19 @@ Evidence-first. Shortest discriminator-first path. Due diligence before scripts.
 
 Accepted result: `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`.
 
-If its output is shared, verify against R8. If a newer E2E harness output is shared, identify by header/hash and continue from it.
+If its output/evidence is shared, verify against R8 and do not reopen R1-R7. If a newer E2E harness output is shared, identify it by header/hash and continue from it.
+
+## New-chat action
+
+1. Read this file first.
+2. Read `SOURCE_OF_TRUTH.md`, `docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`, `docs/project/MASTER_ROADMAP.md`, `docs/project/CURRENT_STATUS.md`, `docs/project/ENGINEERING_TRACKER.md`, and `docs/project/D18_ORCHESTRATION_FOUNDATION_FAILURE_MODES_20260915.md`.
+3. Analyze any pasted/uploaded local script output first.
+4. If no newer E2E harness has run, build one consolidated non-destructive full-E2E harness under the safety boundary above.
+5. Do not reactivate D19, OpenCode or TheOldLLM.
+6. Do not infer live-cutover authority from development E2E qualification.
 
 ## Documentation PR
 
 PR #15: `https://github.com/Zartharas/OmniRoute/pull/15`
 
-Documentation-only; separate from runtime/source promotion.
+Documentation-only; keep separate from runtime/source promotion.
