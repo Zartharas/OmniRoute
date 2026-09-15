@@ -1,177 +1,26 @@
 # Current Project Status
 
-Last reviewed: 2026-09-14
-Status: Canonical checkpoint summary for the `Zartharas/OmniRoute` fork
+Last reviewed: 2026-09-15
+Status: Canonical checkpoint summary for `Zartharas/OmniRoute`
 
-This document records the latest accepted engineering checkpoint. It is a status snapshot, not the product architecture authority. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), and the long-range plan remains in [Master Roadmap](MASTER_ROADMAP.md).
+**New-chat continuation:** `docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md`.
 
-Accepted Git objects, tests, build evidence and runtime evidence remain the implementation authority when they are more specific than this summary.
+Current sequence: Codex Unified complete; Auth Keeper R11 complete; Operations Floor complete; Webpack-default build policy complete; D18 R8 complete/accepted; full E2E **active and user-authorized for non-destructive engineering qualification**; live cutover not authorized. Do not resume D19 automatically.
 
-## 1. Overall product status
+Accepted R8: commit `58452140ffc8122a26a387638f8a38d7d80f5024`, tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`, parent `1c4da240883e729d38a356ec83919ad7f6637623`, evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
 
-The five-pillar product goal remains unchanged:
+R8 acceptance: 16 paths (7 contract + 9 support), overwrite 0, unresolved local imports 0, bounded readout runtime consumers 0, 15 byte-exact files + one test-only runtime-erased typing adaptation, production-source adaptation 0, 35/35 focused tests, lint/type pass, 10+3 preserved, Webpack/BUILD_ID/standalone pass. D18 remains passive/unwired.
 
-1. Codex Unified Agent
-2. Unified OmniRoute AI Workforce
-3. Auth Keeper
-4. Intelligent Multi-Model Orchestration
-5. Operations Floor
+Auth Keeper R11: `b3b0d137369038d22820947729233deaec19e166`, tree `9377fe6afe21f098861f32c751f05c8a72882211`, 457/457, evidence `fd1be07a3e2eaf76aa6d9190cfc1725e69b34d6e099ff6104725165692808854`.
 
-The currently active engineering program is R16.32 under Pillar 4. Completing R16.32 does not complete the overall product.
+Operations Floor: `c0a5f2c624fc2370fbc959e91a58bddf60f51a5c`, tree `2dbd97c1a0bfd1d3e1b9ffb1ce02fdc76848fddb`.
 
-## 2. Live production authority
+Workload authority: 10 routed (6 personal + 4 MTA/enterprise), GPT-5.6 Sol/Terra/Luna protected-native/non-routeable, OpenCode/TheOldLLM retired.
 
-The production runtime has not been changed by D14 or D15.
+Build: Webpack default; Turbopack explicit requalification only.
 
-- live authority remains R16.31;
-- live image ID: `sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa`;
-- observed state during D15 qualification: running, healthy, restart count 0;
-- D14/D15 remote push: not performed as part of the engineering qualification lineage;
-- D14/D15 live runtime mutation: none.
+Active E2E target: `Codex Unified → OmniRoute → Auth Keeper/provider eligibility → orchestration/fallback → response → Operations Floor evidence`.
 
-Do not infer that the locally accepted D14 candidate is deployed merely because it passed canonical qualification.
+Next deliverable: one consolidated, non-destructive, prevalidated E2E harness. Safety: no uncontrolled live provider/model calls, credential-value reads, live Auth Keeper mutation, production routing/provider mutation, D18/preference activation, live image/container/database mutation, remote push/deploy/cutover unless later explicitly authorized.
 
-## 3. Accepted R16.32 compatibility-provenance implementation
-
-D14 R6 is the accepted isolated implementation checkpoint.
-
-Local accepted Git authority:
-
-- commit: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- tree: `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`
-- parent: `50b9ab47e01439e33c0411fff0a880242582724d`
-- changed files: 11
-
-The accepted request/context compatibility model is:
-
-- request components: `generic_request`, `auto_tool`
-- context components: `generic_request_context`, `configured_context`, `auto_estimated_input_context`
-- carrier: request-local sidecar
-- carrier key: `target.executionKey`
-- candidate presence does not upgrade unknown compatibility
-- object-identity keying is forbidden
-- compatibility recomputation is not used
-- `ResolvedComboTarget` is not widened for this provenance
-- routing readback is absent
-- routing activation is absent
-
-D14 R6 qualification included:
-
-- protected call counts unchanged;
-- no extra compatibility lookup calls;
-- snapshot topology preserved as 13 observer-bound plus 1 standalone snapshot;
-- typecheck differential: no candidate-only diagnostics;
-- lint differential: no candidate-only diagnostics;
-- worktree/preview lint parity: pass;
-- shadow/provenance focused tests: 155/155 pass;
-- existing routing compatibility regressions: pass;
-- operator checkout, accepted D10 worktree and live runtime unchanged.
-
-The D14 implementation object is recorded here as accepted local engineering authority; it should not be described as remotely published or production-promoted until a later publication/promotion phase explicitly proves that state.
-
-## 4. Accepted D15 canonical qualification
-
-D15 R2 is accepted as the canonical compile/lint/build differential and compatibility-provenance parity qualification for the D14 candidate.
-
-Baseline authority:
-
-- D10 commit: `50b9ab47e01439e33c0411fff0a880242582724d`
-- D10 tree: `385de9ef26be2d833ef6d416939e02663cd4d5e5`
-
-Candidate authority:
-
-- D14 commit: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- D14 tree: `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`
-
-Accepted D15 R2 results include:
-
-- exact 11-file candidate scope and manifest hashes: pass;
-- D10 positive-fact regression: 12 exact source-backed positive facts;
-- compatibility component wiring: 5 exact components;
-- compatibility resolver production call topology: exactly one gate-only consumption path;
-- compatibility fact consumption: shadow-only, two writes;
-- compatibility routing readback: none;
-- `ResolvedComboTarget` mutation: none;
-- extra Auth Keeper fetches: none;
-- extra provider/model probes: none;
-- credential acquisition: none;
-- dispatch-symbol drift: none;
-- real-traffic shadow reuse: none;
-- baseline production builder build: pass;
-- candidate production builder build: pass;
-- typecheck differential: no new diagnostics;
-- full lint differential: no new diagnostics;
-- changed-file lint differential: no new diagnostics;
-- baseline focused tests: 141/141 pass;
-- candidate focused tests: 155/155 pass;
-- routing compatibility regression parity: 34/34 pass on both baseline and candidate;
-- pure runtime hard-fact structural coverage improved from 2 unknowns to 0 unknowns;
-- pure runtime structural 14/14 hard facts known: pass;
-- synthetic comparable proceed case: eligible/match;
-- temporary qualification builder images removed;
-- temporary Git-archive contexts removed;
-- live runtime unchanged.
-
-Synthetic evidence is explicitly not production activation authority.
-
-## 5. Current activation boundary
-
-R16.32 hard-fact architecture is structurally complete for all 14 hard facts in the pure qualification probe, but production activation remains blocked.
-
-Remaining empirical/production evidence gaps after D15 R2 are:
-
-- production evidence readout is not yet qualified;
-- live candidate evidence has not yet been collected;
-- empirical comparable-proceed coverage has not yet been measured;
-- empirical eligible coverage has not yet been measured;
-- empirical mismatch rate has not yet been measured;
-- empirical contained-error rate has not yet been measured;
-- empirical not-ready rate has not yet been measured.
-
-No numeric activation threshold should be invented merely to unblock routing.
-
-## 6. Next phase
-
-The next R16.32 phase is:
-
-`R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT`
-
-D16 should re-evaluate the original D7 activation blockers after D10 + D14 + D15 and determine, from evidence, which blockers are now structurally resolved and which require production readout/live empirical evidence.
-
-D16 remains a readiness/re-audit step. It must not activate routing merely because D15 reached structural 14/14 coverage.
-
-## 7. Model-intelligence enrichment direction
-
-A separate planned subproject under Pillar 4 is a Unified Model Intelligence Registry.
-
-Its purpose is to enrich model/workload reasoning and Operations Floor presentation with architecture metadata such as:
-
-- dense versus sparse/MoE decoder structure;
-- total and active parameter scale when available;
-- context-window metadata;
-- attention family;
-- layer-mix characteristics;
-- KV-cache footprint estimates where source-backed;
-- source/config/report links;
-- external benchmark metadata as a separately labeled evidence class.
-
-Sebastian Raschka's LLM Architecture Gallery is a useful candidate external enrichment source:
-
-- <https://sebastianraschka.com/llm-architecture-gallery/>
-
-It is not a routing authority. Any future ingestion should be offline/pinned, schema-validated, alias-reconciled and provenance-labeled. External architecture or benchmark metadata must not override harder evidence such as actual provider/account availability, official provider/API capabilities, verified OmniRoute catalog facts, request-local compatibility evidence, workload policy, Auth Keeper admission, breaker/cooldown state or explicit request/pinning.
-
-Operations Floor may display this enrichment with provenance, but copied external diagrams/assets should not be assumed reusable without separate licensing review.
-
-## 8. Publication rule
-
-This status document must be updated when a later accepted phase changes any of the following:
-
-- accepted R16.32 Git authority;
-- current next phase;
-- activation blocker set;
-- live production authority;
-- publication/promotion state;
-- model-intelligence enrichment authority.
-
-Historical chat output is supporting evidence only once the accepted status is recorded here.
+Last accepted local script: `omniroute_d18_orchestration_foundation_transplant_candidate_r8.sh` → `PASS_D18_ORCHESTRATION_FOUNDATION_TRANSPLANT_CANDIDATE_R8`. If its output appears again, verify against R8 rather than reopening R1-R7.

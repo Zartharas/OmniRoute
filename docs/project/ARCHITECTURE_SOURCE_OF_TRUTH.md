@@ -1,270 +1,177 @@
 # Architecture Source of Truth
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-15
 Status: Canonical for the `Zartharas/OmniRoute` fork
 
 ## 1. Product goal
 
-Build one Codex-centered AI engineering agent that can transparently marshal a heterogeneous fleet of models/providers through OmniRoute, with Auth Keeper supplying secure browser/session/account access, workload-aware and quota/health/capability-aware orchestration choosing which AI does each part of the work, protected OpenAI/Codex capacity reserved appropriately, and a Dunder-Mifflin-inspired Operations Floor showing the AI organization working in real time.
+Build one Codex-centered AI engineering agent that can transparently marshal a heterogeneous AI workforce through OmniRoute, with Auth Keeper owning credential/session/account lifecycle, provider-neutral orchestration deciding which eligible worker contributes, protected OpenAI/Codex capacity preserved separately where policy requires it, and Operations Floor making the organization observable without becoming a competing router.
 
-The office inspiration is an operations metaphor only. It represents workers, queues, desks, status, routing, failures, recovery and operator attention. The product must not depend on copyrighted characters or assets.
+The office metaphor is an operations metaphor only: workers, queues, desks, routing, failures, recovery and operator attention. The product must not depend on copyrighted characters or assets.
 
 ## 2. Five product pillars
 
-### Pillar 1 — Codex Unified Agent
+The product architecture remains five pillars:
 
-The user works through one Codex-centered session/interface rather than manually switching among provider-specific tools for each task.
+1. **Codex Unified Agent** — one user-facing engineering agent/workspace.
+2. **Unified OmniRoute AI Workforce** — OmniRoute owns routing/provider orchestration across the eligible fleet.
+3. **Auth Keeper** — credential/session/account lifecycle authority.
+4. **Intelligent Multi-Model Orchestration** — conservative provider-neutral hard gates, shadow evidence, later preference intelligence among survivors only.
+5. **Operations Floor** — observability/operator plane for workers, routing, auth, health, evidence and attention.
 
-The unified agent should be able to consume the combined model fleet behind OmniRoute without requiring a restart just to change which model/provider contributes to the work.
+The unified topology remains:
 
-Canonical host-side artifacts historically used for this plane include:
+```text
+USER
+  |
+  v
+CODEX UNIFIED
+  |
+  v
+OMNIROUTE --------------------> AUTH KEEPER
+  |                               |
+  +-------------------------------+
+  |
+  v
+AI WORKFORCE
+  |
+  v
+OPERATIONS FLOOR
+```
 
-- `~/.codex-unified/config.toml`
-- `~/.codex-unified/model-catalog.json`
-- `~/.codex-unified/workload-policy.json`
-- `~/Library/Application Support/mer-gateway/codex-unified-router/router.py`
+Operations Floor observes and explains the organization. It does not become a second router.
 
-Those host artifacts are implementation state, not a substitute for repository architecture documents.
+## 3. Current provider/workload authority
 
-### Pillar 2 — Unified OmniRoute AI workforce
+The current accepted workload authority is **10 routed models plus 3 protected-native ChatGPT models**:
 
-OmniRoute is the routing and orchestration authority for a heterogeneous fleet that can include, where supported and policy-allowed:
+- routed: 10 total;
+- personal lane: 6;
+- isolated MTA/enterprise lane: 4;
+- protected-native: GPT-5.6 Sol, GPT-5.6 Terra, GPT-5.6 Luna.
 
-- free and keyless providers;
-- API-key providers;
-- subscription/coding-plan providers;
-- managed browser/session providers;
-- IBM/enterprise models;
-- web-backed providers;
-- interactive-human-verification providers;
-- protected native/OpenAI capacity.
+Protected-native Sol/Terra/Luna are intentionally **not members of the normal routed fleet**. Their presence in Operations Floor or policy metadata must not make them routeable.
 
-OpenCode is one provider/access lane, not the end goal of the project.
+Personal and MTA/enterprise lanes remain distinguishable. Cross-lane routing fails closed unless explicitly allowed by policy.
 
-Free/keyless provider behavior must remain free/keyless. Adding managed authentication must not force credentials onto an anonymous path that already works.
+## 4. Active provider scope and retired lanes
 
-### Pillar 3 — Auth Keeper
+OpenCode and TheOldLLM are **retired from active OmniRoute product scope** as of this review.
 
-Auth Keeper is the credential/session/account-lifecycle authority. OmniRoute remains the routing/provider authority.
+They must not be reintroduced into active:
 
-Auth Keeper responsibilities include, where the provider mode requires them:
+- provider/model routing tables;
+- workload policy;
+- bootstrap or registry authority;
+- Operations Floor workers;
+- orchestration/fallback candidates;
+- Auth Keeper activation;
+- product roadmap commitments.
 
-- isolated account/browser profiles;
-- credential/session ownership;
-- refresh/re-authentication workflows;
-- exact provider/account/connection binding;
-- eligibility and recovery state;
-- safe handoff to OmniRoute transport;
-- secret isolation and non-leaking operational state.
+Historical references, tombstones, negative regression tests, changelog entries and unreachable dormant source may remain when useful for provenance. Such references do not reactivate a provider.
 
-The routing core must not become the long-term owner of browser credentials or session secrets.
+This explicit retirement supersedes earlier wording that treated OpenCode or TheOldLLM/human-verification as currently active product lanes.
 
-A `connectionId` is an opaque routing/binding identifier, not the credential itself.
+The architecture may still support access-mode concepts such as anonymous/keyless, API credential, managed external session, subscription/coding-plan, web-backed access, interactive human verification and protected-native access. An access-mode concept does not imply that every historical provider using that mode remains active.
 
-### Pillar 4 — Intelligent multi-model orchestration
+## 5. Authority boundaries
 
-OmniRoute should make conservative, provider-neutral decisions about which eligible model/account should contribute to a workload.
+### OmniRoute
 
-The intended decision hierarchy is:
+OmniRoute remains the routing/orchestration authority. It owns candidate selection, workload policy, provider capability/health/quota/fallback behavior and later preference intelligence.
+
+### Auth Keeper
+
+Auth Keeper remains the credential/session/account-lifecycle authority. It owns isolated profiles, exact account/connection binding, re-authentication/recovery and secret isolation. `connectionId` is an opaque binding/routing identifier, not a credential.
+
+### Codex Unified
+
+Codex Unified remains the single intended user-facing engineering agent. Multiple models may reason, critique, judge or synthesize behind it, while repository/tool mutation remains under controlled acting-model ownership unless a later reviewed architecture explicitly changes that rule.
+
+### Operations Floor
+
+Operations Floor remains an operator/observability surface. It may show worker state, routing/fallback, auth/re-auth, quota/cooldown, workload assignment, protected-native preservation, evidence and operator-attention items, but it may not bypass OmniRoute or Auth Keeper authority.
+
+## 6. Intelligent orchestration hard-gate order
+
+Unless explicitly revised, orchestration respects this precedence:
 
 1. explicit request/pinning where contractually applicable;
-2. Auth Keeper credential/admission eligibility;
-3. explicit exclusion and workload-policy restrictions;
+2. Auth Keeper/admission eligibility;
+3. exclusion and workload-policy restrictions;
 4. capability/context compatibility;
 5. breaker/cooldown/known-unavailable state;
 6. provider-neutral preference intelligence among survivors only;
-7. existing dispatch/fallback semantics unless separately proven and activated.
+7. existing dispatch/fallback semantics unless separately qualified and activated.
 
-Preference intelligence must never reintroduce a candidate rejected by a harder gate.
+Preference intelligence must never re-admit a candidate rejected by a harder gate.
 
-The system may use multi-model orchestration patterns such as Fusion, Pipeline, critique, judging, synthesis and specialist review, but tool execution should remain controlled. Multiple models may reason or critique while a designated acting model owns repository/tool mutation unless a later architecture decision explicitly authorizes a different execution model.
+R16.32 is an implementation program under this pillar, not the product itself.
 
-R16.32 belongs under this pillar. It is a subproject that builds provider-neutral candidate facts, deterministic disposition, computational shadowing, observability, compatibility provenance and later preference intelligence. R16.32 is not the product by itself.
+## 7. Current integration state
 
-The current accepted checkpoint and activation boundary are recorded in [Current Project Status](CURRENT_STATUS.md).
+The architecture remains unchanged while implementation has advanced materially:
 
-#### Unified Model Intelligence Registry
+- Codex Unified repository reintegration is complete for the current integration lineage;
+- Auth Keeper final contract reconciliation is complete at R11 in the private repository;
+- Operations Floor selective reintegration is complete and qualified in the current local integration lineage;
+- production build policy now defaults to Webpack, with Turbopack retained only as explicit opt-in while the recurring Turbopack invariant failure remains unresolved upstream/toolchain-side;
+- D18 bounded production-evidence/orchestration foundation work is the current phase;
+- D18 must remain passive/unwired during transplant/qualification;
+- full end-to-end qualification follows D18 acceptance;
+- live activation/cutover remains a later explicit gate.
 
-A future Unified Model Intelligence Registry may enrich the orchestration plane with source-backed model architecture metadata in addition to provider capability/runtime evidence.
+Exact current authorities and phase status are recorded in [Current Project Status](CURRENT_STATUS.md) and [Engineering Tracker](ENGINEERING_TRACKER.md).
 
-Potential enrichment dimensions include:
+## 8. D18 bounded-foundation boundary
 
-- dense versus sparse/MoE decoder structure;
-- total and active parameter scale when available;
-- context-window metadata;
-- attention family and layer mix;
-- KV-cache footprint estimates where source-backed;
-- source/config/technical-report links;
-- benchmark metadata as a separately labeled evidence class.
+D18 is an orchestration/evidence foundation, not permission to import arbitrary historical application reachability.
 
-Sebastian Raschka's LLM Architecture Gallery is a useful candidate external enrichment source:
+The accepted engineering direction is bounded:
 
-- <https://sebastianraschka.com/llm-architecture-gallery/>
+- restore only the source-backed D18 contract required for the passive evidence/readout foundation;
+- preserve newer current implementations when historical dependencies already exist but differ;
+- do not resurrect retired providers merely because they appear in a historical transitive import graph;
+- do not introduce provider calls, credential acquisition, DB writes or production routing activation as part of the passive transplant;
+- require zero external production consumers of the bounded readout until a later activation decision.
 
-This kind of external metadata is **not** a routing hard-gate authority. The evidence precedence for routing must remain:
+## 9. Build authority
 
-1. actual provider/account availability and explicit request/policy state;
-2. official provider/API capability facts;
-3. verified OmniRoute model/catalog facts;
-4. request-local runtime compatibility/health/quota evidence;
-5. external model-architecture enrichment;
-6. external benchmark/intelligence metadata.
+For current production qualification:
 
-External architecture or benchmark metadata may later inform soft preference among candidates that have already survived harder gates. It may not override Auth Keeper denial, workload isolation, request/context incompatibility, cooldown/breaker state, quota cutoff, explicit pinning or other harder authority.
+- `npm run build` defaults to **Webpack**;
+- `OMNIROUTE_USE_TURBOPACK=0` remains Webpack for backward compatibility;
+- `OMNIROUTE_USE_TURBOPACK=1` is explicit Turbopack opt-in/testing only.
 
-Any future external ingestion should be pinned/versioned, schema-validated, alias-reconciled, provenance-labeled and independent of request-time external network availability.
+This is a build qualification policy, not a permanent claim that Turbopack can never be used. Turbopack may be re-evaluated after source/toolchain changes with evidence.
 
-### Pillar 5 — Operations Floor
+## 10. Upstream relationship
 
-Operations Floor is the visual/operator representation of the AI workforce.
+This repository remains a fork of upstream OmniRoute and should continue to absorb compatible upstream improvements. Fork-specific architecture should be expressed as bounded extensions/adaptations where practical rather than unnecessary wholesale rewrites.
 
-It should make the system understandable in real time by exposing, without leaking secrets:
+Upstream README/ROADMAP describe upstream direction but do not supersede this five-pillar architecture.
 
-- which worker/model/provider is active, idle, waiting, blocked or recovering;
-- primary versus fallback routing;
-- provider/account health;
-- auth/re-auth state;
-- quota/cooldown/availability state;
-- compression/optimization state where applicable;
-- request/workload assignments;
-- operator-attention items;
-- evidence supporting routing/fallback decisions;
-- protected-native/OpenAI preservation state;
-- personal versus isolated enterprise/MTA workload visibility where applicable.
+## 11. Model-intelligence enrichment
 
-Operations Floor may also display provenance-labeled model-intelligence enrichment such as architecture class, context metadata, attention type or KV-cache characteristics, but those visual fields remain descriptive evidence rather than routing authority.
+A future Unified Model Intelligence Registry may enrich orchestration and Operations Floor with provenance-labeled model architecture metadata. External architecture or benchmark data is soft enrichment only and may not override provider/account availability, official provider/API capability, verified OmniRoute catalog facts, request-local compatibility/health/quota evidence, workload policy, Auth Keeper denial, breaker/cooldown state or explicit pinning.
 
-Historical implementation branches include:
+## 12. Non-negotiable invariants
 
-- `feat/operations-floor-openai-preservation`
-- `feat/operations-floor-protected-native`
+- OmniRoute remains routing/orchestration authority.
+- Auth Keeper remains credential/session lifecycle authority.
+- Operations Floor remains observability/operator plane, not router.
+- Codex Unified remains the intended single user-facing engineering agent.
+- free/keyless operation must not be broken by managed-auth support.
+- hard-gate rejection cannot be undone by soft preference.
+- protected-native Sol/Terra/Luna remain separate from the normal routed fleet.
+- workload isolation remains authoritative.
+- OpenCode/TheOldLLM remain retired from active product scope unless this document is explicitly revised.
+- secret material must not become routing telemetry.
+- no extra provider/model/Auth Keeper probes are added merely for scoring when existing request-local evidence is available.
+- upstream-compatible improvement remains a continuing goal.
 
-Those branches are architectural evidence and implementation history. Their ideas are not considered retired merely because they are absent from the current upstream release branch.
+## 13. Change control
 
-## 3. Unified end-state topology
+Any proposal that changes the five pillars, routing authority, Auth Keeper authority, active-provider retirement status, protected-native policy, workload isolation, single-agent goal, Operations Floor role, D18 passive boundary or model-intelligence evidence precedence requires an explicit update to this document.
 
-```text
-                           USER
-                            |
-                            v
-                 +---------------------+
-                 |   CODEX UNIFIED     |
-                 |     AI AGENT        |
-                 +----------+----------+
-                            |
-                            v
-                 +---------------------+
-                 |      OMNIROUTE      |
-                 | routing/orchestration|
-                 | capability/quota     |
-                 | health/fallback      |
-                 | workload policy      |
-                 +-----+-----------+---+
-                       |           |
-                       |           v
-                       |   +----------------+
-                       |   |  AUTH KEEPER   |
-                       |   | sessions/auth  |
-                       |   | reauth/recovery|
-                       |   +--------+-------+
-                       |            |
-                       +------------+
-                            |
-                            v
-          +-------------------------------------------+
-          |              AI WORKFORCE                 |
-          | free | API | subscription | web | IBM    |
-          | keyless | managed | human-verification   |
-          | protected OpenAI/Codex capacity           |
-          +--------------------+----------------------+
-                               |
-                               v
-                 +----------------------------+
-                 |      OPERATIONS FLOOR      |
-                 | live office / evidence /   |
-                 | health / routing / attention|
-                 +----------------------------+
-```
-
-Operations Floor observes and explains the organization. It does not become a competing router.
-
-## 4. Provider/access-mode model
-
-Credential ownership and upstream access are separate concepts.
-
-A provider can require one access mode without implying that OmniRoute or Auth Keeper owns a credential.
-
-Examples of supported architectural distinctions include:
-
-- anonymous/keyless access;
-- OmniRoute-optional credentialed access;
-- external credential/session ownership;
-- interactive human verification;
-- protected native access.
-
-Interactive-human-verification providers are not automatically considered retired. If a lane such as TheOldLLM requires human verification and owns no reusable credential, it remains a distinct access mode unless this document explicitly records a later deprecation decision.
-
-## 5. Protected OpenAI/Codex capacity
-
-Protected native/OpenAI capacity is intentionally distinct from the normal routed fleet when policy requires preservation.
-
-Historical Operations Floor work included a separate protected-native presentation for GPT-5.6 Sol, Terra and Luna while preserving the routed-model boundary.
-
-The architecture goal is to avoid burning premium/protected capacity on every routine task when other eligible workers can do the job, while retaining protected capacity for harder work, native use and final fallback according to policy.
-
-No component may invent token savings or preservation claims without evidence.
-
-## 6. Workload isolation
-
-Personal and enterprise/MTA work must remain distinguishable where policy requires it.
-
-A model/provider that is allowed for personal workloads is not automatically allowed for an isolated enterprise/MTA workload. Workload policy is a harder gate than preference scoring.
-
-Cross-lane routing must fail closed unless explicitly permitted by policy.
-
-## 7. Non-negotiable boundaries
-
-The following are architecture invariants unless this document is deliberately revised:
-
-- OmniRoute remains the routing/orchestration authority.
-- Auth Keeper remains the credential/session lifecycle authority.
-- Operations Floor remains an observability/operator plane, not a router.
-- Codex Unified remains the intended single user-facing engineering agent/workspace.
-- free/keyless operation must not be broken by managed-auth support;
-- hard-gate rejection cannot be undone by preference intelligence;
-- external model-architecture/benchmark metadata cannot override harder routing evidence;
-- no extra provider/model probes are added merely for scoring when existing evidence is available;
-- no extra Auth Keeper fetch is added merely for scoring when request-local evidence is available;
-- secret material must not become routing telemetry;
-- protected native/OpenAI lanes remain separate where policy requires it;
-- workload isolation remains authoritative;
-- upstream OmniRoute improvements should continue to be incorporated rather than abandoning the upstream project architecture.
-
-## 8. Relationship to upstream OmniRoute
-
-This repository is a fork of OmniRoute and should continue to absorb compatible upstream improvements.
-
-The upstream README and upstream `ROADMAP.md` describe the upstream project's product and release direction. They are useful references but do not supersede this fork's five-pillar goal.
-
-Fork-specific architecture should be implemented in a way that minimizes unnecessary divergence and remains compatible with upstream modularization where practical.
-
-## 9. What is not the product goal
-
-The following statements are explicitly stale or incomplete if presented as the whole goal:
-
-- "R16.32 is the product."
-- "Auth Keeper is the product."
-- "OpenCode is the product."
-- "Operations Floor is only a dashboard."
-- "The project is only a multi-provider proxy."
-- "TheOldLLM/human-verification is retired because it is absent from a newer branch."
-- "Codex must manually switch models/providers for every task."
-- "An external model gallery or benchmark becomes routing truth."
-
-Each is either a subproject, provider lane, operator surface, enrichment source or implementation detail within the larger architecture.
-
-## 10. Change control
-
-Any proposal that changes the five pillars, routing authority, Auth Keeper authority, protected-native policy, workload isolation, single-agent goal, Operations Floor role or model-intelligence evidence precedence requires an explicit update to this document.
-
-A chat message, temporary branch, issue comment or omitted feature is not sufficient to redefine the architecture.
+A chat message, temporary script, branch omission or historical comment is not sufficient to redefine the architecture.

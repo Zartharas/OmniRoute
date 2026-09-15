@@ -1,0 +1,166 @@
+# Auth Keeper Reconciliation Failure Modes — 2026-09-15
+
+Status: Durable engineering appendix for the `Zartharas/OmniRoute` fork only.
+
+This appendix records additional source-shape and reachability failures discovered while reconciling Auth Keeper against the accepted Codex Unified authority. These are prevention rules for future fork engineering. They are not upstream contribution material unless explicitly authorized.
+
+## 1. Wire identity must be source-backed
+
+Observed failure: a reconciliation harness required `accountId` on the OmniRoute/Auth Keeper wire request even though the actual contract is `providerId + connectionId`, with account identity resolved server-side through the unique connection binding.
+
+Prevention:
+
+- derive required wire fields from the exact accepted contract;
+- distinguish caller-supplied identity from server-resolved identity;
+- prove uniqueness and provider mismatch guards instead of inventing convenience fields.
+
+## 2. Route identity extraction must be structural
+
+Observed failure: a regex counted nine Codex routes because the first `ROUTES` dictionary key appeared on the same line as the assignment.
+
+Prevention:
+
+- use AST extraction for Python dictionaries and other structural source authority;
+- do not make semantic counts depend on pretty-print/newline layout.
+
+## 3. Test transforms must not depend on display titles
+
+Observed failure: a candidate stopped because it expected the exact historical test title `TheOldLLM requires managed same-browser-context policy`.
+
+Prevention:
+
+- identify tests by semantic body/contract behavior where transformation is unavoidable;
+- exact human-readable test names are not stable source authority;
+- after a semantic rewrite, prove that the old positive behavior is absent.
+
+## 4. Retired-provider checks must distinguish executable authority from history
+
+Observed failure: a guard rejected any textual occurrence of a retired provider name in a transport source file even when the executable provider policy had already been emptied.
+
+Prevention:
+
+- block retired identities in executable policy tables, registries, bootstrap calls and active imports;
+- allow historical comments, tombstones and negative regression assertions;
+- use bounded token matching so short aliases cannot accidentally match unrelated identifiers.
+
+## 5. Removing HTTP routes is not sufficient retirement
+
+Observed failure: direct OpenCode HTTP ingress and runtime bootstrap were removed, but the active module graph still reached `opencodeApiKeyAcceptance.mjs` through `server.mjs -> service.mjs`.
+
+A second active path existed through dashboard lifecycle wiring, and the active browser module imported the retired TheOldLLM visible-browser policy.
+
+Prevention:
+
+- retirement qualification must traverse the active import graph, not only inspect route declarations;
+- root reachability at the real active entrypoint (`server.mjs` for Auth Keeper) is authoritative;
+- service, dashboard and browser modules loaded by the server are part of active provider ownership even if their provider-specific HTTP endpoints are gone;
+- fail if any active path reaches retired provider-execution modules.
+
+## 6. Generic security rules must not remain housed in retired-provider modules
+
+Observed failure class: `assertInteractiveAcquisitionAllowed` expressed a generic security invariant (API-key-only providers cannot use interactive browser acquisition) but lived inside an OpenCode-specific acceptance module. Keeping the generic rule active therefore kept the retired provider module reachable.
+
+Prevention:
+
+- move genuinely generic policy into provider-neutral modules;
+- preserve the behavior and error contract while removing the retired-provider ownership edge;
+- dormant provider modules may keep their local copy for direct historical regression tests when needed, but active generic code must not import them.
+
+## 7. Dormant implementation means unreachable, not merely unrouted
+
+A provider implementation is not dormant merely because no router route points to it.
+
+Required proof for retirement:
+
+1. no active provider policy admits it;
+2. no exposed provider registry advertises it;
+3. no active server/bootstrap path instantiates it;
+4. no active service/dashboard/browser import graph reaches it;
+5. direct implementation files may remain only as unreachable historical/upstream code;
+6. exact observed dormant files should remain byte-identical unless a separate deletion phase is explicitly authorized.
+
+Do not resurrect implementation families that an earlier accepted takedown already removed simply to satisfy a guessed inventory.
+
+## 8. Reachability guards must remain fail-closed
+
+When a reachability validator finds a retired module reachable from an active root, classify the exact parent edge before changing the validator.
+
+Do not weaken a graph guard just to obtain a green result. Refine the validator only when the reported path is proven non-active or semantically misclassified.
+
+The Auth Keeper reconciliation sequence demonstrated the correct behavior: the graph finding `server.mjs -> service.mjs -> opencodeApiKeyAcceptance.mjs` was treated as a genuine source gap and expanded the repair boundary instead of being suppressed.
+
+## 9. Active generic modules can silently retain retired ownership
+
+Observed during Candidate R3: provider-specific routes and runtimes were removed from `server.mjs`, but active generic modules still kept the retired implementations loaded:
+
+- `service.mjs -> opencodeApiKeyAcceptance.mjs`;
+- `service.mjs -> opencodeCredentialCacheHooks.mjs`;
+- `dashboard.mjs -> opencodeApiKeyAcceptance.mjs`;
+- `dashboard.mjs -> opencodeCredentialCacheHooks.mjs`;
+- `browser.mjs -> theoldllmVisibleBrowserPolicy.mjs`.
+
+Prevention:
+
+- compute transitive imports from the active service entrypoint after every retirement transform;
+- include shared service/dashboard/browser modules in the active ownership boundary;
+- when a generic invariant is implemented inside a retired-provider module, extract only that generic invariant to a neutral module and leave the old provider implementation unreachable;
+- migrate source-wiring tests that assert the retired active hooks, while leaving direct dormant-module regression tests unchanged.
+
+## 10. A clean invariant is not a mandatory diff
+
+Observed during Candidate R4: `src/browser.mjs` was included in the planned Auth Keeper changeset because an older inspected source branch had contained a retired-provider browser import. Against the exact pinned reconciliation authority, the browser source was already clean. The transform correctly produced no browser diff, but the harness still failed because its planned changeset required the file to change.
+
+Prevention:
+
+- distinguish a file that must satisfy an invariant from a file that must be mutated;
+- inspect and hash-lock the exact current prestate before deciding that a file belongs in the expected diff;
+- when the current source is already compliant, prove the invariant and treat the transform as a valid no-op;
+- never rewrite or touch an already-correct file merely to satisfy a historical planned-file list;
+- derive or validate the exact expected changeset against the pinned source authority and fail on any unexpected addition or omission;
+- if an earlier candidate produces an authoritative actual changeset before failing later, use that evidence to tighten the next candidate's expected plan.
+
+## 11. Tombstone tests must evolve with product scope
+
+Observed during Candidate R5: all structural, reachability, packaging and targeted gates passed, but the full Auth Keeper suite failed in `r16-17-theoldllm-operator-takedown.node.test.mjs`. The test encoded an older scope assumption: TheOldLLM must be absent while an `opencode:` transport policy must still remain active. Once both provider lanes were intentionally retired, the runtime contract was correct to expose an empty provider policy and the tombstone assertion became stale.
+
+Prevention:
+
+- treat takedown/tombstone tests as executable product-scope documentation, not timeless assertions;
+- whenever retirement scope expands, search existing negative tests for assumptions about which sibling provider is expected to survive;
+- migrate only the stale scope assertion and preserve the rest of the historical takedown test;
+- require the stale positive assertion to be present before rewriting it, then prove no positive retired-provider assertion remains;
+- add the migrated tombstone to the targeted validation set before running the full suite;
+- targeted tests never replace the mandatory full-suite gate.
+
+## 12. Full-suite failures must surface even with non-TAP reporters
+
+Observed during Candidate R5 forensics: the full suite exited nonzero with an `ERR_ASSERTION`, but the forensic parser found zero `not ok` TAP entries. The useful failure appeared in the reporter output and stack trace instead.
+
+Prevention:
+
+- do not infer success or failure from TAP `not ok` counts alone;
+- preserve the actual process return code as the primary authority;
+- capture `ERR_ASSERTION`, stack traces, `failureType`, error codes and the final log tail for non-TAP/spec-style reporters;
+- on a failed full-suite command, print a bounded log tail immediately before exiting so a second forensic run is usually unnecessary;
+- hash the preserved full-suite log when it becomes authority for a successor candidate.
+
+## 13. Pre-delivery reconciliation checklist
+
+Before delivering another provider-retirement/reconciliation script:
+
+- hash-lock the accepted source/tree and evidence package;
+- inspect the complete active module graph from real entrypoints;
+- inventory executable policy tables and exposed provider registries;
+- distinguish invariant-only files from mutation-required files;
+- distinguish direct/dormant unit tests from source-wiring tests;
+- inspect historical tombstone tests for assumptions invalidated by the new scope;
+- preserve generic security behavior in provider-neutral modules;
+- preserve exact observed dormant implementation bytes;
+- run positive synthetic transformation/reachability fixtures;
+- run a negative fixture that deliberately reintroduces a retired active import and confirm fail-closed behavior;
+- compile every embedded Python block and syntax-check Bash/Node artifacts;
+- run targeted tests and then the complete suite;
+- surface bounded full-suite failure context for both TAP and non-TAP reporters;
+- prove transactional cleanup of uncommitted worktrees/branches;
+- never install dependencies merely to validate an isolated worktree when an exact copy-on-write dependency authority is available;
+- do not push, deploy or contact provider services as part of source qualification.

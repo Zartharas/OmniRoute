@@ -1,48 +1,23 @@
 # OmniRoute Fork Source of Truth
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-15
 
-This file defines the authority order for the `Zartharas/OmniRoute` fork.
+Canonical documents:
 
-## Canonical documents
+1. `docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md`
+2. `docs/project/ENGINEERING_SOURCE_OF_TRUTH.md`
+3. `docs/project/MASTER_ROADMAP.md`
+4. `docs/project/CURRENT_STATUS.md`
+5. `docs/project/ENGINEERING_TRACKER.md`
+6. `docs/project/FAILURE_MODE_REGISTER.md`
+7. `docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md`
 
-For the fork's product goal, architecture, engineering method and current checkpoint, the canonical authority is:
+Current accepted local authority: D18 R8 commit `58452140ffc8122a26a387638f8a38d7d80f5024`, tree `2c4ae9cd707b38130333581e0a9e1b7af9e6745d`, evidence `89d1377c4ced9611516d076a8ef1126d1f78b472925dfe63e80f97df42826005`.
 
-1. [Architecture Source of Truth](docs/project/ARCHITECTURE_SOURCE_OF_TRUTH.md)
-2. [Engineering Source of Truth](docs/project/ENGINEERING_SOURCE_OF_TRUTH.md)
-3. [Master Roadmap](docs/project/MASTER_ROADMAP.md)
-4. [Current Project Status](docs/project/CURRENT_STATUS.md)
+Active phase: full end-to-end qualification, explicitly authorized for non-destructive engineering qualification only. D18 remains passive/unwired. Live activation/cutover is not authorized. Do not resume D19 automatically.
 
-These documents describe the fork-specific system. The upstream OmniRoute README and `ROADMAP.md` remain useful upstream references, but they do **not** define this fork's end goal.
+Scope: five pillars unchanged; OpenCode/TheOldLLM retired; workload authority 10 routed (6 personal + 4 MTA/enterprise) plus GPT-5.6 Sol/Terra/Luna protected-native/non-routeable.
 
-## Authority by question
+Public fork is product/architecture authority. Private `Zartharas/omniroute-auth-keeper` is Auth Keeper implementation/release authority and may not redefine routing policy independently.
 
-| Question | Authority |
-| --- | --- |
-| What are we building? | Architecture Source of Truth |
-| What must never regress? | Architecture + Engineering Source of Truth |
-| How do we implement and qualify changes? | Engineering Source of Truth |
-| What is the long-range implementation plan? | Master Roadmap |
-| What is the latest accepted checkpoint and next phase? | Current Project Status + accepted Git/evidence state |
-| What does the software actually do now? | Accepted Git objects, tests, build evidence, and runtime evidence |
-| What does upstream OmniRoute plan? | Upstream `README.md` and `ROADMAP.md` |
-
-The Current Project Status is deliberately subordinate to accepted Git/test/build/runtime evidence when a more specific accepted artifact exists. It is a checkpoint summary, not a replacement for machine evidence.
-
-## Stale-information policy
-
-Chat messages, old branch notes, issue comments, temporary scripts, screenshots, and historical design drafts are not authoritative if they conflict with the canonical documents above.
-
-A decision is not considered retired merely because it disappears from a newer conversation or branch. Retirement/deprecation must be explicit in the Architecture Source of Truth or in an accepted decision recorded there.
-
-When implementation changes the architecture, engineering invariants, roadmap status or accepted project checkpoint, the relevant canonical documents must be updated in the same engineering cycle before the change is considered complete.
-
-## Cross-repository authority
-
-The public fork is the canonical product/architecture authority.
-
-The private `Zartharas/omniroute-auth-keeper` repository is the canonical implementation and release-engineering authority for Auth Keeper. It must remain aligned with this fork's architecture and may add private operational detail, but it must not redefine the product goal independently.
-
-## Non-negotiable alignment rule
-
-R16.x phases, provider integrations, Auth Keeper work, Operations Floor work, Codex Unified work, and external model-intelligence enrichment are subprojects of the same product goal. No single subproject is the product by itself.
+For a new chat, read `docs/project/CHAT_HANDOFF_20260915_FULL_E2E_QUALIFICATION.md` first. Accepted Git/test/build/runtime evidence remains implementation authority when more specific than documentation.
