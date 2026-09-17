@@ -1,11 +1,13 @@
 # Current Project Status
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-16
 Status: Canonical checkpoint summary for the `Zartharas/OmniRoute` fork
 
-This document records the latest accepted engineering checkpoint. It is a status snapshot, not the product architecture authority. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), and the long-range plan remains in [Master Roadmap](MASTER_ROADMAP.md).
+This document records the latest accepted engineering checkpoint and current active qualification boundary. It is a status snapshot, not the product architecture authority. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), and the long-range plan remains in [Master Roadmap](MASTER_ROADMAP.md).
 
 Accepted Git objects, tests, build evidence and runtime evidence remain the implementation authority when they are more specific than this summary.
+
+For the detailed current cross-project handoff, read [R16.32 D18 Auth Keeper Qualification Handoff](HANDOFF_R16_32_D18_AUTH_KEEPER_2026-09-16.md).
 
 ## 1. Overall product status
 
@@ -17,161 +19,178 @@ The five-pillar product goal remains unchanged:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-The currently active engineering program is R16.32 under Pillar 4. Completing R16.32 does not complete the overall product.
+The currently active engineering program remains R16.32 under Pillar 4. Completing the current D18 qualification does not complete the overall product.
 
 ## 2. Live production authority
 
-The production runtime has not been changed by D14 or D15.
+The current D18 qualification lineage has not changed the live production runtime.
 
-- live authority remains R16.31;
-- live image ID: `sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa`;
-- observed state during D15 qualification: running, healthy, restart count 0;
-- D14/D15 remote push: not performed as part of the engineering qualification lineage;
-- D14/D15 live runtime mutation: none.
+Frozen live snapshot authority:
 
-Do not infer that the locally accepted D14 candidate is deployed merely because it passed canonical qualification.
+`279211b86f31339171caadac41aca3a928b5356cf696eb98a076486a97f52df3|sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa|running|0|2026-09-15T16:51:28.109833871Z`
 
-## 3. Accepted R16.32 compatibility-provenance implementation
+Current rules:
 
-D14 R6 is the accepted isolated implementation checkpoint.
+- no D18 production activation has been authorized;
+- no D18 deployment/cutover has been performed by this qualification lineage;
+- no D19 work is authorized by the current checkpoint;
+- do not infer that a locally qualified source/image is live merely because qualification passed.
 
-Local accepted Git authority:
+## 3. Historical compatibility-provenance checkpoint
 
-- commit: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- tree: `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`
-- parent: `50b9ab47e01439e33c0411fff0a880242582724d`
-- changed files: 11
+D14 R6 and D15 R2 remain historical accepted R16.32 compatibility-provenance qualification authority.
 
-The accepted request/context compatibility model is:
+D15 established, among other things:
 
-- request components: `generic_request`, `auto_tool`
-- context components: `generic_request_context`, `configured_context`, `auto_estimated_input_context`
-- carrier: request-local sidecar
-- carrier key: `target.executionKey`
-- candidate presence does not upgrade unknown compatibility
-- object-identity keying is forbidden
-- compatibility recomputation is not used
-- `ResolvedComboTarget` is not widened for this provenance
-- routing readback is absent
-- routing activation is absent
+- no additional Auth Keeper fetches for the compatibility-provenance path;
+- no credential acquisition during that qualification;
+- no routing readback from compatibility provenance;
+- structural 14/14 hard-fact coverage in the pure qualification probe;
+- no production activation authority from synthetic qualification alone.
 
-D14 R6 qualification included:
+Those facts remain useful historical evidence but are no longer the active next-phase checkpoint.
 
-- protected call counts unchanged;
-- no extra compatibility lookup calls;
-- snapshot topology preserved as 13 observer-bound plus 1 standalone snapshot;
-- typecheck differential: no candidate-only diagnostics;
-- lint differential: no candidate-only diagnostics;
-- worktree/preview lint parity: pass;
-- shadow/provenance focused tests: 155/155 pass;
-- existing routing compatibility regressions: pass;
-- operator checkout, accepted D10 worktree and live runtime unchanged.
+## 4. Current D18 source and image authority
 
-The D14 implementation object is recorded here as accepted local engineering authority; it should not be described as remotely published or production-promoted until a later publication/promotion phase explicitly proves that state.
+Linux-buildable source authority:
 
-## 4. Accepted D15 canonical qualification
+- branch: `feat/d18-r8-union-lockfix-linux-canary-r9`
+- commit: `5ae6f97e732263e1029b35aeccf4873ba22d4554`
+- tree: `d016aa08b3e57d2c545f7e351c578610a4b3d2a5`
+- parent: `13453f6bdf1c9279da3bea0d2382959c92c93d3e`
 
-D15 R2 is accepted as the canonical compile/lint/build differential and compatibility-provenance parity qualification for the D14 candidate.
+Retained Linux canary image authority:
 
-Baseline authority:
+- tag: `omniroute:d18-r8-r9-candidate-linux-r10`
+- image ID: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`
+- platform: `linux/amd64`
+- R10 evidence ZIP SHA-256: `a800dde4a18ebdde860499d9c8241b2ae0068b1065498213080e3c647af0dbd2`
 
-- D10 commit: `50b9ab47e01439e33c0411fff0a880242582724d`
-- D10 tree: `385de9ef26be2d833ef6d416939e02663cd4d5e5`
+R10 qualified the Linux-buildable image while preserving live runtime and host non-drift.
 
-Candidate authority:
+## 5. R11 flag-OFF runtime qualification
 
-- D14 commit: `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`
-- D14 tree: `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`
+R11 evidence ZIP SHA-256:
 
-Accepted D15 R2 results include:
+`1321c9769cfc1ac881c62c217650febb7aa1c05c6f0b4e822daaa52651168098`
 
-- exact 11-file candidate scope and manifest hashes: pass;
-- D10 positive-fact regression: 12 exact source-backed positive facts;
-- compatibility component wiring: 5 exact components;
-- compatibility resolver production call topology: exactly one gate-only consumption path;
-- compatibility fact consumption: shadow-only, two writes;
-- compatibility routing readback: none;
-- `ResolvedComboTarget` mutation: none;
-- extra Auth Keeper fetches: none;
-- extra provider/model probes: none;
-- credential acquisition: none;
-- dispatch-symbol drift: none;
-- real-traffic shadow reuse: none;
-- baseline production builder build: pass;
-- candidate production builder build: pass;
-- typecheck differential: no new diagnostics;
-- full lint differential: no new diagnostics;
-- changed-file lint differential: no new diagnostics;
-- baseline focused tests: 141/141 pass;
-- candidate focused tests: 155/155 pass;
-- routing compatibility regression parity: 34/34 pass on both baseline and candidate;
-- pure runtime hard-fact structural coverage improved from 2 unknowns to 0 unknowns;
-- pure runtime structural 14/14 hard facts known: pass;
-- synthetic comparable proceed case: eligible/match;
-- temporary qualification builder images removed;
-- temporary Git-archive contexts removed;
-- live runtime unchanged.
+R11 status: **ACCEPTED**.
 
-Synthetic evidence is explicitly not production activation authority.
+Accepted facts include:
 
-## 5. Current activation boundary
+- exact retained R10 image;
+- Docker network `none`;
+- no published ports;
+- no bind/named volumes;
+- `/app/data` tmpfs only;
+- D18 activation flag OFF;
+- `/healthz` and `/livez` both returned 200;
+- no harness provider requests;
+- successful external egress 0;
+- cleanup/non-drift passed.
 
-R16.32 hard-fact architecture is structurally complete for all 14 hard facts in the pure qualification probe, but production activation remains blocked.
+Background application egress attempts blocked by `network=none` are classified separately from provider dispatch.
 
-Remaining empirical/production evidence gaps after D15 R2 are:
+## 6. R12 flag-ON qualification lineage
 
-- production evidence readout is not yet qualified;
-- live candidate evidence has not yet been collected;
-- empirical comparable-proceed coverage has not yet been measured;
-- empirical eligible coverage has not yet been measured;
-- empirical mismatch rate has not yet been measured;
-- empirical contained-error rate has not yet been measured;
-- empirical not-ready rate has not yet been measured.
+R12 exercised the exact R10 image in an isolated canary with D18 Auth Keeper admission ON and a loopback synthetic Auth Keeper.
 
-No numeric activation threshold should be invented merely to unblock routing.
+R12 through R12-R5 failures are classified harness defects and must not be rediscovered as product defects:
 
-## 6. Next phase
+- R12: wrong source-owner assertion for `applyAuthKeeperComboAdmission`;
+- R12-R2: synthetic server token-path mismatch;
+- R12-R3: unauthorized readiness probe expected 404 but correctly received 401;
+- R12-R4: `docker exec` stdin was not attached for `node -` heredocs;
+- R12-R5: synthetic service token violated the production client private 64-hex token-file contract.
 
-The next R16.32 phase is:
+See the D18 handoff for evidence hashes and exact details.
 
-`R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT`
+## 7. R12-R6 first valid flag-ON runtime observation
 
-D16 should re-evaluate the original D7 activation blockers after D10 + D14 + D15 and determine, from evidence, which blockers are now structurally resolved and which require production readout/live empirical evidence.
+R12-R6 script SHA-256:
 
-D16 remains a readiness/re-audit step. It must not activate routing merely because D15 reached structural 14/14 coverage.
+`1c4fb841838456755039947b54c9227b8b1f53803ea37e4ada72b5d61cf26e90`
 
-## 7. Model-intelligence enrichment direction
+R12-R6 evidence ZIP SHA-256:
 
-A separate planned subproject under Pillar 4 is a Unified Model Intelligence Registry.
+`7f58fff8115dc0ff5b5cf942d61e9fe91a402120e8882f1abd10daae403bc8b6`
 
-Its purpose is to enrich model/workload reasoning and Operations Floor presentation with architecture metadata such as:
+Validated runtime facts:
 
-- dense versus sparse/MoE decoder structure;
-- total and active parameter scale when available;
-- context-window metadata;
-- attention family;
-- layer-mix characteristics;
-- KV-cache footprint estimates where source-backed;
-- source/config/report links;
-- external benchmark metadata as a separately labeled evidence class.
+- synthetic service-token contract passed;
+- synthetic Auth Keeper readiness passed;
+- synthetic combo seed genuinely executed and was independently verified in SQLite;
+- no provider connection row existed for the synthetic connection ID;
+- pre-chat synthetic Auth Keeper event count was 0;
+- chat probe genuinely executed;
+- two authorized `GET /v1/omniroute/connection-state` events were observed after the chat, both HTTP 200;
+- runtime order was: first connection-state GET, `No credentials for openai`, second connection-state GET, then `Skipping openai/gpt-4o — Auth Keeper routing eligibility excluded the target`;
+- chat returned 503 `ALL_TARGETS_SKIPPED` with `attempted:0`;
+- no target-specific provider dispatch marker was observed;
+- no real provider request succeeded;
+- successful external egress remained 0 due Docker `network=none`;
+- cleanup and live/stable-inventory non-drift passed.
 
-Sebastian Raschka's LLM Architecture Gallery is a useful candidate external enrichment source:
+This materially supports pre-dispatch Auth Keeper exclusion for the synthetic target. Formal read-only source/call-topology reconciliation is still open; do not infer a single global Auth Keeper connection-state consumer merely from the request-scoped D18 design.
 
-- <https://sebastianraschka.com/llm-architecture-gallery/>
+## 8. Current formal acceptance reconciliation status
 
-It is not a routing authority. Any future ingestion should be offline/pinned, schema-validated, alias-reconciled and provenance-labeled. External architecture or benchmark metadata must not override harder evidence such as actual provider/account availability, official provider/API capabilities, verified OmniRoute catalog facts, request-local compatibility evidence, workload policy, Auth Keeper admission, breaker/cooldown state or explicit request/pinning.
+R7 and R7-R2 are read-only reconciliation scripts. They do not create/start/exec containers, build images, mutate Git, use credentials, call providers or activate production.
 
-Operations Floor may display this enrichment with provenance, but copied external diagrams/assets should not be assumed reusable without separate licensing review.
+R7 failed only because it searched the escaped `body_prefix=...` evidence value for unescaped JSON markers.
 
-## 8. Publication rule
+R7-R2 corrected that parser and successfully proved:
 
-This status document must be updated when a later accepted phase changes any of the following:
+- R12-R6 script/evidence binding;
+- candidate Git authority;
+- R10 image authority;
+- current live runtime and host sentinel non-drift;
+- R12-R6 evidence-manifest integrity;
+- runtime sequence `EVENT1 -> No credentials -> EVENT2 -> D18 skip`;
+- chat terminal `503 ALL_TARGETS_SKIPPED`;
+- `attempted:0`;
+- D18 Auth Keeper exclusion log present;
+- target-specific provider dispatch absent;
+- cleanup/non-drift passed.
+
+The latest local R7-R2 run then stopped at:
+
+`d18_request_scoped_plan_missing=['authKeeperAdmissionPlanPromise', 'prepareAuthKeeperComboAdmissionPlan']`
+
+This is the current unresolved boundary. It is a **read-only source-owner/call-topology assertion**, not a runtime failure. The exact candidate Git object did not satisfy R7-R2's assumption that those markers belong in `open-sse/services/combo.ts`.
+
+## 9. Active next phase
+
+The active next phase is **exact-source-owner reconciliation for R7-R2**, not another runtime canary and not production activation.
+
+The next engineering session must:
+
+1. use the user's R7-R2 terminal output as the newest local evidence;
+2. inspect exact candidate commit `5ae6f97e732263e1029b35aeccf4873ba22d4554`;
+3. locate the actual owner(s) of Auth Keeper combo-admission plan preparation/application;
+4. determine why `authKeeperAdmissionPlanPromise` and `prepareAuthKeeperComboAdmissionPlan` were absent from the source file R7-R2 expected;
+5. classify stale harness source ownership versus real source-topology discrepancy;
+6. produce one bounded read-only successor reconciliation only after proving that discriminator;
+7. preserve all R10/R11/R12 evidence and production non-drift;
+8. do not deploy, cut over, activate production or begin D19.
+
+The detailed continuity document is [HANDOFF_R16_32_D18_AUTH_KEEPER_2026-09-16.md](HANDOFF_R16_32_D18_AUTH_KEEPER_2026-09-16.md).
+
+## 10. Model-intelligence enrichment direction
+
+The separate Unified Model Intelligence Registry direction remains planned under Pillar 4. External architecture/benchmark metadata is enrichment only and is not routing or authentication authority.
+
+## 11. Publication rule
+
+This status document and the current handoff must be updated when a later accepted phase changes any of the following:
 
 - accepted R16.32 Git authority;
+- source/image/runtime authority;
 - current next phase;
 - activation blocker set;
 - live production authority;
 - publication/promotion state;
+- Auth Keeper integration boundary;
 - model-intelligence enrichment authority.
 
 Historical chat output is supporting evidence only once the accepted status is recorded here.
