@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-17
-Status: Canonical R16.32 D18 checkpoint; isolated runtime/source reconciliation accepted, production activation not authorized
+Status: Canonical R16.32 D18 checkpoint; isolated qualification, source/runtime reconciliation, pre-activation readiness and activation/rollback runbook review accepted; production activation not authorized
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), and the detailed continuity record remains in [R16.32 D18 Auth Keeper Qualification Handoff](HANDOFF_R16_32_D18_AUTH_KEEPER_2026-09-16.md).
 
@@ -17,15 +17,28 @@ The five-pillar product goal remains unchanged:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-The active program remains R16.32 under Pillar 4. The D18 isolated qualification/reconciliation checkpoint described here does not complete the overall product and does not authorize production activation.
+The active program remains R16.32 under Pillar 4. D18 isolated qualification, source/runtime reconciliation, pre-activation readiness, and activation/rollback runbook review are complete. This still does not complete the overall product and does not authorize production activation.
 
 ## 2. Live production authority
 
-The D18 qualification lineage has not changed the live production runtime.
+The D18 qualification/readiness lineage has not changed the live production runtime.
 
 Frozen live snapshot authority:
 
 `279211b86f31339171caadac41aca3a928b5356cf696eb98a076486a97f52df3|sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa|running|0|2026-09-15T16:51:28.109833871Z`
+
+The current live runtime is the accepted R16.31 direct-Docker deployment with:
+
+- cutover milestone label `R16.31`;
+- source commit `34bd2fdbb8b04d848a0157d763c70ec241468e1c`;
+- source tree `7d7b256d92036093535063fb930fe79bb3df4535`;
+- network `mer-gateway_default`;
+- restart policy `unless-stopped`;
+- runtime user `node`;
+- loopback-only published ports 20128, 20129 and 20132;
+- live data volume `omniroute-r16-31-live-data-34bd2fdbb8b0`;
+- read-only Auth Keeper service-token bind;
+- read-only workload-policy bind.
 
 Host non-drift sentinels:
 
@@ -37,7 +50,7 @@ Host non-drift sentinels:
 Current rules:
 
 - no D18 production activation has been authorized;
-- no D18 deployment/cutover has been performed by this qualification lineage;
+- no D18 deployment/cutover has been performed by this qualification/readiness lineage;
 - no D19 work is authorized by this checkpoint;
 - a qualified local source/image must not be inferred to be live.
 
@@ -103,11 +116,7 @@ R12-R6 remains the runtime authority. It proved:
 
 ## 6. Formal source/call-topology reconciliation — CLOSED
 
-The R7 source-owner/call-topology blocker is now closed by exact-object and AST-backed evidence. No additional runtime canary was required.
-
-### Exact source ownership
-
-The earlier R7-R2/R7-R3 assumption that both request-scoped admission-plan markers belonged directly in `open-sse/services/combo.ts` was stale.
+The R7 source-owner/call-topology blocker is closed by exact-object and AST-backed evidence. No additional runtime canary was required.
 
 Exact candidate source proves:
 
@@ -118,66 +127,110 @@ Exact candidate source proves:
 - admission application owner: `src/lib/authKeeper/comboRoutingEligibility.ts::applyAuthKeeperComboAdmission`;
 - connection-state fetch funnel owner: `src/lib/authKeeper/connectionStateRoutingEligibility.ts`.
 
-### First R12-R6 connection-state GET
-
-TypeScript AST analysis of the exact candidate proved:
+GET #1 is reconciled to:
 
 `targetResolution.preScreenTargets -> isModelAvailable/checkModelAvailable -> getProviderCredentialsWithQuotaPreflight -> getProviderCredentials -> applyAuthKeeperConnectionStateRoutingEligibility -> requestConnectionState -> /v1/omniroute/connection-state`
 
-The same credential owner contains the later `No credentials for ${provider}` marker, with the Auth Keeper eligibility filter occurring first in source order.
-
-This reconciles the first observed R12-R6 GET with the availability/credential pre-screen path.
-
-### Second R12-R6 connection-state GET
-
-Exact candidate source proves the independent lazy admission path:
+GET #2 is reconciled to:
 
 `createAuthKeeperComboAdmissionPlanProvider.planPromise -> prepareAuthKeeperComboAdmissionPlan -> defaultApplyEligibility -> applyAuthKeeperConnectionStateRoutingEligibility -> requestConnectionState -> /v1/omniroute/connection-state -> applyAuthKeeperComboAdmission -> D18 target exclusion`
 
-This reconciles the second observed GET with D18 admission preparation/application.
-
-### Reconciled runtime sequence
-
-The two distinct source paths support the already-collected R12-R6 runtime sequence:
-
-1. connection-state GET from availability/credential pre-screen;
-2. `No credentials for openai`;
-3. connection-state GET from the separately memoized D18 admission-plan path;
-4. `Auth Keeper routing eligibility excluded the target`;
-5. terminal `ALL_TARGETS_SKIPPED`, `attempted:0`, no target-specific provider dispatch.
-
-The event count was not changed to fit the runtime. The exact candidate source explains the two observed requests through two distinct consumers/call paths.
+The exact candidate topology supports the already-collected R12-R6 runtime sequence without changing or inventing an expected event count.
 
 Formal R7 source-topology reconciliation status: **ACCEPTED / CLOSED**.
 
-## 7. R7 reconciliation harness defects — historical, do not rediscover
+## 7. Historical harness defects — do not rediscover
 
-The following later R7 failures were validator/harness defects, not product/runtime defects:
+The following were harness/validator defects rather than D18 product defects:
 
-- R7: escaped `body_prefix` evidence parser searched for unescaped JSON markers.
-- R7-R2/R7-R3: stale source-owner/symbol assumption around `authKeeperAdmissionPlanPromise` and `prepareAuthKeeperComboAdmissionPlan`.
-- R7-R4: Bash 4 `mapfile` used against macOS `/bin/bash` 3.2.
-- R7-R6: ordinary `const` assignment misclassified as a function declaration.
-- R7-R7: arbitrary ±40-line proximity assertion used for `handleComboChat` option wiring.
-- R7-R8: arrow-function inline parameter type literal mistaken for the function body.
-- R7-R9: AST query inspected `Parameter.initializer` instead of the destructured parameter `BindingElement` default for `prepare = prepareAuthKeeperComboAdmissionPlan as ...`.
+- R12 wrong source owner for `applyAuthKeeperComboAdmission`;
+- R12-R2 synthetic token-path mismatch;
+- R12-R3 incorrect 404 expectation for an unauthorized endpoint that correctly returns 401;
+- R12-R4 missing stdin attachment for `docker exec ... node -`;
+- R12-R5 invalid synthetic token-file contract;
+- R7 escaped evidence-parser defect;
+- R7-R2/R7-R3 stale plan-symbol/source-owner assumption;
+- R7-R4 Bash 4 `mapfile` on macOS Bash 3.2;
+- R7-R6 ordinary `const` assignment misclassified as a function;
+- R7-R7 arbitrary line-proximity assertion;
+- R7-R8 inline TypeScript parameter object type mistaken for function body;
+- R7-R9 destructured `BindingElement` default incorrectly queried as `Parameter.initializer`;
+- R1 candidate-image source-label assertion used label names outside the accepted R10 identity authority;
+- R1 compared the live frozen Auth Keeper runtime against the later R11 source checkpoint instead of the accepted deployed `1b4859a...` runtime;
+- R2 generic secret-like-key scanner treated the safe contract indicators `credentialsReturned` and `rawCredentialIncludedInOutput` as secret-bearing fields;
+- R2 assumed current Compose provenance labels were required even though R16.31 used a direct-Docker cutover model.
 
-R7-R9 nevertheless provided accepted AST evidence for the first GET path, auth call graph, pre-screen callback use and shared connection-state HTTP funnel. The remaining second-path default binding and topology were already proven by the exact-object source census; no R7-R10 was necessary.
+## 8. Pre-activation readiness — ACCEPTED
 
-## 8. Current active boundary
+R3 status: **ACCEPTED**.
 
-The D18 isolated qualification and formal source/runtime reconciliation checkpoint is complete.
+R3 proved:
 
-The next phase is **not** another R12/R7 diagnostic canary. Any production activation or cutover must be a separately authorized phase with its own pre-activation/live-baseline guards and rollback boundary.
+- exact current R16.31 live runtime snapshot and health;
+- exact R16.31 direct-cutover labels/source authority;
+- exact live network/restart/user/mount/port topology;
+- current dedicated Auth Keeper service-token metadata contract;
+- R10 candidate container-to-host Auth Keeper transport over the real production network path;
+- unauthorized connection-state request = 401;
+- authorized connection-state request = 200;
+- exact secretless `auth-keeper-connection-state/v1` response contract, including `mode=READ_ONLY`, `mutationPerformed=false`, `credentialsReturned=false`, `rawCredentialIncludedInOutput=false`, accounts array, zero unexpected contract keys and zero forbidden secret-material keys;
+- zero provider calls;
+- complete cleanup and live/source/container non-drift.
+
+R3 ended with:
+
+- `technical_blocker_count=0`;
+- one separate hardening finding: Auth Keeper LaunchAgent plist is currently mode `0644`, while accepted hardening expectation is `0600`.
+
+The plist mode is a hardening item, not a current Auth Keeper functional failure. No remediation has yet been authorized or executed.
+
+## 9. Activation/rollback runbook review — ACCEPTED
+
+R4 status: **ACCEPTED**.
+
+The future D18 production transaction is now fully determined in review form using the proven R16.31 direct-Docker model. R4 performed no lifecycle mutation and generated no live activation script.
+
+Runbook authority:
+
+- transaction model: stop current R16.31 live container, retain it as rollback holder, create a fresh D18 data volume, clone stopped R16.31 data with integrity verification, start exact R10 candidate with preserved topology plus explicit D18 activation fields, validate health/topology/Auth Keeper transport, observe stability, and automatically rollback on any failure after the stop boundary;
+- future rollback holder: `mer-omniroute-r16-31-rollback-d18-5ae6f97e7322`;
+- future D18 data volume: `omniroute-d18-live-data-5ae6f97e7322`;
+- secure future env reconstruction: 17 current operator overrides retained in a temporary `0600` env-file without printing/hashing values;
+- explicit D18 fields: `OMNIROUTE_AUTH_KEEPER_BASE_URL=http://host.docker.internal:21991`, `OMNIROUTE_AUTH_KEEPER_SERVICE_TOKEN_FILE=/run/omniroute-auth-keeper/omniroute-service.token`, `OMNIROUTE_ALLOW_REMOTE_AUTH_KEEPER=1`, and `OMNIROUTE_AUTH_KEEPER_COMBO_ADMISSION_ENABLED=1`;
+- preserve `mer-gateway_default`, `unless-stopped`, loopback 20128/20129/20132, read-only Auth Keeper token mount, read-only workload-policy mount, and cloned live data;
+- rollback data authority remains the untouched original R16.31 volume;
+- rollback image authority remains `sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa`;
+- any failure after stopping the current live container must invoke automatic rollback to the retained R16.31 holder; restoration itself must be validated fail-closed.
+
+R4 ended with:
+
+- `runbook_plan_error_count=0`;
+- `hardening_finding_count=1` for the plist mode;
+- `live_activation_authorized=NO`;
+- `live_activation_script_generated=NO`;
+- `live_activation_executed=NO`;
+- complete live/source/container non-drift.
+
+## 10. Current active boundary
+
+D18 isolated qualification, source/runtime reconciliation, pre-activation readiness, and activation/rollback runbook review are complete.
+
+The project is now at an **explicit operator authorization boundary**.
+
+Two decisions remain separate:
+
+1. Auth Keeper LaunchAgent hardening: whether to remediate `$HOME/Library/LaunchAgents/com.omniroute.auth-keeper.plist` from `0644` to `0600`.
+2. D18 production activation: whether to authorize generation/execution of the fail-closed direct-Docker activation transaction with automatic R16.31 rollback.
 
 Until explicit authorization is given:
 
-- do not activate D18 in production;
+- do not rerun R12/R7/R1-R4 diagnostics without new contradictory evidence;
+- do not chmod or otherwise mutate live Auth Keeper state solely because the hardening finding exists;
+- do not generate or execute the live D18 activation transaction;
 - do not replace the live OmniRoute container;
 - do not deploy/cut over;
-- do not mutate live Auth Keeper;
 - do not begin D19.
 
-## 9. Publication rule
+## 11. Publication rule
 
 Update this status and the D18 handoff whenever a later accepted phase changes Git/image/runtime authority, activation blockers, live production authority, publication state or the Auth Keeper integration boundary.
