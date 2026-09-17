@@ -1,7 +1,7 @@
 # Master Roadmap — Fork Product Goal
 
-Last reviewed: 2026-09-14
-Status: Canonical status/roadmap for the `Zartharas/OmniRoute` fork
+Last reviewed: 2026-09-17
+Status: Canonical long-range roadmap for the `Zartharas/OmniRoute` fork; D18 is now frozen live baseline
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
 
@@ -57,7 +57,7 @@ Remaining:
 
 ### Pillar 3 — Auth Keeper
 
-Status: Mature implementation foundation / still expanding toward full multi-provider session plane
+Status: Mature implementation foundation / live D18 integration accepted
 
 Completed or proven:
 
@@ -69,7 +69,10 @@ Completed or proven:
 - bounded automatic recovery watcher;
 - provider auth probes and secret-handling boundaries;
 - private implementation repository with release/validation discipline;
-- later work on request-local transport/admission integration with OmniRoute.
+- request-local transport/admission integration with OmniRoute;
+- dedicated secretless connection-state contract qualified in isolation and from the live D18 runtime;
+- LaunchAgent hardening accepted at mode `0600`;
+- live D18 container-to-Auth-Keeper transport accepted without credential exposure.
 
 Remaining:
 
@@ -81,50 +84,45 @@ Remaining:
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: Active major workstream; compatibility-provenance foundation canonically qualified
+Status: Active major workstream; D18 activation and post-activation freeze accepted
 
-Completed or accepted in the R16.32 lineage:
+Accepted R16.32 lineage now includes:
 
-- normalized candidate facts;
-- deterministic candidate disposition;
-- computational shadow with no additional real traffic;
-- explainability/evidence taxonomy;
-- bounded observability accumulator;
-- contained observational wiring;
-- source-backed blocker capture;
-- source-backed positive hard-fact capture;
+- normalized candidate facts and deterministic disposition;
+- computational shadow without additional real traffic;
+- explainability/evidence taxonomy and bounded observability;
+- source-backed blocker and positive hard-fact capture;
 - request/context compatibility discovery;
-- executionKey-keyed request-local provenance design;
-- corrected context composition with three components:
-  - `generic_request_context`
-  - `configured_context`
-  - `auto_estimated_input_context`;
-- D14 R6 isolated request/context compatibility-provenance implementation accepted at local commit `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b` / tree `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`;
-- D15 R2 canonical qualification accepted for that exact candidate;
-- baseline and candidate production builder builds passed;
-- typecheck/full-lint/changed-file lint differentials passed with no candidate-only diagnostics;
-- focused regression moved from baseline 141/141 to candidate 155/155;
-- routing compatibility parity passed 34/34 on both baseline and candidate;
-- protected acquisition/dispatch topology remained unchanged;
-- no additional Auth Keeper fetches or provider/model probes were introduced;
-- no routing readback from compatibility provenance was introduced;
-- pure qualification reached structural 14/14 known hard facts and a synthetic eligible/match comparable-proceed case.
+- executionKey-keyed request-local provenance;
+- corrected three-component context composition;
+- D14 R6 isolated compatibility-provenance implementation;
+- D15 R2 canonical qualification;
+- later D16/D17/D18 lineage advancing from completeness/reconciliation into Auth Keeper-aware admission;
+- R12-R6 isolated D18 flag-ON runtime authority;
+- R7 exact-object/AST reconciliation of the two connection-state paths;
+- R3 production-path transport/topology readiness;
+- R4 fail-closed direct-Docker activation/rollback design;
+- H1 Auth Keeper plist hardening;
+- A1 authorized D18 production activation;
+- composite O1+O2 accepted post-activation freeze with R16.31 rollback integrity proven.
 
 Current checkpoint:
 
-- `R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT` is next.
-- D16 must re-audit the original D7 blocker set after structural hard-fact completeness was achieved.
-- production activation remains blocked; D15 synthetic evidence is not production activation authority.
+- D18 is the accepted frozen live OmniRoute baseline.
+- live source commit: `5ae6f97e732263e1029b35aeccf4873ba22d4554`;
+- live tree: `d016aa08b3e57d2c545f7e351c578610a4b3d2a5`;
+- live image: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`;
+- R16.31 rollback holder and original rollback volume remain retained intact.
 
-Remaining R16.32 evidence/activation work:
+The next R16.32 phase beyond the accepted D18 freeze is **not canonically defined in this roadmap yet**. Do not infer or invent D19 scope from chat history. D19 remains unauthorized until its objective, invariants, evidence gates and mutation boundaries are explicitly defined and approved.
 
-- qualify a safe production evidence readout;
-- collect live candidate evidence without changing routing authority;
-- measure empirical comparable-proceed coverage;
-- measure empirical eligible coverage;
-- measure mismatch, contained-error and not-ready rates;
-- derive any future activation criteria from observed evidence instead of arbitrary thresholds;
-- only after those gates, proceed to conservative provider-neutral preference intelligence.
+Remaining Pillar 4 product work includes:
+
+- continue evidence-driven provider-neutral orchestration improvements from the D18 live baseline;
+- define any next activation/intelligence phase in canonical docs before implementation;
+- preserve hard-gate precedence and protected OpenAI/Codex capacity;
+- continue model-intelligence enrichment and preference work only as soft-evidence layers after hard gates;
+- connect the accepted live orchestration evidence model into Codex Unified and Operations Floor.
 
 Planned Model Intelligence Enrichment subproject:
 
@@ -193,20 +191,23 @@ Remaining:
 
 Each access mode must define ownership, eligibility, recovery and routing semantics.
 
-### Phase C — Complete orchestration evidence foundation
+### Phase C — Complete orchestration evidence and live-admission foundation
 
-Completed:
+Accepted:
 
 - D14 request/context compatibility-provenance implementation;
-- D15 canonical compatibility-provenance qualification;
-- structural 14/14 hard-fact coverage in pure qualification.
+- D15 canonical qualification;
+- later completeness/readiness lineage;
+- D18 Auth Keeper-aware admission qualification;
+- D18 authorized production activation;
+- composite D18 post-activation freeze.
 
-Current/remaining:
+Current rule:
 
-- D16 post-completeness activation-readiness re-audit;
-- production-safe shadow evidence readout;
-- live empirical agreement/mismatch/not-ready/error evidence;
-- evidence-derived activation criteria.
+- treat D18 as frozen live baseline;
+- retain R16.31 rollback authority;
+- do not reopen completed pre-activation evidence phases without contradictory evidence;
+- define the next R16.32 phase canonically before implementation.
 
 ### Phase D — Model intelligence and preference intelligence
 
@@ -253,6 +254,8 @@ Current/remaining:
 - explicit live-cutover authorization;
 - post-cutover observation and rollback validation.
 
+D18 now provides a proven live-promotion and post-cutover-freeze reference pattern for later production changes.
+
 ## 4. Explicitly stale/incomplete framings
 
 The following must not be used as the master roadmap:
@@ -265,9 +268,9 @@ The following must not be used as the master roadmap:
 - a single provider catalog by itself;
 - an external model-architecture gallery or benchmark by itself.
 
-Each is a component, evidence source or subproject of the five-pillar plan.
+The statements "D14 is the current implementation step", "D16 is next", and "D18 is not live" are stale. D18 is now the accepted frozen live baseline.
 
-The statement "D14 is the current implementation step" is stale. D14 R6 and D15 R2 are accepted; D16 is the next R16.32 phase.
+No canonical D19 scope is currently defined here. D19 must not be started merely because D18 is complete.
 
 ## 5. Status update rule
 
