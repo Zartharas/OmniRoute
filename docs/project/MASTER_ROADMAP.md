@@ -1,11 +1,11 @@
 # Master Roadmap — Fork Product Goal
 
 Last reviewed: 2026-09-17
-Status: Canonical long-range roadmap for the `Zartharas/OmniRoute` fork; D18 is now frozen live baseline
+Status: Canonical long-range roadmap; D18 frozen live baseline accepted; D19 empirical-evidence development authorized
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
 
-For the latest accepted engineering checkpoint and exact current phase, also read [Current Project Status](CURRENT_STATUS.md).
+For the latest accepted engineering checkpoint and exact current phase, also read [Current Project Status](CURRENT_STATUS.md). D19's exact phase contract is [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
 ## 1. Goal
 
@@ -84,9 +84,9 @@ Remaining:
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: Active major workstream; D18 activation and post-activation freeze accepted
+Status: Active major workstream; D18 frozen live; D19 development authorized
 
-Accepted R16.32 lineage now includes:
+Accepted R16.32 lineage includes:
 
 - normalized candidate facts and deterministic disposition;
 - computational shadow without additional real traffic;
@@ -106,23 +106,43 @@ Accepted R16.32 lineage now includes:
 - A1 authorized D18 production activation;
 - composite O1+O2 accepted post-activation freeze with R16.31 rollback integrity proven.
 
-Current checkpoint:
+Current live checkpoint:
 
-- D18 is the accepted frozen live OmniRoute baseline.
+- D18 is the accepted frozen live OmniRoute baseline;
 - live source commit: `5ae6f97e732263e1029b35aeccf4873ba22d4554`;
 - live tree: `d016aa08b3e57d2c545f7e351c578610a4b3d2a5`;
 - live image: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`;
 - R16.31 rollback holder and original rollback volume remain retained intact.
 
-The next R16.32 phase beyond the accepted D18 freeze is **not canonically defined in this roadmap yet**. Do not infer or invent D19 scope from chat history. D19 remains unauthorized until its objective, invariants, evidence gates and mutation boundaries are explicitly defined and approved.
+Current development phase:
 
-Remaining Pillar 4 product work includes:
+**R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout.**
 
-- continue evidence-driven provider-neutral orchestration improvements from the D18 live baseline;
-- define any next activation/intelligence phase in canonical docs before implementation;
-- preserve hard-gate precedence and protected OpenAI/Codex capacity;
-- continue model-intelligence enrichment and preference work only as soft-evidence layers after hard gates;
-- connect the accepted live orchestration evidence model into Codex Unified and Operations Floor.
+D19 is an observation-only bridge between D18's accepted hard-gate/admission foundation and any later provider-neutral preference intelligence. It must derive bounded aggregate evidence from facts D18 already computes, without changing routing or adding acquisition/traffic.
+
+D19 development/non-live qualification through S6 is authorized. Production D19 observation activation (S7) remains a separate explicit authorization gate.
+
+D19 must prove:
+
+- exact source-backed semantics for every counted category;
+- routing/target-order/filter/selection/fallback behavior unchanged;
+- provider/model-call delta = 0;
+- Auth Keeper-fetch delta = 0;
+- credential-acquisition delta = 0;
+- no D19 evidence readback into routing;
+- bounded, secretless, low-cardinality in-memory aggregate evidence;
+- no persistence migration;
+- observation/readout failure contained and unable to fail routing.
+
+D19 first gate is S1: exact local accepted-object source census against the D18 Git object. No D19 source mutation begins until S1 identifies the actual evidence owners, source predicates/types, safe insertion/readout points, protected call counts and candidate file allowlist.
+
+Remaining Pillar 4 work after D19 includes:
+
+- freeze production empirical evidence only if separately authorized;
+- derive later activation/preference criteria from observed evidence rather than arbitrary thresholds;
+- build provider-neutral preference intelligence only among candidates that survived hard gates;
+- continue model-intelligence enrichment only as a provenance-labeled soft evidence layer;
+- connect accepted orchestration evidence into Codex Unified and Operations Floor.
 
 Planned Model Intelligence Enrichment subproject:
 
@@ -193,7 +213,7 @@ Each access mode must define ownership, eligibility, recovery and routing semant
 
 ### Phase C — Complete orchestration evidence and live-admission foundation
 
-Accepted:
+Accepted foundation:
 
 - D14 request/context compatibility-provenance implementation;
 - D15 canonical qualification;
@@ -202,12 +222,13 @@ Accepted:
 - D18 authorized production activation;
 - composite D18 post-activation freeze.
 
-Current rule:
+Active bridge:
 
-- treat D18 as frozen live baseline;
-- retain R16.31 rollback authority;
-- do not reopen completed pre-activation evidence phases without contradictory evidence;
-- define the next R16.32 phase canonically before implementation.
+- D19 production-safe empirical orchestration evidence readout;
+- S1 exact-object census first;
+- then design freeze, isolated implementation, static/differential qualification, isolated runtime qualification and production pre-activation review;
+- live D19 observation requires separate authorization;
+- empirical rates are evidence, not automatic pass/fail thresholds.
 
 ### Phase D — Model intelligence and preference intelligence
 
@@ -227,7 +248,8 @@ Current rule:
 - keep core evaluator provider-neutral;
 - shadow preference ordering before activation;
 - protect explicit pins, workload isolation, Auth Keeper denial, capability/context checks, cooldowns and quota cutoffs;
-- qualify preference evidence before restricted activation.
+- qualify preference evidence before restricted activation;
+- use the accepted D19 empirical baseline to inform later criteria rather than inventing arbitrary thresholds.
 
 ### Phase E — Codex Unified reintegration
 
@@ -254,7 +276,7 @@ Current rule:
 - explicit live-cutover authorization;
 - post-cutover observation and rollback validation.
 
-D18 now provides a proven live-promotion and post-cutover-freeze reference pattern for later production changes.
+D18 provides a proven live-promotion and post-cutover-freeze reference pattern for later production changes.
 
 ## 4. Explicitly stale/incomplete framings
 
@@ -268,9 +290,9 @@ The following must not be used as the master roadmap:
 - a single provider catalog by itself;
 - an external model-architecture gallery or benchmark by itself.
 
-The statements "D14 is the current implementation step", "D16 is next", and "D18 is not live" are stale. D18 is now the accepted frozen live baseline.
+The statements "D14 is the current implementation step", "D16 is next", "D18 is not live", and "D19 has no canonical scope" are stale.
 
-No canonical D19 scope is currently defined here. D19 must not be started merely because D18 is complete.
+Current authority is: D18 frozen live baseline; D19 production-safe empirical evidence-readout development authorized; live D19 promotion not authorized.
 
 ## 5. Status update rule
 
