@@ -1,9 +1,9 @@
 # Current Project Status
 
 Last reviewed: 2026-09-17
-Status: Canonical R16.32 D18 checkpoint; D18 production activation and composite post-activation freeze accepted, R16.31 rollback authority retained intact, D19 not authorized
+Status: D18 frozen live baseline accepted; R16.31 rollback retained intact; R16.32 D19 empirical-evidence development authorized, live D19 promotion not authorized
 
-This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), and detailed continuity remains in [R16.32 D18 Auth Keeper Qualification Handoff](HANDOFF_R16_32_D18_AUTH_KEEPER_2026-09-16.md).
+This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
 Accepted Git objects, source hashes, runtime evidence, activation evidence and post-activation freeze evidence remain implementation authority when they are more specific than this summary.
 
@@ -17,11 +17,11 @@ The five-pillar product goal remains unchanged:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-The active program remains R16.32 under Pillar 4. D18 qualification, source/runtime reconciliation, pre-activation readiness, runbook review, Auth Keeper hardening, authorized live activation and post-activation freeze are complete. D18 is the accepted live OmniRoute baseline. This checkpoint does not authorize D19.
+The active program remains R16.32 under Pillar 4. D18 qualification, reconciliation, pre-activation readiness, Auth Keeper hardening, authorized activation and composite O1+O2 post-activation freeze are complete. D18 is the accepted frozen live baseline.
+
+The next defined phase is **R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout**. D19 definition and non-live development/qualification are authorized. Production D19 activation remains a separate authorization boundary.
 
 ## 2. Current live production authority — D18
-
-Authorized live activation A1 completed successfully on 2026-09-17 and is now followed by an accepted composite O1+O2 post-activation freeze.
 
 Current live authority:
 
@@ -41,16 +41,9 @@ Current live authority:
 - Auth Keeper service-token mount read-only;
 - workload-policy mount read-only.
 
-A1 established the live runtime and passed a 120-second stability gate. O1 later observed the same container after 3,176 seconds of uptime with:
+A1 established the live runtime and passed a 120-second stability gate. O1 later observed the same container after 3,176 seconds of uptime with state `running`, health `healthy`, restart count `0`, `OOMKilled=false`, no Docker state error, and exact source/image/data/milestone identity preserved. O1 also passed another fresh 60-second / 12-sample stability observation.
 
-- state `running`;
-- health `healthy`;
-- restart count `0`;
-- `OOMKilled=false`;
-- no Docker state error;
-- exact source/image/data/milestone identity preserved.
-
-O1 then passed another fresh 60-second / 12-sample stability observation.
+D19 development must not mutate or silently replace this live authority.
 
 ## 3. Live Auth Keeper and host authority
 
@@ -67,15 +60,9 @@ A1 and O1 independently validated the live D18 container against Auth Keeper:
 - zero unexpected contract keys;
 - zero forbidden secret-material keys.
 
-O1 also reconfirmed:
+O1 also reconfirmed `/healthz=200`, `/livez=200`, all three loopback ports reachable, router/config/catalog/policy host sentinels unchanged, and Auth Keeper LaunchAgent plist mode `0600`.
 
-- `/healthz` = 200;
-- `/livez` = 200;
-- loopback ports 20128/20129/20132 reachable;
-- router/config/catalog/policy host sentinels unchanged;
-- Auth Keeper LaunchAgent plist mode remains `0600`.
-
-Validation scripts made zero provider/model calls. This statement is limited to the validation procedures and does not characterize unrelated production traffic.
+Validation scripts made zero provider/model calls. This statement is limited to those procedures and does not characterize unrelated production traffic.
 
 ## 4. Retained R16.31 rollback authority — INTACT
 
@@ -95,29 +82,23 @@ O2 proved the original R16.31 data volume still exactly matches its A1 cutover-t
 - content digest: `1ffd01aee9b89d9ef2d231a721790a87515163f6221b9e4d8413cd2a00975f70`;
 - link digest: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
 
-O2 used a network-none, read-only helper with the rollback volume mounted read-only. It dropped all capabilities and added only `DAC_READ_SEARCH`, which was necessary to read protected rollback files without granting write authority.
-
-Rollback cleanup is **not authorized**. Do not remove the rollback holder or original R16.31 volume until a separately accepted retention/cleanup phase.
+Rollback cleanup is **not authorized**. D19 development does not change that retention decision.
 
 ## 5. O1/O2 post-activation freeze — ACCEPTED
 
 Composite post-activation authority:
 
-- O1 is accepted for all live/runtime/topology/Auth Keeper/host/evidence/stability gates;
-- O2 is accepted for rollback-holder and original-volume integrity;
+- O1: live/runtime/topology/Auth Keeper/host/evidence/stability authority;
+- O2: rollback-holder/original-volume integrity authority;
 - composite result: `PASS_D18_POST_ACTIVATION_FREEZE_COMPOSITE_O1_O2`;
 - D18 live authority: `FROZEN_POST_ACTIVATION`;
 - R16.31 rollback authority: `RETAINED_INTACT`.
 
-O1's rollback digest failure is classified as **harness-only**. The helper used `--user 0:0` together with `--cap-drop ALL`; removing DAC read capability caused `EACCES` on `/data/oauth/kimi-coding-device-id`. Because the helper exited before emitting digest fields, the six O1 count/digest “drift” findings were empty-output fallout and are invalid as independent drift evidence.
+O1's rollback digest failure is permanently classified as harness-only: `--cap-drop ALL` removed DAC read capability from the root read-only helper, causing `EACCES` before digest output. Its six secondary count/digest drift lines were empty-output fallout. O2 added only `DAC_READ_SEARCH` while retaining network-none/read-only/no-new-privileges boundaries and reproduced the exact A1 counts/digests with zero failures.
 
-O2 corrected only that discriminator by retaining the read-only/network-none boundary while adding `--cap-add DAC_READ_SEARCH`. O2 then reproduced the exact A1 rollback-volume counts and digests with failure count zero.
-
-Do not rerun O1 solely to obtain a green line. The accepted freeze is the composite O1+O2 result.
+Do not rerun O1 solely to obtain a standalone green result.
 
 ## 6. Auth Keeper hardening
-
-The former LaunchAgent permission finding is closed.
 
 H1 changed `$HOME/Library/LaunchAgents/com.omniroute.auth-keeper.plist` from `0644` to `0600` using a chmod-only change. Auth Keeper health remained HTTP 200 before and after, service identity remained valid, and no service restart/runtime mutation occurred.
 
@@ -132,7 +113,7 @@ Current accepted plist mode: `0600`.
 - retained/live image ID: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`;
 - platform: `linux/amd64`.
 
-D18 source hashes:
+Protected D18 source hashes:
 
 - `open-sse/services/combo.ts`: `47028689cb3a372b4afc341f13ba32e01dd006553a38de9f9837369ec5c68742`;
 - `src/lib/authKeeper/comboAdmissionActivation.ts`: `062d25bd7e8ea2ac58903e43922821e66c3171e13fe892a779749d10cb1a7239`;
@@ -145,12 +126,12 @@ Current accepted authorities:
 - R10: Linux-buildable retained image freeze;
 - R11: isolated flag-OFF runtime qualification;
 - R12-R6: isolated flag-ON behavioral authority;
-- R7: formal exact-object/AST source/call-topology reconciliation;
+- R7: exact-object/AST source/call-topology reconciliation;
 - R3: production-path transport/topology readiness;
 - R4: direct-Docker activation/automatic-rollback runbook review;
 - H1: Auth Keeper plist hardening;
 - A1: successful authorized D18 live activation;
-- O1+O2 composite: accepted D18 post-activation freeze and rollback-integrity authority.
+- O1+O2: accepted D18 post-activation freeze and rollback-integrity authority.
 
 Do not rediscover documented R12/R7/R1-R2/O1 harness defects as product defects.
 
@@ -160,21 +141,40 @@ A1 evidence root remains:
 
 O1 reconfirmed all seven A1 bound evidence files against `evidence-hashes.txt`.
 
-## 9. Current active boundary
+## 9. D19 active development boundary
 
-D18 is live, accepted, and frozen post-activation. The pre-activation and immediate post-activation freeze phases are closed.
+D19 is now canonically defined in `R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md`.
 
-The safe continuation point is **R16.32 product work using D18 as the live baseline**, while retaining R16.31 rollback authority. D19 is not authorized by this checkpoint.
+D19 purpose: establish a bounded, secretless, production-safe empirical readout from orchestration facts D18 already computes before any future provider-neutral preference activation.
+
+Development/non-live qualification is authorized through D19-S6. Immediate next step is **D19-S1 exact accepted-object source census**, read-only against the local accepted D18 Git object.
+
+D19 invariants include:
+
+- routing/selection/order/filter/fallback semantics unchanged;
+- provider/model-call delta = 0;
+- Auth Keeper-fetch delta = 0;
+- credential-acquisition delta = 0;
+- no readback from D19 evidence into routing;
+- bounded in-memory aggregate only;
+- secretless/low-cardinality readout;
+- no persistence migration;
+- unexpected observation state contained and never allowed to fail the routed request.
+
+Production D19 activation (S7) is **not authorized** by the current continuation authorization and requires a separate explicit live-cutover decision after S1-S6 evidence is accepted.
+
+## 10. Current guardrails
 
 Until separately authorized/accepted:
 
 - do not remove the retained R16.31 rollback holder;
 - do not remove the original R16.31 data volume;
-- do not silently rebuild or replace the accepted D18 image;
+- do not silently rebuild or replace the accepted D18 live image;
 - do not change the Auth Keeper token-file contract;
-- do not restart R1-R4/O1 diagnostics without new contradictory evidence;
-- do not begin D19.
+- do not restart R1-R4/O1 diagnostics without contradictory evidence;
+- do not activate D19 in production;
+- do not activate provider-neutral preference scoring merely because D19 evidence becomes available.
 
-## 10. Publication rule
+## 11. Publication rule
 
-Update this status and the D18 handoff whenever live D18 authority, rollback retention, source/image authority, Auth Keeper integration, later R16.32 product work, cleanup authorization, or D19 authorization changes.
+Update this status, the D19 definition/continuity record, the master roadmap and relevant Auth Keeper handoffs whenever D19 source authority, evidence semantics, accepted candidate state, live authorization, rollback retention, or the next preference-intelligence boundary changes.
