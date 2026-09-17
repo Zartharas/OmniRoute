@@ -1,236 +1,197 @@
 # R16.32 D18 Auth Keeper Qualification Handoff
 
-Last reviewed: 2026-09-16
-Status: Active engineering handoff; runtime qualification materially advanced, formal read-only acceptance reconciliation still open
+Last reviewed: 2026-09-17
+Status: D18 isolated qualification and formal source/runtime reconciliation accepted; production activation still blocked pending separate authorization
 
-This document is the canonical handoff for continuing the current D18 OmniRoute/Auth Keeper activation-readiness work in a fresh engineering session. It is a status/evidence document, not product architecture authority. Product intent remains in `ARCHITECTURE_SOURCE_OF_TRUTH.md`; permanent engineering rules remain in `ENGINEERING_SOURCE_OF_TRUTH.md`; accepted Git/runtime evidence remains more specific than this summary.
+This is the canonical cross-project handoff for continuing D18 OmniRoute/Auth Keeper work. It records evidence/status only. Product intent remains in `ARCHITECTURE_SOURCE_OF_TRUTH.md`; permanent engineering method remains in `ENGINEERING_SOURCE_OF_TRUTH.md`; exact accepted Git/runtime evidence remains more specific than this summary.
 
 ## 1. Non-negotiable boundaries
 
-- OmniRoute owns routing/provider/orchestration decisions.
+- OmniRoute owns routing/provider/orchestration/model-workforce decisions.
 - Auth Keeper owns credential/session/account lifecycle and routing eligibility/admission facts.
-- Operations Floor remains observer/operator plane only.
+- Operations Floor is observer/operator plane only.
+- Protected native ChatGPT/OpenAI capacity must not silently become ordinary routed fleet capacity.
 - No production activation, deployment, cutover or D19 is authorized by this handoff.
-- No real provider credentials or real provider/model calls were used in the D18 isolated qualification lineage described below.
-- The live production runtime must remain unchanged until an explicitly authorized later phase.
-- Do not weaken a failing assertion merely to make a qualification script pass; first classify the exact source/runtime discriminator.
+- No real credentials or uncontrolled real provider/model calls were used in the accepted isolated D18 qualification lineage.
+- Live production runtime must remain unchanged until an explicitly authorized later phase.
+- Do not weaken failed assertions merely to obtain a pass; classify the exact discriminator first.
 
-## 2. Current source and image authority
+## 2. Accepted source/image authority
 
-### Linux-buildable source authority
+### Linux-buildable source
 
 - branch: `feat/d18-r8-union-lockfix-linux-canary-r9`
 - commit: `5ae6f97e732263e1029b35aeccf4873ba22d4554`
 - tree: `d016aa08b3e57d2c545f7e351c578610a4b3d2a5`
 - parent: `13453f6bdf1c9279da3bea0d2382959c92c93d3e`
-- accepted scope: `package.json`, `package-lock.json`
+- candidate delta: `package.json`, `package-lock.json`
 - package.json SHA-256: `5859ab110da0d81a811b2a7f2835bd27508018187cb18ae01418495b885be752`
 - package-lock.json SHA-256: `09870271cdbbf6aaddb0d33f47f94dab67fb49c083af62055d7cfb13444c80b9`
 
-### D18 activation source hashes bound during qualification
+### D18 source hashes
 
 - `open-sse/services/combo.ts`: `47028689cb3a372b4afc341f13ba32e01dd006553a38de9f9837369ec5c68742`
 - `src/lib/authKeeper/comboAdmissionActivation.ts`: `062d25bd7e8ea2ac58903e43922821e66c3171e13fe892a779749d10cb1a7239`
 - `src/lib/authKeeper/comboRoutingEligibility.ts`: `adccf245faee216e168b15b3961bea427b9dd73803698f74cb351dc982328294`
 
-### Retained Linux canary image authority
+### Retained Linux canary image
 
 - tag: `omniroute:d18-r8-r9-candidate-linux-r10`
 - image ID: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`
 - platform: `linux/amd64`
 - R10 evidence ZIP SHA-256: `a800dde4a18ebdde860499d9c8241b2ae0068b1065498213080e3c647af0dbd2`
 
-R10 proved the exact image is Linux-buildable and preserved the frozen live runtime and host sentinels.
-
 ## 3. Frozen live production authority
-
-The qualification lineage did not replace or mutate the live OmniRoute container.
 
 Frozen live snapshot:
 
 `279211b86f31339171caadac41aca3a928b5356cf696eb98a076486a97f52df3|sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa|running|0|2026-09-15T16:51:28.109833871Z`
 
-Host non-drift sentinels:
+Host sentinels:
 
-- router SHA-256: `da5599b7c8cb0c6d755657069e5d2090b9e7d83edd4cbad4af3ed44c8495de97`
-- config SHA-256: `2d731cb44980792ba010e51a865e1b11a99dc50b2c2ca0a50aaf903e5d8ae690`
-- model catalog SHA-256: `6e88a9611dbc8978d2795fb14ce4fff0eabb82c2e68609b8c3994da92489250d`
-- workload policy SHA-256: `2bf6ecd48cd4d1e604c71af28dbf4a0606aba34fbd1c33c16762836b45d47a31`
+- router: `da5599b7c8cb0c6d755657069e5d2090b9e7d83edd4cbad4af3ed44c8495de97`
+- config: `2d731cb44980792ba010e51a865e1b11a99dc50b2c2ca0a50aaf903e5d8ae690`
+- model catalog: `6e88a9611dbc8978d2795fb14ce4fff0eabb82c2e68609b8c3994da92489250d`
+- workload policy: `2bf6ecd48cd4d1e604c71af28dbf4a0606aba34fbd1c33c16762836b45d47a31`
+
+No qualification step in this lineage replaced or mutated the live OmniRoute container or live Auth Keeper.
 
 ## 4. R11 accepted flag-OFF runtime qualification
 
-R11 script SHA-256:
+- script SHA-256: `5d0c6bdea739083833c1d0f53f3954bb9311e76fbc50776d3d409fa6f8dea69b`
+- evidence ZIP SHA-256: `1321c9769cfc1ac881c62c217650febb7aa1c05c6f0b4e822daaa52651168098`
 
-`5d0c6bdea739083833c1d0f53f3954bb9311e76fbc50776d3d409fa6f8dea69b`
-
-R11 evidence ZIP SHA-256:
-
-`1321c9769cfc1ac881c62c217650febb7aa1c05c6f0b4e822daaa52651168098`
-
-Accepted facts:
-
-- exact retained R10 image used;
-- Docker network `none`;
-- no published ports;
-- no bind/named volumes;
-- `/app/data` tmpfs only;
-- D18 Auth Keeper admission flag explicitly OFF;
-- `/healthz` 200 and `/livez` 200;
-- no harness provider requests;
-- successful external egress 0;
-- canary cleanup passed;
-- live runtime, stable container inventory and host sentinels unchanged.
-
-Background application egress attempts to normal product metadata/services were observed but blocked by `network=none`; they were classified separately from provider dispatch and do not invalidate R11.
+Accepted facts include exact R10 image, activation OFF, network `none`, no published ports, no bind/named volumes, `/app/data` tmpfs, health/live 200, no harness provider requests, zero successful external egress, cleanup and live/host non-drift.
 
 R11 status: **ACCEPTED**.
 
-## 5. R12 flag-ON qualification lineage
+## 5. R12-R6 accepted flag-ON runtime authority
 
-R12 used an isolated canary from the exact R10 image with:
+- script SHA-256: `1c4fb841838456755039947b54c9227b8b1f53803ea37e4ada72b5d61cf26e90`
+- evidence ZIP SHA-256: `7f58fff8115dc0ff5b5cf942d61e9fe91a402120e8882f1abd10daae403bc8b6`
 
-- D18 activation flag ON only inside the disposable canary;
-- Docker network `none`;
-- synthetic Auth Keeper on loopback `127.0.0.1:21991`;
-- synthetic connection-state contract `auth-keeper-connection-state/v1`;
-- fixed path `/v1/omniroute/connection-state`;
-- synthetic combo pinned to `openai/gpt-4o` via `r12-r2-synthetic-conn`;
-- no real provider connection row for that connection;
-- no real provider credentials;
-- no production/live Auth Keeper mutation.
+R12-R6 is the runtime authority for isolated D18 flag-ON behavior.
 
-### Failed harness iterations and classifications
+It proved:
 
-These failures were harness defects, not accepted product/runtime defects:
+- valid private 64-hex synthetic service-token contract;
+- synthetic Auth Keeper readiness;
+- genuine combo seed and independent SQLite verification;
+- no provider connection row for the synthetic connection ID;
+- pre-chat connection-state event count 0;
+- two authorized `GET /v1/omniroute/connection-state` events after the chat, both 200;
+- request sequence: GET #1, `No credentials for openai`, GET #2, then `Skipping openai/gpt-4o — Auth Keeper routing eligibility excluded the target`;
+- terminal 503 `ALL_TARGETS_SKIPPED` with `attempted:0`;
+- target-specific provider dispatch absent;
+- no successful real provider request;
+- successful external egress 0 under Docker `network=none`;
+- cleanup and live/stable inventory non-drift.
 
-1. R12 — `HARNESS_ONLY_WRONG_FILE_FOR_APPLY_AUTH_KEEPER_COMBO_ADMISSION_SYMBOL`
-   - source-contract preflight looked for `applyAuthKeeperComboAdmission` in the activation wrapper instead of its actual routing-eligibility owner.
-   - evidence SHA-256: `ce2dc21679790d2208d7ebc676fd78f806cafaf5bf3cc1b2801e5bbc32613f2a`
+## 6. R7 formal source/call-topology reconciliation — ACCEPTED
 
-2. R12-R2 — `HARNESS_ONLY_SYNTHETIC_SERVER_TOKEN_PATH_MISMATCH`
-   - synthetic server hardcoded the prior token path and exited before readiness.
-   - evidence SHA-256: `c4c14081a209e65c078fcb2686d9d60234178dcf896d34a685a965a1716695c6`
+The earlier R7-R2/R7-R3 source-owner assertion was stale. It expected request-scoped plan markers in `open-sse/services/combo.ts` that are actually split across dedicated Auth Keeper modules.
 
-3. R12-R3 — `HARNESS_ONLY_UNAUTHORIZED_READINESS_PROBE_EXPECTED_404`
-   - readiness probe omitted the synthetic Authorization header, correctly receiving 401 while the harness expected 404.
-   - evidence SHA-256: `93b081ee329c943907945e97cb697b10e89414f3810fddcd56319c310398ad3b`
+### Exact plan ownership
 
-4. R12-R4 — `HARNESS_ONLY_DOCKER_EXEC_STDIN_NOT_ATTACHED_FOR_NODE_HEREDOC`
-   - the seed/chat Node programs used `node -` without `docker exec -i`, so stdin heredocs were not delivered and the commands silently no-op'd.
-   - evidence SHA-256: `888433444c1ca02724465473a21537c68f11c1d5fa0af5480775b2c9bb2af42d`
+Exact candidate source proved:
 
-5. R12-R5 — `HARNESS_ONLY_SYNTHETIC_SERVICE_TOKEN_VIOLATED_CLIENT_FILE_CONTRACT`
-   - the synthetic token used URL-safe base64-style material and mode 0644, while the client requires a private regular token file with exactly 64 hexadecimal characters.
-   - runtime therefore failed locally before fetch with 503 `Auth Keeper combo admission preparation failed` and zero synthetic Auth Keeper events.
-   - evidence SHA-256: `3e9f73bf7f1a6b13f145f2fd6e664be4d9da6f0906b415900885b5cbc677f686`
+- `prepareAuthKeeperComboAdmissionPlan` owner: `src/lib/authKeeper/comboRoutingEligibility.ts`;
+- memoization owner: `src/lib/authKeeper/comboAdmissionActivation.ts::createAuthKeeperComboAdmissionPlanProvider`;
+- request-scoped memoization variable: `planPromise`;
+- `combo.ts` request-path accessor: `getAuthKeeperAdmissionPlan`;
+- admission application: `applyAuthKeeperComboAdmission` in `comboRoutingEligibility.ts`;
+- connection-state fetch funnel: `connectionStateRoutingEligibility.ts`.
 
-## 6. R12-R6 first valid flag-ON runtime observation
+### Reconciliation of GET #1
 
-R12-R6 script SHA-256:
+TypeScript AST analysis of exact commit `5ae6f97e...` proved:
 
-`1c4fb841838456755039947b54c9227b8b1f53803ea37e4ada72b5d61cf26e90`
+- `src/sse/handlers/chat.ts::checkModelAvailable` exists once;
+- it calls `getProviderCredentialsWithQuotaPreflight`;
+- the same callback is structurally passed to `handleComboChat` as `isModelAvailable: checkModelAvailable`;
+- `targetResolution.ts` passes `isModelAvailable` to `preScreenTargets`;
+- `preScreenTargets` calls the callback;
+- the `auth.ts` call graph is `getProviderCredentialsWithQuotaPreflight -> getProviderCredentials`;
+- `getProviderCredentials` is the single owner of both `applyAuthKeeperConnectionStateRoutingEligibility` and the later `No credentials for ${provider}` log;
+- source order is Auth Keeper eligibility filtering first, then the no-credentials terminal marker.
 
-R12-R6 evidence ZIP SHA-256:
+Therefore GET #1 is reconciled to availability/credential pre-screen.
 
-`7f58fff8115dc0ff5b5cf942d61e9fe91a402120e8882f1abd10daae403bc8b6`
+### Reconciliation of GET #2
 
-Important validated facts:
+Exact candidate source proved the independent lazy admission path:
 
-- synthetic service-token contract passed: private regular 64-hex file, node-owned inside canary;
-- synthetic Auth Keeper startup/readiness passed;
-- ephemeral combo seed genuinely executed;
-- separate post-seed SQLite verification passed;
-- provider connection row for the synthetic connection ID remained absent;
-- Auth Keeper event count before chat request was 0;
-- chat probe genuinely executed;
-- after the chat request, two authorized `GET /v1/omniroute/connection-state` events were observed, both status 200;
-- request log contained `No credentials for openai` between the first and second GET;
-- request log then contained `Skipping openai/gpt-4o — Auth Keeper routing eligibility excluded the target`;
-- chat response was 503 with terminal `ALL_TARGETS_SKIPPED` and `attempted:0`;
-- no target-specific provider dispatch marker was observed;
-- no real provider request succeeded;
-- Docker `network=none` preserved successful external egress at 0;
-- canary cleanup passed;
-- live runtime and stable container inventory remained unchanged.
+- `createAuthKeeperComboAdmissionPlanProvider` owns `planPromise`;
+- the returned accessor memoizes a single `prepare(targets, { env })` promise;
+- destructured parameter default binds `prepare` to `prepareAuthKeeperComboAdmissionPlan as AuthKeeperComboAdmissionPrepare`;
+- `prepareAuthKeeperComboAdmissionPlan` uses `defaultApplyEligibility`;
+- `defaultApplyEligibility` calls `applyAuthKeeperConnectionStateRoutingEligibility`;
+- that funnels to `requestConnectionState` and then the client endpoint `/v1/omniroute/connection-state`;
+- `combo.ts` later applies `applyAuthKeeperComboAdmission` and emits the D18 exclusion marker on skip.
 
-Observed timestamp order in R12-R6 evidence:
+Therefore GET #2 is reconciled to the separately memoized D18 admission-plan path.
 
-1. first authorized connection-state GET;
+### Formal runtime/source reconciliation
+
+The exact candidate topology supports the R12-R6 observed order without changing or inventing an expected event count:
+
+1. GET #1 — availability/credential pre-screen;
 2. `No credentials for openai`;
-3. second authorized connection-state GET;
-4. D18 log: `Auth Keeper routing eligibility excluded the target`.
+3. GET #2 — lazy D18 admission-plan preparation;
+4. `Auth Keeper routing eligibility excluded the target`;
+5. terminal `ALL_TARGETS_SKIPPED`, `attempted:0`, no target-specific provider dispatch.
 
-The runtime evidence therefore materially supports pre-dispatch Auth Keeper exclusion for the synthetic target. However, total Auth Keeper event count cannot be assumed to equal one without first proving the exact source consumers in the candidate Git object.
+R7 source/call-topology reconciliation status: **ACCEPTED / CLOSED**.
 
-## 7. R7 / R7-R2 read-only acceptance reconciliation
+No additional runtime canary was required.
 
-R7 was intentionally read-only: no container create/start/exec, no Docker build, no Git mutation and no live activation.
+## 7. Harness failures that must not be rediscovered
 
-### R7
+### R12 lineage
 
-Script SHA-256:
+- R12 — wrong source owner for `applyAuthKeeperComboAdmission`.
+- R12-R2 — synthetic server token-path mismatch.
+- R12-R3 — unauthorized readiness probe expected 404 instead of correct 401.
+- R12-R4 — missing `docker exec -i` for `node -` heredoc stdin.
+- R12-R5 — synthetic service token violated private 64-hex token-file contract.
 
-`be6cf7032662638c801a93e13d5d1c57bff836b511ae345dd5dcaaa7c245cced`
+### R7 reconciliation lineage
 
-R7 successfully bound R12-R6 evidence, candidate Git authority, R10 image authority, current live runtime and host sentinels, but failed because it searched the escaped `body_prefix=...` evidence string for unescaped JSON markers.
+- R7 — escaped `body_prefix` parser defect.
+- R7-R2/R7-R3 — stale plan-symbol/source-owner assumption.
+- R7-R4 — Bash 4 `mapfile` incompatible with macOS `/bin/bash` 3.2.
+- R7-R6 — ordinary `const` assignment misclassified as function declaration.
+- R7-R7 — arbitrary line-proximity assertion for callback wiring.
+- R7-R8 — TypeScript inline parameter object type mistaken for arrow-function body.
+- R7-R9 — AST query looked for the `prepare` default on `Parameter.initializer`; the actual default is on a destructured parameter `BindingElement`.
 
-Classification: read-only parser harness defect.
+R7-R9 still produced accepted AST evidence for the complete first path, pre-screen callback, auth call graph, and shared connection-state HTTP funnel. The exact-object R7-R5/R7-R6 source evidence had already proven the remaining second-path binding/topology, so no R7-R10 was necessary.
 
-### R7-R2 — current last local result
+## 8. Active next boundary
 
-Script SHA-256:
+D18 isolated qualification plus formal source/runtime reconciliation is complete.
 
-`96dc9b7340c521a45a9b45b402ecd7b949627dc72d3bd99a2852a372b50a8d22`
+Do not rerun R12-R6 or create another topology-discovery script unless new contradictory evidence appears.
 
-R7-R2 corrected the `body_prefix` parser. The latest local output successfully reached:
+Any production activation/cutover must be a separately authorized phase with its own live-baseline, fail-closed activation, validation and rollback controls.
 
-- `r6_script_binding=PASS`
-- `r6_evidence_binding=PASS`
-- `candidate_git_authority=PASS`
-- `r10_image_authority=PASS`
-- `live_runtime_non_drift_current=PASS`
-- `host_sentinels_current=PASS`
-- `r7_parser_correction=PASS_DECODE_BODY_PREFIX_OUTER_JSON_STRING`
-- `r6_manifest_integrity=PASS`
-- `r6_runtime_sequence=PASS_EVENT1_THEN_NO_CREDENTIALS_THEN_EVENT2_THEN_D18_SKIP`
-- `r6_chat_terminal=503_ALL_TARGETS_SKIPPED`
-- `r6_chat_attempted_dispatch_count=0`
-- `r6_d18_auth_keeper_skip_marker=PASS`
-- `r6_provider_dispatch_for_synthetic_target=ABSENT`
-- `r6_cleanup_non_drift=PASS`
+Until explicit authorization is given:
 
-It then failed at:
+- do not activate D18 in production;
+- do not replace the live OmniRoute container;
+- do not deploy/cut over;
+- do not mutate live Auth Keeper;
+- do not begin D19.
 
-`d18_request_scoped_plan_missing=['authKeeperAdmissionPlanPromise', 'prepareAuthKeeperComboAdmissionPlan']`
+## 9. Engineering lessons carried forward
 
-This is currently classified as an **unresolved read-only source-owner/reconciliation assumption**, not a runtime failure. R7-R2 expected the request-scoped plan markers in `open-sse/services/combo.ts`, but the exact candidate object did not satisfy that assertion. Do not claim R7 formal acceptance until the exact source owner/call topology is reconciled.
-
-## 8. Immediate next task
-
-The next session should NOT rerun R12-R6 and should NOT modify production.
-
-First action:
-
-1. take the user's exact R7-R2 terminal output as the latest local observation;
-2. inspect the exact candidate Git object at commit `5ae6f97e732263e1029b35aeccf4873ba22d4554`;
-3. locate the actual owner(s) of request-scoped Auth Keeper combo-admission plan preparation/application;
-4. determine why R7-R2's expected `authKeeperAdmissionPlanPromise` / `prepareAuthKeeperComboAdmissionPlan` markers were absent from `open-sse/services/combo.ts`;
-5. distinguish a stale harness source-owner assumption from a real topology discrepancy;
-6. produce one bounded read-only successor reconciliation only after that discriminator is proven;
-7. do not weaken the runtime evidence or invent a single-consumer rule;
-8. do not begin live cutover, deployment, D19 or production activation.
-
-## 9. Engineering lessons that must carry forward
-
-- Source ownership must be proven from the exact accepted Git object, not inferred from an earlier branch/snippet.
-- `docker exec` + `node -` requires `-i` when program text is supplied on stdin.
-- Synthetic Auth Keeper service-token fixtures must satisfy the production client token-file contract, including content shape and file privacy.
-- Readiness probes must satisfy the same authorization contract as the endpoint being exercised.
-- Separate application background egress attempts from provider dispatch; `network=none` is the hard containment authority.
-- Never treat a harness log marker as proof if the underlying command output is empty; add independent state verification.
-- Runtime event-count assertions must be tied to proven source consumers, not assumed architecture.
-- Keep R10/R11/R12 evidence authority and live non-drift intact while reconciling R7.
+- Prove source ownership from the exact accepted Git object.
+- Prefer TypeScript AST/semantic guards over raw occurrence, brace, regex or line-proximity assumptions.
+- Validate scripts against the actual operator shell/runtime, including macOS Bash 3.2 compatibility.
+- Do not treat a total runtime event count as architectural truth until exact consumers are proven.
+- Preserve R10/R11/R12 evidence authority and live non-drift during reconciliation.
+- A harness failure is not a product defect until the product discriminator is actually proven.
 
 ## 10. New-chat handoff rule
 
-A new chat should read this file first and treat the user's pasted R7-R2 terminal output as the newest evidence. The new chat must continue from Section 8 rather than re-running earlier R12 canaries or rediscovering already-classified harness failures.
+A new session should treat this document and `CURRENT_STATUS.md` as the accepted D18 checkpoint. Do not restart from R7-R2, rerun R12 canaries, or rediscover the historical harness failures above.
