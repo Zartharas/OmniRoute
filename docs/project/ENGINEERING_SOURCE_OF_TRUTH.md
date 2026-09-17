@@ -18,7 +18,7 @@ Use the following precedence when facts conflict:
 1. [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md) for product intent and architecture invariants.
 2. This document for engineering method and non-regression rules.
 3. [Master Roadmap](MASTER_ROADMAP.md) for long-range implementation sequencing.
-4. [Current Project Status](CURRENT_STATUS.md) for the latest accepted checkpoint summary.
+4. [Current Project Status](CURRENT_STATUS.md) and an explicitly canonical active phase definition, such as [D19](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md), for the latest checkpoint/phase contract.
 5. Accepted Git objects, tests, build evidence, runtime evidence, activation evidence and freeze evidence for implementation reality.
 6. Upstream README/ROADMAP for upstream OmniRoute direction only.
 7. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
@@ -91,11 +91,13 @@ Unless an explicitly reviewed architecture change says otherwise:
 - preference intelligence may only rank survivors;
 - preference intelligence may not re-admit a rejected candidate;
 - compatibility evidence should be retained from existing evaluations rather than recomputed solely for shadow/scoring;
-- no extra Auth Keeper/provider/model/credential acquisition should be introduced solely for scoring when request-local evidence exists;
+- no extra Auth Keeper/provider/model/credential acquisition should be introduced solely for scoring or observation when request-local evidence exists;
 - routing experiments begin as computational shadow/observation and activate only after evidence;
-- external architecture/benchmark metadata is enrichment only and must not override harder routing facts.
+- external architecture/benchmark metadata is enrichment only and must not override harder routing facts;
+- observation/readout failures must be contained and must never become routing failures;
+- an evidence accumulator/readout must not become a routing input unless a later separately reviewed architecture phase explicitly authorizes that transition.
 
-## 6. R16.32 position and accepted D18 live checkpoint
+## 6. R16.32 position, accepted D18 live checkpoint and active D19 phase
 
 R16.32 is an implementation program under Pillar 4: Intelligent Multi-Model Orchestration.
 
@@ -122,9 +124,29 @@ Accepted authority chain:
 
 O1 is accepted for live/runtime/topology/Auth Keeper/host/evidence/stability gates. O2 is accepted for rollback-volume integrity. O1's apparent rollback drift was a harness-only DAC-read failure and must not be rediscovered as a product/data defect.
 
-D18 is therefore **live, accepted and frozen post-activation**. The previous engineering-source statement that pre-activation readiness was next is superseded.
+D18 is therefore **live, accepted and frozen post-activation**.
 
-The next R16.32 phase beyond D18 is not canonically defined here. Do not invent D19 scope from chat history; define objective, invariants, evidence gates, mutation boundaries and rollback needs in canonical docs before implementation.
+The active next phase is now canonically defined as **R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout**.
+
+D19's engineering role is deliberately narrow: derive bounded aggregate empirical evidence from source-backed facts that D18 already computes, without changing routing or adding traffic/acquisition. The exact contract is maintained in `R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md`.
+
+D19 development/non-live qualification through S6 is authorized. Production D19 activation (S7) remains separately unauthorized.
+
+D19 permanent engineering constraints include:
+
+- every empirical category must resolve to an exact existing source predicate/type/enum before it is counted;
+- S1 must inspect the exact accepted local D18 Git object before any source mutation;
+- target order/filter/selection/fallback semantics must remain unchanged;
+- provider/model call differential must remain zero;
+- Auth Keeper fetch differential must remain zero;
+- credential-acquisition differential must remain zero;
+- the D19 aggregate/readout must have no routing readback;
+- evidence must be bounded, secretless, low-cardinality and non-persistent;
+- runtime observation/readout must remain default-off until separately activated;
+- unexpected evidence/schema state must be contained and may not fail a routed request;
+- prefer the existing bounded evidence/observation owner where source census proves it semantically appropriate; do not build a parallel telemetry subsystem merely for patch convenience.
+
+The immediate engineering step is D19-S1: exact accepted-object source census, read-only. No implementation worktree/source mutation should begin until S1 identifies exact source owners, category semantics, safe insertion/readout points, protected call counts and a candidate file allowlist.
 
 ## 7. Model-intelligence enrichment engineering policy
 
@@ -165,7 +187,7 @@ The goal remains a single user-facing Codex agent with OmniRoute able to delegat
 
 Auth Keeper is developed in the private `Zartharas/omniroute-auth-keeper` repository.
 
-The private repository is authoritative for Auth Keeper implementation, service/recovery mechanics, secret handling and release evidence. It must not redefine routing policy independently of the public architecture source of truth.
+The private repository is authoritative for Auth Keeper implementation, service/recovery mechanics, secret handling and release evidence. It must not redefine routing policy or D19 evidence semantics independently of the public architecture/phase authority.
 
 ## 11. Upstream integration policy
 
@@ -194,6 +216,8 @@ A live cutover requires:
 After cutover, do not remove rollback runtime/data until post-activation observation and rollback-integrity evidence are accepted and a separate cleanup decision is explicitly made.
 
 D18 A1 fulfilled the activation boundary; composite O1+O2 fulfilled the immediate post-activation freeze boundary. R16.31 rollback cleanup remains unauthorized.
+
+D19 S1-S6 may proceed under the current development authorization. D19 S7 production activation may not proceed without a separate explicit authorization after S1-S6 are accepted.
 
 ## 13. Documentation completion rule
 
