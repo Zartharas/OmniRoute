@@ -1,6 +1,6 @@
 # Engineering Source of Truth
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-17
 Status: Canonical engineering governance for the `Zartharas/OmniRoute` fork
 
 This document governs how architecture changes are implemented, qualified and promoted.
@@ -34,7 +34,8 @@ Before mutating source:
 - identify protected call counts and side effects;
 - generate candidate changes in an isolated preview where practical;
 - parse/compile embedded Bash, Python, Node and TypeScript used by the harness;
-- run semantic/AST guards rather than brittle raw occurrence-count assumptions;
+- validate harnesses against the actual operator runtime, including macOS `/bin/bash` 3.2 where applicable;
+- run semantic/AST guards rather than brittle raw occurrence-count, brace-ownership or line-proximity assumptions;
 - run focused tests before creating an implementation worktree when feasible;
 - fail closed on unexpected source shape.
 
@@ -68,6 +69,11 @@ The following bug classes are permanent lessons and must remain covered by futur
 - JavaScript/ESM config files and the dependency tree used to load them are one toolchain authority; do not combine a historical config with unrelated current dependencies without an explicit compatibility model;
 - historical baselines may carry inherited lint/type diagnostics under a newer toolchain; compare baseline and candidate under the same toolchain and reject candidate-only drift instead of requiring an artificial zero-diagnostic baseline or silently editing unrelated debt;
 - named TypeScript contracts must have their exact declaration shape proven before member assertions; a semantic contract name does not imply `interface` rather than `type` alias, wrapper, intersection or other shape;
+- Bash scripts delivered for macOS `/bin/bash` must not rely on Bash 4+ features such as `mapfile/readarray` unless the runtime is explicitly changed and qualified;
+- ordinary `const` assignments must not be misclassified as function declarations by generic source regexes;
+- arbitrary line distance is not proof of callback/call-expression ownership;
+- inline TypeScript object parameter types must not be mistaken for function bodies;
+- destructured TypeScript defaults belong to `BindingElement` nodes and must not be assumed to live on `Parameter.initializer`;
 - Markdown prose is explanatory unless explicitly designated as machine authority; exact JSON/source/Git evidence should carry machine semantics.
 
 ## 5. Routing and orchestration non-regression rules
@@ -86,48 +92,37 @@ Unless an explicitly reviewed architecture change says otherwise:
 - routing experiments begin as computational shadow/observation and only activate after evidence;
 - external model-architecture or benchmark metadata is enrichment only and must not override harder routing facts.
 
-## 6. R16.32 position
+## 6. R16.32 position and accepted D18 checkpoint
 
 R16.32 is an implementation program under Pillar 4: Intelligent Multi-Model Orchestration.
 
-Accepted work includes:
+Earlier accepted work includes normalized candidate hard facts, deterministic disposition evaluation, computational shadowing, explainability reason taxonomy, bounded observability, request-local gate-path evidence, compatibility-source discovery, request/context compatibility provenance, the corrected three-component context model, executionKey-keyed request-local sidecars, D14 R6 isolated implementation, and D15 R2 compile/lint/build differential qualification.
 
-- normalized candidate hard facts;
-- deterministic disposition evaluation;
-- computational shadowing that does not send additional traffic;
-- explainability reason taxonomy;
-- bounded in-memory observability;
-- request-local gate-path blocker and positive-fact capture;
-- compatibility source discovery;
-- request/context compatibility provenance contract;
-- corrected three-component context model: `generic_request_context`, `configured_context`, `auto_estimated_input_context`;
-- executionKey-keyed request-local sidecar design;
-- isolated D14 R6 request/context compatibility-provenance implementation;
-- D15 R2 canonical compile/lint/build differential and compatibility-provenance parity qualification.
+The current accepted D18 source authority is:
 
-The accepted D14 R6 local candidate authority is commit `0b42d800a4f6bb1f000a51cb5e93a2be18ea623b`, tree `3d8e1f26d2c32cccf48b45f31ab13e5e42d7b2aa`, parent `50b9ab47e01439e33c0411fff0a880242582724d`.
+- branch `feat/d18-r8-union-lockfix-linux-canary-r9`;
+- commit `5ae6f97e732263e1029b35aeccf4873ba22d4554`;
+- tree `d016aa08b3e57d2c545f7e351c578610a4b3d2a5`;
+- parent `13453f6bdf1c9279da3bea0d2382959c92c93d3e`.
 
-D15 R2 qualified that exact candidate and established, among other things:
+The retained Linux image authority is `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`.
 
-- baseline and candidate production builder builds pass;
-- typecheck, full-lint and changed-file lint differentials show no candidate-only diagnostics;
-- baseline focused regression suite passes 141/141;
-- candidate focused regression suite passes 155/155;
-- routing-compatibility parity passes 34/34 on both baseline and candidate;
-- protected acquisition/dispatch call topology remains unchanged;
-- additional Auth Keeper fetches: none;
-- additional provider/model probes: none;
-- credential acquisition for qualification: none;
-- routing readback from compatibility provenance: none;
-- pure qualification reaches structural 14/14 known hard facts and a synthetic eligible/match comparable-proceed case.
+R11 isolated flag-OFF qualification is accepted. R12-R6 remains the runtime authority for the first fully executed isolated D18 flag-ON observation. It established two authorized Auth Keeper connection-state GETs, terminal `ALL_TARGETS_SKIPPED`, `attempted:0`, no target-specific provider dispatch, zero successful external egress under Docker `network=none`, cleanup, and live/non-target non-drift.
 
-Synthetic structural completeness is not production activation authority.
+Formal R7 source/call-topology reconciliation is accepted and closed. Exact-object and TypeScript-AST analysis proved the two R12-R6 GETs belong to two distinct source paths:
 
-The current next phase is `R16_32_D16_POST_COMPLETENESS_ACTIVATION_READINESS_REAUDIT`. D16 must re-audit the original D7 blockers after D10 + D14 + D15 and identify exactly which remaining blockers require production readout/live empirical evidence.
+1. availability/credential pre-screen:
+   `preScreenTargets -> isModelAvailable/checkModelAvailable -> getProviderCredentialsWithQuotaPreflight -> getProviderCredentials -> applyAuthKeeperConnectionStateRoutingEligibility -> requestConnectionState`;
+2. separately memoized D18 admission-plan preparation:
+   `planPromise -> prepareAuthKeeperComboAdmissionPlan -> defaultApplyEligibility -> applyAuthKeeperConnectionStateRoutingEligibility -> requestConnectionState -> applyAuthKeeperComboAdmission`.
 
-Production activation remains blocked until evidence supports it. Current unresolved evidence classes include production evidence readout, live candidate evidence, empirical comparable-proceed coverage, empirical eligible coverage, and empirical mismatch/contained-error/not-ready rates.
+The runtime event count was not altered to fit the evidence; the exact candidate topology explains the two observed requests.
 
-The exact accepted checkpoint is summarized in [Current Project Status](CURRENT_STATUS.md).
+The active next boundary is **pre-activation readiness**. Production activation is not authorized by this checkpoint. Do not rerun R12/R7 diagnostics unless new contradictory evidence appears.
+
+Any live promotion must be a separately authorized phase after a fresh live baseline proves exact source/image/runtime identity, production build identity, health gates, rollback image/state, activation mechanism, rollback mechanism, and post-change validation boundaries.
+
+The exact accepted checkpoint is summarized in [Current Project Status](CURRENT_STATUS.md) and the D18 handoff.
 
 ## 7. Model-intelligence enrichment engineering policy
 
@@ -156,18 +151,7 @@ Historical branches containing significant Operations Floor implementation inclu
 - `feat/operations-floor-openai-preservation`
 - `feat/operations-floor-protected-native`
 
-Operations Floor implementation concepts that remain architecturally live include:
-
-- routed workload fleet visibility;
-- protected-native/OpenAI presentation;
-- personal versus isolated MTA/enterprise visibility;
-- provider/request inspection;
-- routing/fallback animation;
-- operator attention queues;
-- auth/compression/system telemetry evidence;
-- zero-call simulation/testing paths;
-- provider test actions;
-- pixel-office representation of worker state.
+Operations Floor implementation concepts that remain architecturally live include routed workload fleet visibility, protected-native/OpenAI presentation, personal versus isolated MTA/enterprise visibility, provider/request inspection, routing/fallback animation, operator attention queues, auth/compression/system telemetry evidence, zero-call simulation/testing paths, provider test actions, and pixel-office representation of worker state.
 
 Absence from the current upstream release branch does not deprecate these concepts.
 
@@ -207,10 +191,11 @@ A live cutover requires a separate explicit decision after:
 - production build identity is proven;
 - tests/type/lint/build gates pass;
 - canary/shadow evidence is reviewed;
-- rollback image/state is known and tested;
-- live health checks are defined.
+- rollback image/state is known and tested or otherwise proven recoverable within the accepted release contract;
+- live health checks are defined;
+- production activation and rollback steps have been pre-audited fail-closed without mutating live state.
 
-The accepted D14/D15 work did not change the live R16.31 runtime and must not be described as deployed until a later publication/promotion phase proves that fact.
+The accepted D18 work has not changed the frozen live production runtime and must not be described as deployed until a later authorized publication/promotion phase proves that fact.
 
 ## 13. Documentation completion rule
 
