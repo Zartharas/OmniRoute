@@ -172,7 +172,7 @@ Until separately authorized/accepted:
 - do not silently rebuild or replace the accepted D18 live image;
 - do not change the Auth Keeper token-file contract;
 - do not restart R1-R4/O1 diagnostics without contradictory evidence;
-- do not activate D19 in production;
+- do not reopen, replace or mutate the accepted D19 production state without separate authorization;
 - do not activate provider-neutral preference scoring merely because D19 evidence becomes available.
 
 ## 11. Publication rule
