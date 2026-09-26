@@ -205,3 +205,14 @@ When immutable `v3.8.51` appears:
 ## Immediate instruction for a new chat
 
 Read this file first, then the canonical Architecture Source of Truth, Engineering Source of Truth, Master Roadmap, Current Status, the post-D19/FreeLLM handoff, and the private R16.32 continuation/PRM records. Do not restart closed R16.32 diagnostics. Begin by designing the Five-Pillar Architecture Convergence Audit while independently monitoring the upstream immutable-tag gate.
+
+
+## Project-management references
+
+- public documentation continuation PR: `Zartharas/OmniRoute#16`
+- private five-pillar product PRM: `Zartharas/omniroute-auth-keeper#20`
+- private R16.32 immutable-tag release PRM: `Zartharas/omniroute-auth-keeper#19`
+- private connection-plane PR: `Zartharas/omniroute-auth-keeper#14`
+- private R16.32 documentation PR: `Zartharas/omniroute-auth-keeper#18`
+
+The next chat should begin with public PR #16 / this document for the product-level lane and issue #19 only for the release-tag lane.
