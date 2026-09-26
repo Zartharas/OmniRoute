@@ -1,7 +1,7 @@
 # Master Roadmap — Fork Product Goal
 
-Last reviewed: 2026-09-17
-Status: Canonical long-range roadmap; D18 frozen live baseline accepted; D19 empirical-evidence development authorized
+Last reviewed: 2026-09-26
+Status: Canonical long-range roadmap; D19/FreeLLM and R16.32 pre-tag boundary complete; five-pillar convergence is the active product-level continuation
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
 
@@ -84,7 +84,7 @@ Remaining:
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: Active major workstream; D18 frozen live; D19 development authorized
+Status: Advanced foundation; D18/D19/FreeLLM and the R16.32 pre-tag Auth Keeper boundary are accepted; preference/multi-model convergence remains
 
 Accepted R16.32 lineage includes:
 
@@ -114,13 +114,13 @@ Current live checkpoint:
 - live image: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`;
 - R16.31 rollback holder and original rollback volume remain retained intact.
 
-Current development phase:
+Current accepted continuation:
 
-**R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout.**
-
-D19 is an observation-only bridge between D18's accepted hard-gate/admission foundation and any later provider-neutral preference intelligence. It must derive bounded aggregate evidence from facts D18 already computes, without changing routing or adding acquisition/traffic.
-
-D19 development/non-live qualification through S6 is authorized. Production D19 observation activation (S7) remains a separate explicit authorization gate.
+- D19 hard-gate/observation work is no longer the active development phase;
+- FreeLLMAPI signed advisory metadata integration is qualified and live under the later accepted handoff;
+- the private R16.32/Auth Keeper pre-tag reconciliation is promoted at `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`;
+- final upstream release reconciliation waits for immutable `v3.8.51`;
+- the active product-level next phase is the Five-Pillar Architecture Convergence Audit.
 
 D19 must prove:
 
@@ -304,3 +304,46 @@ When a phase is accepted:
 4. update the Engineering Source of Truth if the engineering method/invariants change;
 5. record exact Git/evidence authority in the relevant implementation repository;
 6. do not treat chat history as a substitute for these updates.
+
+## 6. 2026-09-26 continuation update
+
+The master product goal remains unchanged. The program must not narrow itself into R16.32, Auth Keeper, OpenCode, Operations Floor, or any one provider/access lane.
+
+### Completed/frozen foundations
+
+- Codex Unified historical control-plane/catalog/workload-policy lineage exists and has undergone reintegration work.
+- Unified OmniRoute provider/routing/fallback foundation is strong.
+- Auth Keeper credential/session/admission boundary is mature and the latest two-file support repair is promoted.
+- D18 live admission foundation is accepted.
+- D19 hard-gate/evidence authority is accepted.
+- FreeLLMAPI signed advisory metadata integration is qualified/live and remains non-authoritative for routing.
+- rollback preservation and cleanup/recovery work are closed within their authorized scopes.
+- R16.32 pre-tag upstream/Auth Keeper reconciliation is promoted at `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`.
+
+### Remaining product-level work
+
+1. **Codex Unified convergence**
+   - make the unified control plane a maintained release artifact;
+   - finalize one-agent task delegation;
+   - remove dependence on manual provider/model switching;
+   - qualify the complete Codex ingress path.
+
+2. **Unified workforce convergence**
+   - normalize access-mode contracts across free/keyless, API, managed session, subscription/coding-plan, interactive-human-verification, and protected-native lanes;
+   - keep provider additions modular and upstream-compatible.
+
+3. **Intelligent orchestration convergence**
+   - preserve hard-gate precedence;
+   - develop provider-neutral preference only among surviving candidates;
+   - qualify specialist/critique/judge/synthesis patterns with designated mutation ownership.
+
+4. **Operations Floor convergence**
+   - reconnect historical floor work to current request-local routing/evidence;
+   - surface Auth Keeper, quota/cooldown, fallback, workload, protected-native and worker-assignment state without leaking secrets or becoming a router.
+
+5. **Product acceptance**
+   - perform full five-pillar end-to-end acceptance, including outage, quota, cooldown, auth expiry/re-auth, fallback, restart/recovery, rollback, protected-native preservation, workload isolation, evidence continuity, and final non-drift.
+
+### Release lane
+
+The immutable upstream `v3.8.51` tag is still absent as of the R16r35 checkpoint. Final tag-bound release reconciliation waits for that tag, but the five-pillar convergence work above may continue in parallel where it does not mutate protected live state.
