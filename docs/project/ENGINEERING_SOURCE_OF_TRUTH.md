@@ -1,7 +1,7 @@
 # Engineering Source of Truth
 
-Last reviewed: 2026-09-17
-Status: Canonical engineering governance for the `Zartharas/OmniRoute` fork
+Last reviewed: 2026-09-26
+Status: Canonical engineering governance for the `Zartharas/OmniRoute` fork; five-pillar convergence is the active product-level continuation
 
 This document governs how architecture changes are implemented, qualified and promoted.
 
@@ -24,6 +24,20 @@ Use the following precedence when facts conflict:
 7. Historical chats, issue comments, temporary scripts and branch notes as supporting evidence only.
 
 If implementation reality contradicts architecture, surface the contradiction. Do not silently reinterpret architecture to match accidental implementation state.
+
+
+## 2026-09-26 continuation supersession
+
+The older sections below that describe D19 as the active next phase are retained as engineering provenance. They are no longer the current program step.
+
+Accepted later evidence closed D19/FreeLLM work within its authorized scope and completed the private R16.32 pre-tag Auth Keeper/upstream promotion at `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`. R16r35 then proved the immutable upstream `v3.8.51` tag is still absent.
+
+The program therefore continues in two independent lanes:
+
+- **release lane:** wait for immutable `v3.8.51`, then perform exact tag-bound reconciliation and final qualification;
+- **product lane:** proceed now with a Five-Pillar Architecture Convergence Audit across Codex Unified, the unified OmniRoute workforce, Auth Keeper, intelligent orchestration and Operations Floor.
+
+The missing upstream tag blocks the release lane only. It does not suspend product-level convergence work that can be performed without mutating the frozen live baseline.
 
 ## 3. Evidence-first workflow
 
@@ -67,6 +81,10 @@ Permanent lessons include:
 - candidate presence is never sufficient compatibility proof;
 - object identity must not be assumed when a stable request-local key such as `executionKey` exists;
 - JavaScript/ESM config plus the dependency tree that loads it are one toolchain authority;
+- a Git worktree may have `.git` as a pointer file rather than a directory; validate repository/worktree identity with `git rev-parse --is-inside-work-tree`, `--git-dir` and `--git-common-dir` instead of assuming `[ -d .git ]`;
+- semantic qualification scope and mutation scope are distinct; already-compliant runtime files should be byte-locked and tested rather than rewritten merely to satisfy an expected changed-file count;
+- frozen historical tests may become stale shape assertions on a later accepted lineage; classify them by untouched-baseline versus candidate differential with normalized assertion fingerprints, while retaining current-lineage semantic/AST and focused regression authorities;
+- toolchain authority must be source-aligned; do not combine an executable from one dependency major (for example ESLint 10) with a branch configuration/plugin graph pinned to another major (for example ESLint 9);
 - historical baselines may carry inherited lint/type diagnostics under a newer toolchain; reject candidate-only drift instead of rewriting unrelated debt;
 - named TypeScript contracts must have exact declaration shape proven before member assertions;
 - macOS `/bin/bash` scripts must not rely on Bash 4+ features such as `mapfile/readarray` unless that runtime is explicitly changed and qualified;
