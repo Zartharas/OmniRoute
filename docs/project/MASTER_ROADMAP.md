@@ -222,13 +222,12 @@ Accepted foundation:
 - D18 authorized production activation;
 - composite D18 post-activation freeze.
 
-Active bridge:
+Accepted bridge:
 
-- D19 production-safe empirical orchestration evidence readout;
-- S1 exact-object census first;
-- then design freeze, isolated implementation, static/differential qualification, isolated runtime qualification and production pre-activation review;
-- live D19 observation requires separate authorization;
-- empirical rates are evidence, not automatic pass/fail thresholds.
+- D19 production-safe empirical orchestration evidence readout and hard-gate authority are accepted historical foundation;
+- FreeLLMAPI signed advisory metadata integration was later qualified and activated without acquiring routing authority;
+- empirical rates remain evidence, not automatic pass/fail thresholds;
+- future preference intelligence must consume only accepted evidence and may not bypass harder gates.
 
 ### Phase D — Model intelligence and preference intelligence
 
@@ -292,7 +291,7 @@ The following must not be used as the master roadmap:
 
 The statements "D14 is the current implementation step", "D16 is next", "D18 is not live", and "D19 has no canonical scope" are stale.
 
-Current authority is: D18 frozen live baseline; D19 production-safe empirical evidence-readout development authorized; live D19 promotion not authorized.
+Current authority is: the five-pillar architecture remains canonical; D18/D19/FreeLLM foundations are accepted; R16.32 pre-tag promotion is complete; the product-level next phase is five-pillar convergence while final release reconciliation waits for immutable v3.8.51.
 
 ## 5. Status update rule
 
