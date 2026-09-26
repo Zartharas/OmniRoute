@@ -1,7 +1,7 @@
 # Current Project Status
 
-Last reviewed: 2026-09-17
-Status: D18 frozen live baseline accepted; R16.31 rollback retained intact; R16.32 D19 empirical-evidence development authorized, live D19 promotion not authorized
+Last reviewed: 2026-09-26
+Status: five-pillar architecture unchanged; D19/FreeLLM integration and cleanup closed; R16.32 pre-tag Auth Keeper/upstream promotion complete; immutable upstream v3.8.51 tag absent; five-pillar convergence audit is the next product-level phase
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -17,9 +17,9 @@ The five-pillar product goal remains unchanged:
 4. Intelligent Multi-Model Orchestration
 5. Operations Floor
 
-The active program remains R16.32 under Pillar 4. D18 qualification, reconciliation, pre-activation readiness, Auth Keeper hardening, authorized activation and composite O1+O2 post-activation freeze are complete. D18 is the accepted frozen live baseline.
+R16.32 remains an important Pillar 4 workstream, but it is not the product by itself. D18 qualification/activation/freeze, D19 hard-gate/evidence work, FreeLLMAPI signed-advisory integration, cleanup closure, and the private Auth Keeper/upstream pre-tag reconciliation through R16r35 are complete within their accepted scopes.
 
-The next defined phase is **R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout**. D19 definition and non-live development/qualification are authorized. Production D19 activation remains a separate authorization boundary.
+The current product-level next phase is a **Five-Pillar Architecture Convergence Audit** across Codex Unified, the unified OmniRoute workforce, Auth Keeper, intelligent orchestration, and Operations Floor. In parallel, the release lane waits for the immutable upstream `v3.8.51` tag before final tag-bound reconciliation. The missing tag blocks that release lane only; it does not block all remaining product engineering.
 
 ## 2. Current live production authority — D18
 
@@ -141,13 +141,13 @@ A1 evidence root remains:
 
 O1 reconfirmed all seven A1 bound evidence files against `evidence-hashes.txt`.
 
-## 9. D19 active development boundary
+## 9. D19 / FreeLLM accepted boundary
 
-D19 is now canonically defined in `R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md`.
+D19's purpose and historical development contract remain defined in `R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md`, but the active D19 development framing in this older status is superseded.
 
-D19 purpose: establish a bounded, secretless, production-safe empirical readout from orchestration facts D18 already computes before any future provider-neutral preference activation.
+Later accepted evidence established the D19 hard-gate/observation authority and then qualified and activated FreeLLMAPI as signed advisory metadata only. The authoritative post-D19 live/cleanup record is `docs/research/R16.32-POST-D19-FREELLMAPI-HANDOFF-20260921.md`.
 
-Development/non-live qualification is authorized through D19-S6. Immediate next step is **D19-S1 exact accepted-object source census**, read-only against the local accepted D18 Git object.
+Do not restart D19 S1-S6 or reinterpret advisory metadata as routing authority absent contradictory evidence.
 
 D19 invariants include:
 
@@ -178,3 +178,65 @@ Until separately authorized/accepted:
 ## 11. Publication rule
 
 Update this status, the D19 definition/continuity record, the master roadmap and relevant Auth Keeper handoffs whenever D19 source authority, evidence semantics, accepted candidate state, live authorization, rollback retention, or the next preference-intelligence boundary changes.
+
+## 12. 2026-09-26 product-level continuation checkpoint
+
+### Private R16.32 pre-tag promotion
+
+The private engineering repository `Zartharas/omniroute-auth-keeper` completed the bounded pre-tag Auth Keeper/upstream reconciliation:
+
+- promoted branch: `feat/r16-17-auth-keeper-connection-plane`
+- promoted commit: `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`
+- R16r33 result: `PASS_R16R33_TWO_FILE_PROMOTION`
+- qualification semantic scope: FIVE files
+- runtime pre-satisfied/byte-locked scope: THREE runtime files
+- actual promoted mutation: TWO support files
+- targeted/full-core TypeScript: GREEN
+- ESLint differential: PASS_NO_NEW_DIAGNOSTICS
+- five-file semantic contract: PASS
+- PR #14 focused regression: GREEN
+- Auth Keeper focused regression: GREEN
+- frozen R16 whole-suite differential: PASS_NO_NEW_FAILURES
+- remote push verified
+- final worktree clean
+
+R16r35 then completed the read-only post-promotion/readiness gate:
+
+- result: `WAIT_R16R35_UPSTREAM_V3851_TAG`
+- upstream `release/v3.8.51` observed head: `ae2ba35852d4e5a55486a1c0e6a779105564fd6d`
+- immutable `v3.8.51` tag: ABSENT
+- evidence root: `/Users/zarthras/Downloads/omniroute_r16_32_r16r35_tag_readiness_20260926T184148Z`
+- source/ref/GitHub-metadata/Docker/live/dependency mutation by the local harness: NONE
+
+Private continuation documentation head after the R35 update:
+
+- `17e298e4616655b9ce9014f1f77a9ecf7e2be88f`
+
+### Two-lane continuation
+
+**Release lane**
+
+- wait for immutable upstream `v3.8.51`;
+- bind its exact commit/tree;
+- reconcile/reapply the qualified semantics;
+- rerun final qualification;
+- obtain separate authorization before merge/publication/deployment/live validation.
+
+**Product lane**
+
+Proceed with a consolidated Five-Pillar Architecture Convergence Audit to establish, from accepted evidence:
+
+- what is live;
+- what is qualified but not live;
+- what exists only historically and still needs reintegration;
+- remaining Codex Unified productization;
+- remaining workforce access-mode normalization;
+- remaining provider-neutral preference/multi-model orchestration work;
+- remaining Operations Floor convergence;
+- final end-to-end acceptance gaps;
+- work blocked specifically by `v3.8.51`;
+- work that can proceed without mutating the frozen live baseline.
+
+The target end-to-end path remains:
+
+`User → Codex Unified → OmniRoute → Auth Keeper + eligible AI workforce → orchestration/fallback → response → Operations Floor evidence`.
