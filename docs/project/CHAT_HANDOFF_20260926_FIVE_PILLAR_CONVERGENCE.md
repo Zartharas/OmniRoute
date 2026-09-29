@@ -240,3 +240,25 @@ Start by reading, in order:
 
 Then perform the Five-Pillar Architecture Convergence Audit. Do not resume another narrow R16 repair cycle unless the audit finds contradictory evidence.
 
+
+
+## 2026-09-28 anti-drift continuation rule
+
+The next session must use `docs/project/FIVE_PILLAR_CONVERGENCE_AUDIT_20260928.md` as the current product-level checkpoint.
+
+Do not continue with the previously contemplated real OpenCode P4G request.
+
+Current provider-specific state:
+
+- OpenCode live execution: HOLD;
+- TheOldLLM redevelopment/live execution: HOLD;
+- P4G endpoint: qualified, non-live, preserved as provider-bound credential-isolation architecture evidence;
+- real-provider call budget: 0.
+
+Current active engineering state:
+
+`FIVE_PILLAR_CONVERGENCE_ACTIVE`
+
+`NEXT_PHASE=PROVIDER_NEUTRAL_WORKFORCE_CONTRACT_CONVERGENCE`
+
+Resume with a read-only authority inventory and normalized provider-neutral access-mode contract. Provider-specific adapters are implementation details and must not become the roadmap.
