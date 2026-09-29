@@ -216,3 +216,29 @@ Read this file first, then the canonical Architecture Source of Truth, Engineeri
 - private R16.32 documentation PR: `Zartharas/omniroute-auth-keeper#18`
 
 The next chat should begin with public PR #16 / this document for the product-level lane and issue #19 only for the release-tag lane.
+
+
+## 2026-09-28 convergence correction
+
+The provider-specific execution sequence is superseded by the provider-neutral convergence decision recorded in:
+
+`docs/project/FIVE_PILLAR_CONVERGENCE_AUDIT_20260928.md`
+
+Current interpretation:
+
+- OpenCode remains architecture/test evidence, not the active live-execution target;
+- TheOldLLM remains historical evidence for interactive-human-verification semantics, not an active redevelopment target;
+- the qualified P4G Auth Keeper provider-bound endpoint is preserved as a non-live credential-isolation seam;
+- no real OpenCode request is the next product step;
+- real-provider call budget remains zero;
+- the active engineering phase is Provider-Neutral Workforce Contract Convergence.
+
+The immediate implementation sequence is:
+
+1. read-only source/authority inventory;
+2. normalized access-mode/admission contract;
+3. provider-neutral execution seam;
+4. deterministic synthetic multi-mode qualification;
+5. Codex Unified + Operations Floor convergence around the normalized evidence contract.
+
+Do not allow a provider-specific qualification branch to redefine the five-pillar product roadmap.
