@@ -1,7 +1,7 @@
 # Current Project Status
 
-Last reviewed: 2026-09-26
-Status: five-pillar architecture unchanged; D19/FreeLLM integration and cleanup closed; R16.32 pre-tag Auth Keeper/upstream promotion complete; immutable upstream v3.8.51 tag absent; five-pillar convergence audit is the next product-level phase
+Last reviewed: 2026-09-28
+Status: five-pillar architecture unchanged; provider-specific OpenCode/TheOldLLM execution is on hold; qualified P4G transport retained as non-live architecture evidence; provider-neutral five-pillar convergence is active; immutable upstream v3.8.51 tag remains a separate release gate
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -240,3 +240,32 @@ Proceed with a consolidated Five-Pillar Architecture Convergence Audit to establ
 The target end-to-end path remains:
 
 `User → Codex Unified → OmniRoute → Auth Keeper + eligible AI workforce → orchestration/fallback → response → Operations Floor evidence`.
+
+
+## 13. 2026-09-28 provider-neutral convergence reset
+
+The consolidated convergence audit is now recorded in:
+
+`docs/project/FIVE_PILLAR_CONVERGENCE_AUDIT_20260928.md`
+
+The project is explicitly returning to the original five-pillar architecture goal.
+
+Current provider-specific decision:
+
+- OpenCode live execution: HOLD;
+- TheOldLLM redevelopment/live execution: HOLD;
+- OpenCode adapter/tests and the qualified P4G endpoint remain preserved as architecture/qualification evidence;
+- no further real OpenCode request is part of the current engineering plan;
+- real-provider call budget remains zero.
+
+Private P4G endpoint qualification established a non-live Auth Keeper credential-isolation/transport seam at candidate `c750da9aad019120ff7dfeb00f637254d8cedf74` with `PASS_P4G_AUTH_KEEPER_TRANSPORT_ENDPOINT_QUALIFICATION_R3`, 197/197 focused regressions, and zero real provider calls during endpoint qualification.
+
+The next product engineering phase is **Provider-Neutral Workforce Contract Convergence**:
+
+1. read-only authority inventory;
+2. normalized provider-neutral access-mode/admission contract;
+3. provider-neutral execution seam preserving Auth Keeper secret ownership and OmniRoute routing authority;
+4. deterministic synthetic multi-mode qualification;
+5. Codex Unified and Operations Floor cross-pillar convergence without changing live routing.
+
+The immutable `v3.8.51` tag still blocks only final tag-bound release reconciliation.
