@@ -167,3 +167,44 @@ The next action is the local immutable qualification run documented in:
 `docs/project/CHAT_HANDOFF_20260930_FORK_RELEASE_PROVENANCE.md`
 
 No tag/release publication, merge, deployment or live activation is authorized by freezing this artifact.
+
+
+## Post-productization RC2 authority
+
+The original RC1/P5E authority above remains immutable historical release-provenance evidence.
+
+After Codex Unified and adopted orchestration-pattern productization, the cumulative qualified source advanced to:
+
+`5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`
+
+New cumulative integration ref:
+
+`integration/productized-five-pillar-nonlive-20260930`
+
+New fork release-candidate ref:
+
+`release/five-pillar-productized-20260930-rc2`
+
+Both point exactly to the cumulative E2 source.
+
+RC2 qualification result:
+
+`PASS_POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_F1_QUALIFICATION_R1`
+
+`POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_QUALIFIED_NONLIVE`
+
+F1 re-qualified the cumulative canonical lineage and fork-owned build/pack provenance without moving RC1 or historical PR #39.
+
+RC2 release evidence:
+
+- source tree: `52bd6b3de8cee30c80f795584483720e1c78618c`;
+- inherited package blob: `612c15ab2f995152514edebae78c4c0ba1b97063`;
+- inherited lockfile blob: `4214aef2e49956e416a013d5c25f574e442b52f2`;
+- Node-policy blob: `a45fd52cc5891570d6299fab38643103c3955474`;
+- BUILD_SHA: `5702c3bbd`;
+- tarball SHA-256: `bc39bb18ef73eec15911e93944a44a669a8690404d4bd6965c099b136e069402`;
+- RC2 manifest SHA-256: `dfd53fbbb59d25901afb98993869f2c54ad8d10732e1bda3272da1f49a3c6063`;
+- dependency installation: NO;
+- real provider calls: NO.
+
+RC2 is qualified non-live only. It does not authorize merge, GitHub release/tag publication, deployment, cutover or live provider validation.
