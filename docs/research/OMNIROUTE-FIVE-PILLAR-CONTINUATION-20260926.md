@@ -242,3 +242,22 @@ The immediate implementation sequence is:
 5. Codex Unified + Operations Floor convergence around the normalized evidence contract.
 
 Do not allow a provider-specific qualification branch to redefine the five-pillar product roadmap.
+
+
+## 2026-09-30 superseding fork-release decision
+
+The earlier upstream-tag wait in this handoff is superseded for the fork-owned product/release lane.
+
+Canonical decision:
+
+- the `Zartharas/OmniRoute` fork owns product release authority;
+- `Zartharas/omniroute-auth-keeper` owns implementation and release evidence;
+- upstream OmniRoute remains an optional compatibility/improvement source;
+- an upstream tag/release is not required before a fork release;
+- current fork release candidate: `release/five-pillar-qualified-20260930-rc1` at `654dc956ce09bcb7c57995c3c292f663352f2d22`.
+
+Read `docs/project/FORK_RELEASE_AUTHORITY_20260930.md` before interpreting the historical R16r35 tag-wait sections above.
+
+`UPSTREAM_TAG_REQUIRED=NO`
+
+`NEXT_PHASE=FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION`
