@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-30
-Status: five-pillar architecture qualified non-live; canonical integration qualified exact-lineage; fork-owned release provenance qualified non-live through R4; canonical build provenance accepted on the documented webpack profile; Codex Unified control-plane productization is the active next phase; OpenCode/TheOldLLM execution remains on hold
+Status: cumulative five-pillar productized stack qualified non-live through F1; Codex Unified and adopted specialist/critique/judge/synthesis orchestration contracts qualified; RC2 canonical integration/build/pack provenance accepted; final merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -19,7 +19,7 @@ The five-pillar product goal remains unchanged:
 
 R16.32 remains an important Pillar 4 workstream, but it is not the product by itself. D18 qualification/activation/freeze, D19 hard-gate/evidence work, FreeLLMAPI signed-advisory integration, cleanup closure, and the private Auth Keeper/upstream pre-tag reconciliation through R16r35 are complete within their accepted scopes.
 
-Provider-neutral convergence and canonical integration are now qualified. The active next phase is **Fork-Owned Release Provenance Qualification** from the exact accepted P5E head. The original upstream repository remains a compatibility source and does not gate the fork's release.
+Provider-neutral convergence, Codex Unified productization, adopted multi-model orchestration semantics, cumulative canonical integration, and RC2 build/pack provenance are now qualified non-live. The active boundary is **separate cutover/live-acceptance authorization**; no merge, release publication, deployment, or live activation is implied. The original upstream repository remains a compatibility source and does not gate the fork's release.
 
 ## 2. Current live production authority — D18
 
@@ -434,3 +434,92 @@ First gate:
 Private trackers: #20, #38 and #40 in `Zartharas/omniroute-auth-keeper`.
 
 Merge, publication and live activation remain separately authorized.
+
+
+## 15. 2026-09-30 cumulative post-productization F1 acceptance
+
+The cumulative productized five-pillar stack is now qualified non-live through F1.
+
+Canonical cumulative candidate:
+
+`5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`
+
+Direct post-P5E chain:
+
+`P5E → B1 → C1 → D1 → E1 → E2`
+
+where:
+
+- B1 establishes maintained Codex Unified control-plane authority;
+- C1 establishes one Codex-facing agent with one acting mutation owner and contribution-only delegated workers;
+- D1 establishes same-session contributor continuity without manual Codex restart;
+- E1 establishes independent specialist / critique / judge roles with acting-owner synthesis;
+- E2 establishes deterministic evidence binding across specialist → critique → judge → synthesis;
+- answer fusion remains `NOT_ADOPTED`.
+
+Cumulative integration:
+
+- private PR #42 — `[Integration] Productized five-pillar qualified non-live stack`;
+- base: `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`;
+- head: `5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`;
+- topology: 188 ahead / 0 behind;
+- open / draft / unmerged / mergeable.
+
+Historical PR #39 remains preserved at exact P5E and is not rewritten.
+
+RC2:
+
+`release/five-pillar-productized-20260930-rc2`
+
+Exact source:
+
+`5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`
+
+Authoritative F1 result:
+
+`PASS_POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_F1_QUALIFICATION_R1`
+
+`POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_QUALIFIED_NONLIVE`
+
+Accepted F1 evidence includes:
+
+- exact integration/release/historical-P5E refs;
+- exact 188/0 lineage and direct P5E→B1→C1→D1→E1→E2 parent chain;
+- productization contracts: 83/83 PASS;
+- P5E: 9/9;
+- P5D: 11/11;
+- P5C2: 11/11;
+- P5C: 12/12;
+- P5B: 9/9;
+- P5A: 15/15;
+- P2–P4 regression set: 144/144;
+- core typecheck: PASS;
+- OpenSSE typecheck: PASS at the frozen five-error baseline;
+- documented webpack release build: PASS;
+- expected/dist/standalone BUILD_SHA: `5702c3bbd`;
+- pack-artifact provenance: PASS;
+- tarball SHA-256: `bc39bb18ef73eec15911e93944a44a669a8690404d4bd6965c099b136e069402`;
+- RC2 release-manifest SHA-256: `dfd53fbbb59d25901afb98993869f2c54ad8d10732e1bda3272da1f49a3c6063`;
+- dependency installation: NO;
+- real provider calls: NO;
+- source/qualification/active-worktree nonmutation: PASS.
+
+Private PRM #43 is complete and closed.
+
+Current formal boundary:
+
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F1`
+
+`FINAL_RELEASE_CUTOVER_ACCEPTANCE=INCOMPLETE`
+
+`MERGE=NOT_AUTHORIZED`
+
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+Remaining parent acceptance work is intentionally outside the non-live qualification lane:
+
+- separately authorized merge/publication/deployment/live validation;
+- activated multi-model orchestration acceptance if explicitly authorized;
+- post-cutover stability/final non-drift after an authorized cutover.
