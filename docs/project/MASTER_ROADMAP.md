@@ -1,7 +1,7 @@
 # Master Roadmap — Fork Product Goal
 
-Last reviewed: 2026-09-26
-Status: Canonical long-range roadmap; D19/FreeLLM and R16.32 pre-tag boundary complete; five-pillar convergence is the active product-level continuation
+Last reviewed: 2026-09-30
+Status: Canonical long-range roadmap; five-pillar architecture, canonical integration and fork-owned release provenance qualified non-live; Codex Unified productization is the active product-level continuation
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
 
@@ -355,3 +355,39 @@ The master product goal remains unchanged. The program must not narrow itself in
 ### Release lane
 
 The R16r35 upstream-tag wait is historical compatibility evidence only. The fork-owned release lane proceeds from the exact qualified canonical integration head and does not require an upstream tag. Upstream releases may later be reconciled when useful.
+
+
+## 7. 2026-09-30 release-provenance completion and next product phase
+
+Fork-owned release provenance is complete through:
+
+`PASS_FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION_R4`
+
+Candidate:
+`654dc956ce09bcb7c57995c3c292f663352f2d22`
+
+Canonical build provenance is accepted on the repository-documented webpack profile. The Turbopack profile remains separately unqualified for this release candidate because R3 reproduced an upstream internal build panic. No P5E source mutation was required.
+
+The release lane therefore no longer blocks the next product-engineering phase.
+
+### Active next phase — Codex Unified productization
+
+The first remaining product gap is to move Codex Unified from historical/host-side control-plane authority to explicit maintained repository/release authority and finalize the one-agent delegation/task-ownership contract.
+
+Start with a read-only authority census covering:
+- Codex-facing ingress;
+- catalog and workload-policy ownership;
+- delegation/task metadata;
+- provider/model contribution selection;
+- mutation-owner enforcement;
+- existing continuity tests.
+
+After that census, implement only the proven gap. Then qualify one-agent delegation and non-live provider/model contribution changes before moving to specialist/critique/judge/synthesis/fusion activation acceptance.
+
+`NEXT_PHASE=CODEX_UNIFIED_CONTROL_PLANE_PRODUCTIZATION`
+
+`NEXT_GATE=CODEX_UNIFIED_READ_ONLY_AUTHORITY_CENSUS`
+
+Private tracker: `Zartharas/omniroute-auth-keeper#40`.
+
+Merge, publication, deployment, live activation and real provider calls remain separately authorized.
