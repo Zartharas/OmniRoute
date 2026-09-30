@@ -1,7 +1,7 @@
 # Current Project Status
 
-Last reviewed: 2026-09-28
-Status: five-pillar architecture qualified non-live; canonical integration qualified exact-lineage; OpenCode/TheOldLLM execution remains on hold; fork-owned release provenance is the active next phase; upstream releases are compatibility inputs, not release gates
+Last reviewed: 2026-09-30
+Status: five-pillar architecture qualified non-live; canonical integration qualified exact-lineage; fork-owned release provenance qualified non-live through R4; canonical build provenance accepted on the documented webpack profile; Codex Unified control-plane productization is the active next phase; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -405,3 +405,32 @@ Release candidate:
 Exact source:
 
 `654dc956ce09bcb7c57995c3c292f663352f2d22`
+
+
+## 2026-09-30 R4 provenance checkpoint
+
+Fork-owned release provenance is accepted non-live through R4.
+
+- candidate: `654dc956ce09bcb7c57995c3c292f663352f2d22`
+- R4 qualification commit: `232c878b57d0343061e45c60b838c1ca1a7a7a83`
+- result: `PASS_FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION_R4`
+- release build profile: documented webpack fallback
+- BUILD_SHA: `654dc956c`
+- tarball bytes: `73337993`
+- tarball SHA-256: `e9260796923cfa689da8473a30983319931820f74adbbc9473867886c660330f`
+- release-manifest SHA-256: `57a661b444d51cab4d688a2735454fea8bac60b2d03776aa7c579f8a2303ee48`
+- source and active-worktree nonmutation: PASS
+- dependency installation: NO
+- real provider calls: NO
+
+Turbopack is not qualified for this candidate; R3 reproduced the upstream internal build panic. The qualified source was not changed.
+
+Active next phase:
+`CODEX_UNIFIED_CONTROL_PLANE_PRODUCTIZATION`
+
+First gate:
+`CODEX_UNIFIED_READ_ONLY_AUTHORITY_CENSUS`
+
+Private trackers: #20, #38 and #40 in `Zartharas/omniroute-auth-keeper`.
+
+Merge, publication and live activation remain separately authorized.
