@@ -377,3 +377,31 @@ Decision record:
 Active next phase:
 
 `FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION`
+
+
+## Authoritative continuation handoff — 2026-09-30
+
+For the next chat/session, read first:
+
+`docs/project/CHAT_HANDOFF_20260930_FORK_RELEASE_PROVENANCE.md`
+
+It supersedes older wording that treated the original upstream `v3.8.51` tag as a fork release blocker.
+
+Current active phase:
+
+`FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION`
+
+Frozen local qualification:
+
+- branch: `qualification/fork-owned-release-provenance-r1`
+- commit: `7c92fbb13d66216d11c6219917e3ecf9d5596021`
+- harness bytes: `19731`
+- harness SHA-256: `f252228a299920fb197171871bfcdc6bcebf736c2a56a41abc0786ebf6cf5f00`
+
+Release candidate:
+
+`release/five-pillar-qualified-20260930-rc1`
+
+Exact source:
+
+`654dc956ce09bcb7c57995c3c292f663352f2d22`
