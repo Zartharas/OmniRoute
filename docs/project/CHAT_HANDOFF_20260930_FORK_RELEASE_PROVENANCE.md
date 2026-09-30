@@ -341,3 +341,20 @@ Safety remains:
 `MERGE=NOT_AUTHORIZED`
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
 `LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+### Frozen F1 R2 artifact
+
+The repaired qualification is now frozen:
+
+- branch: `qualification/post-productization-integration-release-f1-r2`;
+- commit: `a3930632ad4731a7f26b2b17c66981d0f54b0fb4`;
+- harness blob: `940c31c572a2a00c3cdd449c9b1d6217f0a6750a`;
+- bytes: `24146`;
+- SHA-256: `f2bf5da0911493d63435d7cba95e5c5a3ed38ad1c55a131d6cbf175d556d398f`.
+
+R2 uses OS-level network denial and exact-lockfile offline materialization for the standalone OpenCode plugin dependencies inside the disposable qualification worktree. It does not claim zero qualification-worktree dependency installation; instead it makes that installation explicit and proves it is offline/lockfile-scoped while the active repository remains untouched.
+
+Expected result:
+
+`PASS_POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_F1_QUALIFICATION_R2`
