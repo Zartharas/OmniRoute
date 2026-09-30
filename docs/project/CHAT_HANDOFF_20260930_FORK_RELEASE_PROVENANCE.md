@@ -1,4 +1,4 @@
-# OmniRoute New-Chat Handoff — Cumulative Productization + RC2 F1 Accepted / Cutover Authorization Next
+# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC2 F1 R2 Provenance Repair Next
 
 Date: 2026-09-30
 
@@ -298,3 +298,46 @@ The next action requires an explicit decision/authorization for whichever cutove
 `LIVE_ACTIVATION=NOT_AUTHORIZED`
 
 Do not merge PR #42, publish RC2, deploy, or execute real provider validation without that separate authorization.
+
+
+## F1 R1 correction — authoritative latest checkpoint
+
+The prior cumulative F1 R1 PASS section is preserved as historical output but is **not authoritative release-provenance acceptance**.
+
+Observed contradiction:
+
+- build output: `added 78 packages in 3s` while building `@omniroute/opencode-plugin`;
+- harness final claim: `dependency_installation=NO`.
+
+Exact candidate source confirms `scripts/build/prepublish.ts` runs npm `install` for the standalone plugin when plugin-local dependencies are absent. The F1 R1 network guard did not prove that this npm registry path was blocked.
+
+Therefore:
+
+`F1_R1=INVALID_FALSE_PASS_DEPENDENCY_INSTALLATION_BLIND_SPOT`
+
+Retained authority:
+
+`CUMULATIVE_E2_PRODUCT_SEMANTICS=QUALIFIED_NONLIVE`
+
+`POST_PRODUCTIZATION_CANONICAL_LINEAGE=QUALIFIED_NONLIVE`
+
+Pending authority:
+
+`RC2_RELEASE_PROVENANCE=PENDING_REPAIRED_F1_R2`
+
+Current candidate remains:
+
+`5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`
+
+Do not mutate E2 source. Repair only the qualification environment/harness so dependency provenance is explicit and fail-closed.
+
+Current next gate:
+
+`POST_PRODUCTIZATION_F1_R2_OFFLINE_DEPENDENCY_PROVENANCE`
+
+Safety remains:
+
+`REAL_PROVIDER_CALL_BUDGET=0`
+`MERGE=NOT_AUTHORIZED`
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
