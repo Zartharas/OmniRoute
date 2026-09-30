@@ -1,4 +1,4 @@
-# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC2 F1 R3 Provenance Repair Next
+# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC3 F2 Offline Release Qualification Next
 
 Date: 2026-09-30
 
@@ -386,6 +386,48 @@ Expected terminal result:
 `POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_QUALIFIED_NONLIVE_OFFLINE_LOCK_CLOSURE`
 
 Safety remains unchanged:
+`REAL_PROVIDER_CALL_BUDGET=0`
+`MERGE=NOT_AUTHORIZED`
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+### F1 R3 exposed Google Fonts dependency / F2 RC3 frozen
+
+F1 R3 successfully qualified the standalone plugin dependency closure offline, then failed the production build because `next/font/google` attempted to fetch `Inter` from Google Fonts while the OS sandbox denied network.
+
+Do not weaken the network boundary.
+
+Minimal corrected source:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Only the root layout and an offline-font regression test changed. Routing/provider/auth/orchestration semantics remain inherited from qualified E2.
+
+New integration:
+`integration/productized-five-pillar-offline-release-20260930`
+
+New RC:
+`release/five-pillar-productized-20260930-rc3`
+
+Draft private PR #44 is open/draft/unmerged/mergeable.
+
+Current frozen qualification:
+
+- branch: `qualification/post-productization-offline-release-f2-r1`;
+- commit: `1dfbbead95dff854305b85df598ac0e548c447b7`;
+- harness blob: `b613335bc7429a2b07ee12dfc04f6487d1182d75`;
+- bytes: `35864`;
+- SHA-256: `4994261af9b73a37cc6d31c3a06b4fa7b3344509e6677021a12982c4013c43e8`.
+
+Expected result:
+
+`PASS_POST_PRODUCTIZATION_OFFLINE_RELEASE_F2_QUALIFICATION_R1`
+
+`POST_PRODUCTIZATION_OFFLINE_RELEASE_QUALIFIED_NONLIVE`
+
+Safety remains:
+
 `REAL_PROVIDER_CALL_BUDGET=0`
 `MERGE=NOT_AUTHORIZED`
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
