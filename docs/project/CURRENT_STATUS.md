@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-30
-Status: cumulative five-pillar productized stack qualified non-live through F1; Codex Unified and adopted specialist/critique/judge/synthesis orchestration contracts qualified; RC2 canonical integration/build/pack provenance accepted; final merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
+Status: cumulative five-pillar product semantics qualified non-live through E2; F1 R1 cumulative RC2 release provenance invalidated by an untracked plugin dependency-install/network blind spot; repaired F1 R2 provenance qualification pending; final merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -523,3 +523,42 @@ Remaining parent acceptance work is intentionally outside the non-live qualifica
 - separately authorized merge/publication/deployment/live validation;
 - activated multi-model orchestration acceptance if explicitly authorized;
 - post-cutover stability/final non-drift after an authorized cutover.
+
+
+## 16. 2026-09-30 F1 R1 provenance correction
+
+The F1 R1 terminal PASS recorded in the immediately preceding section is **not accepted** as release-provenance authority.
+
+The complete operator output showed that the RC2 release build executed an npm dependency install inside the standalone `@omniroute/opencode-plugin` package:
+
+`added 78 packages in 3s`
+
+Exact-source inspection of candidate `5702c3bb...` confirms that `scripts/build/prepublish.ts` runs npm `install` when the plugin-local `node_modules` directory is absent. A fresh detached qualification worktree therefore exercises that installation path.
+
+This conflicts with the harness's final hard-coded claim:
+
+`dependency_installation=NO`
+
+and means F1 R1 did not establish the intended network-denied supply-chain provenance boundary.
+
+Corrected authority:
+
+- cumulative E2 product semantics: QUALIFIED_NONLIVE;
+- cumulative canonical lineage through P5E→B1→C1→D1→E1→E2: retained;
+- F1 R1 product/regression/type evidence: retained as useful evidence;
+- F1 R1 RC2 release-provenance PASS: INVALID;
+- candidate source: unchanged at `5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`;
+- provider/model calls: 0;
+- merge/publication/deployment/live activation: not authorized.
+
+Formal correction:
+
+`F1_R1=INVALID_FALSE_PASS_DEPENDENCY_INSTALLATION_BLIND_SPOT`
+
+`RC2_RELEASE_PROVENANCE=PENDING_REPAIRED_F1_R2`
+
+Next bounded gate:
+
+`POST_PRODUCTIZATION_F1_R2_OFFLINE_DEPENDENCY_PROVENANCE`
+
+Do not mutate the accepted E2 source merely to repair this qualification defect.
