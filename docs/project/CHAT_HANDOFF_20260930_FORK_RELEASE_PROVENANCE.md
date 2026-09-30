@@ -1,4 +1,4 @@
-# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC2 F1 R2 Provenance Repair Next
+# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC2 F1 R3 Provenance Repair Next
 
 Date: 2026-09-30
 
@@ -358,3 +358,35 @@ R2 uses OS-level network denial and exact-lockfile offline materialization for t
 Expected result:
 
 `PASS_POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_F1_QUALIFICATION_R2`
+
+
+### F1 R2 failed closed / F1 R3 frozen
+
+F1 R2 result:
+`FAIL_POST_PRODUCTIZATION_F1_R2_plugin_dependency_offline_install`
+
+The R2 OS-network sandbox self-test and offline npm boundary passed. npm `ci` then rejected the standalone plugin checked-in lockfile as inconsistent because it reported the package itself missing from the lock.
+
+Do not rerun R2 and do not mutate E2 source based on this result.
+
+F1 R3 is the current active qualification:
+
+- branch: `qualification/post-productization-integration-release-f1-r3`;
+- commit: `568d4cedfa7c6347fcfdc349fb83e4436f63a3dd`;
+- harness blob: `d610a9cd7c7c9c972bc5d779d052247bca3f89d2`;
+- bytes: `32308`;
+- SHA-256: `f3fe02b55bed0ca93f99f0cb2a3a9f60cdf938aa736fa0606fa66530c6f137ba`.
+
+R3 preserves the original checked-in lock, installs only into disposable staging while both npm offline mode and OS `deny network*` are active, independently verifies every installed package/version against the original lock, clones only that verified tree into the disposable qualification worktree, and fails on any release-build package installation or candidate-lock mutation.
+
+Expected terminal result:
+
+`PASS_POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_F1_QUALIFICATION_R3`
+
+`POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_QUALIFIED_NONLIVE_OFFLINE_LOCK_CLOSURE`
+
+Safety remains unchanged:
+`REAL_PROVIDER_CALL_BUDGET=0`
+`MERGE=NOT_AUTHORIZED`
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
