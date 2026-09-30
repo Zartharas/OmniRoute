@@ -344,3 +344,27 @@ Remaining blocker:
 `TAG_BOUND_RELEASE_PROVENANCE=BLOCKED_TAG_ABSENT`
 
 The upstream immutable `v3.8.51` tag remains absent. Do not chase the moving `release/v3.8.51` branch.
+
+
+## 2026-09-30 fork-owned release continuation
+
+Do not wait for the original upstream owner to publish `v3.8.51`.
+
+The canonical fork governance says upstream direction is reference/compatibility input and does not supersede the fork's product authority.
+
+Current authority:
+
+- five-pillar architecture: `QUALIFIED_NONLIVE`;
+- canonical integration: `QUALIFIED_NONLIVE_EXACT_LINEAGE`;
+- release candidate: `release/five-pillar-qualified-20260930-rc1`;
+- exact release-candidate source: `654dc956ce09bcb7c57995c3c292f663352f2d22`;
+- upstream tag required: NO;
+- merge/publication/live activation: NOT AUTHORIZED.
+
+Next phase:
+
+`FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION`
+
+Canonical decision record:
+
+`docs/project/FORK_RELEASE_AUTHORITY_20260930.md`
