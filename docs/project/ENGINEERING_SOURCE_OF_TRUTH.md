@@ -34,10 +34,10 @@ Accepted later evidence closed D19/FreeLLM work within its authorized scope and 
 
 The program therefore continues in two independent lanes:
 
-- **release lane:** wait for immutable `v3.8.51`, then perform exact tag-bound reconciliation and final qualification;
+- **release lane:** use the fork-owned qualified source/ref as release authority; upstream releases are optional compatibility inputs, not blockers;
 - **product lane:** proceed now with a Five-Pillar Architecture Convergence Audit across Codex Unified, the unified OmniRoute workforce, Auth Keeper, intelligent orchestration and Operations Floor.
 
-The missing upstream tag blocks the release lane only. It does not suspend product-level convergence work that can be performed without mutating the frozen live baseline.
+The earlier upstream-tag wait is retained only as historical R16.32 sync evidence. It no longer blocks the fork-owned release lane. Product and release work proceed from the fork's own qualified authority while upstream changes remain optional compatibility inputs.
 
 ## 3. Evidence-first workflow
 
@@ -216,6 +216,20 @@ Continue ingesting compatible upstream OmniRoute changes. When upstream overlaps
 3. rerun architectural non-regression tests;
 4. preserve Operations Floor, Auth Keeper and Codex Unified contracts;
 5. document deliberate divergence.
+
+## 11.1 Fork-owned release authority
+
+The private `Zartharas/omniroute-auth-keeper` repository is authoritative for fork implementation and release evidence.
+
+For the five-pillar program, the fork may qualify and publish its own release without waiting for an immutable tag from the original upstream repository. Upstream remains a source of compatible improvements and later reconciliation evidence.
+
+Current fork-owned release candidate:
+
+- ref: `release/five-pillar-qualified-20260930-rc1`;
+- source: `654dc956ce09bcb7c57995c3c292f663352f2d22`;
+- canonical integration qualification: `PASS_CANONICAL_FIVE_PILLAR_INTEGRATION_QUALIFICATION_R2`.
+
+Release publication, merge, deployment and live activation still require their own explicit authorization.
 
 ## 12. Release, live-cutover and rollback-retention boundary
 
