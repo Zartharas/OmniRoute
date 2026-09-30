@@ -208,3 +208,18 @@ RC2 release evidence:
 - real provider calls: NO.
 
 RC2 is qualified non-live only. It does not authorize merge, GitHub release/tag publication, deployment, cutover or live provider validation.
+
+
+## RC2 F1 R1 invalidation
+
+The first cumulative RC2 F1 qualification produced a terminal PASS but is not accepted for release provenance.
+
+The build executed an npm dependency install for the standalone `@omniroute/opencode-plugin` package in the detached worktree. The exact candidate source intentionally invokes npm `install` when plugin-local `node_modules` is absent.
+
+Therefore F1 R1's `dependency_installation=NO` claim is false for that run, and the qualification did not prove the intended network-denied supply-chain boundary.
+
+The cumulative E2 source and integration lineage remain unchanged and qualified non-live.
+
+`RC2_RELEASE_PROVENANCE=PENDING_REPAIRED_F1_R2`
+
+The repair must qualify the same exact candidate without source mutation and must make dependency installation/network behavior explicit and fail-closed.
