@@ -119,7 +119,7 @@ Current accepted continuation:
 - D19 hard-gate/observation work is no longer the active development phase;
 - FreeLLMAPI signed advisory metadata integration is qualified and live under the later accepted handoff;
 - the private R16.32/Auth Keeper pre-tag reconciliation is promoted at `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`;
-- final upstream release reconciliation waits for immutable `v3.8.51`;
+- upstream release reconciliation is optional compatibility work; fork-owned release qualification does not wait for an upstream tag;
 - the active product-level next phase is the Five-Pillar Architecture Convergence Audit.
 
 D19 must prove:
@@ -291,7 +291,7 @@ The following must not be used as the master roadmap:
 
 The statements "D14 is the current implementation step", "D16 is next", "D18 is not live", and "D19 has no canonical scope" are stale.
 
-Current authority is: the five-pillar architecture remains canonical; D18/D19/FreeLLM foundations are accepted; R16.32 pre-tag promotion is complete; the product-level next phase is five-pillar convergence while final release reconciliation waits for immutable v3.8.51.
+Current authority is: the five-pillar architecture remains canonical; D18/D19/FreeLLM foundations are accepted; provider-neutral convergence and canonical non-live integration are qualified; the fork owns its release authority and upstream releases are optional compatibility inputs.
 
 ## 5. Status update rule
 
@@ -343,6 +343,15 @@ The master product goal remains unchanged. The program must not narrow itself in
 5. **Product acceptance**
    - perform full five-pillar end-to-end acceptance, including outage, quota, cooldown, auth expiry/re-auth, fallback, restart/recovery, rollback, protected-native preservation, workload isolation, evidence continuity, and final non-drift.
 
+### Fork-owned release authority
+
+- canonical release authority: `Zartharas/OmniRoute` + `Zartharas/omniroute-auth-keeper`;
+- current release candidate: `release/five-pillar-qualified-20260930-rc1`;
+- exact source: `654dc956ce09bcb7c57995c3c292f663352f2d22`;
+- upstream tag/release publication is not a prerequisite;
+- preserve upstream compatibility where practical, but do not make upstream owner timing a fork release gate;
+- keep merge/publication/deployment/live activation separately authorized.
+
 ### Release lane
 
-The immutable upstream `v3.8.51` tag is still absent as of the R16r35 checkpoint. Final tag-bound release reconciliation waits for that tag, but the five-pillar convergence work above may continue in parallel where it does not mutate protected live state.
+The R16r35 upstream-tag wait is historical compatibility evidence only. The fork-owned release lane proceeds from the exact qualified canonical integration head and does not require an upstream tag. Upstream releases may later be reconciled when useful.
