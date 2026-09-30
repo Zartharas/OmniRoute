@@ -298,3 +298,49 @@ Formal state:
 `FIVE_PILLAR_ARCHITECTURE=QUALIFIED_NONLIVE`
 
 `FINAL_RELEASE_CUTOVER_ACCEPTANCE=INCOMPLETE`
+
+
+## 2026-09-30 canonical integration reconciliation
+
+The exact qualified P5E head has now been reconciled as the canonical non-live integration view in the private engineering repository.
+
+Canonical private integration PR:
+
+- PR #39 — `[Integration] Canonical five-pillar qualified non-live stack`
+- base: `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`
+- head: `654dc956ce09bcb7c57995c3c292f663352f2d22`
+- topology: 183 ahead / 0 behind
+- merge base: exact base
+- draft / unmerged / mergeable
+
+Authoritative canonical-integration qualification:
+
+- R1: INVALID false-pass lineage evidence (preserved)
+- R2 qualification commit: `658bb18c38b1427aa0e67f57ad1e94e6aef957bd`
+- result: `PASS_CANONICAL_FIVE_PILLAR_INTEGRATION_QUALIFICATION_R2`
+- status: `CANONICAL_INTEGRATION_QUALIFIED_NONLIVE_EXACT_LINEAGE`
+
+R2 proved:
+
+- P4E + P5A→P5E exact ancestry;
+- P4F/P4G/P4G endpoint excluded from the canonical lineage;
+- integration ref exactly equals qualified P5E;
+- all P5 and P2–P4 regression gates remain green;
+- type/file-size/nonmutation gates pass;
+- no real provider call;
+- no live activation;
+- no merge authorization.
+
+Current product state:
+
+`FIVE_PILLAR_ARCHITECTURE=QUALIFIED_NONLIVE`
+
+`PROVIDER_NEUTRAL_CONVERGENCE=COMPLETE`
+
+`CANONICAL_INTEGRATION=QUALIFIED_NONLIVE_EXACT_LINEAGE`
+
+Remaining blocker:
+
+`TAG_BOUND_RELEASE_PROVENANCE=BLOCKED_TAG_ABSENT`
+
+The upstream immutable `v3.8.51` tag remains absent. Do not chase the moving `release/v3.8.51` branch.
