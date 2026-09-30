@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-30
-Status: cumulative five-pillar product semantics qualified non-live through E2; F1 R1 invalidated by an untracked plugin dependency-install/network blind spot; F1 R2 failed closed on npm-ci/plugin-lock compatibility after the offline OS network boundary passed; repaired F1 R3 original-lock semantic-closure qualification pending; final merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
+Status: cumulative five-pillar product semantics qualified non-live through E2; F1 R1 invalidated by dependency-install provenance blind spot; F1 R2 failed closed on npm-ci/plugin-lock compatibility; F1 R3 proved offline original-lock dependency closure but exposed a build-time Google Fonts dependency; minimal F2 source correction and RC3 are frozen, with F2 R1 offline release qualification pending; merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -604,3 +604,65 @@ Current state:
 `RC2_RELEASE_PROVENANCE=PENDING_F1_R3`
 
 `NEXT_GATE=LOCAL_F1_R3_QUALIFICATION`
+
+
+## 18. 2026-09-30 F1 R3 Google Fonts failure / F2 RC3 active gate
+
+F1 R3 resolved the plugin dependency-provenance problem:
+
+- OS network sandbox: PASS;
+- npm offline mode: PASS;
+- original checked-in plugin-lock semantic closure: PASS;
+- 78 installed plugin packages verified against the original lock;
+- lock-closure SHA-256: `dfc128b150f8685d75078ac6f51e8485f5aa532eb48d6f1ea7ce329024dad356`;
+- candidate plugin lock unchanged;
+- qualification worktree dependency installation: NO;
+- active repository dependency installation: NO;
+- productization smoke: 27/27;
+- core typecheck: PASS;
+- OpenSSE typecheck: PASS at frozen baseline.
+
+The first failing gate was the production build. `src/app/layout.tsx` imported `Inter` from `next/font/google`, causing a blocked lookup to `fonts.googleapis.com` under the required OS network-deny boundary.
+
+The repository already defines `--font-sans` as a self-contained system-font stack and self-hosts Material Symbols.
+
+Minimal F2 source correction:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Tree:
+
+`26dfd6c522f3f8352965aa0b23f5086afb4d068a`
+
+Only changed:
+- `src/app/layout.tsx`;
+- `tests/unit/offline-release-font-contract.test.ts`.
+
+New draft integration:
+private PR #44
+
+New RC:
+`release/five-pillar-productized-20260930-rc3`
+
+F2 topology:
+- direct parent: E2 `5702c3bb...`;
+- 1 ahead / 0 behind E2;
+- cumulative canonical topology: 189 ahead / 0 behind base.
+
+Frozen F2 R1 qualification:
+
+- branch: `qualification/post-productization-offline-release-f2-r1`;
+- commit: `1dfbbead95dff854305b85df598ac0e548c447b7`;
+- harness blob: `b613335bc7429a2b07ee12dfc04f6487d1182d75`;
+- bytes: `35864`;
+- SHA-256: `4994261af9b73a37cc6d31c3a06b4fa7b3344509e6677021a12982c4013c43e8`.
+
+Current state:
+
+`CUMULATIVE_E2_PRODUCT_SEMANTICS=QUALIFIED_NONLIVE`
+
+`F1_R3=FAIL_CLOSED_GOOGLE_FONT_BUILD_NETWORK_DEPENDENCY`
+
+`RC3_RELEASE_PROVENANCE=PENDING_F2_R1`
+
+`NEXT_GATE=LOCAL_F2_R1_QUALIFICATION`
