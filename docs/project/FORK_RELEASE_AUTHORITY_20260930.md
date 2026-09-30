@@ -128,3 +128,42 @@ Required before any tag/publication decision:
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
 
 `LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+## Frozen release-provenance qualification
+
+The fork-owned release candidate is now frozen for non-live provenance qualification.
+
+Release ref:
+
+`release/five-pillar-qualified-20260930-rc1`
+
+Exact source:
+
+`654dc956ce09bcb7c57995c3c292f663352f2d22`
+
+Frozen source identities:
+
+- source tree: `541e2b6bdfa682bc3d008356e41b34ea72c49248`;
+- package blob: `612c15ab2f995152514edebae78c4c0ba1b97063`;
+- lockfile blob: `4214aef2e49956e416a013d5c25f574e442b52f2`;
+- lockfile bytes: `1387787`;
+- Node-policy blob: `a45fd52cc5891570d6299fab38643103c3955474`;
+- Node policy: `24`.
+
+Qualification artifact:
+
+- branch: `qualification/fork-owned-release-provenance-r1`;
+- commit: `7c92fbb13d66216d11c6219917e3ecf9d5596021`;
+- harness: `scripts/qualification/fork-owned-release-provenance-qualification-r1.sh`;
+- bytes: `19731`;
+- SHA-256: `f252228a299920fb197171871bfcdc6bcebf736c2a56a41abc0786ebf6cf5f00`;
+- harness blob: `8c4c1a7746f78122ac587029eb6aeca03ac988f0`;
+- qualification topology: exact source + one harness file;
+- workflow runs on the source candidate: none.
+
+The next action is the local immutable qualification run documented in:
+
+`docs/project/CHAT_HANDOFF_20260930_FORK_RELEASE_PROVENANCE.md`
+
+No tag/release publication, merge, deployment or live activation is authorized by freezing this artifact.
