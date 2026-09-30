@@ -1,10 +1,10 @@
-# OmniRoute New-Chat Handoff — Fork Release Provenance Accepted / Codex Unified Productization Next
+# OmniRoute New-Chat Handoff — Cumulative Productization + RC2 F1 Accepted / Cutover Authorization Next
 
 Date: 2026-09-30
 
 ## Read this first
 
-This file supersedes the earlier 2026-09-30 handoff state in which fork-owned release provenance was still pending.
+This file now includes the later cumulative 2026-09-30 productization/F1 checkpoint and supersedes its earlier R4-only continuation state.
 
 Canonical public authority:
 `Zartharas/OmniRoute`
@@ -206,3 +206,95 @@ No release publication, deployment, live activation or real provider call is imp
 4. produce an exact gap matrix/source-test allowlist;
 5. mutate source only if the census proves a repository authority gap;
 6. keep activated multi-model orchestration and any live validation separately authorized.
+
+
+## Cumulative F1 acceptance — authoritative latest checkpoint
+
+The R4/P5E release checkpoint above remains valid historical evidence, but it is no longer the latest productized candidate.
+
+Latest cumulative candidate:
+
+`5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`
+
+Qualified direct chain:
+
+`P5E 654dc956... → B1 4d50857e... → C1 5a6140d8... → D1 c484b6b2... → E1 1d1eed8c... → E2 5702c3bb...`
+
+Accepted semantics:
+
+- one Codex-facing agent;
+- OmniRoute routing/final-policy authority;
+- exactly one acting model owns repository/tool mutation;
+- delegated workers are contribution-only and mutation-denied;
+- contributor changes can preserve the same Codex-facing session;
+- adopted orchestration pattern is specialist → critique → judge → synthesis;
+- judge is advisory to synthesis and cannot become routing authority;
+- synthesis/finalization remains with the acting Codex model;
+- answer fusion is `NOT_ADOPTED`.
+
+Latest cumulative canonical integration:
+
+- private PR #42;
+- base `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`;
+- head `5702c3bbd6eb50d720a04d99fbeb81e586f5cd09`;
+- 188 ahead / 0 behind;
+- open / draft / unmerged / mergeable.
+
+Historical PR #39 remains fixed at P5E.
+
+Latest RC:
+
+`release/five-pillar-productized-20260930-rc2`
+
+Authoritative F1 qualification:
+
+- branch: `qualification/post-productization-integration-release-f1-r1`;
+- commit: `b4702915d27554dbf0e7c28ba52d62d38203f123`;
+- harness blob: `29fb6be22e462ec8b73e75d75e5f175935c0f9c8`;
+- harness bytes: `22431`;
+- harness SHA-256: `8f91a1d764a4204fcd7d6bb6030248cb2f56d9d771436a0ca7421d78fb5d1598`.
+
+Definitive result:
+
+`PASS_POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_F1_QUALIFICATION_R1`
+
+`POST_PRODUCTIZATION_CANONICAL_INTEGRATION_RELEASE_QUALIFIED_NONLIVE`
+
+Release evidence:
+
+- BUILD_SHA: `5702c3bbd`;
+- tarball: `omniroute-3.8.51.tgz`;
+- tarball bytes: `73341625`;
+- tarball SHA-256: `bc39bb18ef73eec15911e93944a44a669a8690404d4bd6965c099b136e069402`;
+- RC2 manifest SHA-256: `dfd53fbbb59d25901afb98993869f2c54ad8d10732e1bda3272da1f49a3c6063`;
+- dependency installation: NO;
+- real provider calls: NO;
+- source and active-worktree nonmutation: PASS.
+
+Private PRM #43 is complete/closed. Parent PRM #20 remains open only for the final cutover/live acceptance boundary.
+
+## Current next gate
+
+Do **not** start another non-live architecture/productization phase.
+
+Current boundary:
+
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F1`
+
+`NEXT_GATE=SEPARATE_CUTOVER_OR_LIVE_ACCEPTANCE_AUTHORIZATION`
+
+The next action requires an explicit decision/authorization for whichever cutover step is intended. Until then:
+
+`REAL_PROVIDER_CALL_BUDGET=0`
+
+`OPENCODE_LIVE_EXECUTION=HOLD`
+
+`THEOLDLLM_LIVE_EXECUTION=HOLD`
+
+`MERGE=NOT_AUTHORIZED`
+
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+Do not merge PR #42, publish RC2, deploy, or execute real provider validation without that separate authorization.
