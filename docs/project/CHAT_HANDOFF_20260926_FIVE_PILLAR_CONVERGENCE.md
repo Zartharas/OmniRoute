@@ -368,3 +368,16 @@ Next phase:
 Canonical decision record:
 
 `docs/project/FORK_RELEASE_AUTHORITY_20260930.md`
+
+
+## Superseded by authoritative 2026-09-30 handoff
+
+For all continuation decisions after canonical integration R2, use:
+
+`docs/project/CHAT_HANDOFF_20260930_FORK_RELEASE_PROVENANCE.md`
+
+Any older text above that says the fork must wait for the original upstream owner/tag is historical only and must not be used as a release blocker.
+
+Active next phase:
+
+`FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION`
