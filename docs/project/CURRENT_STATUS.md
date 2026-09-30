@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-28
-Status: five-pillar architecture unchanged; provider-specific OpenCode/TheOldLLM execution is on hold; qualified P4G transport retained as non-live architecture evidence; provider-neutral five-pillar convergence is active; immutable upstream v3.8.51 tag remains a separate release gate
+Status: five-pillar architecture qualified non-live; canonical integration qualified exact-lineage; OpenCode/TheOldLLM execution remains on hold; fork-owned release provenance is the active next phase; upstream releases are compatibility inputs, not release gates
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -19,7 +19,7 @@ The five-pillar product goal remains unchanged:
 
 R16.32 remains an important Pillar 4 workstream, but it is not the product by itself. D18 qualification/activation/freeze, D19 hard-gate/evidence work, FreeLLMAPI signed-advisory integration, cleanup closure, and the private Auth Keeper/upstream pre-tag reconciliation through R16r35 are complete within their accepted scopes.
 
-The current product-level next phase is a **Five-Pillar Architecture Convergence Audit** across Codex Unified, the unified OmniRoute workforce, Auth Keeper, intelligent orchestration, and Operations Floor. In parallel, the release lane waits for the immutable upstream `v3.8.51` tag before final tag-bound reconciliation. The missing tag blocks that release lane only; it does not block all remaining product engineering.
+Provider-neutral convergence and canonical integration are now qualified. The active next phase is **Fork-Owned Release Provenance Qualification** from the exact accepted P5E head. The original upstream repository remains a compatibility source and does not gate the fork's release.
 
 ## 2. Current live production authority — D18
 
@@ -214,9 +214,9 @@ Private continuation documentation head after the R35 update:
 
 ### Two-lane continuation
 
-**Release lane**
+**Historical R16.32 upstream-sync lane**
 
-- wait for immutable upstream `v3.8.51`;
+- the former upstream `v3.8.51` wait is retained as historical sync evidence only;
 - bind its exact commit/tree;
 - reconcile/reapply the qualified semantics;
 - rerun final qualification;
@@ -268,7 +268,7 @@ The next product engineering phase is **Provider-Neutral Workforce Contract Conv
 4. deterministic synthetic multi-mode qualification;
 5. Codex Unified and Operations Floor cross-pillar convergence without changing live routing.
 
-The immutable `v3.8.51` tag still blocks only final tag-bound release reconciliation.
+The immutable upstream `v3.8.51` tag is not required for fork-owned release qualification.
 
 
 ## 14. 2026-09-29 five-pillar non-live architecture acceptance
@@ -353,6 +353,27 @@ Current product state:
 
 Remaining blocker:
 
-`TAG_BOUND_RELEASE_PROVENANCE=BLOCKED_TAG_ABSENT`
+`FORK_RELEASE_PROVENANCE=ACTIVE`
 
-The upstream immutable `v3.8.51` tag remains absent. Do not chase the moving `release/v3.8.51` branch.
+`UPSTREAM_TAG_REQUIRED=NO`
+
+Do not chase the moving upstream release branch; evaluate upstream changes later as optional compatibility inputs.
+
+
+## 2026-09-30 fork-owned release authority correction
+
+Canonical decision:
+
+- public fork authority: `Zartharas/OmniRoute`;
+- private implementation/release-evidence authority: `Zartharas/omniroute-auth-keeper`;
+- release candidate ref: `release/five-pillar-qualified-20260930-rc1`;
+- release candidate source: `654dc956ce09bcb7c57995c3c292f663352f2d22`;
+- upstream tag required: NO.
+
+Decision record:
+
+`docs/project/FORK_RELEASE_AUTHORITY_20260930.md`
+
+Active next phase:
+
+`FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION`
