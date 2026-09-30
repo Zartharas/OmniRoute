@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-30
-Status: cumulative five-pillar product semantics qualified non-live through E2; F1 R1 cumulative RC2 release provenance invalidated by an untracked plugin dependency-install/network blind spot; repaired F1 R2 provenance qualification pending; final merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
+Status: cumulative five-pillar product semantics qualified non-live through E2; F1 R1 invalidated by an untracked plugin dependency-install/network blind spot; F1 R2 failed closed on npm-ci/plugin-lock compatibility after the offline OS network boundary passed; repaired F1 R3 original-lock semantic-closure qualification pending; final merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -562,3 +562,45 @@ Next bounded gate:
 `POST_PRODUCTIZATION_F1_R2_OFFLINE_DEPENDENCY_PROVENANCE`
 
 Do not mutate the accepted E2 source merely to repair this qualification defect.
+
+
+## 17. 2026-09-30 F1 R2 failure / R3 active provenance gate
+
+F1 R2 correctly failed closed before release build execution.
+
+Passed before failure:
+- exact qualification identity;
+- exact E2/integration/release refs;
+- direct P5E→B1→C1→D1→E1→E2 lineage;
+- root toolchain APFS clone materialization;
+- exact source/plugin/prepublish provenance;
+- OS network sandbox self-test;
+- npm offline mode.
+
+First failure:
+`plugin_dependency_offline_install`
+
+npm `ci` rejected the standalone plugin lockfile with:
+`Missing: @omniroute/opencode-plugin@0.2.1 from lock file`.
+
+The candidate lock contains root metadata under `packages[""]` but no self-entry under `packages["node_modules/@omniroute/opencode-plugin"]`.
+
+This is not sufficient evidence to mutate the qualified E2 source.
+
+R3 is frozen as a provenance-only repair:
+
+- branch: `qualification/post-productization-integration-release-f1-r3`;
+- commit: `568d4cedfa7c6347fcfdc349fb83e4436f63a3dd`;
+- harness blob: `d610a9cd7c7c9c972bc5d779d052247bca3f89d2`;
+- bytes: `32308`;
+- SHA-256: `f3fe02b55bed0ca93f99f0cb2a3a9f60cdf938aa736fa0606fa66530c6f137ba`.
+
+R3 keeps the checked-in plugin lock immutable. It performs npm installation only in disposable staging, offline under OS-level network denial, then independently verifies every physically installed package/version against the original lock's package map before APFS-cloning the verified dependency tree into the qualification worktree.
+
+Current state:
+
+`CUMULATIVE_E2_PRODUCT_SEMANTICS=QUALIFIED_NONLIVE`
+
+`RC2_RELEASE_PROVENANCE=PENDING_F1_R3`
+
+`NEXT_GATE=LOCAL_F1_R3_QUALIFICATION`
