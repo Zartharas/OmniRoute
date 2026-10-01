@@ -869,3 +869,21 @@ Frozen local qualification:
 `LIVE_DOCKER_MUTATION=NONE_FROM_THIS_PHASE`
 `REAL_PROVIDER_CALLS=0`
 `NEXT_GATE=LOCAL_L1B_R1_ISOLATED_SERVER_BOUNDARY_QUALIFICATION`
+
+
+## 24. 2026-10-01 L1B R1 accepted in isolation
+
+Private draft PR #47 at `16b0f398df685afb5c02b1f6e478e12838687773` passed its exact locally frozen R1 qualification `c0ad5ef5608263c9654014b7b9fda9f45844e55c`: 32/32 combined E1/E2/L1/L1B regression PASS, core typecheck PASS, script/ref/tree/allowlist checks PASS, active-worktree nonmutation PASS, existing dependencies APFS-cloned without npm install. Zero real provider calls or Docker mutation.
+
+Local evidence: `/Users/zarthras/Downloads/omniroute_l1b_boundary_r1_20261001T164642Z`.
+
+`RESULT=PASS_ACTIVATED_ORCHESTRATION_L1B_ISOLATED_SERVER_BOUNDARY_R1`
+`L1B_ISOLATED_SERVER_BOUNDARY=QUALIFIED_NONLIVE`
+`PR46=DRAFT_UNMERGED`
+`PR47=DRAFT_UNMERGED`
+`LIVE_INGRESS_WIRED=NO`
+`ACTUAL_LIVE_CATALOG_AUTH_KEEPER_CALLBACKS=NOT_WIRED`
+
+The next L1C gate must bind actual authenticated admission, live model catalog, per-caller policy, Auth Keeper credential eligibility and an explicitly no-fallback exact-stage transport; tests of injected fake callbacks do not prove production integration. Separately, preserve a consistency-verified snapshot of the **currently running FreeLLMAPI** data volume and exact image/config before cutover. Historical D19 holders alone are insufficient.
+
+`NEXT_GATE=L1C_TRUSTED_INGRESS_BINDING_AND_CURRENT_LIVE_ROLLBACK_PRESERVATION`
