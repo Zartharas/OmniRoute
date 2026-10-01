@@ -846,3 +846,26 @@ User's exact frozen qualification `5e24d747410163b72a979a5bf91159373707b7b5` pas
 `NEXT_GATE=L1B_SERVER_ONLY_CATALOG_CREDENTIAL_AND_CAPABILITY_FIREWALL`
 
 The sequencer's `toolPermission:false` request field is a declaration, not a downstream execution guarantee. Next work must enforce capability reduction at the actual server/invoker adapter, resolve workload aliases through live catalog/policy/Auth Keeper and qualify ingress/activation under a bounded call budget before any live cutover.
+
+
+## 23. 2026-10-01 L1B server stage capability boundary — frozen, not yet qualified
+
+The repository owner authorized continuing from accepted L1 into L1B and separately preparing preservation of the actual running FreeLLMAPI image/config and a consistent current /app/data snapshot. Authorization is not evidence of deployment or preservation completion.
+
+Private PR #46 remains accepted L1 but draft/unmerged at `f2f459813ef8d7f0acc06a39c7e0f75e5dce898c`.
+
+Private draft PR #47 carries the isolated L1B boundary at `16b0f398df685afb5c02b1f6e478e12838687773`, based on #46. Two new files: `src/lib/orchestrationPatterns/serverStageBoundary.ts` and `tests/unit/orchestration-server-stage-boundary.test.ts` (12 new test cases). The adapter requires server-supplied admission and injected live-catalog, caller-policy and credential probes, and builds a fresh tool-less stage body with no original client-body spread. Stage order and four-attempt bound are explicit; non-success, malformed, tool-call and truncated responses fail closed. Production callbacks and ingress are **not** yet bound and must be verified independently.
+
+Frozen local qualification:
+- branch `qualification/activated-orchestration-l1b-server-boundary-r1`;
+- commit `c0ad5ef5608263c9654014b7b9fda9f45844e55c`;
+- script blob `65cbe09b1b9fc0a6a363d9998266160681eea321`;
+- size 4549 bytes; SHA-256 `27aedeab72ed04e1da4644e2e1da0b1991772675f2b69cf17d20965a70f89a47`.
+
+`L1_ISOLATED_SEQUENCER=QUALIFIED_NONLIVE`
+`L1B_ISOLATED_SERVER_BOUNDARY=PENDING_LOCAL_QUALIFICATION`
+`PRODUCTION_CATALOG_CREDENTIAL_HOOKS=NOT_WIRED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING_CONSISTENCY_PLAN_AND_VERIFICATION`
+`LIVE_DOCKER_MUTATION=NONE_FROM_THIS_PHASE`
+`REAL_PROVIDER_CALLS=0`
+`NEXT_GATE=LOCAL_L1B_R1_ISOLATED_SERVER_BOUNDARY_QUALIFICATION`
