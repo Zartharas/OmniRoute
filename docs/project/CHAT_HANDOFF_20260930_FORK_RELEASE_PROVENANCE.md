@@ -614,3 +614,16 @@ PR #46 and PR #47 remain accepted non-live draft/unmerged; PR #48 draft/unmerged
 The user ran the exact L1C-A R1 harness `329652ad2f6eceecb70f636fa9b0d97e16d69847`; integrity verified (5394 bytes, SHA-256 `7f2212b1da6e22392baba7db6a1f6f3b5086503fe9674ddffa19262ac485a711`, blob `7ae362b09d671d6a58294ec3e96ad998f6ebb7ec`). Combined 44/44 E1/E2/L1/L1B/L1C-A tests PASS. Targeted real-import L1C TypeScript and core typecheck rc=0. Detached worktree unchanged; no real provider call, no Docker mutation. Final `PASS_ACTIVATED_ORCHESTRATION_L1C_TRUSTED_READINESS_R1`, candidate `d499a30cbcc5b86fc5e8767811c40bb1ebfe6ef0`, status `REAL_AUTH_POLICY_CATALOG_READINESS_QUALIFIED_NOT_DISPATCH_WIRED`. Local logs `/Users/zarthras/Downloads/omniroute_l1c_readiness_r1_20261001T173648Z`.
 
 Private draft PR #48 at accepted head; dependency PRs #46/#47 likewise draft/unmerged. Actual bearer/model/policy imports are present and typechecked but have not been exercised via production ingress. L1C-B must enforce real credential eligibility and physical exact-one-attempt no-fallback transport before route wiring; preserve verified current FreeLLMAPI image/config and consistent /app/data snapshot before live replacement. No L1/L1B/L1C-A reruns needed.
+
+
+### 2026-10-01 L1C-B1 pinned one-fetch implementation — pending local run
+
+Owner authorized L1C-B continuation. PR #49 draft/unmerged, based on PR #48 (accepted non-live L1C-A), frozen source head `f2b30b722ff30717899f028ccb4d4f853752271d`. Two added files only: `src/lib/orchestrationPatterns/l1cPinnedExactAttempt.ts` and 15-case `tests/unit/orchestration-l1cb-pinned-exact-dispatch.test.ts`.
+
+The isolated B1 implementation checks exact selected connection ID against server-approved pin and allowed IDs, rejects account/session/role drift, constructs new no-tools request body, consumes at most one `fetchOnce` invocation per stage, rejects redirect, bounds time/response, blocks following roles on failed attempt, and does not use the generic multi-retry chat executor. **Native Codex provider Responses wire and the actual production Auth Keeper credential materializer are not yet wired. No physical network attempt bound is asserted for opaque downstream SDK/proxy behavior.**
+
+Local qualification harness `qualification/activated-orchestration-l1cb-pinned-exact-dispatch-r1` at `114563296c9ff702b7e389fdf0f9f237a854b999`; blob `ef5d2838393b3c2d3bdf61211ab7b457aea946ef`, 5732 bytes, SHA-256 `d290f492e6a15204842d0ca1aa1793ba4bf13f03a905f1ecb6b14591fb8396c2`. Expected 59 tests + targeted/core typechecks, local run PENDING.
+
+No new changes to existing qualified L1, L1B, L1C-A source. PR #46/#47/#48/#49 remain dependent draft/unmerged.
+
+`NEXT_GATE=LOCAL_L1C_B1_PINNED_EXACT_DISPATCH_R1_QUALIFICATION`; current FreeLLMAPI image/config/consistent data rollback snapshot is still a separate mandatory pre-cutover gate.
