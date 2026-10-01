@@ -608,3 +608,9 @@ Actual current FreeLLMAPI host still running healthy at user-readback image `sha
 PR #46 and PR #47 remain accepted non-live draft/unmerged; PR #48 draft/unmerged. No release tag, new Docker replacement, real provider call or production ingress activation from this phase.
 
 `NEXT_GATE=LOCAL_L1C_A_TRUSTED_READINESS_R1_QUALIFICATION`.
+
+### 2026-10-01 L1C-A R1 accepted (supersedes pending checkpoint)
+
+The user ran the exact L1C-A R1 harness `329652ad2f6eceecb70f636fa9b0d97e16d69847`; integrity verified (5394 bytes, SHA-256 `7f2212b1da6e22392baba7db6a1f6f3b5086503fe9674ddffa19262ac485a711`, blob `7ae362b09d671d6a58294ec3e96ad998f6ebb7ec`). Combined 44/44 E1/E2/L1/L1B/L1C-A tests PASS. Targeted real-import L1C TypeScript and core typecheck rc=0. Detached worktree unchanged; no real provider call, no Docker mutation. Final `PASS_ACTIVATED_ORCHESTRATION_L1C_TRUSTED_READINESS_R1`, candidate `d499a30cbcc5b86fc5e8767811c40bb1ebfe6ef0`, status `REAL_AUTH_POLICY_CATALOG_READINESS_QUALIFIED_NOT_DISPATCH_WIRED`. Local logs `/Users/zarthras/Downloads/omniroute_l1c_readiness_r1_20261001T173648Z`.
+
+Private draft PR #48 at accepted head; dependency PRs #46/#47 likewise draft/unmerged. Actual bearer/model/policy imports are present and typechecked but have not been exercised via production ingress. L1C-B must enforce real credential eligibility and physical exact-one-attempt no-fallback transport before route wiring; preserve verified current FreeLLMAPI image/config and consistent /app/data snapshot before live replacement. No L1/L1B/L1C-A reruns needed.
