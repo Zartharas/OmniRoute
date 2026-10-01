@@ -633,3 +633,14 @@ No new changes to existing qualified L1, L1B, L1C-A source. PR #46/#47/#48/#49 r
 Exact L1C-B1 qualification ref `114563296c9ff702b7e389fdf0f9f237a854b999`; script size 5732 / blob `ef5d2838393b3c2d3bdf61211ab7b457aea946ef` / SHA-256 `d290f492e6a15204842d0ca1aa1793ba4bf13f03a905f1ecb6b14591fb8396c2` matched. Local 2026-10-01 operator run: combined 59/59 E1/E2/L1/L1B/L1C-A/B1 tests PASS, L1C-B1 targeted and core typecheck rc=0, `no_generic_retry_executor=PASS`, unchanged active worktree, provider calls 0, Docker mutation NO. Result `PASS_ACTIVATED_ORCHESTRATION_L1CB_ISOLATED_PINNED_EXACT_DISPATCH_R1`, candidate `f2b30b722ff30717899f028ccb4d4f853752271d`. Evidence `/Users/zarthras/Downloads/omniroute_l1cb_pinned_exact_r1_20261001T182912Z`.
 
 PR #49 remains draft/unmerged; predecessors #46/#47/#48 likewise accepted non-live draft/unmerged. No rerun needed. B1 proves one adapter `fetchOnce` invocation per consumed stage with fakes, **not** actual provider physical request, Auth Keeper connection materialization or native Codex acting-owner wire. Next L1C-B2: explicit real allowed connection/lease/quota/credential binding and native Codex exact protocol with zero silent fallback, followed by separate ingress/rollout qualification. Current FreeLLMAPI rollback snapshot remains pending, live host untouched.
+
+
+### 2026-10-01 L1C-B2 source handoff — pending local qualification
+
+PR #50 (draft/unmerged, exact base accepted PR #49) source `0bb67b190ca8c65c5f0ca0134ddc3b2aaf6f19ce`, tree `d71dd7772ce79cebe34ac392cbdde7757115bdcf`, 3 commits/6 new files only. Adds strict per-key exact connection/post-selector credential checks via production imports and isolated HTTP-only native Codex SSE protocol with real Codex mode/profile imports. No live ingress/auth materializer/provider network executed; Codex WS/app-server denied. Credential and Codex unit cases 9+11 on top of accepted 59.
+
+Qualification script in branch `qualification/activated-orchestration-l1cb2-credential-codex-r1`, commit `477b67e6e14d3242dfde4e677519d4f375946e7d`, blob `5d13b0b36711afaf0c74840531db27f7cd06f9d1`, 7137 bytes, SHA-256 `e469da6d955428f49aeebf72528ee0bd1a0aba5c3e11c85b136b18ace3921457`. Expected 79 tests with network denial, B2 targeted production-import/core typecheck and worktree nonmutation; result NOT YET PROVIDED.
+
+PR #46/#47/#48/#49 qualified nonlive and unchanged. Private PRM #45 remains central; the exact currently running FreeLLMAPI image/config and consistent /app/data snapshot are still REQUIRED before container replacement.
+
+`NEXT_GATE=LOCAL_L1C_B2_CREDENTIAL_CODEX_R1_QUALIFICATION`.
