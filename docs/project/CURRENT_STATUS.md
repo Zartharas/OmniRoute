@@ -925,3 +925,32 @@ Evidence: `/Users/zarthras/Downloads/omniroute_l1c_readiness_r1_20261001T173648Z
 `NEXT_GATE=L1C_B_CREDENTIAL_ELIGIBILITY_AND_SINGLE_ATTEMPT_TRANSPORT`
 
 Existing general chat/chatCore retries and fallback paths are not approved to fulfill L1B's `noFallback:true` requirement. Neither PR #46 nor PR #47 nor PR #48 is merged.
+
+
+## 27. 2026-10-01 L1C-B1 immutable connection and one-fetch isolated candidate
+
+Owner authorized continuing L1C-B. Private draft PR #49 depends on already accepted, draft/unmerged L1C-A PR #48:
+- source `f2b30b722ff30717899f028ccb4d4f853752271d`, tree `459e0b79f6e9e7acd5ead86c8778916ce61b6315`;
+- exact base `d499a30cbcc5b86fc5e8767811c40bb1ebfe6ef0`; four commits ahead/zero behind;
+- two added files only: `l1cPinnedExactAttempt.ts`, `orchestration-l1cb-pinned-exact-dispatch.test.ts` (15 tests).
+
+This source requires an exact server-approved connection and verifies the *returned* selected connection identity, denying wrong account or unauthorized rotation before bearer/transport. Role order, in-flight concurrency and terminal failure are bounded; tool-less OpenAI-compatible body is newly constructed; public-HTTPS URL guard, no redirects, 15s abort and bounded response read. Its capability claim is **at most one fetch invocation inside the isolated adapter per consumed stage**, not unverified physical provider/intermediary counts. Native Codex Responses wire remains unsupported and is explicitly denied by this profile. Existing generic retry/fallback chat/chatCore is NOT used or changed.
+
+Frozen local qualification:
+- branch `qualification/activated-orchestration-l1cb-pinned-exact-dispatch-r1`;
+- commit `114563296c9ff702b7e389fdf0f9f237a854b999`;
+- script Git blob `ef5d2838393b3c2d3bdf61211ab7b457aea946ef`;
+- 5732 bytes; SHA-256 `d290f492e6a15204842d0ca1aa1793ba4bf13f03a905f1ecb6b14591fb8396c2`.
+
+Pending: 59 combined E1/E2/L1/L1B/L1C-A/B1 tests, targeted typecheck of new/production binder files and core typecheck in detached, offline network-denied worktree. Do NOT record PASS before local execution evidence.
+
+`L1=QUALIFIED_NONLIVE`
+`L1B=QUALIFIED_NONLIVE`
+`L1C_A=QUALIFIED_NONLIVE`
+`L1C_B1=SOURCE_FROZEN_QUALIFICATION_PENDING`
+`FULL_L1C_B_REAL_CREDENTIAL_NATIVE_CODEX_EGRESS=NOT_QUALIFIED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`LIVE_INGRESS_WIRED=NO`
+`NEXT_GATE=LOCAL_L1C_B1_PINNED_EXACT_DISPATCH_R1_QUALIFICATION`
+
+For full activation still prove actual Auth Keeper/provider-native pinned credential selection and key connection restrictions, real provider-specific egress with network-level attempt evidence, native Codex owner path, dedicated authenticated Responses opt-in and consistent current-live FreeLLMAPI image/config/data preservation. No deployment, model provider call, or Docker mutation from this development.
