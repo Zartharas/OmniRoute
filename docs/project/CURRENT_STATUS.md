@@ -909,3 +909,19 @@ L1C-A **does not** wire real Auth Keeper credential selection or provider dispat
 `CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
 `LIVE_INGRESS_WIRED=NO`
 `NEXT_GATE=LOCAL_L1C_A_TRUSTED_READINESS_R1_QUALIFICATION`
+
+## 26. 2026-10-01 L1C-A R1 acceptance — isolated readiness
+
+Private draft/unmerged PR #48 at `d499a30cbcc5b86fc5e8767811c40bb1ebfe6ef0` is **qualified non-live as L1C-A**. Exact frozen script ref `329652ad2f6eceecb70f636fa9b0d97e16d69847`, blob `7ae362b09d671d6a58294ec3e96ad998f6ebb7ec`, 5394 bytes, SHA-256 `7f2212b1da6e22392baba7db6a1f6f3b5086503fe9674ddffa19262ac485a711` matched operator run. Combined E1/E2/L1/L1B/L1C-A **44/44 PASS**; L1C targeted production-import typecheck and core typecheck both rc=0; detached APFS clone/no install; active worktree nonmutation PASS; provider calls 0; Docker mutation NO.
+
+Evidence: `/Users/zarthras/Downloads/omniroute_l1c_readiness_r1_20261001T173648Z`.
+
+`RESULT=PASS_ACTIVATED_ORCHESTRATION_L1C_TRUSTED_READINESS_R1`
+`L1C_A=QUALIFIED_NONLIVE_READINESS`
+`L1C_B_CREDENTIAL_AND_EXACT_DISPATCH=NOT_YET_QUALIFIED`
+`LIVE_INGRESS_WIRED=NO`
+`PRODUCTION_AUTH_POLICY_CATALOG_IMPORTS=PRESENT_NOT_LIVE_EXECUTED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`NEXT_GATE=L1C_B_CREDENTIAL_ELIGIBILITY_AND_SINGLE_ATTEMPT_TRANSPORT`
+
+Existing general chat/chatCore retries and fallback paths are not approved to fulfill L1B's `noFallback:true` requirement. Neither PR #46 nor PR #47 nor PR #48 is merged.
