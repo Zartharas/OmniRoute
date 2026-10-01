@@ -1,7 +1,7 @@
 # Master Roadmap — Fork Product Goal
 
-Last reviewed: 2026-09-17
-Status: Canonical long-range roadmap; D18 frozen live baseline accepted; D19 empirical-evidence development authorized
+Last reviewed: 2026-09-30
+Status: Canonical long-range roadmap; five-pillar architecture, Codex Unified productization, adopted orchestration semantics, cumulative integration and corrected RC3 offline release provenance are qualified non-live; the next gate requires separate cutover/live-acceptance authorization
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
 
@@ -84,7 +84,7 @@ Remaining:
 
 ### Pillar 4 — Intelligent Multi-Model Orchestration
 
-Status: Active major workstream; D18 frozen live; D19 development authorized
+Status: Advanced foundation; D18/D19/FreeLLM and the R16.32 pre-tag Auth Keeper boundary are accepted; preference/multi-model convergence remains
 
 Accepted R16.32 lineage includes:
 
@@ -114,13 +114,13 @@ Current live checkpoint:
 - live image: `sha256:b5c171907288f14e1e1132f427aeeb541508ba02a760534c57fb48fd5d053554`;
 - R16.31 rollback holder and original rollback volume remain retained intact.
 
-Current development phase:
+Current accepted continuation:
 
-**R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout.**
-
-D19 is an observation-only bridge between D18's accepted hard-gate/admission foundation and any later provider-neutral preference intelligence. It must derive bounded aggregate evidence from facts D18 already computes, without changing routing or adding acquisition/traffic.
-
-D19 development/non-live qualification through S6 is authorized. Production D19 observation activation (S7) remains a separate explicit authorization gate.
+- D19 hard-gate/observation work is no longer the active development phase;
+- FreeLLMAPI signed advisory metadata integration is qualified and live under the later accepted handoff;
+- the private R16.32/Auth Keeper pre-tag reconciliation is promoted at `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`;
+- upstream release reconciliation is optional compatibility work; fork-owned release qualification does not wait for an upstream tag;
+- the active product-level next phase is the Five-Pillar Architecture Convergence Audit.
 
 D19 must prove:
 
@@ -222,13 +222,12 @@ Accepted foundation:
 - D18 authorized production activation;
 - composite D18 post-activation freeze.
 
-Active bridge:
+Accepted bridge:
 
-- D19 production-safe empirical orchestration evidence readout;
-- S1 exact-object census first;
-- then design freeze, isolated implementation, static/differential qualification, isolated runtime qualification and production pre-activation review;
-- live D19 observation requires separate authorization;
-- empirical rates are evidence, not automatic pass/fail thresholds.
+- D19 production-safe empirical orchestration evidence readout and hard-gate authority are accepted historical foundation;
+- FreeLLMAPI signed advisory metadata integration was later qualified and activated without acquiring routing authority;
+- empirical rates remain evidence, not automatic pass/fail thresholds;
+- future preference intelligence must consume only accepted evidence and may not bypass harder gates.
 
 ### Phase D — Model intelligence and preference intelligence
 
@@ -292,7 +291,7 @@ The following must not be used as the master roadmap:
 
 The statements "D14 is the current implementation step", "D16 is next", "D18 is not live", and "D19 has no canonical scope" are stale.
 
-Current authority is: D18 frozen live baseline; D19 production-safe empirical evidence-readout development authorized; live D19 promotion not authorized.
+Current authority is: the five-pillar architecture remains canonical; D18/D19/FreeLLM foundations are accepted; provider-neutral convergence and canonical non-live integration are qualified; the fork owns its release authority and upstream releases are optional compatibility inputs.
 
 ## 5. Status update rule
 
@@ -304,3 +303,141 @@ When a phase is accepted:
 4. update the Engineering Source of Truth if the engineering method/invariants change;
 5. record exact Git/evidence authority in the relevant implementation repository;
 6. do not treat chat history as a substitute for these updates.
+
+## 6. 2026-09-26 continuation update
+
+The master product goal remains unchanged. The program must not narrow itself into R16.32, Auth Keeper, OpenCode, Operations Floor, or any one provider/access lane.
+
+### Completed/frozen foundations
+
+- Codex Unified historical control-plane/catalog/workload-policy lineage exists and has undergone reintegration work.
+- Unified OmniRoute provider/routing/fallback foundation is strong.
+- Auth Keeper credential/session/admission boundary is mature and the latest two-file support repair is promoted.
+- D18 live admission foundation is accepted.
+- D19 hard-gate/evidence authority is accepted.
+- FreeLLMAPI signed advisory metadata integration is qualified/live and remains non-authoritative for routing.
+- rollback preservation and cleanup/recovery work are closed within their authorized scopes.
+- R16.32 pre-tag upstream/Auth Keeper reconciliation is promoted at `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`.
+
+### Remaining product-level work
+
+1. **Codex Unified convergence**
+   - make the unified control plane a maintained release artifact;
+   - finalize one-agent task delegation;
+   - remove dependence on manual provider/model switching;
+   - qualify the complete Codex ingress path.
+
+2. **Unified workforce convergence**
+   - normalize access-mode contracts across free/keyless, API, managed session, subscription/coding-plan, interactive-human-verification, and protected-native lanes;
+   - keep provider additions modular and upstream-compatible.
+
+3. **Intelligent orchestration convergence**
+   - preserve hard-gate precedence;
+   - develop provider-neutral preference only among surviving candidates;
+   - qualify specialist/critique/judge/synthesis patterns with designated mutation ownership.
+
+4. **Operations Floor convergence**
+   - reconnect historical floor work to current request-local routing/evidence;
+   - surface Auth Keeper, quota/cooldown, fallback, workload, protected-native and worker-assignment state without leaking secrets or becoming a router.
+
+5. **Product acceptance**
+   - perform full five-pillar end-to-end acceptance, including outage, quota, cooldown, auth expiry/re-auth, fallback, restart/recovery, rollback, protected-native preservation, workload isolation, evidence continuity, and final non-drift.
+
+### Fork-owned release authority
+
+- canonical release authority: `Zartharas/OmniRoute` + `Zartharas/omniroute-auth-keeper`;
+- current release candidate: `release/five-pillar-qualified-20260930-rc1`;
+- exact source: `654dc956ce09bcb7c57995c3c292f663352f2d22`;
+- upstream tag/release publication is not a prerequisite;
+- preserve upstream compatibility where practical, but do not make upstream owner timing a fork release gate;
+- keep merge/publication/deployment/live activation separately authorized.
+
+### Release lane
+
+The R16r35 upstream-tag wait is historical compatibility evidence only. The fork-owned release lane proceeds from the exact qualified canonical integration head and does not require an upstream tag. Upstream releases may later be reconciled when useful.
+
+
+## 7. 2026-09-30 release-provenance completion and next product phase
+
+Fork-owned release provenance is complete through:
+
+`PASS_FORK_OWNED_RELEASE_PROVENANCE_QUALIFICATION_R4`
+
+Candidate:
+`654dc956ce09bcb7c57995c3c292f663352f2d22`
+
+Canonical build provenance is accepted on the repository-documented webpack profile. The Turbopack profile remains separately unqualified for this release candidate because R3 reproduced an upstream internal build panic. No P5E source mutation was required.
+
+The release lane therefore no longer blocks the next product-engineering phase.
+
+### Active next phase — Codex Unified productization
+
+The first remaining product gap is to move Codex Unified from historical/host-side control-plane authority to explicit maintained repository/release authority and finalize the one-agent delegation/task-ownership contract.
+
+Start with a read-only authority census covering:
+- Codex-facing ingress;
+- catalog and workload-policy ownership;
+- delegation/task metadata;
+- provider/model contribution selection;
+- mutation-owner enforcement;
+- existing continuity tests.
+
+After that census, implement only the proven gap. Then qualify one-agent delegation and non-live provider/model contribution changes before moving to specialist/critique/judge/synthesis/fusion activation acceptance.
+
+`NEXT_PHASE=CODEX_UNIFIED_CONTROL_PLANE_PRODUCTIZATION`
+
+`NEXT_GATE=CODEX_UNIFIED_READ_ONLY_AUTHORITY_CENSUS`
+
+Private tracker: `Zartharas/omniroute-auth-keeper#40`.
+
+Merge, publication, deployment, live activation and real provider calls remain separately authorized.
+
+
+## 8. 2026-10-01 cumulative F2 / RC3 non-live completion
+
+The cumulative productized fork is now qualified non-live through corrected RC3:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Authoritative qualification:
+
+`PASS_POST_PRODUCTIZATION_OFFLINE_RELEASE_F2_QUALIFICATION_R2`
+
+Accepted chain:
+
+`P5E → B1 → C1 → D1 → E1 → E2 → F2`
+
+RC3 release provenance was proven under the strict offline boundary:
+- OS network denied;
+- npm offline;
+- original plugin-lock semantic closure verified;
+- no build-time dependency installation;
+- no build-time network dependency;
+- production webpack release build PASS;
+- exact BUILD_SHA provenance;
+- pack-artifact PASS;
+- local npm tarball SHA-256 recorded;
+- source/active-worktree nonmutation PASS;
+- real provider calls 0.
+
+The F1 R1/R2/R3 and F2 R1 failure records remain preserved as fail-closed evidence; they are not rewritten by F2 R2 acceptance.
+
+The non-live architecture/productization sequence is therefore complete under the current roadmap.
+
+Remaining work is authorization-bound rather than another non-live engineering phase:
+- merge/publication/tagging;
+- deployment/cutover;
+- activated multi-model orchestration acceptance;
+- post-cutover stability/final non-drift and rollback observation.
+
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F2_RC3`
+
+`NEXT_GATE=SEPARATE_CUTOVER_OR_LIVE_ACCEPTANCE_AUTHORIZATION`
+
+`REAL_PROVIDER_CALL_BUDGET=0`
+
+`MERGE=NOT_AUTHORIZED`
+
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+
+`LIVE_ACTIVATION=NOT_AUTHORIZED`

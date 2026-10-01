@@ -240,6 +240,22 @@ The following are architecture invariants unless this document is deliberately r
 - workload isolation remains authoritative;
 - upstream OmniRoute improvements should continue to be incorporated rather than abandoning the upstream project architecture.
 
+## 8.1 Fork-owned release authority
+
+The `Zartharas/OmniRoute` fork owns its product release authority.
+
+The original upstream repository is a compatibility and improvement source, not a release gate. Compatible upstream improvements should continue to be evaluated and incorporated, but an upstream tag, upstream release, upstream branch freeze, or upstream-owner approval is **not required** before the fork can qualify or publish its own release.
+
+Canonical decision record:
+
+- [Fork-Owned Release Authority — 2026-09-30](FORK_RELEASE_AUTHORITY_20260930.md)
+
+The qualified fork release-candidate source currently points to the exact accepted P5E/canonical-integration head:
+
+`654dc956ce09bcb7c57995c3c292f663352f2d22`
+
+Fork release publication, merge and live activation remain separately authorized actions.
+
 ## 8. Relationship to upstream OmniRoute
 
 This repository is a fork of OmniRoute and should continue to absorb compatible upstream improvements.
