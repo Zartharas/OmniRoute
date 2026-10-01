@@ -967,3 +967,17 @@ Private draft/unmerged PR #49 remains at accepted implementation `f2b30b722ff307
 `CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
 `LIVE_INGRESS_WIRED=NO`
 `NEXT_GATE=L1C_B2_REAL_CREDENTIAL_PIN_AND_NATIVE_CODEX_EXACT_WIRE`
+
+
+## 29. 2026-10-01 L1C-B2 credential and native Codex HTTP isolated candidate
+
+Owner-authorized private draft PR #50, based exactly on accepted non-live PR #49: source `0bb67b190ca8c65c5f0ca0134ddc3b2aaf6f19ce`, tree `d71dd7772ce79cebe34ac392cbdde7757115bdcf`. Six added files, no existing live routing/ingress changes. Production credential binder imports existing metadata/model policy/credential-selection functions and requires explicit per-key allowedConnections plus exact returned connection/provider postcondition; native Codex profile checks actual HTTP-vs-WS/app-server executor modes, endpoint and identity before constructing a tool-less SSE-first HTTP Responses request. This remains source/compile-time integration, **not live credential execution**.
+
+Frozen offline qualification commit `477b67e6e14d3242dfde4e677519d4f375946e7d`, script blob `5d13b0b36711afaf0c74840531db27f7cd06f9d1`, 7137 bytes, SHA-256 `e469da6d955428f49aeebf72528ee0bd1a0aba5c3e11c85b136b18ace3921457`. Expected 79 combined regressions plus B2-targeted real-import/core typechecks; local run PENDING.
+
+`L1/L1B/L1C_A/L1C_B1=ACCEPTED_NONLIVE`
+`L1C_B2=SOURCE_FROZEN_LOCAL_QUALIFICATION_PENDING`
+`LIVE_INGRESS_WIRED=NO`
+`REAL_PROVIDER_CALLS_FROM_THIS_PHASE=0`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`NEXT_GATE=LOCAL_L1C_B2_CREDENTIAL_CODEX_R1_QUALIFICATION`
