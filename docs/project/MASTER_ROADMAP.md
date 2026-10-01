@@ -1,7 +1,7 @@
 # Master Roadmap — Fork Product Goal
 
 Last reviewed: 2026-09-30
-Status: Canonical long-range roadmap; five-pillar architecture, canonical integration and fork-owned release provenance qualified non-live; Codex Unified productization is the active product-level continuation
+Status: Canonical long-range roadmap; five-pillar architecture, Codex Unified productization, adopted orchestration semantics, cumulative integration and corrected RC3 offline release provenance are qualified non-live; the next gate requires separate cutover/live-acceptance authorization
 
 This roadmap tracks the fork's five-pillar product goal. It is intentionally separate from the upstream OmniRoute `ROADMAP.md`.
 
@@ -391,3 +391,53 @@ After that census, implement only the proven gap. Then qualify one-agent delegat
 Private tracker: `Zartharas/omniroute-auth-keeper#40`.
 
 Merge, publication, deployment, live activation and real provider calls remain separately authorized.
+
+
+## 8. 2026-10-01 cumulative F2 / RC3 non-live completion
+
+The cumulative productized fork is now qualified non-live through corrected RC3:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Authoritative qualification:
+
+`PASS_POST_PRODUCTIZATION_OFFLINE_RELEASE_F2_QUALIFICATION_R2`
+
+Accepted chain:
+
+`P5E → B1 → C1 → D1 → E1 → E2 → F2`
+
+RC3 release provenance was proven under the strict offline boundary:
+- OS network denied;
+- npm offline;
+- original plugin-lock semantic closure verified;
+- no build-time dependency installation;
+- no build-time network dependency;
+- production webpack release build PASS;
+- exact BUILD_SHA provenance;
+- pack-artifact PASS;
+- local npm tarball SHA-256 recorded;
+- source/active-worktree nonmutation PASS;
+- real provider calls 0.
+
+The F1 R1/R2/R3 and F2 R1 failure records remain preserved as fail-closed evidence; they are not rewritten by F2 R2 acceptance.
+
+The non-live architecture/productization sequence is therefore complete under the current roadmap.
+
+Remaining work is authorization-bound rather than another non-live engineering phase:
+- merge/publication/tagging;
+- deployment/cutover;
+- activated multi-model orchestration acceptance;
+- post-cutover stability/final non-drift and rollback observation.
+
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F2_RC3`
+
+`NEXT_GATE=SEPARATE_CUTOVER_OR_LIVE_ACCEPTANCE_AUTHORIZATION`
+
+`REAL_PROVIDER_CALL_BUDGET=0`
+
+`MERGE=NOT_AUTHORIZED`
+
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
