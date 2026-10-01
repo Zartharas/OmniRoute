@@ -564,3 +564,19 @@ Private cutover PRM #45 is the active tracker.
 `NEXT_GATE=L0_CURRENT_BASELINE_ROLLBACK_EQUIVALENCE_PLUS_L1_PIPELINE_CALLER_READOUT`
 
 No rollback reconstruction, live Docker mutation, image pruning, credential read, provider calls, release tag, or deployment until the actual host topology and executable bridge are qualified.
+
+
+### 2026-10-01 L1B R1 isolated qualification accepted
+
+PR #46: L1 sequencer, accepted non-live, draft/unmerged at `f2f459813ef8d7f0acc06a39c7e0f75e5dce898c`.
+
+PR #47: L1B server-stage boundary, accepted **in isolation**, draft/unmerged at `16b0f398df685afb5c02b1f6e478e12838687773`, directly based on L1.
+
+Exact qualification ref `c0ad5ef5608263c9654014b7b9fda9f45844e55c` matched script blob `65cbe09b1b9fc0a6a363d9998266160681eea321`, 4549 bytes and SHA-256 `27aedeab72ed04e1da4644e2e1da0b1991772675f2b69cf17d20965a70f89a47`. Operator execution 2026-10-01: 32/32 E1/E2/L1/L1B regressions PASS, core typecheck PASS, nonmutation PASS; provider calls 0; Docker mutation NO. Evidence root: `/Users/zarthras/Downloads/omniroute_l1b_boundary_r1_20261001T164642Z`.
+
+Formal accepted result:
+`PASS_ACTIVATED_ORCHESTRATION_L1B_ISOLATED_SERVER_BOUNDARY_R1`
+
+The live FreeLLMAPI container remains untouched. Production catalog/Auth Keeper callbacks, authenticated ingress, no-fallback transport and current-live image/config/consistent-data rollback backup have **not** yet been qualified. L1B's test-injected hooks are not proof of production eligibility. Parent private PRM #45 is active.
+
+`NEXT_GATE=L1C_TRUSTED_INGRESS_BINDING_AND_CURRENT_LIVE_ROLLBACK_PRESERVATION`.
