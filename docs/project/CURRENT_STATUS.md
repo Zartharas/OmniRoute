@@ -824,3 +824,25 @@ Private cutover PRM #45 records the exact read-only inventory and pending reconc
 `NEXT_GATE=L0_CURRENT_BASELINE_ROLLBACK_EQUIVALENCE_PLUS_L1_PIPELINE_CALLER_READOUT`
 
 Until reconciled: Docker mutation NO; provider calls 0; credential values not read. No image prune, holder recreation, live restart, or cutover.
+
+
+## 22. 2026-10-01 L1 isolated runtime sequencer qualification
+
+The live D18 rollback record is historical; current running FreeLLMAPI container remains unmodified pending preservation of its exact image/config and verified snapshot of current /app/data volume.
+
+Private PR #46 (draft, unmerged), head `f2f459813ef8d7f0acc06a39c7e0f75e5dce898c`, adds only an isolated four-stage specialist → critique → independent judge → acting-owner synthesis sequencer and seven new regression tests. This does not enter Responses ingress or autoCombo automatically.
+
+User's exact frozen qualification `5e24d747410163b72a979a5bf91159373707b7b5` passed:
+- script bytes, SHA-256, Git blob, Bash syntax, source allowlist: PASS;
+- 20/20 E1/E2/L1 regression PASS;
+- core TypeScript check PASS;
+- APFS clone existing dependencies only, no npm installation;
+- active-worktree nonmutation PASS;
+- provider calls 0; Docker mutation NO; production ingress not wired.
+
+`L1_ISOLATED_RUNTIME_SEQUENCER=QUALIFIED_NONLIVE`
+`LIVE_INGRESS_WIRED=NO`
+`LIVE_ACTIVATION=NOT_PERFORMED`
+`NEXT_GATE=L1B_SERVER_ONLY_CATALOG_CREDENTIAL_AND_CAPABILITY_FIREWALL`
+
+The sequencer's `toolPermission:false` request field is a declaration, not a downstream execution guarantee. Next work must enforce capability reduction at the actual server/invoker adapter, resolve workload aliases through live catalog/policy/Auth Keeper and qualify ingress/activation under a bounded call budget before any live cutover.
