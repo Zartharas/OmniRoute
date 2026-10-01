@@ -1,4 +1,4 @@
-# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC3 F2 R2 Offline Release Qualification Next
+# OmniRoute New-Chat Handoff — RC3 F2 R2 Qualified Non-Live / Cutover Authorization Next
 
 Date: 2026-09-30
 
@@ -279,7 +279,7 @@ Do **not** start another non-live architecture/productization phase.
 
 Current boundary:
 
-`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F1`
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F2_RC3`
 
 `NEXT_GATE=SEPARATE_CUTOVER_OR_LIVE_ACCEPTANCE_AUTHORIZATION`
 
@@ -463,6 +463,71 @@ Expected successful result:
 
 Safety remains unchanged:
 `REAL_PROVIDER_CALL_BUDGET=0`
+`MERGE=NOT_AUTHORIZED`
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+### F2 R2 final acceptance — authoritative latest checkpoint
+
+F2 R2 passed cleanly and supersedes the pending F2 R2 handoff state above.
+
+Authoritative result:
+
+`PASS_POST_PRODUCTIZATION_OFFLINE_RELEASE_F2_QUALIFICATION_R2`
+
+Candidate:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Status:
+
+`POST_PRODUCTIZATION_OFFLINE_RELEASE_QUALIFIED_NONLIVE`
+
+Qualification identity:
+- commit: `f3eaf83a0195f3c2c7cdd944772be1b575b19cd6`;
+- harness bytes: `37827`;
+- harness SHA-256: `f3101def3105c87b0dceb3946a6fd6ef1926a6b4e55ddf0ea49a0baa6b659075`.
+
+Accepted release evidence:
+- 189 ahead / 0 behind canonical base;
+- P5E → B1 → C1 → D1 → E1 → E2 → F2 ancestry PASS;
+- original plugin-lock semantic closure PASS;
+- 78 plugin packages verified;
+- productization smoke 30/30;
+- type gates PASS;
+- Google Fonts build dependency absent;
+- build completed under OS network deny/npm offline;
+- no dependency install during build;
+- no network dependency during build;
+- BUILD_SHA `679e839dd`;
+- plugin hard-link cleanup contract PASS;
+- pack-artifact PASS;
+- tarball SHA-256 `0533c8d768be886d0697ff3533ff9bddb36fda665c1cd7c3663bbc59ec0440b7`;
+- release-manifest SHA-256 `8d9701d740b00f7fab7ba34142d1c93a29e7c20482cdb59a545418d5694bd590`;
+- source/active-worktree nonmutation PASS;
+- provider calls 0.
+
+Private PRM #43 is closed/completed.
+Private PR #44 stays open/draft/unmerged.
+
+Current formal state:
+
+`CUMULATIVE_PRODUCT_SEMANTICS=QUALIFIED_NONLIVE_THROUGH_F2`
+
+`RC3_RELEASE_PROVENANCE=QUALIFIED_NONLIVE_OFFLINE`
+
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F2_RC3`
+
+Do not start another non-live productization phase merely to continue activity.
+
+`NEXT_GATE=SEPARATE_CUTOVER_OR_LIVE_ACCEPTANCE_AUTHORIZATION`
+
+Until explicit authorization:
+
+`REAL_PROVIDER_CALL_BUDGET=0`
+`OPENCODE_LIVE_EXECUTION=HOLD`
+`THEOLDLLM_LIVE_EXECUTION=HOLD`
 `MERGE=NOT_AUTHORIZED`
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
 `LIVE_ACTIVATION=NOT_AUTHORIZED`
