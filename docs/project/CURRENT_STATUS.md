@@ -1,6 +1,6 @@
 # Current Project Status
 
-Last reviewed: 2026-09-30
+Last reviewed: 2026-10-01
 Status: cumulative five-pillar product semantics and RC3 offline release provenance are qualified non-live through F2; historical F1/F2 qualification failures remain preserved as evidence; no further non-live architecture/productization gate is pending; merge/publication/tagging/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
@@ -21,9 +21,9 @@ R16.32 remains an important Pillar 4 workstream, but it is not the product by it
 
 Provider-neutral convergence, Codex Unified productization, adopted multi-model orchestration semantics, cumulative canonical integration, and corrected RC3 offline build/pack provenance are now qualified non-live. The active boundary is **separate cutover/live-acceptance authorization**; no merge, release publication/tagging, deployment, or live activation is implied. The original upstream repository remains a compatibility source and does not gate the fork's release.
 
-## 2. Current live production authority — D18
+## 2. Historical D18 live production authority — superseded by later observed host state
 
-Current live authority:
+Historical D18 accepted live authority (not a current-host assertion):
 
 - container: `mer-omniroute`;
 - live container ID: `5e5a904141fb8f17fd8e410f4f57284bc1a4cfbc7318dca46418925a51620efd`;
@@ -789,3 +789,38 @@ Until separately authorized:
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
 
 `LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+## 21. 2026-10-01 L0 current-host baseline reconciliation
+
+This section **supersedes the historical D18 "current live" characterization in section 2**, without rewriting D18's accepted historical evidence.
+
+A 2026-10-01 read-only operator inventory against Docker context `desktop-linux` observed:
+- current `mer-omniroute` ID: `1f42509a5cd8dc8cb317797d7e8fc120325aaf23009c4b87ef59c8f5e73214a2`;
+- current image ID: `sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49`;
+- current tag: `omniroute:r16-32-freellmapi-preactivation-f8bc751312da`;
+- running/healthy, restart count 0;
+- ports 20128/20129/20132 reachable, `/healthz` and `/livez` both HTTP 200.
+
+The historical D18/R16.31 rollback holder `mer-omniroute-r16-31-rollback-d18-5ae6f97e7322` and image `sha256:370d49896920568bc5adbfe71316879368ec93be0cd020cf1b546fa3ef2640aa` are missing in this Docker context, while both original D18 and R16.31 data volumes remain present. This is a rollback-authority drift that blocks the next cutover until reconciled.
+
+Two later exited rollback candidates exist:
+- `mer-omniroute-pre-freellmapi-f8bc751312da-20260923T053117Z`;
+- `mer-omniroute-d19-rollback-s8-final-4d63d6b9-a2-20260920T180446Z`.
+
+Neither has yet been proven an adequate rollback image/configuration/data authority for the currently running FreeLLMAPI host.
+
+L0 R2 source census completed its pre-Docker checks:
+`orchestration_runtime_reference_count=0`,
+`execute_pipeline_external_caller_count=2`.
+The L1 execution bridge remains a separately qualified prerequisite for activated specialist → critique → judge → synthesis acceptance.
+
+Private cutover PRM #45 records the exact read-only inventory and pending reconciliation.
+
+`RC3_SOURCE=679e839dde0ecaad562055eccbf8b0d55a53f25d`
+`CANONICAL_MERGE=565130449450ebf33489fab768edee3a19eccb15`
+`RC3_LIVE_DEPLOYMENT=NOT_YET_PERFORMED`
+`L0=BLOCKED_HISTORICAL_ROLLBACK_AUTHORITY_DRIFT`
+`NEXT_GATE=L0_CURRENT_BASELINE_ROLLBACK_EQUIVALENCE_PLUS_L1_PIPELINE_CALLER_READOUT`
+
+Until reconciled: Docker mutation NO; provider calls 0; credential values not read. No image prune, holder recreation, live restart, or cutover.
