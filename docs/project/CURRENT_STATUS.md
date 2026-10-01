@@ -887,3 +887,25 @@ Local evidence: `/Users/zarthras/Downloads/omniroute_l1b_boundary_r1_20261001T16
 The next L1C gate must bind actual authenticated admission, live model catalog, per-caller policy, Auth Keeper credential eligibility and an explicitly no-fallback exact-stage transport; tests of injected fake callbacks do not prove production integration. Separately, preserve a consistency-verified snapshot of the **currently running FreeLLMAPI** data volume and exact image/config before cutover. Historical D19 holders alone are insufficient.
 
 `NEXT_GATE=L1C_TRUSTED_INGRESS_BINDING_AND_CURRENT_LIVE_ROLLBACK_PRESERVATION`
+
+
+## 25. 2026-10-01 L1C-A real-auth and catalog readiness — local qualification pending
+
+Owner authorized continuation into L1C from accepted L1B (32/32 PASS). The exact isolated source candidate is private draft PR #48, based on PR #47:
+- implementation head `d499a30cbcc5b86fc5e8767811c40bb1ebfe6ef0`;
+- source parent `16b0f398df685afb5c02b1f6e478e12838687773`;
+- three added files only: `l1cTrustedAdmission.ts`, `l1cProductionAdmission.ts` and 12 targeted tests.
+
+The production binder imports existing `isValidApiKey`, bearer extraction with URL keys disabled, `enforceApiKeyPolicy`, `getModelInfo`, `isModelAllowedForKey` and checked-in Codex Unified workload policy. It rejects non-POST/Responses, missing/invalid bearer, mismatched API-key metadata/operator canary ID, unknown workload alias, rewritten/inactive catalog identity and forbidden per-key model. Server-side canary enablement is explicitly required; client headers/JSON cannot activate it.
+
+**Qualification pending**: frozen harness `329652ad2f6eceecb70f636fa9b0d97e16d69847`, blob `7ae362b09d671d6a58294ec3e96ad998f6ebb7ec`, 5394 bytes, SHA-256 `7f2212b1da6e22392baba7db6a1f6f3b5086503fe9674ddffa19262ac485a711`. Runs 44 combined E1/E2/L1/L1B/L1C tests plus targeted production-binder/core TypeScript checks, detached APFS clone, network denial, zero provider calls/Docker mutation.
+
+L1C-A **does not** wire real Auth Keeper credential selection or provider dispatch, and does not import the new gate into live Responses ingress. Its result deliberately marks `credentialStatus=NOT_BOUND`, `exactDispatchStatus=NOT_BOUND`. Current general chat and chatCore each have internal retry/fallback mechanisms; full L1C requires a source-proven exact-one-attempt transport, not only a `noFallback:true` field.
+
+`L1=QUALIFIED_NONLIVE`
+`L1B=QUALIFIED_NONLIVE`
+`L1C_A=SOURCE_FROZEN_LOCAL_QUALIFICATION_PENDING`
+`L1C_B_EXACT_TRANSPORT=NOT_YET_QUALIFIED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`LIVE_INGRESS_WIRED=NO`
+`NEXT_GATE=LOCAL_L1C_A_TRUSTED_READINESS_R1_QUALIFICATION`
