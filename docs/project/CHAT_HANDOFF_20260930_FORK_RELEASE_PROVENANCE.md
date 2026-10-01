@@ -1,4 +1,4 @@
-# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC3 F2 Offline Release Qualification Next
+# OmniRoute New-Chat Handoff — Cumulative E2 Accepted / RC3 F2 R2 Offline Release Qualification Next
 
 Date: 2026-09-30
 
@@ -428,6 +428,40 @@ Expected result:
 
 Safety remains:
 
+`REAL_PROVIDER_CALL_BUDGET=0`
+`MERGE=NOT_AUTHORIZED`
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+### F2 R1 build passed / harness postcondition corrected in F2 R2
+
+F2 R1 reached and passed the RC3 production build fully offline. It failed only afterward because its plugin dependency-tree postcondition contradicted the repository's documented prepublish cleanup.
+
+The plugin build contract intentionally removes:
+`@omniroute/opencode-plugin/node_modules`
+after the plugin has been successfully bundled, to prevent hard-link entries from reaching the publish tarball.
+
+Do not mutate RC3 source.
+
+RC3 remains:
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Current repaired qualification:
+
+- branch: `qualification/post-productization-offline-release-f2-r2`;
+- commit: `f3eaf83a0195f3c2c7cdd944772be1b575b19cd6`;
+- harness blob: `cd65f4a058cb3eb37e0627827f0f4b5feaf28743`;
+- bytes: `37827`;
+- SHA-256: `f3101def3105c87b0dceb3946a6fd6ef1926a6b4e55ddf0ea49a0baa6b659075`.
+
+Expected successful result:
+
+`PASS_POST_PRODUCTIZATION_OFFLINE_RELEASE_F2_QUALIFICATION_R2`
+
+`POST_PRODUCTIZATION_OFFLINE_RELEASE_QUALIFIED_NONLIVE`
+
+Safety remains unchanged:
 `REAL_PROVIDER_CALL_BUDGET=0`
 `MERGE=NOT_AUTHORIZED`
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
