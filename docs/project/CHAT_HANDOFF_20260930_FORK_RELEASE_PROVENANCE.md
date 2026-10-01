@@ -531,3 +531,36 @@ Until explicit authorization:
 `MERGE=NOT_AUTHORIZED`
 `RELEASE_PUBLICATION=NOT_AUTHORIZED`
 `LIVE_ACTIVATION=NOT_AUTHORIZED`
+
+
+### 2026-10-01 L0 read-only host correction — actual FreeLLMAPI live baseline
+
+Cutover authorization was exercised for repository merges:
+- private PR #44 merged to canonical commit `565130449450ebf33489fab768edee3a19eccb15`;
+- public governance PR #16 merged;
+- qualified RC3 source remains `679e839dde0ecaad562055eccbf8b0d55a53f25d`.
+This **does not** mean the RC3 runtime was deployed.
+
+L0 R1 failed solely on a `.git` directory assumption in a valid linked worktree. L0 R2 corrected that and passed remote refs, tree equivalence, nonlive E1/E2 contract sentinels, and source census. It repeatedly stopped on the now-stale historical D18/R16.31 rollback holder prerequisite.
+
+A targeted read-only Docker inventory (operator evidence file `omniroute_l0_rollback_reconciliation_20261001T153759Z.txt`) established the actual current host baseline:
+- Docker context: `desktop-linux`;
+- live container: `mer-omniroute`;
+- live ID: `1f42509a5cd8dc8cb317797d7e8fc120325aaf23009c4b87ef59c8f5e73214a2`;
+- live image ID: `sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49`;
+- image tag: `omniroute:r16-32-freellmapi-preactivation-f8bc751312da`;
+- running, healthy, restart count 0; TCP 20128/20129/20132 PASS; healthz/livez HTTP 200;
+- original R16.31 D18 rollback holder and image missing;
+- historical D18 and R16.31 data volumes present;
+- newer exited `mer-omniroute-pre-freellmapi-f8bc751312da-20260923T053117Z` and `mer-omniroute-d19-rollback-s8-final-4d63d6b9-a2-20260920T180446Z` present, but not yet accepted as equivalent rollback authority.
+
+L0 source census:
+`orchestration_runtime_reference_count=0`
+`execute_pipeline_external_caller_count=2`
+`runtime_binding_classification=ABSENT_CONFIRMED_BY_TRACKED_SOURCE_GREP`
+
+Private cutover PRM #45 is the active tracker.
+
+`NEXT_GATE=L0_CURRENT_BASELINE_ROLLBACK_EQUIVALENCE_PLUS_L1_PIPELINE_CALLER_READOUT`
+
+No rollback reconstruction, live Docker mutation, image pruning, credential read, provider calls, release tag, or deployment until the actual host topology and executable bridge are qualified.
