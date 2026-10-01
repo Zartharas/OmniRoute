@@ -580,3 +580,31 @@ Formal accepted result:
 The live FreeLLMAPI container remains untouched. Production catalog/Auth Keeper callbacks, authenticated ingress, no-fallback transport and current-live image/config/consistent-data rollback backup have **not** yet been qualified. L1B's test-injected hooks are not proof of production eligibility. Parent private PRM #45 is active.
 
 `NEXT_GATE=L1C_TRUSTED_INGRESS_BINDING_AND_CURRENT_LIVE_ROLLBACK_PRESERVATION`.
+
+
+### 2026-10-01 L1C-A trusted production-readiness implementation (not live)
+
+Owner approved L1C continuation after L1B's exact 32/32 local PASS.
+
+Private L1C-A draft PR #48:
+- base: L1B implementation `16b0f398df685afb5c02b1f6e478e12838687773`;
+- head: `d499a30cbcc5b86fc5e8767811c40bb1ebfe6ef0`;
+- one commit/three new files only (`l1cTrustedAdmission.ts`, `l1cProductionAdmission.ts`, 12 new admission tests).
+
+Unlike L1B's isolated injected structural contract, the production readiness binder imports the actual existing `isValidApiKey`, `extractApiKey(request,{allowUrl:false})`, `enforceApiKeyPolicy`, `getModelInfo`, `isModelAllowedForKey` and exact checked-in `config/codex-unified/workload-policy.json`. This code is NOT yet imported by the live Responses route; tests use safe fake ports, and targeted TypeScript qualification will compile the real binder. Operator canary key ID and enablement are server environment values, never client opt-in. Credential check and exact provider dispatch are intentionally `NOT_BOUND`.
+
+Frozen qualification branch `qualification/activated-orchestration-l1c-trusted-readiness-r1`:
+- commit `329652ad2f6eceecb70f636fa9b0d97e16d69847`;
+- script `scripts/qualification/activated-orchestration-l1c-trusted-readiness-r1.sh`;
+- blob `7ae362b09d671d6a58294ec3e96ad998f6ebb7ec`;
+- bytes 5394, SHA-256 `7f2212b1da6e22392baba7db6a1f6f3b5086503fe9674ddffa19262ac485a711`.
+
+Local test pending: 44 combined E1/E2/L1/L1B/L1C tests plus targeted L1C/core typechecks in detached OS network-denied worktree. Expected terminal `PASS_ACTIVATED_ORCHESTRATION_L1C_TRUSTED_READINESS_R1` but NEVER claim it until user output is reviewed.
+
+Source review: `src/sse/handlers/chat.ts` AND `open-sse/handlers/chatCore.ts` contain separate credential, model-scope, stream-retry and fallback/reopen logic. Thus `skipUpstreamRetry=true` and `noFallback:true` are insufficient for the four-real-call budget. A dedicated physical one-attempt transport remains L1C-B.
+
+Actual current FreeLLMAPI host still running healthy at user-readback image `sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49`; consistent current /app/data rollback snapshot NOT yet captured or validated. Historical D19 exited holders do not replace that current-state snapshot.
+
+PR #46 and PR #47 remain accepted non-live draft/unmerged; PR #48 draft/unmerged. No release tag, new Docker replacement, real provider call or production ingress activation from this phase.
+
+`NEXT_GATE=LOCAL_L1C_A_TRUSTED_READINESS_R1_QUALIFICATION`.
