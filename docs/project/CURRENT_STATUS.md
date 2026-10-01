@@ -666,3 +666,55 @@ Current state:
 `RC3_RELEASE_PROVENANCE=PENDING_F2_R1`
 
 `NEXT_GATE=LOCAL_F2_R1_QUALIFICATION`
+
+
+## 19. 2026-09-30 F2 R1 harness postcondition defect / F2 R2 active gate
+
+F2 R1 proved the corrected RC3 production build succeeds under the strict offline boundary:
+
+- exact RC3 source/ref identity: PASS;
+- cumulative topology: 189 ahead / 0 behind;
+- direct P5E→B1→C1→D1→E1→E2→F2 chain: PASS;
+- original plugin-lock semantic closure: PASS;
+- 78 plugin packages verified against original lock;
+- productization smoke: 30/30;
+- core typecheck: PASS;
+- OpenSSE frozen baseline: PASS;
+- Google-font build dependency: ABSENT;
+- production webpack release build: PASS;
+- build-time dependency installation detected: NO;
+- build-time network dependency detected: NO;
+- candidate plugin lock unchanged after build;
+- BUILD_SHA written as `679e839dd`.
+
+F2 R1 then failed only at its post-build plugin dependency fingerprint because the harness expected `@omniroute/opencode-plugin/node_modules` to survive the build.
+
+Repository source proves prepublish intentionally removes that directory after bundling to prevent hard-link entries from entering the npm package.
+
+Classification:
+
+`F2_R1=FAIL_HARNESS_POSTCONDITION_EXPECTED_PLUGIN_NODE_MODULES_TO_SURVIVE_PREPUBLISH`
+
+RC3 source remains unchanged:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Frozen F2 R2 qualification:
+
+- branch: `qualification/post-productization-offline-release-f2-r2`;
+- commit: `f3eaf83a0195f3c2c7cdd944772be1b575b19cd6`;
+- harness blob: `cd65f4a058cb3eb37e0627827f0f4b5feaf28743`;
+- bytes: `37827`;
+- SHA-256: `f3101def3105c87b0dceb3946a6fd6ef1926a6b4e55ddf0ea49a0baa6b659075`.
+
+R2 requires the documented hard-link-guard deletion, requires plugin `dist/index.js` and `dist/index.d.ts`, records their hashes, validates staging dependency-tree nonmutation, and then continues through pack/BUILD_SHA/nonmutation gates.
+
+Current state:
+
+`CUMULATIVE_E2_PRODUCT_SEMANTICS=QUALIFIED_NONLIVE`
+
+`RC3_SOURCE=679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+`RC3_RELEASE_PROVENANCE=PENDING_F2_R2`
+
+`NEXT_GATE=LOCAL_F2_R2_QUALIFICATION`
