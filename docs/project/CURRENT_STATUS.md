@@ -981,3 +981,17 @@ Frozen offline qualification commit `477b67e6e14d3242dfde4e677519d4f375946e7d`, 
 `REAL_PROVIDER_CALLS_FROM_THIS_PHASE=0`
 `CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
 `NEXT_GATE=LOCAL_L1C_B2_CREDENTIAL_CODEX_R1_QUALIFICATION`
+
+
+## 30. 2026-10-01 L1C-B2 R1 accepted non-live
+
+Private draft/unmerged PR #50 at implementation `0bb67b190ca8c65c5f0ca0134ddc3b2aaf6f19ce` is now **qualified in isolation**. Exact frozen qualification ref `477b67e6e14d3242dfde4e677519d4f375946e7d` (7137 bytes; blob `5d13b0b36711afaf0c74840531db27f7cd06f9d1`; SHA-256 `e469da6d955428f49aeebf72528ee0bd1a0aba5c3e11c85b136b18ace3921457`) matched operator output. Combined E1/E2/L1/L1B/L1C-A/B1/B2 regression **79/79 PASS**, targeted and core typechecks both rc=0, source lineage/allowlist and nonmutation PASS, OS network denied, zero real provider calls or Docker mutation. Evidence `/Users/zarthras/Downloads/omniroute_l1cb2_credential_codex_r1_20261001T195048Z`.
+
+Actual production credential/auth-policy imports are present/typechecked but **NOT LIVE EXECUTED**. HTTP Codex SSE adapter qualified offline with fake provider transport only; WS/app-server denied. No live ingress. This does NOT establish real OAuth/lease/quota behavior, physical proxy/provider request count or full activated four-stage orchestration. PR #46-#50 all remain draft/unmerged at their accepted non-live source heads.
+
+`L1C_B2=QUALIFIED_ISOLATED_NONLIVE`
+`REAL_CREDENTIAL_EXECUTION=NOT_QUALIFIED`
+`CONTROLLED_NATIVE_CODEX_HTTP_CANARY=NOT_PERFORMED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`LIVE_INGRESS_WIRED=NO`
+`NEXT_GATE=L1C_C_FULL_CHAIN_SERVER_ONLY_BINDING_AND_CURRENT_LIVE_ROLLBACK_PRESERVATION`
