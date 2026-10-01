@@ -954,3 +954,16 @@ Pending: 59 combined E1/E2/L1/L1B/L1C-A/B1 tests, targeted typecheck of new/prod
 `NEXT_GATE=LOCAL_L1C_B1_PINNED_EXACT_DISPATCH_R1_QUALIFICATION`
 
 For full activation still prove actual Auth Keeper/provider-native pinned credential selection and key connection restrictions, real provider-specific egress with network-level attempt evidence, native Codex owner path, dedicated authenticated Responses opt-in and consistent current-live FreeLLMAPI image/config/data preservation. No deployment, model provider call, or Docker mutation from this development.
+
+## 28. 2026-10-01 L1C-B1 R1 accepted non-live
+
+Exact frozen script `114563296c9ff702b7e389fdf0f9f237a854b999` (5732 bytes; Git blob `ef5d2838393b3c2d3bdf61211ab7b457aea946ef`; SHA-256 `d290f492e6a15204842d0ca1aa1793ba4bf13f03a905f1ecb6b14591fb8396c2`) was run by the operator. E1/E2/L1/L1B/L1C-A/L1C-B1 combined **59/59 PASS**; targeted L1C-B1 and core TSC `rc=0`, source allowlist and active-worktree nonmutation PASS. Existing dependencies clone-only, offline network denied, zero provider calls and Docker mutations. Evidence `/Users/zarthras/Downloads/omniroute_l1cb_pinned_exact_r1_20261001T182912Z`.
+
+Private draft/unmerged PR #49 remains at accepted implementation `f2b30b722ff30717899f028ccb4d4f853752271d`. The single-attempt claim is bounded to **one adapter-level fetch invocation per consumed stage** and controlled mock failure tests, not physical provider/proxy network counting. Real credential selector, connection and allowedConnections policy, native Codex synthesis protocol, trusted endpoint and egress, live ingress and new consistent current FreeLLMAPI rollback snapshot remain UNQUALIFIED.
+
+`L1C_B1=QUALIFIED_ISOLATED_NONLIVE`
+`REAL_CREDENTIAL_PORT=NOT_WIRED`
+`NATIVE_CODEX_WIRE=NOT_QUALIFIED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`LIVE_INGRESS_WIRED=NO`
+`NEXT_GATE=L1C_B2_REAL_CREDENTIAL_PIN_AND_NATIVE_CODEX_EXACT_WIRE`
