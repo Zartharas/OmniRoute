@@ -1,7 +1,7 @@
 # Current Project Status
 
 Last reviewed: 2026-09-30
-Status: cumulative five-pillar product semantics qualified non-live through E2; F1 R1 invalidated by dependency-install provenance blind spot; F1 R2 failed closed on npm-ci/plugin-lock compatibility; F1 R3 proved offline original-lock dependency closure but exposed a build-time Google Fonts dependency; minimal F2 source correction and RC3 are frozen, with F2 R1 offline release qualification pending; merge/publication/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
+Status: cumulative five-pillar product semantics and RC3 offline release provenance are qualified non-live through F2; historical F1/F2 qualification failures remain preserved as evidence; no further non-live architecture/productization gate is pending; merge/publication/tagging/deployment/live activation remains separately authorized; OpenCode/TheOldLLM execution remains on hold
 
 This document records the latest accepted engineering checkpoint for the `Zartharas/OmniRoute` fork. Product intent remains in [Architecture Source of Truth](ARCHITECTURE_SOURCE_OF_TRUTH.md), engineering method remains in [Engineering Source of Truth](ENGINEERING_SOURCE_OF_TRUTH.md), long-range sequencing remains in [Master Roadmap](MASTER_ROADMAP.md), and D19's exact development contract is defined in [R16.32 D19 — Production-Safe Empirical Orchestration Evidence Readout](R16_32_D19_EMPIRICAL_ORCHESTRATION_EVIDENCE_READOUT.md).
 
@@ -19,7 +19,7 @@ The five-pillar product goal remains unchanged:
 
 R16.32 remains an important Pillar 4 workstream, but it is not the product by itself. D18 qualification/activation/freeze, D19 hard-gate/evidence work, FreeLLMAPI signed-advisory integration, cleanup closure, and the private Auth Keeper/upstream pre-tag reconciliation through R16r35 are complete within their accepted scopes.
 
-Provider-neutral convergence, Codex Unified productization, adopted multi-model orchestration semantics, cumulative canonical integration, and RC2 build/pack provenance are now qualified non-live. The active boundary is **separate cutover/live-acceptance authorization**; no merge, release publication, deployment, or live activation is implied. The original upstream repository remains a compatibility source and does not gate the fork's release.
+Provider-neutral convergence, Codex Unified productization, adopted multi-model orchestration semantics, cumulative canonical integration, and corrected RC3 offline build/pack provenance are now qualified non-live. The active boundary is **separate cutover/live-acceptance authorization**; no merge, release publication/tagging, deployment, or live activation is implied. The original upstream repository remains a compatibility source and does not gate the fork's release.
 
 ## 2. Current live production authority — D18
 
@@ -718,3 +718,74 @@ Current state:
 `RC3_RELEASE_PROVENANCE=PENDING_F2_R2`
 
 `NEXT_GATE=LOCAL_F2_R2_QUALIFICATION`
+
+
+## 20. 2026-10-01 F2 R2 acceptance — RC3 release provenance qualified non-live
+
+Authoritative qualification:
+
+`PASS_POST_PRODUCTIZATION_OFFLINE_RELEASE_F2_QUALIFICATION_R2`
+
+Candidate:
+
+`679e839dde0ecaad562055eccbf8b0d55a53f25d`
+
+Status:
+
+`POST_PRODUCTIZATION_OFFLINE_RELEASE_QUALIFIED_NONLIVE`
+
+Exact accepted evidence:
+
+- F2 R2 qualification commit: `f3eaf83a0195f3c2c7cdd944772be1b575b19cd6`;
+- harness SHA-256: `f3101def3105c87b0dceb3946a6fd6ef1926a6b4e55ddf0ea49a0baa6b659075`;
+- canonical base: `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`;
+- cumulative topology: 189 ahead / 0 behind;
+- direct P5E → B1 → C1 → D1 → E1 → E2 → F2 ancestry: PASS;
+- OS network sandbox: PASS;
+- npm network mode: OFFLINE;
+- original plugin-lock semantic closure: PASS;
+- 78 physically verified plugin packages;
+- productization smoke: 30/30 PASS;
+- core typecheck: PASS;
+- OpenSSE typecheck: PASS at the frozen five-error baseline;
+- Google Fonts build dependency: ABSENT;
+- production webpack release build: PASS;
+- build-time dependency installation detected: NO;
+- build-time network dependency detected: NO;
+- expected/dist/standalone BUILD_SHA: `679e839dd`;
+- plugin hard-link cleanup contract: PASS;
+- plugin staging dependency-tree nonmutation: PASS;
+- pack artifact: PASS;
+- npm tarball bytes: `73068066`;
+- npm tarball SHA-256: `0533c8d768be886d0697ff3533ff9bddb36fda665c1cd7c3663bbc59ec0440b7`;
+- release-manifest SHA-256: `8d9701d740b00f7fab7ba34142d1c93a29e7c20482cdb59a545418d5694bd590`;
+- source nonmutation: PASS;
+- active repository nonmutation: PASS;
+- real provider calls: 0;
+- live service started: NO.
+
+Formal state:
+
+`CUMULATIVE_PRODUCT_SEMANTICS=QUALIFIED_NONLIVE_THROUGH_F2`
+
+`RC3_RELEASE_PROVENANCE=QUALIFIED_NONLIVE_OFFLINE`
+
+`NONLIVE_PRODUCT_ACCEPTANCE=COMPLETE_THROUGH_F2_RC3`
+
+Private PRM #43 is complete/closed.
+
+Private PR #44 remains open/draft/unmerged at exact head `679e839dde0ecaad562055eccbf8b0d55a53f25d`.
+
+No additional non-live architecture/productization gate remains under the current roadmap.
+
+`NEXT_GATE=SEPARATE_CUTOVER_OR_LIVE_ACCEPTANCE_AUTHORIZATION`
+
+Until separately authorized:
+
+`REAL_PROVIDER_CALL_BUDGET=0`
+
+`MERGE=NOT_AUTHORIZED`
+
+`RELEASE_PUBLICATION=NOT_AUTHORIZED`
+
+`LIVE_ACTIVATION=NOT_AUTHORIZED`
