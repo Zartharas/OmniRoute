@@ -627,3 +627,9 @@ Local qualification harness `qualification/activated-orchestration-l1cb-pinned-e
 No new changes to existing qualified L1, L1B, L1C-A source. PR #46/#47/#48/#49 remain dependent draft/unmerged.
 
 `NEXT_GATE=LOCAL_L1C_B1_PINNED_EXACT_DISPATCH_R1_QUALIFICATION`; current FreeLLMAPI image/config/consistent data rollback snapshot is still a separate mandatory pre-cutover gate.
+
+### 2026-10-01 L1C-B1 R1 accepted (supersedes pending)
+
+Exact L1C-B1 qualification ref `114563296c9ff702b7e389fdf0f9f237a854b999`; script size 5732 / blob `ef5d2838393b3c2d3bdf61211ab7b457aea946ef` / SHA-256 `d290f492e6a15204842d0ca1aa1793ba4bf13f03a905f1ecb6b14591fb8396c2` matched. Local 2026-10-01 operator run: combined 59/59 E1/E2/L1/L1B/L1C-A/B1 tests PASS, L1C-B1 targeted and core typecheck rc=0, `no_generic_retry_executor=PASS`, unchanged active worktree, provider calls 0, Docker mutation NO. Result `PASS_ACTIVATED_ORCHESTRATION_L1CB_ISOLATED_PINNED_EXACT_DISPATCH_R1`, candidate `f2b30b722ff30717899f028ccb4d4f853752271d`. Evidence `/Users/zarthras/Downloads/omniroute_l1cb_pinned_exact_r1_20261001T182912Z`.
+
+PR #49 remains draft/unmerged; predecessors #46/#47/#48 likewise accepted non-live draft/unmerged. No rerun needed. B1 proves one adapter `fetchOnce` invocation per consumed stage with fakes, **not** actual provider physical request, Auth Keeper connection materialization or native Codex acting-owner wire. Next L1C-B2: explicit real allowed connection/lease/quota/credential binding and native Codex exact protocol with zero silent fallback, followed by separate ingress/rollout qualification. Current FreeLLMAPI rollback snapshot remains pending, live host untouched.
