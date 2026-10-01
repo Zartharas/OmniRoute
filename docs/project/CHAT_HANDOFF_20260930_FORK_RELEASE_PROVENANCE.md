@@ -644,3 +644,10 @@ Qualification script in branch `qualification/activated-orchestration-l1cb2-cred
 PR #46/#47/#48/#49 qualified nonlive and unchanged. Private PRM #45 remains central; the exact currently running FreeLLMAPI image/config and consistent /app/data snapshot are still REQUIRED before container replacement.
 
 `NEXT_GATE=LOCAL_L1C_B2_CREDENTIAL_CODEX_R1_QUALIFICATION`.
+
+
+### 2026-10-01 L1C-B2 R1 accepted (supersedes pending qualification)
+
+User uploaded complete L1C-B2 local output. Frozen qualification ref `477b67e6e14d3242dfde4e677519d4f375946e7d`, 7137 bytes, SHA-256 `e469da6d955428f49aeebf72528ee0bd1a0aba5c3e11c85b136b18ace3921457`, blob `5d13b0b36711afaf0c74840531db27f7cd06f9d1`: exact match; syntax/lineage/allowlist/generic executor exclusion PASS. Combined **79/79 E1/E2/L1/L1B/L1C-A/B1/B2 PASS**; B2 targeted and core TSC rc=0; source nonmutation PASS; provider calls 0, Docker mutation NO. Terminal `PASS_ACTIVATED_ORCHESTRATION_L1CB2_ISOLATED_CREDENTIAL_CODEX_R1`, candidate `0bb67b190ca8c65c5f0ca0134ddc3b2aaf6f19ce`, status `PINNED_CREDENTIAL_POLICY_AND_NATIVE_CODEX_HTTP_ISOLATED_NOT_LIVE_WIRED`. Evidence root `/Users/zarthras/Downloads/omniroute_l1cb2_credential_codex_r1_20261001T195048Z`.
+
+Private PR #50 accepted **isolated non-live**, draft/unmerged; PRs #46–#49 unchanged. No prior qualification rerun needed. Production credential imports typechecked but not executed; native Codex HTTP passed mock SSE tests, not a real provider canary; WebSocket and app-server denied. Remaining full-chain L1C-C: authenticated server-only Responses admission, exact connection eligibility/materialization and physical no-fallback dispatch across four roles, real controlled Codex protocol/attempt evidence, bounded usage/abort handling; separately preserve the actual current FreeLLMAPI immutable image/config and consistency-verified current /app/data snapshot BEFORE any cutover. No release, merge, Docker replacement or live ingress activation evidenced.
