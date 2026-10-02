@@ -267,3 +267,45 @@ Source inspection establishes WAL-enabled `DATA_DIR/storage.sqlite`, distinct fi
 **Detailed private design published, execution NOT AUTHORIZED:** Draft PR #53 in owner fork, branch `qualification/current-freellmapi-snapshot-plan-r1`, head `a04ee41640632defef25f6b6022cc2b320369453`, one-file record `docs/qualification/CURRENT_FREELLMAPI_ROLLBACK_SNAPSHOT_PLAN_20261002.md`, Git blob `e4ce781b8862e2862f2efcd64664229e7d72b174`. It defines P0 read-only actual-volume layout/space/helper inventory (any helper-container invocation requires approval), P1 synthetic/offline WAL+external-artifact fixture rehearsal, P2 explicitly separately authorized source quiescence plus secure encrypted exact image/config and full current data preservation, P3 new isolated-volume restore/integrity/hash proof and P4 original live service health/non-drift. No Docker execution or data/secret reads occurred in preparation of the design. PR #51 remains default OFF, qualified source only, draft/unmerged; #46–#50 frozen. No original-upstream owner dependency.
 
 **NEXT_GATE=P0_SNAPSHOT_LAYOUT_AND_STORAGE_PREEXECUTION_INVENTORY_PLAN_REVIEW**. Do not ask the operator to rerun precheck R1 or R2. Before any live file/volume access or helper-container creation, specify exact bounded script, evidence redaction, no-network and original-volume read-only constraints and obtain separate authorization. No deployment or provider-call budget authorized on offline/source evidence.
+
+## 11. 2026-10-02 P0 production volume METADATA-ONLY helper explicitly authorized — exact next command
+
+The user authorized ONE temporary helper container only: network NONE, production named /app/data mounted READ-ONLY, metadata-only size/layout/SQLite-WAL-sidecar presence. No full-data backup, SQLite open/checkpoint, credentials/file payloads, container interruption/replacement, canary or provider calls. Existing read-only FreeLLMAPI baseline R2 remains accepted. Snapshot plan remains private **draft PR #53**, design-only and unexecuted.
+
+Private **draft PR #54** (dependent on PR #53) frozen branch `qualification/current-freellmapi-p0-metadata-inventory-r1`, HEAD **8e205a9436a443e89ea550d9e0d112e7d6ab7661**; one ADDED script file over the plan, two narrow commits, no source/deployment changes:
+- path `scripts/qualification/current-freellmapi-p0-metadata-inventory-r1.sh`
+- Git blob **1f8d24975297fd64baa57054501e284721a40587**
+- UTF-8 size **8455 bytes**
+- local output name: `~/Downloads/omniroute_current_live_p0_metadata_r1.sh`.
+
+The script verifies the exact known live container/image/volume and disabled server canary flags again. It reuses the **already-local immutable live image**, overrides entrypoint to /bin/sh, and never pulls an image; if shell or metadata tools are missing, it fails instead of installing a substitute. Its sole Docker run uses --rm, --network none, --read-only, --mount existing-volume:readonly:volume-nocopy, --cap-drop ALL, no-new-privileges, matching live-configured user, CPU/memory/PID limits, no ports, no other bind mounts and no Docker socket. Metadata is collected with stat/du/find for a fixed allowlist of expected DB/sidecar filenames plus aggregated full-volume/known-artifact-directory allocated KiB and approximate DB/WAL/symlink counts. No unknown file names or contents are printed. It confirms helper auto-removal, unchanged live identity and unchanged active Git worktree. Any helper stderr remains restricted in the LOCAL evidence root; only the sanitized terminal/metadata output should be shared. A live writer may modify sizes during inspection: these observations are non-atomic and NEVER qualify a snapshot.
+
+### Exact one-command local execution — operator run still PENDING
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p0-metadata-inventory-r1"
+COMMIT="8e205a9436a443e89ea550d9e0d112e7d6ab7661"
+FILE="scripts/qualification/current-freellmapi-p0-metadata-inventory-r1.sh"
+SCRIPT="$HOME/Downloads/omniroute_current_live_p0_metadata_r1.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P0_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "8455" ] || { echo FAIL_P0_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "1f8d24975297fd64baa57054501e284721a40587" ] || { echo FAIL_P0_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P0_BASH_SYNTAX; exit 1; }
+echo "p0_metadata_script_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+If the real operator run succeeds it must print:
+`RESULT=PASS_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1`, followed by `EVIDENCE_ROOT` from the local machine. Do NOT claim PASS from GitHub preparation. If it fails, inspect the specific marker and redact private local helper diagnostics; use a narrow correction. Do not rerun accepted R2 precheck.
+
+**Next after reviewed P0:** offline/synthetic WAL+sidecar+call_log backup/restore rehearsal with no live-volume writes; production image/config export, full current-data snapshot, service quiescence and isolated restoration require distinct approval. PR #51 remains source-qualified, non-live/default OFF/draft/unmerged.
+
+**NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1**.
