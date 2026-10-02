@@ -167,3 +167,36 @@ A historical D19 holder is not a substitute for a snapshot of the actually runni
 Further independent gates: actual credential/lease/quota/connection behavior; provider physical network-attempt measurement, proxy/DNS/egress integrity, native Codex HTTP upstream interoperability, bounded explicitly authorized real-provider canary, and rollback rehearsal.
 
 **NEXT_GATE=CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_PRECHECK**.
+
+## 8. New 2026-10-02 independent next gate: current-live FreeLLMAPI READ-ONLY rollback precheck
+
+Source-qualified L1C-C R2 is accepted non-live (§7); implementation PR #51 and predecessors #46–#50 unchanged. New private **DRAFT PR #52** is a script-only, source-separated first rollback-preservation step. Branch **qualification/current-freellmapi-rollback-preservation-precheck-r1**, HEAD **55bfbf227e180377dbbb7d7d4d1cb82831088fc2**, based on qualification R2 **5a3adf93f59865d7e59340c682e3805be8ed7922** (ahead 2, behind 0, exactly one ADDED file). File **scripts/qualification/current-freellmapi-rollback-preservation-precheck-r1.sh**; blob **b566b974cebe50645cc5a4f7079b025b92f936c3**, exact UTF-8 **6570 bytes**.
+
+This script captures only sanitized live Docker topology: expected current image and volume identity/presence, health/restarts/OOM, loopback host ports, existing attached network, read-only bind destinations, restart policy, nonprivileged status, canary flags not true and active Git worktree nonmutation. The Docker --format Go template emits selected fields and exact true-canary marker(s), not raw environment values or mount sources to disk or Python. It does NOT docker exec, read live data files, create backup/snapshot, preserve full image/config, restart/replace any container or contact providers. Do not mistake its successful result for rollback-ready. Its exact expected Docker identity matches the last observed current FreeLLMAPI baseline; any drift is a read-only stop/review event, never an instruction to restore a historical D19 holder.
+
+### One-command local precheck continuation (R1 PENDING OPERATOR EXECUTION)
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+REF="qualification/current-freellmapi-rollback-preservation-precheck-r1"
+COMMIT="55bfbf227e180377dbbb7d7d4d1cb82831088fc2"
+FILE="scripts/qualification/current-freellmapi-rollback-preservation-precheck-r1.sh"
+SCRIPT="$HOME/Downloads/omniroute_current_live_rollback_precheck_r1.sh"
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_ROLLBACK_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "6570" ] || { echo FAIL_ROLLBACK_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "b566b974cebe50645cc5a4f7079b025b92f936c3" ] || { echo FAIL_ROLLBACK_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_ROLLBACK_BASH_SYNTAX; exit 1; }
+echo "rollback_precheck_script_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+If script syntax, Docker Go template, or a live identity gate fails, review only the precise marker and sanitized EVIDENCE_ROOT; create narrow R2 while retaining source and existing data. On PASS expect RESULT=PASS_CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_READ_ONLY_PRECHECK_R1 and explicit snapshot_created=NO / consistent_current_data_snapshot=NOT_CREATED. Do not claim any local PASS until terminal output provided.
+
+Next independent step after an accepted precheck: review SQLite file layout/online backup coordination in the current /app/data volume without exposing data/credentials; design and explicitly gate image/config preservation, SQLite/WAL-consistent online backup, backup-integrity verification, isolated restoration proof and rollback transaction, all before any deployment/canary work.
+
+**NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_ROLLBACK_READ_ONLY_PRECHECK_R1**.
