@@ -1115,3 +1115,13 @@ The script uses the exact preexisting immutable current image with a /bin/sh ent
 Continue with the exact retrieval/integrity/run command in the updated October 1 public handoff §11. After P0 evidence, review observed layout/capacity and conduct a separate fully offline synthetic WAL/artifact backup/restore rehearsal before seeking any production-preservation approval. Existing L1C-C draft PR #51 remains default OFF/non-live; PR #52 read-only precheck accepted; PR #53 design-only.
 
 **NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1**.
+
+## 39. 2026-10-02 authorized P0 metadata inventory R1 OPERATOR PASS
+
+The owner executed exact GitHub-verified PR #54 script at `8e205a9436a443e89ea550d9e0d112e7d6ab7661` (blob `1f8d24975297fd64baa57054501e284721a40587`, 8455 UTF-8 bytes; local SHA-256 `3c46f2d0c822d449849f040b048fc212621a33059152ac1c770bb4000afb2c01`). Script integrity and Bash syntax PASS; sole authorized network-none source-volume-RO helper exited 0, auto-removed PASS, exact live image/container/volume before/after PASS, active Git worktree nonmutation PASS. No source contents, SQLite database open/checkpoint, backup, provider call or live-container mutation. `RESULT=PASS_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1`; local restricted evidence root `/Users/zarthras/Downloads/omniroute_p0_metadata_inventory_r1_XWu7S56g`.
+
+Metadata (non-atomic while production writer remains active): `storage.sqlite` 67,764,224 B; `storage.sqlite-wal` 4,148,872 B; `storage.sqlite-shm` 32,768 B; journal and db.json absent; `call_logs` 404 allocated KiB; `db_backups` 306,108 allocated KiB; entire current data volume 462,196 allocated KiB; approximate 10 SQLite files, 2 WAL sidecars, 0 symlinks. Host Downloads available 2,160,010,120 KiB; present local image size 3,049,822,395 B; **Docker VM disk availability not yet assessed** and actual encrypted archive/restore space margin NOT qualified.
+
+The WAL is present, so raw copying the *actively written* SQLite database or a plain hot tar is prohibited as rollback qualification. The separate `call_logs` artifacts and existing `db_backups` must be included/handled coherently. No production backup, image/config archive or isolated restore exists yet. PR #54 and private PRM #45 updated; PR #51 remains non-live qualified/default OFF/draft/unmerged, #52 current baseline accepted, #53 preservation plan draft.
+
+**NEXT_GATE=P1_OFFLINE_SYNTHETIC_WAL_ARTIFACT_REHEARSAL** (synthetic files ONLY; no Docker, no live data reads/writes, no provider calls). Production preservation/stop still needs separate approval.
