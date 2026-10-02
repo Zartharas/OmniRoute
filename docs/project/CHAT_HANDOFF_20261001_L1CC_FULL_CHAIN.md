@@ -370,3 +370,50 @@ production_restore_test=NOT_PERFORMED
 PR #55 body and private PRM #45 have the accepted result. PR #54 P0 metadata qualification remains PASS. Draft PR #53 is the controlled full-volume preservation plan; implementation PR #51 remains source-qualified non-live, default OFF, draft/unmerged. No production durable image/config package, current SQLite/WAL or complete /app/data backup, full-state consistency or isolated real-data restoration exists yet.
 
 **NEXT_GATE=P2_CURRENT_IMAGE_CONFIG_PRESERVATION_APPROVAL_PACKET_AND_PREEXECUTION_CHECKS**. First establish read-only host/Docker storage and encryption/tool capability, then prepare an exact preservation transaction with secret-safe handling and obtain separately scoped operator consent to any image archive, sensitive configuration export/encryption, production stop/writer quiescence, data copying and isolated restore. Earlier authorization was limited to the **single P0 temporary read-only helper** and does not carry over. Do not propose hot live tar, auto-backup return metadata as proof, Docker replacement, canary activation or provider calls.
+
+## 14. 2026-10-02 P1 Mac OPERATOR PASS — P2A read-only preservation-preflight command
+
+Supersedes §13's P2 next-gate preparation status. Operator's exact private PR #55 Git-verified Python (commit **f7fab94fc422c5a1de768748d00b404f4da0a0f8**, blob **6fa944374eb5c4d733f1d3459db5fed27810dc1a**, 12863 bytes, guard SHA-256 **c43b0f96ee72211ebfe0ae57f312ecbb70f5d6f45bdaab97eef647252f44ffd4**) passed syntax/source integrity and full Mac synthetic-only fixture rehearsal. All eight negative checks PASS_REJECTED, copied SQLite integrity PASS, WAL-backed row and external artifact restoration PASS, synthetic manifest six regular files, ephemeral synthetic tar SHA-256 **9244b4eebd00519caf375209ee7d41c151a117c1b299ece11e4f288e98c17382**. No production file, volume, Docker command, network or provider operation. Terminal:
+
+~~~
+RESULT=PASS_P1_OFFLINE_SYNTHETIC_WAL_ARTIFACT_REHEARSAL_R1
+EVIDENCE_ROOT=/Users/zarthras/Downloads/omniroute_p1_synthetic_phcn45dh
+production_snapshot_created=NO
+production_service_changed=NO
+production_restore_test=NOT_PERFORMED
+~~~
+
+Private PR #55 / controlling PRM #45 record the acceptance. PR #51 frozen source-qualified non-live/default OFF/draft-unmerged; earlier predecessor and P0 work remain untouched.
+
+### P2A next: read-only current-image/storage/tools readiness only
+
+Private new **DRAFT PR #56**, branch **qualification/current-freellmapi-p2a-preservation-preflight-r1**, HEAD **be20701dfb81cff8738263c45bdbf26fdf29546a**, exactly two new files above frozen accepted P1. Script: **scripts/qualification/current-freellmapi-p2a-readonly-preservation-preflight-r1.sh**, Git blob **25300196175804ce97f004cf2d6c23451c03a9d7**, **4997 UTF-8 bytes**. Confidential approval-boundary document: **docs/qualification/CURRENT_FREELLMAPI_P2_PRESERVATION_APPROVAL_BOUNDARIES_20261002.md**, blob **2cdbf06a1fc064ccd5bf4ccfc84ea12bd8aa9324**.
+
+P2A uses only selected formatted metadata from already existing Docker image/container/volume; host Downloads available-space estimate, tool presence census, disabled server canary and original container/Git worktree nonmutation checks. No raw Docker inspect/secret values, no production file reads, no new helper container, Docker mutation, image save, network/provider call, DB open/checkpoint, archive, snapshot, deployment or service stop/restart. Its rough planning floor is **NOT a measured real backup/encryption size**. Docker VM free capacity remains unknown. The existing P0 helper authorization was one-time; no new helper or P2B–P2E write action is authorized by this step. Actual Mac run/syntax still pending.
+
+### Exact one-command P2A continuation
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2a-preservation-preflight-r1"
+COMMIT="be20701dfb81cff8738263c45bdbf26fdf29546a"
+FILE="scripts/qualification/current-freellmapi-p2a-readonly-preservation-preflight-r1.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2a_readonly_preservation_preflight_r1.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2A_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "4997" ] || { echo FAIL_P2A_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "25300196175804ce97f004cf2d6c23451c03a9d7" ] || { echo FAIL_P2A_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2A_BASH_SYNTAX; exit 1; }
+echo "p2a_script_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Expected only **after** actual operator execution: `RESULT=PASS_P2A_READ_ONLY_HOST_STORAGE_TOOL_PREFLIGHT_R1`. This would establish host-only/preexisting-image planning/tool readiness, not durable rollback or permission for preservation. On drift, STOP and read-only reconcile. Do not rerun P0/P1 just to reach P2A. No live stop/snapshot/encrypted config export/canary activation is approved yet.
+
+**NEXT_GATE=LOCAL_P2A_READ_ONLY_HOST_STORAGE_TOOL_PREFLIGHT_R1**. After that, review exact available encryption tooling/key workflow and seek separately scoped owner consent for P2B confidential current-image + exact container-config preservation, then distinct P2C writer-quiescence/full-volume archive, P2D isolated real-data restoration proof, P2E return-to-service.
