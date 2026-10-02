@@ -434,3 +434,39 @@ Private [draft PR #57](https://github.com/Zartharas/omniroute-auth-keeper/pull/5
 P2C coherent current full-volume backup with explicit writer quiescence and maintenance-window stop, P2D isolated new-volume production-data recovery and P2E original-service return are each separately approval-gated. No production snapshot exists. PR #51 L1C-C remains source-qualified NON-LIVE/default OFF/draft/unmerged; prior frozen PRs untouched.
 
 **NEXT_GATE=OWNER_CONSENT_FOR_P2B_CONFIDENTIAL_IMAGE_AND_CONFIG_PRESERVATION**. On consent, implement and freeze an exact GitHub script after reviewing local GPG challenge handling; then give bounded Git blob/size/integrity local command. Do not assume recipient selection, key presence, archive validity or live backup from P2A alone.
+
+## 16. 2026-10-02 P2B owner authorization received; exact synthetic GPG recipient qualification
+
+The owner explicitly authorized confidential P2B preservation of the current immutable image and secret-bearing exact container-recreation config under PR #57. This consent does NOT extend to production data-volume copying, service interruption, writer quiescence, any restore/launch, provider/network canary, or activation of default-OFF L1C-C PR #51. Installed GPG does not prove an existing encryption key, recipient selection or local decryption. Therefore the immediate executable gate is a **synthetic-only GPG recipient qualification**, before Docker image/config export. Exact prior P2A operator PASS remains unchanged.
+
+Private draft **PR #58** branch `qualification/current-freellmapi-p2b-key-qualification-r1`, HEAD **a3b1389399065b9bb831aaf8d6bd60ca006b5390**, exactly one added script above frozen PR #57:
+`scripts/qualification/current-freellmapi-p2b-key-qualification-r1.sh`; Git blob **6c1cb968c81050156c90ea0991f9a5f816f3225e**, UTF-8 size **3794 bytes**.
+
+The standalone Bash script inspects only local GPG *secret-key metadata* privately. It either selects exactly one eligible already-existing GPG encryption candidate, or matches an operator-supplied full fingerprint in local `OMNIROUTE_P2B_RECIPIENT_FPR`. Ambiguous/absent recipients FAIL with no identities printed. It encrypts a newly generated synthetic random challenge to that candidate, decrypts with its corresponding existing local secret key, verifies an exact match, and saves a private candidate fingerprint in `recipient_candidate.private` (0600) under newly created restricted `~/Downloads/omniroute_p2b_key_qualification_r1_*`. It does not print recipient fingerprint, UID/email, GPG diagnostics, credentials or key material; do not paste/upload `recipient_candidate.private` or `gpg_private_diagnostic.txt`. It neither generates/imports a key nor invokes Docker, reads current production config/data, saves an image, backs up data or executes network commands. The candidate fingerprint still requires local owner approval of the **intended** production recipient before any real secret-bearing encryption.
+
+### Exact next operator command — P2B-K ONLY
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-key-qualification-r1"
+COMMIT="a3b1389399065b9bb831aaf8d6bd60ca006b5390"
+FILE="scripts/qualification/current-freellmapi-p2b-key-qualification-r1.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2b_existing_gpg_key_qualification_r1.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "3794" ] || { echo FAIL_P2B_K_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "6c1cb968c81050156c90ea0991f9a5f816f3225e" ] || { echo FAIL_P2B_K_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2B_K_BASH_SYNTAX; exit 1; }
+echo "p2b_k_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Expected only after a real Mac run: `RESULT=PASS_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1`, `synthetic_recipient_encryption=PASS`, `synthetic_corresponding_secret_key_decryption=PASS`, `EVIDENCE_ROOT=...`. If the script reports `FAIL_NO_ELIGIBLE_EXISTING_SECRET_KEY`, do not auto-generate/import a key or substitute OpenSSL plaintext/symmetric fallback. If it reports `FAIL_MULTIPLE_KEYS_SELECT_PRIVATELY`, the owner must select a known preexisting eligible key locally via the full fingerprint (e.g., look up GPG fingerprints in a SEPARATE local terminal; never send key IDs/credentials in chat) and set `OMNIROUTE_P2B_RECIPIENT_FPR` for a controlled rerun. Do not claim actual production image/config has been saved from a synthetic PASS.
+
+**NEXT_GATE=LOCAL_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1**. Once that qualifies, implement a separately pinned direct-to-GPG image/config export that rechecks real identity, obtains local owner approval of intended recipient, never persists plaintext, validates ciphertext decryption/structure, and leaves the original deployment unchanged. P2C–P2E remain distinct owner authorization gates.
