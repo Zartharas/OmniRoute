@@ -200,3 +200,55 @@ If script syntax, Docker Go template, or a live identity gate fails, review only
 Next independent step after an accepted precheck: review SQLite file layout/online backup coordination in the current /app/data volume without exposing data/credentials; design and explicitly gate image/config preservation, SQLite/WAL-consistent online backup, backup-integrity verification, isolated restoration proof and rollback transaction, all before any deployment/canary work.
 
 **NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_ROLLBACK_READ_ONLY_PRECHECK_R1**.
+
+## 9. 2026-10-02 rollback precheck R1 operator failure — R2 replacement PENDING
+
+Supersedes §8's R1 *execution pending* state. Operator's exact 6570-byte Git-verified R1 script (commit 55bfbf227e180377dbbb7d7d4d1cb82831088fc2, blob b566b974cebe50645cc5a4f7079b025b92f936c3, local SHA-256 4f89676be48c64fe86bb295be63bb455de66c00695a65da0b623de4c77964c44) passed fetch/integrity/Bash syntax, then stopped at the read-only Docker template:
+
+~~~
+template parsing error: template: :1:561: executing "" at <$m.Name>: map has no entry for key "Name"
+json.decoder.JSONDecodeError: Expecting value
+FAIL_CURRENT_LIVE_SANITIZED_INSPECT
+RESULT=FAIL_CURRENT_FREELLMAPI_ROLLBACK_PRECHECK_R1
+EVIDENCE_ROOT=/Users/zarthras/Downloads/omniroute_current_live_rollback_precheck_r1_B7dmA1WK
+~~~
+
+Classification: **R1 harness defect**, not evidence of current live-image, volume or security-topology drift. Docker bind mounts do not carry a Name field. The Docker template unconditionally accessed $m.Name before Python validation, giving the secondary JSON error. R1 did not reach complete sanitized topology checks, image/volume presence, final worktree nonmutation or backup. Its output explicitly records snapshot_created=NO, docker_exec=NO, docker_mutation=NO, credential_values_emitted=NO and provider_calls=0.
+
+### Narrow replacement R2
+
+Owner-controlled private branch: **qualification/current-freellmapi-rollback-preservation-precheck-r2**.
+Exact HEAD **4bc42ea3aca1d5cacfcd72990011ce7ddd6980f4**. This is ONE added script-only commit above immutable R1 HEAD. Existing draft PR #52 head branch was advanced via fast-forward to the same commit, preserving original R1 history and source. Added file: **scripts/qualification/current-freellmapi-rollback-preservation-precheck-r2.sh**, exact Git blob **9f7e8ed6f53a996b149199bf7b8a7e9e1772599d**, **6845 UTF-8 bytes**. The change emits mount Name only where mount Type is volume; bind mounts receive JSON null. Exact current /app/data named-volume comparison, all drift/fail-closed checks and no-mutation limits remain.
+
+The corrected expression passed an offline Go standard text/template mock with missingkey=error, representative mixed bind and named-volume entries, parsed JSON and no emitted mount Source. This is NOT real Docker execution and is not R2 qualification PASS.
+
+### Exact next local command — run only R2
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-rollback-preservation-precheck-r2"
+COMMIT="4bc42ea3aca1d5cacfcd72990011ce7ddd6980f4"
+FILE="scripts/qualification/current-freellmapi-rollback-preservation-precheck-r2.sh"
+SCRIPT="$HOME/Downloads/omniroute_current_live_rollback_precheck_r2.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_R2_REF_DRIFT; exit 1; }
+
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "6845" ] || { echo FAIL_R2_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "9f7e8ed6f53a996b149199bf7b8a7e9e1772599d" ] || { echo FAIL_R2_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_R2_BASH_SYNTAX; exit 1; }
+
+echo "rollback_precheck_r2_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Expected ONLY AFTER real operator run: RESULT=PASS_CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_READ_ONLY_PRECHECK_R2, together with unchanged current image/volume, sanitized live topology, active worktree nonmutation and explicit no snapshot/restore. If it fails, inspect precise marker/evidence path and make narrow R3; never repeat historical R1.
+
+**Rollback remains NOT READY** even if the read-only precheck passes: actual current FreeLLMAPI image/config preservation, SQLite/WAL-consistent actual /app/data backup and isolated restoration, controlled credential/egress/physical attempt/provider canary all remain independent hard gates. L1C-C PR #51 remains non-live/default-OFF/draft/unmerged.
+
+**NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_ROLLBACK_READ_ONLY_PRECHECK_R2**.
