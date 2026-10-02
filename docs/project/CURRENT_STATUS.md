@@ -1156,3 +1156,18 @@ Owner-controlled new **draft PR #56** is a limited approval-readiness work packa
 PR #51 remains source-qualified non-live/default OFF/draft-unmerged. PRs #46–#55 retain their accepted states. No current-volume consistent backup or durable image/config package exists and `ROLLBACK_READY=NO`.
 
 **NEXT_GATE=LOCAL_P2A_READ_ONLY_HOST_STORAGE_TOOL_PREFLIGHT_R1**. Exact owner command in public continuity handoff §14.
+
+## 43. 2026-10-02 P2A preservation preflight OPERATOR PASS; P2B confidential export CONSENT PENDING
+
+The operator fetched frozen owner-fork P2A PR #56 HEAD `be20701dfb81cff8738263c45bdbf26fdf29546a`, script Git blob `25300196175804ce97f004cf2d6c23451c03a9d7` / 4997 UTF-8 bytes; local SHA-256 `67652f681fada9595bd85a20eb67bc308fa92fa6aa23b4639ceea5ec3612df1a`. Source size/blob/syntax PASS; exact terminal `RESULT=PASS_P2A_READ_ONLY_HOST_STORAGE_TOOL_PREFLIGHT_R1`; restricted operator evidence `/Users/zarthras/Downloads/omniroute_p2a_preservation_preflight_r1_IdTqLNY0`. Current container/image/named volume identity PASS; original deployment and Git nonmutation PASS; image_export=NOT_PERFORMED, raw_config_or_secret_values_read=NO, helper_container_created=NO, production_data_files_accessed=NO, backup_or_snapshot_created=NO, stop/restart=NO, provider_calls=0.
+
+Read-only planning: Downloads host free **2,159,858,240 KiB**; current immutable image reported **3,049,822,395 bytes**; prior P0 non-atomic current volume allocated **462,196 KiB**; computed host *rough* planning floor **5,875,703 KiB**, estimate-only PASS. Docker Desktop VM free capacity and final encrypted archive sizes remain unmeasured. Present: tar, gzip, openssl, gpg, sqlite3, python3, shasum; age ABSENT. Encryption recipient/key and method NOT qualified/approved.
+
+New private **draft PR #57** (branch `qualification/current-freellmapi-p2b-confidential-preservation-approval-r1`, commit **577b3e0fe29363c0819b63d148f40dbc2a0b9e35**) adds one **DESIGN/CONSENT ONLY** record `docs/qualification/CURRENT_FREELLMAPI_P2B_CONFIDENTIAL_EXPORT_APPROVAL_PACKET_20261002.md`, blob **1d25f7f4e1e85cfe8454f6b3fc5cca3084e32d07**, 8573 bytes. Proposed, NOT executed: owner-controlled GPG public-recipient encrypt/decrypt synthetic challenge, private 0700 destination, direct-to-encryption exact current image-save and secret-bearing Docker recreation configuration (no plaintext persistence or raw inspect in terminal/GitHub), ciphertext hashes, decryption/archive-readback, same original container identity after export, no volume read/service interruption. P2B production image/config export needs **new, explicit owner consent** distinct from already completed read-only P2A. P2C live-writer quiescence/full /app/data snapshot and P2D isolated production-data restoration require separate subsequent approvals; prior P0 helper authorization does not cover these. Draft L1C-C PR #51 remains default OFF/non-live/unmerged.
+
+`P2A=PASS_READ_ONLY_R1`  
+`P2B_IMAGE_AND_CONFIDENTIAL_CONFIG=NOT_AUTHORIZED_OR_CREATED`  
+`P2C_CURRENT_FULL_VOLUME_BACKUP=NOT_AUTHORIZED`  
+`P2D_ISOLATED_REAL_DATA_RESTORE=NOT_AUTHORIZED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=OWNER_CONSENT_FOR_P2B_CONFIDENTIAL_IMAGE_AND_CONFIG_PRESERVATION`
