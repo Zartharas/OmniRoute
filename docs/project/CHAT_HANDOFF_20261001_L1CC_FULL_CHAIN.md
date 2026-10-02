@@ -352,3 +352,21 @@ Only synthetic files in a fresh protected ~/Downloads/omniroute_p1_synthetic_* f
 After Mac P1 result, separately design current immutable image/config durable preservation and writer-quiescence/full-volume archival under another explicit approval; no live Docker or real provider execution is currently authorized. Keep implementation PR #51 default OFF/draft/unmerged, original live FreeLLMAPI unchanged, accepted PRs #46–#54 frozen.
 
 **NEXT_GATE=LOCAL_P1_OFFLINE_SYNTHETIC_WAL_ARTIFACT_REHEARSAL_R1**.
+
+## 13. 2026-10-02 operator P1 synthetic-only WAL/artifact rehearsal ACCEPTED
+
+Supersedes §12's P1 Mac run pending status. Exact private GitHub source at PR #55 frozen commit **f7fab94fc422c5a1de768748d00b404f4da0a0f8**, one-file blob **6fa944374eb5c4d733f1d3459db5fed27810dc1a**, 12863 UTF-8 bytes; operator fetch/integrity/expected SHA-256 guard **c43b0f96ee72211ebfe0ae57f312ecbb70f5d6f45bdaab97eef647252f44ffd4** and Python AST syntax PASS. Actual Mac output reports all operations confined to new synthetic `~/Downloads/omniroute_p1_synthetic_phcn45dh`, Python network-socket creation DENIED, Docker commands NONE, production paths/volumes NOT accessed, original production service UNCHANGED.
+
+The local synthetic WAL/SHM/main database + existing fake backup + separate fabricated call-log artifact full-family archive/isolated restore completed, `isolated_restored_sqlite_integrity=PASS`, `wal_backed_row_and_external_artifact_link=PASS`, **synthetic_negative_cases_passed=8** (unproven quiescence, tampered archive, missing WAL, corrupt WAL, path traversal, symlink, insufficient capacity and changing fixture during archive each PASS_REJECTED). Synthetic archive SHA-256 **9244b4eebd00519caf375209ee7d41c151a117c1b299ece11e4f288e98c17382** is a disposable fixture digest only. Missing/corrupt WAL tests are caught by expected manifest/hash validation before SQLite recovery; no separate low-level WAL corruption-recovery guarantee. Exact operator evidence:
+
+~~~
+RESULT=PASS_P1_OFFLINE_SYNTHETIC_WAL_ARTIFACT_REHEARSAL_R1
+EVIDENCE_ROOT=/Users/zarthras/Downloads/omniroute_p1_synthetic_phcn45dh
+production_snapshot_created=NO
+production_service_changed=NO
+production_restore_test=NOT_PERFORMED
+~~~
+
+PR #55 body and private PRM #45 have the accepted result. PR #54 P0 metadata qualification remains PASS. Draft PR #53 is the controlled full-volume preservation plan; implementation PR #51 remains source-qualified non-live, default OFF, draft/unmerged. No production durable image/config package, current SQLite/WAL or complete /app/data backup, full-state consistency or isolated real-data restoration exists yet.
+
+**NEXT_GATE=P2_CURRENT_IMAGE_CONFIG_PRESERVATION_APPROVAL_PACKET_AND_PREEXECUTION_CHECKS**. First establish read-only host/Docker storage and encryption/tool capability, then prepare an exact preservation transaction with secret-safe handling and obtain separately scoped operator consent to any image archive, sensitive configuration export/encryption, production stop/writer quiescence, data copying and isolated restore. Earlier authorization was limited to the **single P0 temporary read-only helper** and does not carry over. Do not propose hot live tar, auto-backup return metadata as proof, Docker replacement, canary activation or provider calls.
