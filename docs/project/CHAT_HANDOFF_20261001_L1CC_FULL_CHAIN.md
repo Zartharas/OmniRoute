@@ -95,3 +95,49 @@ Even an isolated 99/99 PASS will not prove actual Auth Keeper live credential/le
 **PRM:** `https://github.com/Zartharas/omniroute-auth-keeper/issues/45`.  
 **PR:** `https://github.com/Zartharas/omniroute-auth-keeper/pull/51`.  
 **NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R1_QUALIFICATION**.
+
+## 6. 2026-10-01 late checkpoint: R1 operator TypeScript failure; R2 published
+
+This supersedes the earlier *R1 local execution pending* line, without changing historical frozen provenance.
+
+R1 original at qualification commit **d1f8ca02f531ad200c90309ced88f249ab721862**: script 8464 bytes, Git blob **01c60080969b4b27717c37d8b2e8774e66335722**, Bash syntax and local script integrity PASS; operator SHA-256 **706ed167bdec003e81d086754e2cb682c188bf3f3d53b59b7c5f1d999a42c1d5**. Source allowlist, no generic retries, default-off/fail-closed ingress and APFS dependency clone PASS. Combined regression **99/99 PASS** and rc=0.
+
+**R1 FAILED targeted TypeScript rc=2**, with eight diagnostics in unchanged shared files: open-sse progressTracker/sseHeartbeat/stream (TS2353 Transformer.cancel) and src/lib/guardrails/videoBridgeHelpers.ts (TS2488, TS2365, TS2322, TS2345 for unknown values). These files are outside the eight-file L1C-C change set. R1 first introduced the complete Responses route into the targeted TS roots, but it is not yet proven that all eight diagnostics are inherited from the old route. The script stopped at FAIL_GATE=l1cc_targeted_typecheck; core typecheck and final active-worktree nonmutation were NOT REACHED. Local evidence root: /Users/zarthras/Downloads/omniroute_l1cc_full_chain_r1_20261002T033725Z. RESULT=FAIL_L1CC_FULL_CHAIN_R1.
+
+### R2 qualification artifact — new script, implementation unchanged
+
+- Private branch: qualification/activated-orchestration-l1cc-full-chain-r2.
+- Exact HEAD: **5a3adf93f59865d7e59340c682e3805be8ed7922**; one new qualification-script-only commit above R1.
+- Script: scripts/qualification/activated-orchestration-l1cc-full-chain-r2.sh.
+- Blob: **da0acaf04ab90eacde19e47076c4f62c75d5fe93**; exact size **12096 UTF-8 bytes**.
+- Frozen source candidate: **c3ea109b629ab20184b1515afc94e7be96f44cc8**, private PR #51, still DRAFT/UNMERGED.
+- Previous accepted PRs #46–#50 remain unchanged.
+
+R2 retains the 99-test combined regression and hard source/lineage/no-retry/default-off/network-denial/nonmutation/core-tsc gates. Its strict targeted TypeScript gate covers the new integration modules and predecessor files. Its separate route differential compiles the **old B2 route** and **new L1C-C route** under the same TypeScript options, exact dependency clone and OS network denial. Exit status and full diagnostic log must match exactly. If the prior eight known diagnostics reproduce unchanged, R2 explicitly labels them **unresolved baseline route type debt, not a clean TypeScript PASS**. Any additional/changed error fails the gate. This R2 artifact has NOT YET BEEN RUN locally.
+
+#### Exact local download/integrity/syntax/run command
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+REF="qualification/activated-orchestration-l1cc-full-chain-r2"
+COMMIT="5a3adf93f59865d7e59340c682e3805be8ed7922"
+FILE="scripts/qualification/activated-orchestration-l1cc-full-chain-r2.sh"
+SCRIPT="$HOME/Downloads/omniroute_l1cc_full_chain_r2.sh"
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_R2_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "12096" ] || { echo FAIL_R2_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "da0acaf04ab90eacde19e47076c4f62c75d5fe93" ] || { echo FAIL_R2_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_R2_BASH_SYNTAX; exit 1; }
+echo "r2_script_integrity_and_bash_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Please provide entire R2 local output. If FAIL, inspect only the named gate and the corresponding log under EVIDENCE_ROOT; create a narrow R3 without amending accepted refs. A prepared R2 script alone is never a qualification PASS.
+
+No live canary enablement, provider calls, merge or Docker replacement. Current live FreeLLMAPI exact image/config and SQLite/WAL-consistent current /app/data snapshot with restoration proof remain mandatory, independent of source qualification. Native Codex real HTTP compatibility, credential/lease/quota, egress/DNS/physical network attempt and bounded real-provider evidence are pending.
+
+**NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R2_QUALIFICATION**.
