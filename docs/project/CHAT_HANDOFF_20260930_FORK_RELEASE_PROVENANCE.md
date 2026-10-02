@@ -668,3 +668,8 @@ PR #46–#50 stay frozen, qualified non-live, draft/unmerged. User local active 
 DO NOT enable canary env flags, make provider calls or mutate live Docker based solely on source integration. Current running FreeLLMAPI immutable image `sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49` and exact config plus consistency-verified CURRENT /app/data SQLite/WAL snapshot remain mandatory pre-cutover, as do real Auth Keeper quota/lease/connection, native Codex HTTP and one physical provider-attempt/egress canaries.
 
 `NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R1_QUALIFICATION`.
+
+
+### 2026-10-01 FINAL next-chat continuity pointer
+
+The finalized continuation is `docs/project/CHAT_HANDOFF_20261001_L1CC_FULL_CHAIN.md` (public governance `release/v3.8.50`; created at commit `9dbc559b5e29a089ab657f8b31876cc37ceaddcd`). It includes the short, exact local `git fetch` / `git show` / Git-blob/size / `bash -n` / execution command for the **completed** script. Private parent PRM #45 and draft PR #51 are current. Frozen L1C-C source: `c3ea109b629ab20184b1515afc94e7be96f44cc8`. Script-only qualification ref: `d1f8ca02f531ad200c90309ced88f249ab721862`; script blob `01c60080969b4b27717c37d8b2e8774e66335722`; 8464 UTF-8 bytes. The script is prepared and complete, **NOT YET RUN**; expected combined regression 99 tests. Do not confuse the pending local run with a completed PASS, and do not enable production canary or substitute historical rollback images for a fresh/current SQLite/WAL-consistent FreeLLMAPI data snapshot.
