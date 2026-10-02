@@ -252,3 +252,18 @@ Expected ONLY AFTER real operator run: RESULT=PASS_CURRENT_FREELLMAPI_ROLLBACK_P
 **Rollback remains NOT READY** even if the read-only precheck passes: actual current FreeLLMAPI image/config preservation, SQLite/WAL-consistent actual /app/data backup and isolated restoration, controlled credential/egress/physical attempt/provider canary all remain independent hard gates. L1C-C PR #51 remains non-live/default-OFF/draft/unmerged.
 
 **NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_ROLLBACK_READ_ONLY_PRECHECK_R2**.
+
+## 10. 2026-10-02 R2 current-live read-only precheck ACCEPTED; backup plan stage
+
+Supersedes §9's pending R2 execution. Operator fetched exact R2 commit `4bc42ea3aca1d5cacfcd72990011ce7ddd6980f4`, original Git blob `9f7e8ed6f53a996b149199bf7b8a7e9e1772599d`, 6845 bytes; Bash syntax and integrity PASS; local SHA-256 `1015071a2a5851a5beb6d5bcc29df03b30e3ee3a8784a1e5cd6e2b21e19eb3bd`. Corrected bind/volume mount template passed actual sanitized Docker inspection: exact expected current running healthy `mer-omniroute` immutable image and live RW `/app/data` named volume, zero restarts/OOM, no privilege, exact loopback ports 20128/20129/20132, network `mer-gateway_default`, three token/policy bind destinations RO, restart policy unless-stopped, canary marker false; local image and volume presence PASS; original Git worktree nonmutation PASS. No database file access, Docker exec/mutation, raw Config.Env values, snapshot or provider calls.
+
+**Exact operator terminal:** `RESULT=PASS_CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_READ_ONLY_PRECHECK_R2`
+**Evidence:** `/Users/zarthras/Downloads/omniroute_current_live_rollback_precheck_r2_dD3UTrJB`.
+
+Interpretation: accepted current-state topology, *not* SQLite backup/restoration. `consistent_current_data_snapshot=NOT_CREATED`, `image_config_backup=NOT_CREATED`, `restoration_rehearsal=NOT_PERFORMED`.
+
+Source inspection establishes WAL-enabled `DATA_DIR/storage.sqlite`, distinct file-based `DATA_DIR/call_logs`, `DATA_DIR/db_backups` and an ordinary manual/automatic DB backup wrapper that returns before asynchronous `db.backup()` completes. Full current rollback requires a coordinated, durable image/config and **complete /app/data** snapshot preserving WAL sidecars and non-DB artifacts, followed by isolated integrity/restore evidence. Hot live tar and a returned ordinary backup filename alone are not accepted.
+
+**Detailed private design published, execution NOT AUTHORIZED:** Draft PR #53 in owner fork, branch `qualification/current-freellmapi-snapshot-plan-r1`, head `a04ee41640632defef25f6b6022cc2b320369453`, one-file record `docs/qualification/CURRENT_FREELLMAPI_ROLLBACK_SNAPSHOT_PLAN_20261002.md`, Git blob `e4ce781b8862e2862f2efcd64664229e7d72b174`. It defines P0 read-only actual-volume layout/space/helper inventory (any helper-container invocation requires approval), P1 synthetic/offline WAL+external-artifact fixture rehearsal, P2 explicitly separately authorized source quiescence plus secure encrypted exact image/config and full current data preservation, P3 new isolated-volume restore/integrity/hash proof and P4 original live service health/non-drift. No Docker execution or data/secret reads occurred in preparation of the design. PR #51 remains default OFF, qualified source only, draft/unmerged; #46–#50 frozen. No original-upstream owner dependency.
+
+**NEXT_GATE=P0_SNAPSHOT_LAYOUT_AND_STORAGE_PREEXECUTION_INVENTORY_PLAN_REVIEW**. Do not ask the operator to rerun precheck R1 or R2. Before any live file/volume access or helper-container creation, specify exact bounded script, evidence redaction, no-network and original-volume read-only constraints and obtain separate authorization. No deployment or provider-call budget authorized on offline/source evidence.
