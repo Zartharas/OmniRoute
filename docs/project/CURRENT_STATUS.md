@@ -1065,3 +1065,17 @@ Private PRM #45 and draft PR #51 updated with the operator result; PR #51 implem
 \`L1C_C_ROUTE_BASELINE_TYPE_DEBT=8_UNRESOLVED\`  
 \`CURRENT_LIVE_FREELLMAPI_SNAPSHOT=PENDING\`  
 \`NEXT_GATE=CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_PRECHECK\`
+
+## 35. 2026-10-02 new independent current-live FreeLLMAPI read-only rollback precheck R1
+
+L1C-C R2 full-chain source acceptance stands: 99/99 regression and zero new route diagnostics, default OFF, no live deployment. Begin the independent current-live rollback prerequisite. Private draft **PR #52** adds one standalone operator-only script relative to accepted qualification R2:
+
+- branch qualification/current-freellmapi-rollback-preservation-precheck-r1, HEAD **55bfbf227e180377dbbb7d7d4d1cb82831088fc2**;
+- script scripts/qualification/current-freellmapi-rollback-preservation-precheck-r1.sh, Git blob **b566b974cebe50645cc5a4f7079b025b92f936c3**, **6570 bytes**;
+- branch exactly 2 commits ahead of qualification R2 **5a3adf93f59865d7e59340c682e3805be8ed7922**, one ADDED file; second commit minimized Docker inspection output to selected nonsecret fields and exact server canary-enabled markers before Python, avoiding raw Config.Env and host mount sources in evidence.
+
+The precheck is ONLY READ-ONLY inventory of the *currently running* image/config topology/volume identity, health, restart/OOM, loopback ports, read-only binds, network, restart policy, privilege mode, flag OFF state and local worktree nonmutation. It cannot claim image/config backup, SQLite/WAL consistency, file inventory, restored data or deployment readiness. No Docker exec/mutation, data-volume file reads, provider calls or live restart. **Operator execution PENDING.** Exact download/integrity/run command is appended to docs/project/CHAT_HANDOFF_20261001_L1CC_FULL_CHAIN.md (§8).
+
+If the observed image/volume differs from the historical expected current FreeLLMAPI sentinel, reconcile read-only; do not automatically change it. After passing precheck, separately plan a SQLite/WAL-aware live-data snapshot and isolated restoration proof before any cutover. L1C-C PR #51 and predecessors #46–#50 unchanged, DRAFT/UNMERGED.
+
+**NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_ROLLBACK_READ_ONLY_PRECHECK_R1**.
