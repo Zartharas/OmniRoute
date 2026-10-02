@@ -141,3 +141,29 @@ Please provide entire R2 local output. If FAIL, inspect only the named gate and 
 No live canary enablement, provider calls, merge or Docker replacement. Current live FreeLLMAPI exact image/config and SQLite/WAL-consistent current /app/data snapshot with restoration proof remain mandatory, independent of source qualification. Native Codex real HTTP compatibility, credential/lease/quota, egress/DNS/physical network attempt and bounded real-provider evidence are pending.
 
 **NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R2_QUALIFICATION**.
+
+## 7. 2026-10-02 R2 OPERATOR RESULT — ACCEPTED NON-LIVE FULL-CHAIN SOURCE
+
+Supersedes §6's R2 local pending status. Exact frozen R2 script (12096 bytes, blob **da0acaf04ab90eacde19e47076c4f62c75d5fe93**) downloaded and syntax-verified from commit **5a3adf93f59865d7e59340c682e3805be8ed7922**; operator SHA-256 **b6333d679bb7c51e193088332dcee7b41c7b65c27f81c73f78161f028f0cbb07**.
+
+Full combined regression **99/99 PASS** (zero fails/skips/cancels), strict module targeted TypeScript **rc=0**. Identical old B2 and new L1C-C Responses route compiler error logs: both rc=2 and the same eight baseline diagnostics; differential **PASS_ZERO_NEW_DIAGNOSTICS_BASELINE_EIGHT_RETAINED**. The eight inherited open-sse/videoBridgeHelpers errors are still **unresolved route type debt**, not a clean global/Responses-route TypeScript PASS. Core TypeScript **rc=0**; source-integrity, fail-closed/default-off, no-generic-retry, cloned dependencies/no install and active linked-worktree nonmutation PASS. Network sandbox denied actual fetch; script recorded provider_calls=0 and docker_mutation=NO. Evidence root:
+
+/Users/zarthras/Downloads/omniroute_l1cc_full_chain_r2_20261002T040724Z
+
+Exact operator success markers:
+
+~~~
+RESULT=PASS_ACTIVATED_ORCHESTRATION_L1CC_ISOLATED_FULL_CHAIN_R2
+CANDIDATE=c3ea109b629ab20184b1515afc94e7be96f44cc8
+STATUS=FULL_CHAIN_SOURCE_QUALIFIED_ROUTE_BASELINE_DIFFERENTIAL_DEFAULT_OFF_NOT_LIVE_DEPLOYED
+~~~
+
+**Decision:** ACCEPT L1C-C isolated full-chain source at unchanged draft PR #51 candidate **c3ea109b629ab20184b1515afc94e7be96f44cc8**, default OFF, NOT DEPLOYED. Frozen draft/unmerged predecessors #46–#50 unchanged. No new functional implementation commit was necessary to pass R2.
+
+### Next hard gate: current FreeLLMAPI rollback preservation PRECHECK
+
+A historical D19 holder is not a substitute for a snapshot of the actually running **/app/data** volume. Start with an explicitly read-only current-state verification of running image ID and availability, health/restarts, mapped volume, loopback ports, network, read-only bind-mount destinations and names-only configuration; never persist raw Docker inspect output with potentially sensitive environment values. Establish SQLite DB/WAL/SHM inventory and a safe online-backup strategy before creating any new snapshot. For snapshot creation later, use a SQLite/WAL-aware consistency method coordinated with the writer, verify backup and isolated restoration, preserve image/config, and document atomicity/rollback/retention. The last known image identity is **sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49** and volume is **omniroute-r16-32-freellmapi-live-f8bc751312da-20260923T053117Z**; re-read live state rather than treating old inventory as current. **Do not stop/restart/redeploy the container, read token values, launch real provider calls, or enable canary env switches at precheck.**
+
+Further independent gates: actual credential/lease/quota/connection behavior; provider physical network-attempt measurement, proxy/DNS/egress integrity, native Codex HTTP upstream interoperability, bounded explicitly authorized real-provider canary, and rollback rehearsal.
+
+**NEXT_GATE=CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_PRECHECK**.
