@@ -1017,3 +1017,16 @@ Frozen offline R1: qualification ref `d1f8ca02f531ad200c90309ced88f249ab721862`;
 `NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R1_QUALIFICATION`
 
 Even a local PASS is not release authority. Verify actual current FreeLLMAPI image/config and a SQLite/WAL-consistent current /app/data rollback snapshot plus live provider credential/quota/lease, network/egress/physical attempt and native Codex controlled canary evidence before any production replacement.
+
+
+## 32. 2026-10-01 L1C-C handoff frozen and script finalized
+
+Next-chat authoritative source: `docs/project/CHAT_HANDOFF_20261001_L1CC_FULL_CHAIN.md` on `release/v3.8.50`, created at `9dbc559b5e29a089ab657f8b31876cc37ceaddcd`.
+
+Private draft PR #51 frozen source `c3ea109b629ab20184b1515afc94e7be96f44cc8`. Private PRM #45 has the final checkpoint and exact one-command retrieval. Qualification commit `d1f8ca02f531ad200c90309ced88f249ab721862`; script `scripts/qualification/activated-orchestration-l1cc-full-chain-r1.sh`, Git blob `01c60080969b4b27717c37d8b2e8774e66335722`, size 8464 UTF-8 bytes. GitHub readback confirms file is complete, newline-terminated, no placeholder markers, contains expected 8-file integrity allowlist, 99-test combined command, targeted/core TypeScript checks, OS network denial, source nonmutation and terminal success/failure markers. Qualification branch is one script-only commit above the exact source candidate. **Local script execution remains PENDING**; file preparation alone is not test PASS.
+
+No old accepted PR (#46–#50) was modified. PR #51 remains draft/unmerged, and no production Docker or provider side effect occurred. Next: operator fetches the frozen script by exact ref, checks 8464 bytes / Git blob, runs `/bin/bash -n` and then executes it; shares full output. If failing, inspect the specific gate log and create targeted R2 without changing old baselines. Current running FreeLLMAPI snapshot remains a separate hard deployment gate.
+
+`NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R1_QUALIFICATION`
+`LIVE_ACTIVATION=NOT_PERFORMED`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
