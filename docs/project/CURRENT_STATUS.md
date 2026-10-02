@@ -1171,3 +1171,25 @@ New private **draft PR #57** (branch `qualification/current-freellmapi-p2b-confi
 `P2D_ISOLATED_REAL_DATA_RESTORE=NOT_AUTHORIZED`  
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=OWNER_CONSENT_FOR_P2B_CONFIDENTIAL_IMAGE_AND_CONFIG_PRESERVATION`
+
+## 44. 2026-10-02 P2B scope OWNER AUTHORIZED; existing GPG recipient gate published, execution pending
+
+Owner explicitly authorized P2B secure preservation of the exact already-local immutable FreeLLMAPI image and exact potentially secret-bearing Docker container-recreation configuration under private PR #57. This authorization **excludes** reading/copying production `/app/data`, service stop/restart, writer-quiescence, isolated real-data restore, provider/model calls, canary activation, image load or deployment. Current P2A host/image/tool read-only PASS remains authoritative; presence of `gpg` alone does not establish recipient/key suitability. No image/config export has been executed merely by authorizing P2B.
+
+To avoid streaming sensitive source bytes before recipient qualification, private **draft PR #58** is a separate synthetic-only key gate on top of frozen PR #57:
+- Branch: `qualification/current-freellmapi-p2b-key-qualification-r1`
+- HEAD: **a3b1389399065b9bb831aaf8d6bd60ca006b5390**
+- One added script: `scripts/qualification/current-freellmapi-p2b-key-qualification-r1.sh`
+- Git blob **6c1cb968c81050156c90ea0991f9a5f816f3225e**, **3794 UTF-8 bytes**.
+- It privately inventories **already-existing** eligible GPG secret-key capabilities (no fingerprint/name/email output), accepts a uniquely eligible candidate or a privately supplied complete `OMNIROUTE_P2B_RECIPIENT_FPR`, and tests encryption plus corresponding secret-key decryption against a new fabricated random challenge. The candidate fingerprint stays in a mode-0600 file in a private Downloads evidence folder and requires owner confirmation of the *intended* recipient before any production export. If no recipient/multiple recipients, fail closed. No key generation/import, Docker call, production data/config/image access or network commands. Mac syntax/actual run **PENDING**; key choice/recipient not yet qualified.
+- An isolated disposable GPG fixture confirmed the `sec` capability column contains aggregate encryption indicator `E` and a full primary-key fingerprint; this is only a source-schema smoke test, not Mac key qualification.
+
+Only after an operator PASS and private owner confirmation of the intended recipient should a new pinned direct-to-encryption P2B script be evaluated for actual exact image/config archival. The production full-volume backup, isolated real-data restoration and return-to-service remain separately approval-gated. L1C-C implementation PR #51 remains draft/unmerged/default-OFF.
+
+`P2B_OWNER_SCOPE_AUTHORIZED=YES`  
+`P2B_K_MAC_GPG_RECIPIENT_QUALIFICATION=PENDING`  
+`P2B_ENCRYPTED_IMAGE=NOT_CREATED`  
+`P2B_ENCRYPTED_CONTAINER_CONFIG=NOT_CREATED`  
+`P2C_LIVE_DATA_VOLUME_BACKUP=NOT_AUTHORIZED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1`
