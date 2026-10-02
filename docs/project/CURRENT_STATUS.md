@@ -1103,3 +1103,15 @@ Private draft **PR #53** (branch `qualification/current-freellmapi-snapshot-plan
 `IMAGE_CONFIG_DURABLE_BACKUP=NOT_CREATED`  
 `ISOLATED_RESTORE_PROOF=NOT_PERFORMED`  
 `NEXT_GATE=P0_SNAPSHOT_LAYOUT_AND_STORAGE_PREEXECUTION_INVENTORY_PLAN_REVIEW`
+
+## 38. 2026-10-02 P0 current-volume metadata-only helper AUTHORIZED; source published, operator run pending
+
+The owner expressly authorized **one temporary, network-isolated helper container** to mount only the existing FreeLLMAPI production named /app/data volume **READ-ONLY**, inventory metadata/sizes and SQLite/WAL sidecar presence, and disclose neither file contents nor credential values. No approval was granted for snapshot creation, image/config archive, live service interruption or canary/provider execution. The previously accepted exact current-live precheck R2 remains the authority baseline, but P0 must recheck identities at runtime.
+
+New owner-fork **draft PR #54** is a one-file, two-commit qualification package above plan-only draft PR #53 at a04ee41640632defef25f6b6022cc2b320369453. P0 branch qualification/current-freellmapi-p0-metadata-inventory-r1; frozen HEAD **8e205a9436a443e89ea550d9e0d112e7d6ab7661**; path scripts/qualification/current-freellmapi-p0-metadata-inventory-r1.sh, Git blob **1f8d24975297fd64baa57054501e284721a40587**, exact size **8455 bytes**. GitHub readback confirms only one new script file. **Local operator run pending**, so no P0 qualification PASS.
+
+The script uses the exact preexisting immutable current image with a /bin/sh entrypoint and no pull; one ephemeral helper container with network none, readonly rootfs, source volume mount readonly+volume-nocopy, no ports/binds/Docker socket/secret mounts, no capabilities, no-new-privileges, CPU/memory/PID bounds, effective live-configured user, metadata-only stat/find/du, sanitized aggregated output and original live container/Git worktree nonmutation checks. The helper is auto-removed; private diagnostics remain local. The reported directory sizes may change while the live writer operates; no hot tar, SQLite backup or integrity check is attempted.
+
+Continue with the exact retrieval/integrity/run command in the updated October 1 public handoff §11. After P0 evidence, review observed layout/capacity and conduct a separate fully offline synthetic WAL/artifact backup/restore rehearsal before seeking any production-preservation approval. Existing L1C-C draft PR #51 remains default OFF/non-live; PR #52 read-only precheck accepted; PR #53 design-only.
+
+**NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1**.
