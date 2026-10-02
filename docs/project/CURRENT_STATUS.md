@@ -1030,3 +1030,17 @@ No old accepted PR (#46–#50) was modified. PR #51 remains draft/unmerged, and 
 `NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R1_QUALIFICATION`
 `LIVE_ACTIVATION=NOT_PERFORMED`
 `CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+
+## 33. 2026-10-01 L1C-C R1 operator result: regression PASS, typecheck FAIL; R2 pending
+
+Operator fetched exact private R1 qualification commit `d1f8ca02f531ad200c90309ced88f249ab721862`; script identity verified (8464 bytes, Git blob `01c60080969b4b27717c37d8b2e8774e66335722`, local SHA-256 `706ed167bdec003e81d086754e2cb682c188bf3f3d53b59b7c5f1d999a42c1d5`); Bash syntax, frozen implementation lineage and 8-file allowlist, no-generic-retry, default-off ingress and APFS-only dependency cloning passed. Combined E1/E2/L1/L1B/L1C-A/B1/B2/C regression **99/99 PASS**, `l1cc_full_regression.rc=0`. R1 **FAILED** at targeted TypeScript (`rc=2`) with eight diagnostics in unchanged `open-sse/utils/{progressTracker,sseHeartbeat,stream}.ts` and `src/lib/guardrails/videoBridgeHelpers.ts`. The latter are outside PR #51's delta. The R1 full Responses route was newly added to the targeted typecheck root set; whether its existing import graph explains all eight errors is a hypothesis to be tested, not an accepted conclusion. The core typecheck and final active-worktree nonmutation gate were **not reached**. Local evidence root: `/Users/zarthras/Downloads/omniroute_l1cc_full_chain_r1_20261002T033725Z`. Exact result: `RESULT=FAIL_L1CC_FULL_CHAIN_R1`.
+
+Private R2 branch `qualification/activated-orchestration-l1cc-full-chain-r2` at `5a3adf93f59865d7e59340c682e3805be8ed7922` is **one new qualification-script-only commit** above R1. New script `scripts/qualification/activated-orchestration-l1cc-full-chain-r2.sh`, blob `da0acaf04ab90eacde19e47076c4f62c75d5fe93`, 12096 UTF-8 bytes. R2 retains strict TypeScript on new integration modules and the combined regression, and independently compares the B2 Responses route and L1C-C route using identical TypeScript configuration, existing cloned dependencies and the OS network-denial sandbox. Exact unchanged historical diagnostics, if demonstrated, are documented as **unresolved baseline type debt**, not a clean global/route typecheck. Any additional/changed diagnostic or any other failed gate denies qualification. The implementation HEAD remains `c3ea109b629ab20184b1515afc94e7be96f44cc8`, private PR #51 DRAFT/UNMERGED; predecessor PRs #46–#50 unchanged.
+
+`L1C_C_R1=FAIL_TARGETED_TYPECHECK_REGRESSION_99_OF_99_PASS`  
+`L1C_C_R2=SCRIPT_PUBLISHED_LOCAL_EXECUTION_PENDING`  
+`NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R2_QUALIFICATION`  
+`LIVE_DEPLOYMENT=NO`  
+`CURRENT_FREELLMAPI_SNAPSHOT=PENDING_SQLITE_WAL_CONSISTENCY_AND_RESTORE_PROOF`
+
+No provider calls, canary enablement, merge or Docker replacement are authorized by this offline result.
