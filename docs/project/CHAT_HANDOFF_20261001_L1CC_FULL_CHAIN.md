@@ -309,3 +309,46 @@ If the real operator run succeeds it must print:
 **Next after reviewed P0:** offline/synthetic WAL+sidecar+call_log backup/restore rehearsal with no live-volume writes; production image/config export, full current-data snapshot, service quiescence and isolated restoration require distinct approval. PR #51 remains source-qualified, non-live/default OFF/draft/unmerged.
 
 **NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1**.
+
+## 12. 2026-10-02 P0 metadata PASS; P1 offline synthetic WAL/artifact rehearsal next
+
+Supersedes §11's P0 run PENDING status. Operator fetched exact 8455-byte P0 script at commit **8e205a9436a443e89ea550d9e0d112e7d6ab7661**, blob **1f8d24975297fd64baa57054501e284721a40587**, operator SHA-256 **3c46f2d0c822d449849f040b048fc212621a33059152ac1c770bb4000afb2c01**; syntax/integrity PASS. Authorized sole network-none source-volume-RO helper exited 0 and auto-removed; current original image/volume/container ID and Git worktree unchanged. Metadata-only P0: main storage.sqlite **67,764,224 bytes**, live storage.sqlite-wal **4,148,872 bytes**, storage.sqlite-shm **32,768 bytes**; journal/db.json absent; call_logs **404 allocated KiB**; db_backups **306,108 allocated KiB**; entire /app/data **462,196 allocated KiB**; recursive estimates **10 SQLite**, **2 WAL**, **0 symlinks**. Downloads available 2,160,010,120 KiB; existing local immutable image size 3,049,822,395 bytes; Docker VM free space still not assessed. This is a non-atomic metadata observation, NEVER a hot snapshot.
+
+Terminal:
+~~~
+RESULT=PASS_CURRENT_FREELLMAPI_P0_METADATA_INVENTORY_R1
+EVIDENCE_ROOT=/Users/zarthras/Downloads/omniroute_p0_metadata_inventory_r1_XWu7S56g
+~~~
+
+Private draft **PR #55** is the independent next gate, built exactly on frozen PR #54 P0 at **8e205a9436a443e89ea550d9e0d112e7d6ab7661**. Branch **qualification/current-freellmapi-p1-synthetic-rehearsal-r1**; frozen HEAD **f7fab94fc422c5a1de768748d00b404f4da0a0f8**; one ADDED script path **scripts/qualification/current-freellmapi-p1-offline-synthetic-rehearsal-r1.py**, exact Git blob **6fa944374eb5c4d733f1d3459db5fed27810dc1a**, UTF-8 **12863 bytes**, SHA-256 **c43b0f96ee72211ebfe0ae57f312ecbb70f5d6f45bdaab97eef647252f44ffd4** (from independently tested identical bytes). A standalone Python stdlib fixture generates WAL-backed SQLite and external fabricated call_log and simulated db_backups, captures into local scratch, validates manifest and safe new-directory restore, checks SQLite integrity on copied fixture and restores WAL-backed row/artifact reference. Eight negative cases must be rejected. Python networking is denied; the script neither references production volume nor invokes Docker or provider. A separate isolated test environment executed the exact same script successfully, but **the Mac operator run is still pending**.
+
+### Next exact ONE command: synthetic-only P1 (no Docker)
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p1-synthetic-rehearsal-r1"
+COMMIT="f7fab94fc422c5a1de768748d00b404f4da0a0f8"
+FILE="scripts/qualification/current-freellmapi-p1-offline-synthetic-rehearsal-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_current_live_p1_synthetic_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P1_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "12863" ] || { echo FAIL_P1_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "6fa944374eb5c4d733f1d3459db5fed27810dc1a" ] || { echo FAIL_P1_SCRIPT_BLOB; exit 1; }
+[ "$(shasum -a 256 "$SCRIPT" | awk '{print $1}')" = "c43b0f96ee72211ebfe0ae57f312ecbb70f5d6f45bdaab97eef647252f44ffd4" ] || { echo FAIL_P1_SCRIPT_SHA256; exit 1; }
+python3 -B -c 'import ast, pathlib, sys; ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")); print("p1_python_syntax=PASS")' "$SCRIPT" || exit 1
+echo "p1_source_integrity=PASS"
+python3 -B "$SCRIPT"
+)
+~~~
+
+Only synthetic files in a fresh protected ~/Downloads/omniroute_p1_synthetic_* folder are created; contents are fabricated and not production secrets. It does not inspect/mount/modify Docker or production, and cannot authorize snapshot/stop/deployment. Exact success only after real operator execution:
+
+\`RESULT=PASS_P1_OFFLINE_SYNTHETIC_WAL_ARTIFACT_REHEARSAL_R1\`, \`synthetic_negative_cases_passed=8\`, \`isolated_restored_sqlite_integrity=PASS\`, \`wal_backed_row_and_external_artifact_link=PASS\`. Synthetic archive digest may differ between runs. The prior test emitted \`production_snapshot_created=NO\`, \`production_service_changed=NO\`, \`production_restore_test=NOT_PERFORMED\`.
+
+After Mac P1 result, separately design current immutable image/config durable preservation and writer-quiescence/full-volume archival under another explicit approval; no live Docker or real provider execution is currently authorized. Keep implementation PR #51 default OFF/draft/unmerged, original live FreeLLMAPI unchanged, accepted PRs #46–#54 frozen.
+
+**NEXT_GATE=LOCAL_P1_OFFLINE_SYNTHETIC_WAL_ARTIFACT_REHEARSAL_R1**.
