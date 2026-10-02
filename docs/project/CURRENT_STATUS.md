@@ -995,3 +995,25 @@ Actual production credential/auth-policy imports are present/typechecked but **N
 `CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
 `LIVE_INGRESS_WIRED=NO`
 `NEXT_GATE=L1C_C_FULL_CHAIN_SERVER_ONLY_BINDING_AND_CURRENT_LIVE_ROLLBACK_PRESERVATION`
+
+
+## 31. 2026-10-01 L1C-C full-chain default-off source — offline qualification pending
+
+Owner approved continuation from accepted L1C-B2 (79/79 R1 PASS), and the timeout-interrupted coordinator/test blobs were recovered without repeating previous qualifications. Private draft PR #51 is based directly on accepted draft PR #50:
+- source commit `c3ea109b629ab20184b1515afc94e7be96f44cc8`, tree `9ba0614a31b09795de4f3a69e73b29ba13ed169b`;
+- 4 commits ahead/0 behind exact B2 parent `0bb67b190ca8c65c5f0ca0134ddc3b2aaf6f19ce`;
+- 8-file delta: existing Responses route plus 4 internal modules and 3 regression files (20 new tests).
+
+E1 authority, L1C-A policy/catalog readiness, L1B restricted dispatch and L1 four-stage sequencer are composed. Production source binds server-owned connection pins and B2 exact post-selector Auth Keeper/provider-native identity checks; contributors require exact provider-registry `openai` chat-completions wire. DeepSeek's currently registered `openai-responses` contributor format is explicitly rejected. Native Codex HTTP Responses is used only for acting-owner synthesis; WebSocket/app-server remain excluded.
+
+`/v1/responses` source has a **default-OFF**, dynamically imported branch behind both `OMNIROUTE_L1CC_FULL_CHAIN_ENABLED` and `OMNIROUTE_L1C_CANARY_ENABLED`, exact server-configured Codex owner and metadata-verified canary key ID. No client-supplied pin/URL/tool/override. Canary failures return 502 without generic chat fallback. Source branch has NOT been deployed; do not enable flags on the running container.
+
+Frozen offline R1: qualification ref `d1f8ca02f531ad200c90309ced88f249ab721862`; `scripts/qualification/activated-orchestration-l1cc-full-chain-r1.sh`; blob `01c60080969b4b27717c37d8b2e8774e66335722`. Expected 99 tests (accepted 79 + 20 new), source allowlist, targeted Responses/production-binder TypeScript check, core typecheck, cloned dependencies and network denial, active-worktree nonmutation. **Local run pending; no PASS claim.**
+
+`L1/L1B/L1C_A/L1C_B1/L1C_B2=ACCEPTED_ISOLATED_NONLIVE`
+`L1C_C=SOURCE_FROZEN_LOCAL_QUALIFICATION_PENDING`
+`LIVE_CONTAINER_UPDATED=NO`
+`CURRENT_LIVE_ROLLBACK_SNAPSHOT=PENDING`
+`NEXT_GATE=LOCAL_L1C_C_FULL_CHAIN_R1_QUALIFICATION`
+
+Even a local PASS is not release authority. Verify actual current FreeLLMAPI image/config and a SQLite/WAL-consistent current /app/data rollback snapshot plus live provider credential/quota/lease, network/egress/physical attempt and native Codex controlled canary evidence before any production replacement.
