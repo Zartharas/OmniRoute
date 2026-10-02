@@ -1089,3 +1089,17 @@ The operator verified original private PR #52 R1: branch head 55bfbf227e180377db
 Frozen L1C-C R2 implementation PR #51 remains non-live source qualified (99/99, zero new route compiler diagnostics), draft/unmerged. PRs #46–#50 remain accepted/unchanged. The public handoff §9 contains the exact local R2 fetch/integrity/run command.
 
 **NEXT_GATE=LOCAL_CURRENT_FREELLMAPI_ROLLBACK_READ_ONLY_PRECHECK_R2**.
+
+## 37. 2026-10-02 FreeLLMAPI current-live rollback R2 precheck ACCEPTED; snapshot plan drafted
+
+The operator executed the exact, Git-blob-verified private PR #52 R2 script (commit `4bc42ea3aca1d5cacfcd72990011ce7ddd6980f4`, blob `9f7e8ed6f53a996b149199bf7b8a7e9e1772599d`, 6845 bytes; local SHA-256 `1015071a2a5851a5beb6d5bcc29df03b30e3ee3a8784a1e5cd6e2b21e19eb3bd`). Sanitized current-state topology PASS without errors; actual `mer-omniroute` image and RW `/app/data` volume match recorded immutable FreeLLMAPI identity, healthy/running, restart 0/OOM false, loopback-only ports 20128/20129/20132, policy/token binds RO, network and restart policy preserved, not privileged, L1C-C flags OFF; image and volume present; local active worktree nonmutation PASS. Output confirms no DB contents, raw inspect/environment values, Docker mutation, real provider calls or snapshots. Exact terminal `RESULT=PASS_CURRENT_FREELLMAPI_ROLLBACK_PRESERVATION_READ_ONLY_PRECHECK_R2`; evidence `/Users/zarthras/Downloads/omniroute_current_live_rollback_precheck_r2_dD3UTrJB`. Acceptance is **read-only baseline only**, NOT rollback readiness.
+
+Source review identified current code's WAL `DATA_DIR/storage.sqlite` and `db_backups`, distinct `call_logs` artifacts outside the DB, and the ordinary `backupDbFile()` asynchronous return prior to actual backup promise completion. Do NOT substitute a DB-only backup, routine backup metadata or hot tar of the live WAL tree for a full-state consistent rollback.
+
+Private draft **PR #53** (branch `qualification/current-freellmapi-snapshot-plan-r1`, HEAD `a04ee41640632defef25f6b6022cc2b320369453`) adds only the detailed **DESIGN / NO EXECUTION** record `docs/qualification/CURRENT_FREELLMAPI_ROLLBACK_SNAPSHOT_PLAN_20261002.md`, blob `e4ce781b8862e2862f2efcd64664229e7d72b174`, based on frozen accepted precheck PR #52. It gates read-only actual layout/capacity/tool inventory; isolated synthetic WAL/sidecar/artifact rehearsal; separately authorized writer quiescence, encrypted local config and exact image preservation, full-volume copy; restored-volume integrity and artifact coverage; original-service restart/non-drift. No live backup, Docker helper or service interruption was executed or authorized merely by preparing the plan. Preserve L1C-C qualified non-live PR #51 and previous accepted PRs.
+
+`CURRENT_LIVE_READ_ONLY_PRECHECK=PASS_R2`  
+`FULL_CURRENT_DATA_BACKUP=NOT_CREATED`  
+`IMAGE_CONFIG_DURABLE_BACKUP=NOT_CREATED`  
+`ISOLATED_RESTORE_PROOF=NOT_PERFORMED`  
+`NEXT_GATE=P0_SNAPSHOT_LAYOUT_AND_STORAGE_PREEXECUTION_INVENTORY_PLAN_REVIEW`
