@@ -600,3 +600,61 @@ Expected on genuine success:
 `RESULT=PASS_P2B_K2_LOCAL_KEY_AND_ENCRYPTED_RECOVERY_REHEARSAL_R1`
 
 **NEXT_GATE=LOCAL_P2B_K2_DEDICATED_GPG_PROVISIONING_AND_RECOVERY_R1**. Following local PASS, obtain and verify independent/off-device encrypted recovery custody and intended recipient approval before constructing any sensitive production image/config export; P2C–P2E still require separate owner authorization.
+
+## 20. 2026-10-02 P2B-K2 operator PARTIAL: retain real protected key and encrypted wrapper; recovery-only R2
+
+Supersedes §19's pending original provisioning script. Owner fetched exact private PR #61 `a8eb56dfcf0d50f5cfc5f3403834a16abf6d20ce`, script blob `455a4e1679aa37def95bca560bb7634c308d02fb` / 9816 bytes, operator local SHA-256 `57feae429b8277f1c907702569308f1ab19287443cddb646db8f194486aa596b`; source integrity/Bash syntax PASS and operator explicitly typed PROVISION. Actual owner key created: Ed25519 primary + Cv25519 encryption subkey; 2/2 protected secret packets PASS; original key synthetic encryption/decryption PASS; `secret_key_recovery.gpg` AES256/SHA512-S2K protected wrapper CREATED mode 0600; intentional empty-wrapper passphrase properly rejected. Recovery attempt FAILED at the combined two-process stage:
+
+~~~
+independent_gnupghome_recovery_import=START_PINENTRY
+FAIL_ENCRYPTED_RECOVERY_DECRYPT_OR_ISOLATED_IMPORT
+EVIDENCE_ROOT=/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r
+RESULT=FAIL_P2B_K2_DEDICATED_GPG_RECOVERABLE_RECIPIENT_R1
+production_image_config_export=BLOCKED_NOT_EXECUTED
+~~~
+
+Critical interpretation: real key plus encrypted recovery wrapper were created, but **neither wrapper decryption nor separate-home key import was proven individually**, and restored-key decryption was never reached. Original R1's import used `--batch`, which may prevent protected-secret import pinentry. Do not assume this is the confirmed root cause without separated process exit evidence. **NEVER rerun PR #61 provisioning**: that would create an unwanted second key. Preserve the ENTIRE existing private root and both independently held owner passphrases. Do not paste/upload its `gpg_diagnostics_PRIVATE.txt`, original protected GPG keyhome, recovery wrapper, private candidate file or key identities. No Docker/production volume/image/config access or original service mutation happened.
+
+### Private draft PR #62 — exact recovery-only continuation, NOT key provisioning
+
+- Branch: `qualification/current-freellmapi-p2b-k2-recovery-only-r2`
+- Source HEAD **ad88725e82ebd8fa1814f35d68df528e9fb9cab4**
+- Based directly on unchanged PR #61 HEAD **a8eb56dfcf0d50f5cfc5f3403834a16abf6d20ce**
+- ONE new Bash file: `scripts/qualification/current-freellmapi-p2b-k2-existing-ciphertext-recovery-only-r2.sh`
+- Git blob **01e3baf58f93eca56d01eb15cfdc548627a89b0e** / **7122 UTF-8 bytes**.
+
+R2 asserts the exact known private root, ownership/mode/type of keyhome, existing protected wrapper and original synthetic ciphertext. It computes existing wrapper SHA-256 before and after, determines existing original primary fingerprint privately, creates one distinct disposable 0700 test GNUPGHOME without touching the R1 partial test home, then requests local TTY and RECOVER confirmation. It streams decryption of the EXISTING wrapped secret directly into `gpg_test --quiet --import` **without the R1 `--batch` import flag**, retaining separate numeric `recovery_wrapper_decrypt_rc` and `isolated_secret_key_import_rc` from Bash PIPESTATUS. No plaintext export file or key generation/reexport. Any GPG stderr is kept in newly restricted `gpg_recovery_retry_r2_PRIVATE.txt`, never shared. On both process success, verify recovered primary and encryption subkey, encrypt a brand-new fabricated random challenge to existing owner public key and prove decrypt by recovered second-home key. Compare wrapper SHA unchanged, write private 0600 recipient candidate if needed and remove ONLY the successful disposable R2 home; leave previous R1 partial test home for private follow-up. If either process fails, STOP with its own marker and preserve original key/wrapper/ciphertext.
+
+### Exact next Mac command — R2 RECOVERY ONLY
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-recovery-only-r2"
+COMMIT="ad88725e82ebd8fa1814f35d68df528e9fb9cab4"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-existing-ciphertext-recovery-only-r2.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_existing_ciphertext_recovery_only_r2.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_R2_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "7122" ] || { echo FAIL_P2B_K2_R2_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "01e3baf58f93eca56d01eb15cfdc548627a89b0e" ] || { echo FAIL_P2B_K2_R2_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2B_K2_R2_BASH_SYNTAX; exit 1; }
+echo "p2b_k2_r2_source_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Expected ONLY after actual Mac run:
+- `recovery_wrapper_decrypt_rc=0` and `isolated_secret_key_import_rc=0`
+- `isolated_recovered_primary_and_encryption_subkey=PASS`
+- `independent_recovered_key_synthetic_decrypt=PASS`
+- `existing_recovery_ciphertext_sha_nonmutation=PASS`
+- `RESULT=PASS_P2B_K2_EXISTING_CIPHERTEXT_RECOVERY_ONLY_R2`.
+
+If a GPG GUI prompt appears, enter the existing recovery-wrapper passphrase; protected-key import or the final decrypt may additionally require the ORIGINAL separate key passphrase. Never provide either to ChatGPT or through script argv/flags. If the wrapper/import process fails, share only the separately printed exit codes and terminal FAIL marker, not the private GPG diagnostic file. This local recovered-home PASS does not prove off-device custody. Keep production image/config export BLOCKED until recovery and off-device ownership/copy are verified; P2C–P2E remain separately unapproved. PR #51 default OFF/draft/unmerged.
+
+**NEXT_GATE=LOCAL_P2B_K2_EXISTING_CIPHERTEXT_RECOVERY_ONLY_R2**.
