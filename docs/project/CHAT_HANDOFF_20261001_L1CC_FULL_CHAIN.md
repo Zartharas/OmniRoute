@@ -553,11 +553,11 @@ Private new **DRAFT PR #60** is *design/owner-consent only*:
 
 The owner explicitly approved P2B-K2 key provisioning, an encrypted private-key recovery copy and independent restoration verification. This is separate from older PR #57 authorization for FUTURE confidential current image/config archival, which remains blocked until recipient and recovery custody qualify. P2C full production-volume snapshot/writer quiescence, P2D isolated real-data restore, P2E interruption/return and provider/canary activation are NOT AUTHORIZED. Frozen implementation PR #51 remains non-live/default OFF/draft/unmerged.
 
-Private draft **PR #61**, branch `qualification/current-freellmapi-p2b-k2-dedicated-gpg-provisioning-r1`, final HEAD **4fbfef3a7746ca11318e213d41d01a897066fa68**, parent PR #60 `79704a71ad30731d5dc3a219f977408d1e93bf6e`. Exactly three narrow source-only commits, ONE ADDED script:
+Private draft **PR #61**, branch `qualification/current-freellmapi-p2b-k2-dedicated-gpg-provisioning-r1`, final HEAD **a8eb56dfcf0d50f5cfc5f3403834a16abf6d20ce**, parent PR #60 `79704a71ad30731d5dc3a219f977408d1e93bf6e`. Exactly four narrow source-only commits, ONE ADDED script:
 - `scripts/qualification/current-freellmapi-p2b-k2-dedicated-recoverable-gpg-r1.sh`
-- immutable Git blob **e88158e66a67f5a5a9e7ed56852a1a187b806053**
-- exact UTF-8 size **9811 bytes**.
-- Earlier PR #61 draft head `bd549fafe9d491513cfd3bc38e96dbd340de98e9` and 8764-byte blob are SUPERSEDED. Use FINAL pin above ONLY.
+- immutable Git blob **455a4e1679aa37def95bca560bb7634c308d02fb**
+- exact UTF-8 size **9816 bytes**.
+- The subsequent review head `4fbfef3a7746ca11318e213d41d01a897066fa68` / 9811 bytes is also SUPERSEDED: final packet inspection invokes `gpg_main` scoped to the new dedicated GNUPGHOME, not a bare GPG call into the default home. Earlier PR #61 draft head `bd549fafe9d491513cfd3bc38e96dbd340de98e9` and 8764-byte blob are SUPERSEDED. Use FINAL pin above ONLY.
 
 ### P2B-K2 exact operator scope
 
@@ -574,15 +574,15 @@ With a freshly generated synthetic challenge it verifies public-recipient encryp
 cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
 
 REF="qualification/current-freellmapi-p2b-k2-dedicated-gpg-provisioning-r1"
-COMMIT="4fbfef3a7746ca11318e213d41d01a897066fa68"
+COMMIT="a8eb56dfcf0d50f5cfc5f3403834a16abf6d20ce"
 FILE="scripts/qualification/current-freellmapi-p2b-k2-dedicated-recoverable-gpg-r1.sh"
 SCRIPT="$HOME/Downloads/omniroute_p2b_k2_dedicated_recoverable_gpg_r1.sh"
 
 git fetch --no-tags origin "$REF" || exit 1
 [ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_REF_DRIFT; exit 1; }
 git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
-[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "9811" ] || { echo FAIL_P2B_K2_SIZE; exit 1; }
-[ "$(git hash-object "$SCRIPT")" = "e88158e66a67f5a5a9e7ed56852a1a187b806053" ] || { echo FAIL_P2B_K2_BLOB; exit 1; }
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "9816" ] || { echo FAIL_P2B_K2_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "455a4e1679aa37def95bca560bb7634c308d02fb" ] || { echo FAIL_P2B_K2_BLOB; exit 1; }
 /bin/bash -n "$SCRIPT" || { echo FAIL_P2B_K2_BASH_SYNTAX; exit 1; }
 echo "p2b_k2_source_integrity_and_syntax=PASS"
 shasum -a 256 "$SCRIPT"
