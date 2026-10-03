@@ -1321,3 +1321,18 @@ Existing P2B consent to confidential exact immutable production image and potent
 `P2B_K2_OFF_DEVICE_PHYSICAL_CUSTODY=NOT_YET_VERIFIED`  
 `P2B_PRODUCTION_IMAGE_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
 `NEXT_GATE=OWNER_EXECUTE_EXTERNAL_CIPHERTEXT_ONLY_COPY_AND_VERIFY_R1`
+
+## 54. 2026-10-03 PR #67 Mac PASS: independent external encrypted recovery copy; owner physical custody pending
+
+The owner executed Git-pinned private PR #67 `15350b37d2644de04526dbd191346ff097c6600a`, one added 10912-byte source blob `f77b0c0b90c50e05b7b89c894c1cc40573194116`; Mac local script SHA256 `2ed8fc938737a28f47037adca6d85dd93e8f0f1ede4d21b1588f947b98901a4d`. Git ref/size/blob and Python AST + synthetic fixture PASS. Operator privately supplied the actual external volume path (not disclosed) and locally confirmed `COPY_ENCRYPTED_RECOVERY`. Actual **`RESULT=PASS_P2B_K2_EXTERNAL_CIPHERTEXT_COPY_AND_SHA_R1`**. macOS `diskutil` destination EXTERNAL and writable checks PASS; only pre-existing AES256-wrapped private-key recovery **`secret_key_recovery.gpg`**, **732 bytes**, copied to a fresh `OmniRoute_P2B_K2_Recovery` directory (0700) with file 0600, NO plaintext key export or original GNUPGHOME transfer. Independent external re-read SHA256 **`59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3`** matched original; original source rehashed unchanged; external device identity unchanged throughout transfer. Zero Docker, production config/image/current data-volume, live service, provider/network or GPG key operations.
+
+Previously frozen PR #66 R3 proved same-Mac independent recovered-key import/decrypt of synthetic data. PR #67 proves external mounted-media ciphertext copy checksum/permissions only; **neither script confirms that owner has safely EJECTED the drive and retained it PHYSICALLY SEPARATE, nor that both DISTINCT private-key and recovery-wrapper passphrases remain independently recoverable**. Operator output explicitly: `owner_physical_ejection_and_separate_custody=STILL_PENDING`, `owner_two_passphrase_recovery_custody=NOT_VERIFIABLE_BY_SCRIPT`. Ask owner for boolean-only local confirmation after safe ejection; NEVER request disk path/serial, recovery passphrases, recipient FPR, raw private diagnostics or backup ciphertext. Preserve original protected owner key and encrypted wrapper in private home.
+
+Existing narrow P2B encrypted current immutable image + potentially secret-bearing Docker recreation configuration export permission under PR #57 remains **BLOCKED** until owner confirms independent external custody, two distinct passphrases and intended recipient privately. P2C full coherent current volume backup, P2D real-data isolated restore, P2E original service actions and L1C-C draft/default-OFF PR #51 activation separately UNAPPROVED. `ROLLBACK_READY=NO`.
+
+`P2B_K2_R3_LOCAL_RECOVERED_KEY=PASS`  
+`P2B_K2_PR67_EXTERNAL_COPY_SHA=PASS_732_BYTES`  
+`P2B_K2_SAFE_EJECTION_SEPARATE_CUSTODY=PENDING_OWNER`  
+`P2B_K2_BOTH_PASSPHRASE_CUSTODY=PENDING_OWNER`  
+`P2B_IMAGE_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
+`NEXT_GATE=OWNER_CONFIRM_EXTERNAL_MEDIA_SEPARATION_AND_TWO_PASSPHRASE_CUSTODY`
