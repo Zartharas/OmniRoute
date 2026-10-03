@@ -1102,3 +1102,56 @@ Expected ONLY after actual owner Mac execution: `original_AES256_recovery_wrappe
 Current immutable exact original image not saved; raw secret-bearing original Docker config not preserved; current live RW volume no coherent snapshot; no P2C/P2D/P2E owner consent; PR51 default OFF/draft/unmerged; ROLLBACK_READY=NO.
 
 **NEXT_GATE=LOCAL_P2B_ORIGINAL_GPG_DECRYPT_DIAGNOSTIC_R1**.
+
+## 30. 2026-10-03 PR70 Mac diagnosis PASS; original GPG decrypt unresolved; PR71 one-shot synthetic terminal refresh
+
+Supersedes §29's diagnostic-pending statement. Operator executed frozen PR70 HEAD **fb78db3ef7575b3984b286501d4b3dc0a791a934**, Git blob **97b7c698767bf7db234b0cdd00b9e617304ffbc0**, 11783 bytes; local script SHA256 **29ce1203c1800697b9217179a50fa1e32572ac40fcb4d7c4e89e9ebb1f4ab6f9**; source/ref/size/blob, Python AST and synthetic fixture PASS. Actual `RESULT=PASS_P2B_ORIGINAL_GPG_DECRYPT_FAILURE_DIAGNOSTIC_R1` is **DIAGNOSTIC ONLY, NOT the original private-key decryption**. Existing owner encrypted recovery wrapper still matches original SHA `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3` (pre and post); existing prior PR69 synthetic ciphertext and restricted private combined encrypt/decrypt error log nonempty. Sanitized boolean error taxonomy: `public_key_decryption_reported_failed=YES`, `general_decryption_failed=YES`, but `no_secret_key=NO`, `pinentry_or_tty=NO`, `agent_socket_or_start=NO`, `agent_transport_or_broken_pipe=NO`, `passphrase_or_unlock=NO`, `cancelled_or_declined=NO`, `key_material_or_format=NO`, `filesystem_or_permissions=NO`, `agent_key_storage=NO`, `missing_public_key=NO`. Overlapping regex/combined stderr does NOT prove cause or conclusively rule out a problem absent from patterns. Original current gpgconf agent socket **89/89 bytes reported/resolved**, `PRESENT_OWNED_SOCKET`, `gpg-connect-agent --no-autostart GETINFO pid` `CONTACT_PASS`; this is agent responsiveness, NOT proof of usable private-key decrypt. Original PR69 dedicated-home new synthetic decrypt remains FAILED. PR66 R3 separate-home protected-key recovery + new synthetic decrypt PASS and PR67/PR68 independently kept external encrypted wrapper/custody/owner-recipient admission remain valid. No actual Docker production image/config export, current RW volume archive or live service mutation has happened.
+
+### Private DRAFT PR #71 — one reviewed original-agent terminal update, ONE new fabricated roundtrip
+
+- Branch: `qualification/current-freellmapi-p2b-original-agent-tty-synthetic-r1`
+- Frozen final HEAD **bb563e05884d6304fa10bac6496f332594fa2272**; base frozen PR70 HEAD **fb78db3ef7575b3984b286501d4b3dc0a791a934**
+- Exactly ONE ADDED Python standard-library script: `scripts/qualification/current-freellmapi-p2b-original-agent-tty-synthetic-roundtrip-r1.py`
+- Git blob **a06741e5429130ea4db23047b627ba4883d2511f**, exactly **15336 UTF-8 bytes**, two narrow commits ahead/zero behind, GitHub source readback verified.
+- First privately reads existing old PR69 GPG stderr into bounded memory and maps the exact `public key decryption failed:` suffix to ONE finite nonsecret error category (never raw error), checks protected original dedicated private owner GPG home/recipient candidate and immutable AES256 secret-recovery wrapper SHA. Real interactive TTY plus actual current owned agent socket and path <=95 reported/resolved bytes and `gpg-connect-agent --no-autostart GETINFO pid` PASS are required. No production Docker, network, provider or RW-volume access.
+- Owner must explicitly type `TEST_SYNTHETIC`; then creates a UNIQUE new owner-private chmod0700 local Downloads synthetic-evidence directory (existing directory blocks unchanged rerun). Refreshes only the EXISTING original local agent's terminal/display routing using documented `gpg-connect-agent --homedir ORIGINAL --no-autostart UPDATESTARTUPTTY`, with no agent kill/restart, persistent config edit or original key modification. The refresh is a testable hypothesis, **NOT** a confirmed historical cause.
+- Generates a new fabricated 64-byte random challenge in process memory, encrypts it to the owner-qualified existing recipient, then does exactly ONE original-home decrypt using normal local GPG pinentry (NO passphrase argv/env, NO loopback). All raw GPG status/identities/errors saved ONLY inside private 0600 local `encrypt_gpg_PRIVATE.txt` and `decrypt_gpg_PRIVATE.txt`; terminal prints only fixed status CODE boolean markers and exact synthetic-match result. Private original AES256 recovery-wrapper SHA rechecked on test failure or success. Does NOT decrypt original wrapped secret, recreate/reexport key, copy external drive or create protected production image/config. If this fails, DON'T run unchanged again or proceed to export.
+- Note source bug fix before final HEAD: Python `subprocess.run(input=...)` now does not specify a duplicate `stdin` argument; synthetic fixture test exercises /bin/cat on fabricated input. Agent Assuan protocol checks reject any `ERR` even when `/bye` returns `OK`.
+- Only after actual Mac synthetic roundtrip PASS: stage a NEW pinned original-live identity+HOST-capacity P2B preflight R2; prior PR69 stopped before free-space stage, so its capacity must NEVER be claimed PASS. Subsequent actual image/config direct-to-encryption under PR57 narrow consent will be a separate review. P2C/P2D/P2E and PR51 default-OFF L1C-C activation remain separately unapproved; ROLLBACK_READY=NO.
+
+### Exact next Mac command — PR71 original-home synthetic test ONLY
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-original-agent-tty-synthetic-r1"
+COMMIT="bb563e05884d6304fa10bac6496f332594fa2272"
+FILE="scripts/qualification/current-freellmapi-p2b-original-agent-tty-synthetic-roundtrip-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_original_agent_tty_synthetic_roundtrip_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_TTY_SYNTH_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "15336" ] || { echo FAIL_P2B_TTY_SYNTH_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "a06741e5429130ea4db23047b627ba4883d2511f" ] || { echo FAIL_P2B_TTY_SYNTH_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_tty_synthetic_python_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_TTY_SYNTH_SELFTEST; exit 1; }
+echo "p2b_tty_synthetic_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+At the owner confirmation prompt type ONLY `TEST_SYNTHETIC` if authorizing the single original local GPG-agent startup-TTY update and one synthetic decrypt. Existing original secret-key passphrase, **if** GPG pinentry requests it, is entered LOCALLY only. No actual passphrase or fingerprint, private diagnostic file or original encrypted key wrapper is to be pasted/uploaded. Conditional PASS markers:
+`original_existing_AES256_recovery_wrapper_sha_before=PASS`;
+`original_existing_agent_contact_before_refresh=PASS`;
+`existing_original_agent_startup_tty_update=PASS`;
+`new_synthetic_encryption_exit_zero=YES`;
+`new_synthetic_original_home_decryption_exit_zero=YES`;
+`original_dedicated_home_new_synthetic_exact_decryption=PASS`;
+`original_AES256_recovery_wrapper_sha_postcheck=PASS`;
+`RESULT=PASS_P2B_ORIGINAL_AGENT_TTY_SYNTHETIC_ROUNDTRIP_R1`.
+A script PASS is SYNTHETIC-only qualification, NOT P2B image/config export or full rollback. On FAIL, keep raw logs private and review only safe summary; no blind repeat or bypass.
+
+**NEXT_GATE=LOCAL_P2B_ORIGINAL_AGENT_TTY_SYNTHETIC_ROUNDTRIP_R1**.
