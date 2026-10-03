@@ -1157,3 +1157,80 @@ A script PASS is SYNTHETIC-only qualification, NOT P2B image/config export or fu
 **NEXT_GATE=LOCAL_P2B_ORIGINAL_AGENT_TTY_SYNTHETIC_ROUNDTRIP_R1**.
 
 **FINAL PIN CORRECTION:** A third script-only commit hardens Python subprocess GPG output using `os.umask(0o077)` before any fabricated ciphertext is created. The previous provisional PR71 HEAD `bb563e05884d6304fa10bac6496f332594fa2272` is **SUPERSEDED** and must NOT be fetched or run. Frozen FINAL HEAD **8cdb7aa04567d7a98846ce065d464fe27cb33577**, Git blob **a50024bce859cce795d8939e9d2414e0bb276368**, **15501 UTF-8 bytes**. The exact command above already reflects these final pins. Operator Mac run still PENDING.
+
+## 31. 2026-10-03 actual PR71 original GPG roundtrip PASS; PR72 exact-live and host capacity preflight
+
+Supersedes §30's PR71 Mac PENDING. Owner first repeated old PR70 diagnostic output (identical prior evidence; not a new test) then fetched frozen FINAL PR71 HEAD **8cdb7aa04567d7a98846ce065d464fe27cb33577**, blob **a50024bce859cce795d8939e9d2414e0bb276368**, 15501 UTF-8 bytes, local Mac script SHA256 **d0fce521ace9cf6ada987dde47c4b0c3e21c3f1471d39353eb1117a50186efdb**; Git pin/size/blob, Python AST and fabricated-only selftest PASS. Real Mac PR71:
+~~~
+original_existing_AES256_recovery_wrapper_sha_before=PASS
+prior_PR69_public_key_decrypt_subreason_category=TIMEOUT
+original_agent_socket_reported_bytes=89
+original_agent_socket_resolved_socket_bytes=89
+original_existing_agent_contact_before_refresh=PASS
+existing_original_agent_startup_tty_update=PASS
+new_synthetic_encryption_exit_zero=YES
+new_fabricated_ciphertext_private_mode0600=PASS
+new_synthetic_gpg_status_decryption_okay=YES
+new_synthetic_gpg_status_decryption_failed=NO
+new_synthetic_gpg_status_pinentry_launched=YES
+new_synthetic_gpg_status_no_seckey=NO
+new_synthetic_gpg_status_error=NO
+new_synthetic_gpg_status_failure=NO
+new_synthetic_original_home_decryption_exit_zero=YES
+original_dedicated_home_new_synthetic_exact_decryption=PASS
+original_AES256_recovery_wrapper_sha_postcheck=PASS
+original_agent_terminated=NO
+Docker_production_export=NOT_EXECUTED
+current_RW_volume_backup=NOT_EXECUTED
+rollback_ready=NO
+RESULT=PASS_P2B_ORIGINAL_AGENT_TTY_SYNTHETIC_ROUNDTRIP_R1
+~~~
+Operator explicitly entered `TEST_SYNTHETIC`, performed a single no-autostart UPDATESTARTUPTTY on current original agent (no agent kill/restart/key reexport), and exactly decrypted a NEW fabricated challenge through the ORIGINAL dedicated existing keyhome. Earlier PR69 synthetic decrypt FAILED, prior private `public key decryption failed:` subreason categorized **TIMEOUT**; PR71 successful GPG pinentry after refresh supports a possible stale terminal routing issue but DOES NOT retrospectively establish cause. Original real AES256 recovery key wrapper ciphertext SHA **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3** intact. PR66 independent recovered-key separate GNUPGHOME proof, PR67 owner-mounted external encrypted 732-byte backup matching source, PR68 owner attested safe ejection/separate storage/two different passphrases/correct recipient remain PASS. Do not upload PR69 private GPG error file, PR71 private log/status/UID/FPR/key material or any passphrase. No production Docker image/config/RW data volume preservation has taken place.
+
+### Private DRAFT PR #72 — fresh P2B original metadata plus previously unreached host capacity check
+
+- Branch `qualification/current-freellmapi-p2b-exact-metadata-capacity-preflight-r2`, exact frozen HEAD **7ba63303fcd28cfc3f7297111b3a4c254439f1fc**, child of frozen PR71 **8cdb7aa04567d7a98846ce065d464fe27cb33577**.
+- Exactly **ONE new Bash script** across two narrow commits/zero behind: `scripts/qualification/current-freellmapi-p2b-exact-metadata-capacity-preflight-r2.sh`, Git blob **1b9e9d2e4cfdaa97a431520afaae2a03350db2e6**, **12814 UTF-8 bytes**. GitHub source readback and one-file compare verified, actual Mac Bash syntax/run PENDING.
+- Revalidates original source worktree HEAD `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`, exact ORIGINAL running healthy FreeLLMAPI container ID `1f42509a5cd8dc8cb317797d7e8fc120325aaf23009c4b87ef59c8f5e73214a2`, original immutable image ID `sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49`, current attached production RW named /app/data volume `omniroute-r16-32-freellmapi-live-f8bc751312da-20260923T053117Z` METADATA ONLY, health/restart/OOM/OFF canary and THREE external token/policy RO bind DESTINATIONS/type/RW without original source path/secret bytes. Verify loopback host port 20128/20129/20132 and Docker network `mer-gateway_default`. No raw possibly secret-bearing inspect JSON output, provider/network, actual volume read, Docker helper/container stop/restart or image save.
+- Checks existing protected dedicated GPG keyhome, original mode0600 recipient selector full FPR **privately within a short-lived Python process**, original AES256 recovery ciphertext SHA above. Looks only at existing PR71 `~/Downloads/omniroute_p2b_original_agent_tty_synthetic_r1_PRIVATE` synthetic-only encrypted fixture and 0600 saved status-file owner/type/mode/size, confirms bounded saved `[GNUPG:] DECRYPTION_OKAY` and no failure status **without printing raw status or RETRYING the GPG decrypt**. Actual operator PR71 PASS is authoritative for the synthetic roundtrip.
+- Host Downloads free KiB and immutable image Docker-inspected size are checked against conservative host planning floor **2 × 3049822395 bytes in KiB + 1GiB**; actual `docker image save` output and Docker Desktop VM capacity NOT measured. Postcheck original selected Docker/container identity, original repo worktree HEAD/status and recovery-wrapper fixed SHA unchanged. No actual production IMAGE/CONFIG ciphertext is created here.
+- If any drift or insufficient estimated host capacity, fail closed and do NOT run export. Even PASS is metadata/host planning preflight, NOT full rollback or proof Docker VM capacity.
+
+### EXACT next Mac command — PR72 read-only selected metadata and host capacity, NOT image export
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-exact-metadata-capacity-preflight-r2"
+COMMIT="7ba63303fcd28cfc3f7297111b3a4c254439f1fc"
+FILE="scripts/qualification/current-freellmapi-p2b-exact-metadata-capacity-preflight-r2.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2b_exact_metadata_capacity_preflight_r2.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_PREFLIGHT_R2_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "12814" ] || { echo FAIL_P2B_PREFLIGHT_R2_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "1b9e9d2e4cfdaa97a431520afaae2a03350db2e6" ] || { echo FAIL_P2B_PREFLIGHT_R2_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2B_PREFLIGHT_R2_BASH_SYNTAX; exit 1; }
+echo "p2b_metadata_capacity_r2_source_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Expected ONLY after real Mac proof:
+`PR71_existing_original_home_decryption_okay_status=PASS_RECORDED_NOT_RETRIED`;
+`original_active_worktree_head=PASS_EXPECTED`;
+`exact_original_live_container_image_health_restart_and_OFF_canary=PASS`;
+`original_loopback_host_ports_and_network_metadata=PASS`;
+`host_space=PASS_ESTIMATE_ONLY`;
+`original_live_identity_nonmutation=PASS`;
+`original_worktree_head_and_status_nonmutation=PASS`;
+`original_encrypted_recovery_wrapper_sha_nonmutation=PASS`;
+`RESULT=PASS_P2B_EXACT_METADATA_AND_HOST_CAPACITY_PREFLIGHT_R2`.
+All status and numeric host free-space markers are safe to share. Do NOT upload private GPG status/error files, original protected wrapper, original keyhome, exact raw credential-bearing Docker container inspect JSON, policy/token source paths or passphrases.
+
+Only after R2 actual PASS: review and publish a separately PINNED narrowly consented PR57 direct-to-EXISTING-GPG-recipient encrypted preservation of exact immutable original Docker image and confidential exact container recreation configuration. Still **NO P2C current writer-quiesced /app/data full WAL snapshot, P2D real-data isolated restore, P2E service action, no L1C-C PR51 activation**. PR51 remains draft/default OFF/unmerged; `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=LOCAL_P2B_EXACT_METADATA_AND_HOST_CAPACITY_PREFLIGHT_R2**.
