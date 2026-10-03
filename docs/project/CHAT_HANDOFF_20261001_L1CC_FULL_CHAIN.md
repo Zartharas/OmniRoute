@@ -862,3 +862,56 @@ Expected ONLY if owner Mac really passes:
 `RESULT=PASS_P2B_K2_SHORTPATH_ISOLATED_RECOVERY_R3`.
 
 **NEXT_GATE=LOCAL_P2B_K2_SHORTPATH_AGENT_QUALIFIED_RECOVERY_R3**. If successful, next gate is separately retained/off-device owner-controlled encrypted-wrapper copy and intended-recipient confirmation, NOT an automatic image/config export. ROLLBACK_READY=NO.
+
+## 25. 2026-10-03 owner Mac R3 PASS; external encrypted recovery ciphertext custody PR #67 next
+
+Actual PR #66 operator evidence supersedes §24's PENDING marker. Owner fetched pinned PR #66 `17d9e4a4e802bd61af4fb164bd0b522723426676`, Git blob `3be748535a8e77482233762141614215abd1a1ce`, exactly 10130 bytes, Mac local SHA-256 `db168660b16e579a13920dc625e2b38a707e1bfb3e7833f616cdab8d382a0f2c`; Git ref/size/blob and Bash -n PASS. Real `RESULT=PASS_P2B_K2_SHORTPATH_ISOLATED_RECOVERY_R3`. Existing original owner key+wrapper owner/type/modes and original AES256 wrapper SHA `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3` unchanged. New /tmp R3 disposable GNUPGHOME gpgconf agent socket length **30 reported / 38 resolved** bytes; agent launched and contacted via existing socket BEFORE protected key transfer. Owner typed RECOVER_R3 and a private one-time marker was written. Old wrapper decrypted **rc0**, recovered private-key import into independently agent-qualified short home **rc0**, recovered primary and Cv25519 encryption subkey PASS, fresh synthetic public-recipient challenge decrypted successfully by restored isolated secret key PASS; original wrapper SHA nonmutation PASS; private recipient selector saved mode0600; ONLY temporary short R3 home removed. All prior historical failed R1/R2 roots, original dedicated key+wrapper and both private owner-held passphrases retained. No Docker, production volume/image/configuration read/export, service change, network/provider/canary or original key generation.
+
+Interpretation: **local separate-GNUPGHOME private-key recoverability PROVEN**. It is not off-device or independent physical custody, and it does not prove original failed R2 root cause, only that new separately prepared short-path agent successfully overcame prior import failure. Do not rerun one-shot R3 unchanged. No secret file or credential is to be uploaded/shared in chat/GitHub.
+
+### New draft PR #67 — owner-controlled external ciphertext-only copy (PENDING Mac execution)
+
+Branch `qualification/current-freellmapi-p2b-k2-offdevice-custody-r1`; based directly on frozen PR #66 HEAD `17d9e4a4e802bd61af4fb164bd0b522723426676`. Final PR #67 source HEAD **15350b37d2644de04526dbd191346ff097c6600a**, exactly ONE new Python script/commit above PR66:
+`scripts/qualification/current-freellmapi-p2b-k2-offdevice-ciphertext-copy-r1.py`
+Git blob **f77b0c0b90c50e05b7b89c894c1cc40573194116**, **10912 UTF-8 bytes**. Mac AST/synthetic selftest/copy still PENDING.
+
+Script performs NO GPG/secret-key packet operations, key generation, decryption, Docker, production image/config/volume, provider/network or original-app service changes. It first checks original private root `/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r` and its **already AES256 encrypted** only recovery ciphertext `secret_key_recovery.gpg` for owner/type/mode/size+fixed SHA `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3`. Real owner interactive macOS terminal required. Plug in a trusted independent external volume (prefer an encrypted APFS external volume). The script privately requests exact mounted volume ROOT directly under `/Volumes` using hidden (not echoing) terminal input; diskutil info -plist must establish mount root, physical `Internal=false`, External if DeviceLocation available, matching mount identifier and writable. Owner must explicitly type `COPY_ENCRYPTED_RECOVERY` locally. Only then create new, non-overwritten directory `OmniRoute_P2B_K2_Recovery` (0700) and `secret_key_recovery.gpg` (0600, O_EXCL/O_NOFOLLOW) on the external volume; stream/copy only ciphertext, fsync, independently re-open and verify external bytes/SHA, rehash original source and confirm target device identity unchanged. No original keyring, raw diagnostics, private fingerprint/UID, passphrase or plaintext export is transferred. External volume path is NOT emitted, only directory and fixed file name. Any failed partial copy requires private owner review, never overwrite or claim success.
+
+### Exact next macOS command — PR #67 COPY-ONLY
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-offdevice-custody-r1"
+COMMIT="15350b37d2644de04526dbd191346ff097c6600a"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-offdevice-ciphertext-copy-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_offdevice_ciphertext_copy_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_EXTERNAL_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "10912" ] || { echo FAIL_P2B_K2_EXTERNAL_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "f77b0c0b90c50e05b7b89c894c1cc40573194116" ] || { echo FAIL_P2B_K2_EXTERNAL_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_k2_external_python_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_K2_EXTERNAL_SYNTHETIC_SELFTEST; exit 1; }
+echo "p2b_k2_external_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+**On owner Mac:** ensure external disk is MOUNTED before running. Enter only its volume ROOT at script's hidden local prompt, never type it into chat. Confirm `COPY_ENCRYPTED_RECOVERY` on-screen. If `Internal=false` or POSIX owner/mode controls cannot be established, script fails closed; select a suitable owner-controlled independent external encrypted medium, do not bypass. Script creates ciphertext-only external `OmniRoute_P2B_K2_Recovery/secret_key_recovery.gpg`, never a plaintext private-key file.
+
+Expected after actual Mac copy success:
+`external_encrypted_copy_independent_readback_sha256=PASS`;
+`external_encrypted_copy_sha256=59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3`;
+`original_encrypted_wrapper_checksum_nonmutation=PASS`;
+`encrypted_recovery_copy_is_on_os_reported_EXTERNAL_media=PASS`;
+`RESULT=PASS_P2B_K2_EXTERNAL_CIPHERTEXT_COPY_AND_SHA_R1`.
+
+**Final human custody action remains separate:** Safely EJECT the external drive and RETAIN it physically apart from the original Mac. Privately preserve BOTH distinct owner key passphrase and AES256 wrapper passphrase and recovery notes. User should then confirm only that independent custody/ejection and two-passphrase recoverability exist, WITHOUT providing actual passphrases, drive path, recipient identifier or protected backup file in chat. A script PASS shows byte-identical encrypted artifact on mounted physically external media, NOT actual ejection or later custody.
+
+Existing previously scoped P2B exact original immutable image and potentially credential-bearing Docker config direct-to-encryption preservation stays BLOCKED until BOTH successful external copy evidence and user custody confirmation + local intended-recipient approval. P2C coherent writer-quiesced complete production volume backup, P2D real-data isolated restoration, P2E original live service changes, and activation of default-OFF/frozen PR #51 remain separate unapproved gates. `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=OWNER_EXECUTE_EXTERNAL_CIPHERTEXT_ONLY_COPY_AND_VERIFY_R1**.
