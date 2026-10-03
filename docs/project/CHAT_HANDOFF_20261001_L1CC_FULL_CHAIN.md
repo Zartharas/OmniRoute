@@ -998,3 +998,49 @@ NEVER provide external-drive name/path/serial, key recipient ID/FPR, both passph
 
 `ROLLBACK_READY=NO`.
 **NEXT_GATE=LOCAL_P2B_K2_OWNER_CUSTODY_AND_INTENDED_RECIPIENT_ADMISSION_R1**.
+
+## 28. 2026-10-03 PR68 owner custody + intended recipient actual MAC PASS; PR69 exact-live P2B export read-only preflight
+
+Supersedes §27's PR68 pending admission. Owner actually executed pinned PR #68 frozen HEAD **e3ce8e478d29c7bda7bd996c276bdc0b41bb82e2**, script blob **a763e56d95686162c91b45b640b10671ea59b452**, 9767 bytes; original local Mac SHA256 **88e72b0c6c3a975ef1f5b5e2fa4b1936b233e4aea4c69fed80a88fc22a1d5f11**; Git ref/size/blob/Python AST/fixture PASS. Real result **`RESULT=PASS_P2B_K2_OWNER_CUSTODY_AND_INTENDED_RECIPIENT_ADMISSION_R1`**. Existing original wrapped recovery SHA unchanged and private candidate matches the SINGLE dedicated existing public/secret primary and live matching encryption-subkey metadata. The owner explicitly typed four truthful LOCAL NON-SECRET tokens `EJECTED`, `SEPARATED`, `BOTH_RETAINED`, `INTENDED`; each was printed OWNER_ATTESTED. Thus ejection, physical custody separate from Mac, access to BOTH distinct original private-key and AES256 wrapper passphrases and owner choice of dedicated encryption recipient are now **owner-attested** (not independently physically audited). Do not ask for any actual passphrase, fingerprint, private recipient file, external media path, UUID or raw encrypted recovery file.
+
+Preceding accepted PR #66: owner R3 independent same-Mac separate-home recovery of encrypted private key and new random synthetic decryption PASS. PR #67: owner created and independently reread existing AES256 ciphertext-only wrapper on macOS-external media 732B, SHA **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3**, preserved original source. Prior narrowly scoped P2B original image + confidential exact Docker recreation config owner permission was recorded in PR #57; no current production archive has yet been created. PR #51 is still default OFF/source-qualified/draft/unmerged.
+
+### NEXT private draft PR #69 — selected-metadata export preflight ONLY, Mac PENDING
+
+- Branch: `qualification/current-freellmapi-p2b-exact-export-preflight-r1`
+- Exact HEAD **6a9b959ced014f23c9b759ebe0df43e9ff7ba003**, one added commit/file based directly on frozen PR68 `e3ce8e478d29c7bda7bd996c276bdc0b41bb82e2`, zero behind
+- ONE source: `scripts/qualification/current-freellmapi-p2b-exact-export-readonly-preflight-r1.sh`
+- Git blob **b23430c4f03c769445dfb609eea3303ea2a02775**, exactly **10776 UTF-8 bytes**. GitHub source/diff readback complete; Mac Bash syntax and actual execution PENDING.
+
+The R1 script uses ONLY tightly selected Docker Go template metadata and aborts on drift in original immutable running container ID **1f42509a5cd8dc8cb317797d7e8fc120325aaf23009c4b87ef59c8f5e73214a2**, running IMAGE **sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49**, health healthy, no restarts/OOM, canary-on strings absent, attached current named RW /app/data volume, expected mount DESTINATIONS/type/RW including exactly three external RO secret/policy binds (never prints SOURCE paths/values), loopback published 20128/20129/20132 ports, exact original Docker network `mer-gateway_default`. The original local repo HEAD **470a9eb5d5014c0df116c9e3c5b6ae3853bda021** and status fingerprint must remain unchanged. Rechecks protected keyhome/candidate/wrapper and original wrapper SHA, performs one private **fabricated-only** GPG encryption/decryption roundtrip with the locally intended owner public recipient, preserves GPG private stderr in new chmod0700 evidence root without printing private identities/passphrases. Estimates fresh host Downloads free KiB vs 2*reported immutable image size+1GiB; Docker VM capacity and actual saved image/encrypted output lengths remain UNKNOWN and are NOT claimed. Source reads NO current production volume data or full potentially sensitive Docker inspect JSON and writes NO protected image/config export, does NOT stop/start containers, create helpers, load images, call provider/network or enable canary. Rechecks original Docker selected identity and original Git worktree nonmutation at exit.
+
+### Exact next owner Mac command — PR69 read-only P2B export PREFLIGHT, not actual export
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-exact-export-preflight-r1"
+COMMIT="6a9b959ced014f23c9b759ebe0df43e9ff7ba003"
+FILE="scripts/qualification/current-freellmapi-p2b-exact-export-readonly-preflight-r1.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2b_exact_export_readonly_preflight_r1.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_PREFLIGHT_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "10776" ] || { echo FAIL_P2B_PREFLIGHT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "b23430c4f03c769445dfb609eea3303ea2a02775" ] || { echo FAIL_P2B_PREFLIGHT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2B_PREFLIGHT_BASH_SYNTAX; exit 1; }
+echo "p2b_exact_export_preflight_source_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+If an original live identity, mounts, network, loopback ports, original repository HEAD/status, GPG roundtrip or storage rough-floor check fails, STOP; do not relax a guard or try the actual export. Expect ONLY after owner Mac execution `RESULT=PASS_P2B_EXACT_IMAGE_CONFIG_EXPORT_PREFLIGHT_R1`, while output still says `production_image_export=NOT_EXECUTED`, `production_exact_config_export=NOT_EXECUTED` and `rollback_ready=NO`. Private GPG diagnostic/evidence root should remain local; never share raw diagnostic files, passwords, fingerprints or sensitive Docker info.
+
+Once actual fresh preflight PASS, create a NEW SOURCE-PINNED separate owner-scoped P2B production **exact immutable image** and **secret-bearing exact container-recreation inspect JSON** direct-to-public-recipient GPG ciphertext export: no plaintext archive/inspect persistent file, pipefail, atomic success-only ciphertext promotion, confidential non-extracting TAR and JSON decrypt validation, pre/post original live identity check and sanitized ciphertext size/SHA manifest. Existing policy/token RO bind file CONTENTS are separate external dependencies, not copied in P2B. Even this future image+config PASS is NOT complete current-service rollback: P2C coherent full current RW /app/data volume backup (writer quiescence), P2D isolated real-data restoration and P2E service return are separate unapproved gates; L1C-C activation remains separately unapproved, PR51 default OFF.
+
+`P2B_K2_OWNER_CUSTODY_RECIPIENT_ADMISSION=OWNER_MAC_PASS`; `P2B_EXACT_IMAGE_ARCHIVE=NOT_CREATED`; `P2B_CONFIDENTIAL_EXACT_CONFIG_ARCHIVE=NOT_CREATED`; `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=LOCAL_P2B_EXACT_IMAGE_CONFIG_EXPORT_READONLY_PREFLIGHT_R1**.
