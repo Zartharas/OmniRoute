@@ -658,3 +658,59 @@ Expected ONLY after actual Mac run:
 If a GPG GUI prompt appears, enter the existing recovery-wrapper passphrase; protected-key import or the final decrypt may additionally require the ORIGINAL separate key passphrase. Never provide either to ChatGPT or through script argv/flags. If the wrapper/import process fails, share only the separately printed exit codes and terminal FAIL marker, not the private GPG diagnostic file. This local recovered-home PASS does not prove off-device custody. Keep production image/config export BLOCKED until recovery and off-device ownership/copy are verified; P2C–P2E remain separately unapproved. PR #51 default OFF/draft/unmerged.
 
 **NEXT_GATE=LOCAL_P2B_K2_EXISTING_CIPHERTEXT_RECOVERY_ONLY_R2**.
+
+## 21. 2026-10-03 operator R2 pin PASS; wrapper decrypt rc0, isolated protected-key import rc2 — PR #63 diagnostic
+
+Supersedes §20's pending R2 run. Owner fetched exact immutable private PR #62 head **ad88725e82ebd8fa1814f35d68df528e9fb9cab4**, blob **01e3baf58f93eca56d01eb15cfdc548627a89b0e**, **7122 bytes** and local SHA-256 **ced9387e7dba989ac2fd0a21b1ceed9669a4bea6471579dda88a00a08041cf69**; source integrity and Bash syntax PASS. The ORIGINAL dedicated private owner key and encrypted wrapper remained present under `/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r`; private structure PASS. R2 printed existing encrypted wrapper preattempt SHA-256 **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3**. Owner typed RECOVER and R2 separated the previously combined fault:
+
+~~~
+recovery_wrapper_decrypt_rc=0
+isolated_secret_key_import_rc=2
+FAIL_PROTECTED_SECRET_KEY_IMPORT_SIDE
+RESULT=FAIL_P2B_K2_RECOVERY_ONLY_R2
+existing_original_key_and_ciphertext=PRESERVED
+production_image_config_export=BLOCKED_NOT_EXECUTED
+~~~
+
+Interpretation: existing wrapper decrypted successfully (rc0), but isolated recovered PROTECTED secret-key import failed (rc2). GPG diagnostics from both processes were appended to private `gpg_recovery_retry_r2_PRIVATE.txt` and cannot be disclosed raw. Import rc2 does not prove it left zero partial records; the original R2 after-attempt SHA and new synthetic recovered-key challenge were NOT reached. **Never rerun original provisioning R1 (PR #61), do not rerun same recovery R2 unmodified, do not create/import another new owner key.** Preserve the entire hidden root and BOTH distinct owner passphrases; no plaintext private export, key IDs, diagnostics or credential material in chat/GitHub. No Docker, production image/config/volume read, source service interruption, provider/canary or production archive.
+
+### New draft PR #63: safe import-failure aggregate classifier (operator run PENDING)
+
+- Branch: **qualification/current-freellmapi-p2b-k2-import-diagnostic-r1**
+- Frozen HEAD: **4c3243b94da8b0a663e0300d8fb13ada97db9fc1**
+- Parent PR #62 HEAD: **ad88725e82ebd8fa1814f35d68df528e9fb9cab4**
+- ONE new Python script: **scripts/qualification/current-freellmapi-p2b-k2-import-failure-diagnostic-r1.py**
+- Git blob: **aa3ff9eb53cb468ac3c66673dc5c401a2ab7f60c**
+- Exact UTF-8 bytes: **9819**.
+
+No decrypt/import/export or key mutation; script validates exact private directory/file owner/type/mode and rechecks existing ciphertext SHA against R2 preattempt SHA; parses *only* the protected R2 diagnostic log in memory into bounded fixed Boolean error-pattern categories (pinentry/TTY, agent, passphrase/cancellation, packet/input, permissions, secret-import summary), NEVER prints raw errors/UID/fingerprint/recipient/secret; discovers exactly one previous R2 disposable test key home and asks GPG for only aggregate counts of existing public/secret primary/subkey/stub/encryption records, without importing any keys, exposing identities or auto-retrieving remote keys. This may refresh disposable metadata internally; it does not alter the original dedicated keyhome or wrapper. Fixture `--self-test` uses fabricated patterns, no real GPG access. Error categories are indicators, not independently proved root cause. Exact Mac execution still PENDING.
+
+### Exact next operator command — diagnostic ONLY
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-import-diagnostic-r1"
+COMMIT="4c3243b94da8b0a663e0300d8fb13ada97db9fc1"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-import-failure-diagnostic-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_import_diagnostic_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_IMPORT_DIAGNOSTIC_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "9819" ] || { echo FAIL_P2B_IMPORT_DIAGNOSTIC_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "aa3ff9eb53cb468ac3c66673dc5c401a2ab7f60c" ] || { echo FAIL_P2B_IMPORT_DIAGNOSTIC_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_import_diagnostic_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_IMPORT_DIAGNOSTIC_SELFTEST; exit 1; }
+echo "p2b_import_diagnostic_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+Expected **only after actual operator execution**: `encrypted_recovery_wrapper_matches_R2_preattempt_sha256=PASS`; `diagnostic_pattern_*=` YES/NO; `existing_R2_disposable_home_count=1`; aggregate `R2_failed_home_*_records`; `RESULT=PASS_P2B_K2_IMPORT_FAILURE_AGGREGATE_DIAGNOSTIC_R1`. If it reports SHA mismatch or missing/ambiguous failed test home, stop and review rather than overwriting or fabricating evidence.
+
+On actual diagnostic evidence, build a precisely scoped R3 import correction (not another blind provisioning/decrypt/import retry), then independently establish off-device encrypted wrapper custody before current image/config preservation. **P2B export remains blocked**; P2C current production writer stop/full-volume backup, P2D isolated real-data restore and L1C-C activation remain unapproved.
+
+**NEXT_GATE=LOCAL_P2B_K2_IMPORT_FAILURE_AGGREGATE_DIAGNOSTIC_R1**.
