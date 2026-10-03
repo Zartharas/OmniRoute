@@ -768,3 +768,46 @@ python3 -B "$SCRIPT"
 Expected only on actual Mac execution: `encrypted_recovery_wrapper_matches_original_R2_sha256=PASS`, refined `private_diagnostic_*=YES/NO`, `failed_R2_private_key_store_dir_present`, `failed_R2_regular_keygrip_packet_file_count`, `RESULT=PASS_P2B_K2_IMPORT_FILESYSTEM_FORENSICS_R2`. The bounded script must fail on wrapper drift, unexpected symlink/permissions or missing/ambiguous previous R2 test home; don't bypass any such safety guard. Never paste PRIVATE GPG diagnostic file itself or original wrapped/secret-key contents, passwords, fingerprint or filename list.
 
 **NEXT_GATE=LOCAL_P2B_K2_IMPORT_FILESYSTEM_FORENSICS_R2**. Following real result, design a strictly targeted R3 isolated secret-key import or owner-local GPG agent correction and preserve original key/wrapper. It must eventually prove recovered-key synthetic decrypt and independent off-device encrypted recovery custody BEFORE existing scoped P2B image/config export. P2C full current live-volume archival/writer quiescence, P2D isolated real-data restore and L1C-C activation remain separately unapproved.
+
+## 23. 2026-10-03 PR #64 Mac PASS; agent socket path preflight PR #65 next
+
+Operator first repeated old PR #63 failing output (not independent evidence). Then fetched pinned PR #64 HEAD **05609719941d1b45a9c641f9c8867ece27cf03ae**, script Git blob **4f7be08284f9f0ed8fc1e9ff00391bac5957a945**, 10365 bytes, local SHA-256 **66340a1671afaef6c4e4ba57450eddedf21dcf711a4f912d0f189869d6134e0c**, all ref/size/blob/Python syntax/synthetic classifier PASS. Real Mac **`RESULT=PASS_P2B_K2_IMPORT_FILESYSTEM_FORENSICS_R2`**:
+- `encrypted_recovery_wrapper_matches_original_R2_sha256=PASS` against original PRE-R2 SHA `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3`.
+- Of refined private R2 GPG diagnostic finite regex flags, ONLY `private_diagnostic_broken_pipe_or_input_error=YES`; agent send/receive/key-transfer, secret packet array, agent refusal/storage, import-summary, pinentry/TTY/agent socket, passphrase/cancel, invalid material, filesystem, crypto, success summary markers NO. Historic broader PR #63 agent-secret-transfer YES overlaps the phrase “error reading stdin” and is not separately conclusive agent fault.
+- Exactly one failed R2 disposable test home permissions PASS, public keybox present+nonempty, trustdb present+nonempty, private-keys-v1.d directory present but **0 regular 40hex .key keygrip packet files** and 0 other entries. NO GPG commands, secret-key payload reads, Docker or production access in PR #64. A public keybox cannot establish restored private-key custody.
+- Original R2 `recovery_wrapper_decrypt_rc=0` / `isolated_secret_key_import_rc=2` still unresolved. Do NOT rerun P2B-K2 R1 generation or blind R2 import. Preserve exact owner private root `/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r`, existing original GPG keyhome, AES256 `secret_key_recovery.gpg`, both owner-held distinct passphrases, R1/R2 failed disposable keyhomes and private diagnostics.
+
+Private **draft PR #65** is source-only GPG agent socket/path preflight designed to test, NOT presume, a possible deep-GNUPGHOME Unix socket length issue on owner Mac:
+- Branch `qualification/current-freellmapi-p2b-k2-socket-preflight-r1`
+- FROZEN HEAD **1aaeb3a877ac22ad57ab526a322c5b8c020b357f**, parent frozen PR #64 **05609719941d1b45a9c641f9c8867ece27cf03ae**
+- ONE new script `scripts/qualification/current-freellmapi-p2b-k2-agent-socket-preflight-r1.py`, Git blob **3935e8ffe1d2fcbeb2790c9fe565435974380e37**, **8353 UTF-8 bytes**.
+- Validates original owner root/keyhome/secret-key recovery ciphertext SHA and existing failed R2 test-home permissions. Uses `gpgconf --homedir ... --list-dirs agent-socket` to capture ACTUAL derived socket path byte lengths for original dedicated, previous failed deeply nested R2, and one freshly created EMPTY private short `/tmp/okg_*` comparison home. Only numeric lengths, expected macOS 104-byte nominal Unix sun_path risk flags, and existing socket presence/type emitted; never actual paths, PID or raw GPG output. Optionally `gpg-connect-agent --no-autostart 'GETINFO pid'` only for an existing user-owned R2 socket, capturing only coarse return status, no agent auto-start. Empty comparison folder removed only by `rmdir` if empty; no other cleanup. Uses no GPG key list/decrypt/import/export/generation, secret packets, Docker, live volume, current image/config, external network/provider or original service change. GPG can choose hashed/redirected socket paths; path lengths and current socket status ALONE are not root cause proof.
+- Source Git readback verified one additional file/commit; **Mac AST/selftest and preflight execution PENDING**. This is diagnostic, not private-key recovery or an authorization to bypass custody.
+
+### Exact next operator command — PR #65 socket preflight only
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-socket-preflight-r1"
+COMMIT="1aaeb3a877ac22ad57ab526a322c5b8c020b357f"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-agent-socket-preflight-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_agent_socket_preflight_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_SOCKET_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "8353" ] || { echo FAIL_P2B_K2_SOCKET_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "3935e8ffe1d2fcbeb2790c9fe565435974380e37" ] || { echo FAIL_P2B_K2_SOCKET_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_k2_socket_preflight_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_K2_SOCKET_SELFTEST; exit 1; }
+echo "p2b_k2_socket_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+On Mac `RESULT=PASS_P2B_K2_GPG_AGENT_SOCKET_PREFLIGHT_R1` is a diagnostic-only PASS. It should return `*_gpgconf_reported_socket_path_bytes`, `*_reported_socket_status`, `failed_R2_existing_agent_no_autostart_probe` and `existing_encrypted_recovery_wrapper_sha256_nonmutation=PASS`. If GPGCONF fails, preserve/fail-closed; never derive a guessed socket location as established. No production archive has been created; no recovered-key decrypt qualified; no off-device backup custody proven. PR #51 remains source-qualified default OFF/draft/unmerged, and P2C–P2E remain unapproved.
+
+**NEXT_GATE=LOCAL_P2B_K2_GPG_AGENT_SOCKET_PREFLIGHT_R1**.
