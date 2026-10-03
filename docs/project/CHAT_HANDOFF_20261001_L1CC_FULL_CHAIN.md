@@ -519,3 +519,32 @@ Expected success **of the census only**: `RESULT=PASS_P2B_GPG_AGGREGATE_METADATA
 If no local secret keys, do not auto-generate/import a key, switch to plaintext or bypass synthetic recipient qualification: obtain separate owner approval for an explicit owner-held key creation/recovery plan or a qualified existing external public recipient with separately proven decryption. If the census finds an encryption-capable secret subkey excluded by R1, narrowly repair only the selector, then repeat owner-confirmed synthetic encrypt/decrypt. Keep `recipient_candidate.private` and `gpg_private_diagnostic.txt` from the prior failed attempt private and local. No production volume backup, service stop, restore, provider calls or activation are authorized.
 
 **NEXT_GATE=LOCAL_P2B_GPG_METADATA_CENSUS_R1**.
+
+## 18. 2026-10-02 P2B GPG census actual operator PASS — dedicated recoverable recipient decision
+
+Supersedes §17's pending census. User fetched exact private PR #59 HEAD **7a303411945854581847513512da92f13b181512**, Git blob **b2c2350f7e4060caf46c74408ef3c8f3a0ce4480**, 7425 bytes; operator local SHA-256 **3090b1821523990cde5728016b24ffdb685c6124e804e2a5cb341f3943a2cac8**. Ref/size/blob verification, Python AST parse and fixture self-test PASS. Actual Mac census returned every public and secret key/subkey count zero (including encryption capabilities and R1 matching primary fingerprints), `aggregate_classification=NO_SECRET_PRIMARY_RECORDS_IN_ACTIVE_LOCAL_GPG_HOME`. There were NO fingerprints/emails/key identities printed or raw GPG listings persisted, no Docker/image/config/live-volume commands, no keys created/imported/exported and no network retrieval:
+
+~~~
+public_primary_records=0
+public_subkey_records=0
+secret_primary_records=0
+secret_subkey_records=0
+r1_filter_matching_primary_fingerprint_records=0
+recipient_encryption_and_decryption_qualified=NO
+production_image_and_config_export=BLOCKED_NOT_EXECUTED
+RESULT=PASS_P2B_GPG_AGGREGATE_METADATA_CENSUS_R1
+~~~
+
+The historic PR #58 `FAIL_NO_ELIGIBLE_EXISTING_SECRET_KEY` is now fully explained **within the active GPG home**: empty public and secret keyrings; no parser patch or unchanged rerun indicated. The census does NOT exclude separately configured GNUPGHOME locations or externally held recoverable keys. Existing owner consent for confidential immutable image/exact potentially secret-bearing configuration preservation under draft PR #57 is still blocked on a verified intended recipient. Do not generate/import a key as an implicit continuation or use plaintext/symmetric fallback.
+
+Private new **DRAFT PR #60** is *design/owner-consent only*:
+- branch `qualification/current-freellmapi-p2b-recoverable-recipient-approval-r1`
+- HEAD **79704a71ad30731d5dc3a219f977408d1e93bf6e**
+- exactly one documentation file `docs/qualification/CURRENT_FREELLMAPI_P2B_K2_RECOVERABLE_GPG_RECIPIENT_APPROVAL_20261002.md`
+- Git blob **33e19fddc62db4f1b815d04535bb5226441965b7**, **6962 UTF-8 bytes**.
+- Request a **new explicit owner authorization** to establish a recoverable owner-controlled GPG public-key recipient in a fresh private GNUPGHOME, with interactive protected passphrase, independent protected/off-device recovery copy and independently recovered-key decrypt of fabricated challenge; no passphrase/fingerprint/private-key bytes in chat or GitHub. Or separately nominate a previously owned external recipient with demonstrated corresponding decryption. PR #60 makes NO keys/recovery artifacts or production exports.
+- Proposed next implementation only *after* consent: freeze an exact script/procedure that privately checks installed GPG algorithm support, guides interactive key setup and secure recovery custody, tests synthetic encryption/decryption under a separately recovered key home, then privately confirms exact intended recipient. If these fail, P2B remains blocked. Only afterwards prepare a separate pinned direct-to-encryption image/config export (without reading /app/data and without service disruption).
+
+**CURRENT:** P0 metadata=PASS, P1 synthetic WAL/artifact=PASS, P2A host/tool preflight=PASS, GPG aggregate census=PASS (active home empty), usable recipient=NONE QUALIFIED, P2B production image/config archives=NOT CREATED, P2C full production data backup and P2D real-data restore=NOT AUTHORIZED, PR #51 source-qualified default OFF/draft/unmerged, `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=OWNER_AUTHORIZATION_P2B_K2_RECOVERABLE_GPG_RECIPIENT**. Prior consent to encrypt existing artifacts does not permit unattended key creation, secret-key export or recovery media writes. On owner authorization, keep any key and recovery data exclusively local/off-device; never ask for secret values, private fingerprints or passwords in chat.
