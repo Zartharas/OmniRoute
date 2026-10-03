@@ -1336,3 +1336,23 @@ Existing narrow P2B encrypted current immutable image + potentially secret-beari
 `P2B_K2_BOTH_PASSPHRASE_CUSTODY=PENDING_OWNER`  
 `P2B_IMAGE_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
 `NEXT_GATE=OWNER_CONFIRM_EXTERNAL_MEDIA_SEPARATION_AND_TWO_PASSPHRASE_CUSTODY`
+
+## 55. 2026-10-03 owner authorizes continued P2B preparation; PR #68 local custody/recipient admission pending
+
+Owner reply after PR #67 external ciphertext-copy PASS: **"Yes, I authorize, and keep on working."** This authorizes continuing P2B qualification/staging under prior scoped PR #57 approval, but is **not itself a factual attestation** that external drive has been safely ejected, kept physically separate, or both distinct original private-key and AES256-wrapper passphrases remain accessible. Do not mark those checks PASS based on generic authorization.
+
+Accepted evidence remains: real R3 PR #66 same-Mac independent recovered protected-key import and fresh synthetic decrypt PASS; real PR #67 OS-reported external mounted-media copy of ONLY 732-byte pre-existing AES256-encrypted recovery wrapper, mode0700 folder/mode0600 file, independent external re-read SHA-256 **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3** matching original ciphertext, unchanged source and stable external device identity. PR #67's actual operator output says owner ejection/separate physical custody `STILL_PENDING` and two-passphrase custody `NOT_VERIFIABLE_BY_SCRIPT`. Original owner keyhome and encrypted wrapper preserved; neither image/config nor current full RW data volume exported.
+
+New private draft **PR #68**: `qualification/current-freellmapi-p2b-k2-custody-recipient-admission-r1`, frozen HEAD **e3ce8e478d29c7bda7bd996c276bdc0b41bb82e2** based directly on PR #67 `15350b37d2644de04526dbd191346ff097c6600a`, two added files / three narrow commits, zero behind:
+- `scripts/qualification/current-freellmapi-p2b-k2-owner-custody-recipient-admission-r1.py`, Git blob **a763e56d95686162c91b45b640b10671ea59b452**, **9767 UTF-8 bytes**. Read-only local check of original private owner root/key home/0600 intended-recipient selector and original encrypted wrapper SHA, in-memory dedicated-home GPG public and secret primary metadata, matching exact single original candidate plus a matching live public/secret encryption subkey ID. Never print fingerprint/key UID/passphrase or actual drive ID. Owner is prompted for four **nonsensitive factual confirmation tokens**: `EJECTED`, `SEPARATED`, `BOTH_RETAINED`, `INTENDED`. Missing/negative response => PENDING, never automatic PASS. No GPG decrypt/import/export/key creation, Docker, live volume, current image/config, provider/network or service action. Mac syntax/selftest/real owner admission PENDING.
+- `docs/qualification/CURRENT_FREELLMAPI_P2B_K2_OWNER_CUSTODY_AND_NEXT_IMAGE_EXPORT_PLAN_20261003.md`, Git blob **172533f768e67601432f117b991e9da354f80f64**, **8296 UTF-8 bytes**, records accepted recovery/copy, pending owner custody, and conditional design for next privately PINNED direct-to-GPG-ciphertext export of the exact *already-running immutable original* Docker image and confidential exact recreation config; zero plaintext files and before/after live nonmutation checks. This is a DESIGN not an executable production export.
+
+Until script admission PASS, actual original image and exact potentially credential-bearing config export remains **BLOCKED_NOT_EXECUTED**, even though narrowly scoped owner approval for such future encrypted export was previously recorded under PR #57. P2C writer-quiesced coherent current /app/data archive, P2D isolated actual-data restore, P2E original service actions and L1C-C PR #51 activation remain separate unapproved gates, `ROLLBACK_READY=NO`.
+
+`P2B_K2_LOCAL_KEY_RECOVERY_R3=PASS`  
+`P2B_K2_EXTERNAL_ENCRYPTED_CIPHERTEXT_COPY_PR67=PASS_732B_SHA`  
+`P2B_K2_OWNER_EJECTION_AND_PHYSICAL_SEPARATION=PENDING_FACTUAL_ADMISSION`  
+`P2B_K2_TWO_DISTINCT_PASSPHRASES=PENDING_FACTUAL_ADMISSION`  
+`P2B_K2_INTENDED_RECIPIENT_ADMISSION_PR68=MAC_PENDING`  
+`P2B_IMAGE_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
+`NEXT_GATE=LOCAL_P2B_K2_OWNER_CUSTODY_AND_INTENDED_RECIPIENT_ADMISSION_R1`
