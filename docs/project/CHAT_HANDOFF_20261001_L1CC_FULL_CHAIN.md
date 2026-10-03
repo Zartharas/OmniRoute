@@ -811,3 +811,54 @@ python3 -B "$SCRIPT"
 On Mac `RESULT=PASS_P2B_K2_GPG_AGENT_SOCKET_PREFLIGHT_R1` is a diagnostic-only PASS. It should return `*_gpgconf_reported_socket_path_bytes`, `*_reported_socket_status`, `failed_R2_existing_agent_no_autostart_probe` and `existing_encrypted_recovery_wrapper_sha256_nonmutation=PASS`. If GPGCONF fails, preserve/fail-closed; never derive a guessed socket location as established. No production archive has been created; no recovered-key decrypt qualified; no off-device backup custody proven. PR #51 remains source-qualified default OFF/draft/unmerged, and P2C–P2E remain unapproved.
 
 **NEXT_GATE=LOCAL_P2B_K2_GPG_AGENT_SOCKET_PREFLIGHT_R1**.
+
+## 24. 2026-10-03 PR65 owner Mac PASS; short-path agent-qualified recovery R3 (PR #66)
+
+Owner fetched correct PR #65 pin `1aaeb3a877ac22ad57ab526a322c5b8c020b357f` / `3935e8ffe1d2fcbeb2790c9fe565435974380e37` / 8353 bytes; local SHA256 `949d8165551ebdf47d2ec26d6c7e95d3230e2a8e74c5d8e876dd3477cb887bd3`; Git checks/Python AST/synthetic selftest and actual owner Mac terminal `RESULT=PASS_P2B_K2_GPG_AGENT_SOCKET_PREFLIGHT_R1`. Original exact AES256 encrypted recovery-wrapper SHA unchanged. Previous R2 failed test home present/permissions PASS. GPGCONF agent-socket reported/resolved byte lengths: original owner home **89/89** and PRESENT_SOCKET; failed nested R2 home **103/103**, socket presently ABSENT, no-autostart check not performed; new empty short comparison home **29/37**, socket absent (expected), removed. None >= nominal macOS 104 bytes, but 103 bytes is very close including required string termination. This suggests, but DOES NOT PROVE, an agent/socket-address constraint behind R2 import rc2 and PR64 broken-pipe classification; GnuPG can use hashed/redirected paths. No actual recovered-key import was attempted by PR65.
+
+Private **DRAFT PR #66** HEAD **17d9e4a4e802bd61af4fb164bd0b522723426676** based directly on PR65 head `1aaeb3a877ac22ad57ab526a322c5b8c020b357f`; branch `qualification/current-freellmapi-p2b-k2-shortpath-recovery-r3`. Exactly ONE new Bash source file `scripts/qualification/current-freellmapi-p2b-k2-shortpath-recovery-r3.sh`, Git blob **3be748535a8e77482233762141614215abd1a1ce**, **10130 UTF-8 bytes**. Source readback confirmed one ahead/zero behind, no original-key generation/export, wrapper replacement, Docker or network. **Mac Bash syntax/actual owner recovery PENDING**.
+
+### R3 one-shot scope and controls
+
+R3 is the previously consented P2B-K2 **local recovered-key qualification only**, not live P2B archive or deployment. It:
+- Verifies EXACT original protected root `/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r`, original dedicated key home and `secret_key_recovery.gpg` owner/type/modes/size and encrypted ciphertext baseline SHA `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3`. No new original key generation or private-key reexport.
+- Creates only ONE fresh mode0700 short `/tmp/okr3_XXXXXXXX` disposable GNUPGHOME, validates GPGCONF-derived reported AND physically resolved agent socket lengths each <=80 bytes, explicitly launches **that isolated test home's agent**, requires an existing user-owned socket and actual successful `gpg-connect-agent --homedir SHORT --no-autostart 'GETINFO pid' /bye`, with no path/PID/raw error emitted.
+- Only after agent readiness asks operator to type local **RECOVER_R3** (never enter passphrases in chat); writes a 0600 private once-only attempt marker to BLOCK unchanged repeat after protected data flow begins. Decrypts the existing AES256 wrapper directly through an anonymous pipe into the NEW short-home protected-key import. Two subprocess exit codes printed distinctly as `R3_existing_wrapper_decrypt_rc` and `R3_shortpath_secret_import_rc`; if both are 0, privately verifies matching restored primary and encryption subkey and tests recovered private-key decrypt of a NEW fabricated random challenge encrypted to original public recipient.
+- Exit trap validates original encrypted wrapper SHA even on failure, kills ONLY the new short-home agent and deletes ONLY the guarded freshly created temporary R3 test directory. It preserves original key/wrapper, protected local diagnostics, both owner passphrases and the historical failed R1/R2 disposable homes. On success only the intended-recipient fingerprint candidate file is held privately mode0600. Do not upload `gpg_shortpath_recovery_r3_PRIVATE.txt`, original keyring, encrypted recovery wrapper, private fingerprint or passphrases.
+- SAME Mac independently restored test home is NOT off-device custody. P2B actual confidential current immutable image/exact config export remains BLOCKED pending successful restored-key proof AND separately verified owner-controlled/off-device encrypted recovery-copy custody (including both separate owner passphrases). P2C current live volume writer-quiesced backup, P2D isolated real-data restoration, P2E original service actions and L1C-C default-off PR #51 activation remain unapproved.
+
+### Exact next Mac command — ONLY final PR66 source
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-shortpath-recovery-r3"
+COMMIT="17d9e4a4e802bd61af4fb164bd0b522723426676"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-shortpath-recovery-r3.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_shortpath_recovery_r3.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_R3_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "10130" ] || { echo FAIL_P2B_K2_R3_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "3be748535a8e77482233762141614215abd1a1ce" ] || { echo FAIL_P2B_K2_R3_SCRIPT_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2B_K2_R3_BASH_SYNTAX; exit 1; }
+echo "p2b_k2_r3_source_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Owner interaction only: type `RECOVER_R3` after the new isolated agent has PASSED its socket/contact checks. Any GPG pinentry uses the **existing AES256 recovery-wrapper passphrase**, possibly later the distinct original private-key passphrase. Never paste either value, raw diagnostic file or private recipient identity. **The private R3 attempt marker forbids automatic/unchanged rerun**, whether the import succeeds or fails; if it fails after confirmation, preserve the fixed failure and review before any new iteration.
+
+Expected ONLY if owner Mac really passes:
+`new_shortpath_agent_socket_and_contact=PASS`;
+`R3_existing_wrapper_decrypt_rc=0`;
+`R3_shortpath_secret_import_rc=0`;
+`R3_independent_recovered_primary_and_encryption_subkey=PASS`;
+`R3_independent_shortpath_synthetic_decryption=PASS`;
+`original_encrypted_recovery_wrapper_sha_nonmutation=PASS`;
+`RESULT=PASS_P2B_K2_SHORTPATH_ISOLATED_RECOVERY_R3`.
+
+**NEXT_GATE=LOCAL_P2B_K2_SHORTPATH_AGENT_QUALIFIED_RECOVERY_R3**. If successful, next gate is separately retained/off-device owner-controlled encrypted-wrapper copy and intended-recipient confirmation, NOT an automatic image/config export. ROLLBACK_READY=NO.
