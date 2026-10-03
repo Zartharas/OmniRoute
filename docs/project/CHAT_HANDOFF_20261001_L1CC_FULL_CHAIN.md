@@ -1234,3 +1234,60 @@ All status and numeric host free-space markers are safe to share. Do NOT upload 
 Only after R2 actual PASS: review and publish a separately PINNED narrowly consented PR57 direct-to-EXISTING-GPG-recipient encrypted preservation of exact immutable original Docker image and confidential exact container recreation configuration. Still **NO P2C current writer-quiesced /app/data full WAL snapshot, P2D real-data isolated restore, P2E service action, no L1C-C PR51 activation**. PR51 remains draft/default OFF/unmerged; `ROLLBACK_READY=NO`.
 
 **NEXT_GATE=LOCAL_P2B_EXACT_METADATA_AND_HOST_CAPACITY_PREFLIGHT_R2**.
+
+## 32. 2026-10-03 actual PR72 read-only original identity/host capacity PASS; PR73 scoped exact protected P2B export next
+
+Supersedes §31's PR72 Mac pending. User fetched exact frozen private PR72 HEAD **7ba63303fcd28cfc3f7297111b3a4c254439f1fc**, script blob **1b9e9d2e4cfdaa97a431520afaae2a03350db2e6**, **12814 UTF-8 bytes**; ref/size/blob/Mac Bash -n PASS. Operator SHA256 **7437cc0d4e4d59cbd01593e57be38e9406d23ad9991195d1a505e8b198209dec**. Actual **`RESULT=PASS_P2B_EXACT_METADATA_AND_HOST_CAPACITY_PREFLIGHT_R2`**: original source HEAD, original running healthy full CID and image ID, canary OFF/restart0/OOM false, original current RW named /app/data VOLUME METADATA ONLY, three external RO token/policy mount DESTINATION/type/RW, three 127.0.0.1 host ports, network; qualified original GPG recipient and AES256 wrapper SHA nonmutation; PR71 existing private synthetic GPG DECRYPTION_OKAY check; Docker/source/wrapper post nonmutation all PASS. Available host Downloads **2155976224 KiB**, original image inspection .Size **3049822395 bytes**, conservative host planning floor **7005262 KiB**: `host_space=PASS_ESTIMATE_ONLY`. Exact Docker VM available bytes and actual image save tar/ciphertext size NOT measured. No image/config export yet. Prior independently recovered protected recipient PR66, 732B encrypted external recovery ciphertext SHA PR67, explicit owner ejection/separate custody/two private passphrases/intended recipient PR68, and original dedicated GPG keyhome NEW synthetic decrypt PR71 remain accepted. Preserve historic PR69 TIMEOUT failure as evidence but DO NOT add another blind GPG research gate.
+
+### Private DRAFT PR #73 — one direct-to-owner-recipient encrypted P2B implementation, execution PENDING
+
+- Branch `qualification/current-freellmapi-p2b-exact-image-config-encrypted-export-r1`
+- Frozen FINAL HEAD **bda77430ab2f947206b31cc64005c09e00a6ebac**, directly atop frozen PR72 HEAD **7ba63303fcd28cfc3f7297111b3a4c254439f1fc**; two small commits, ONE new Python stdlib file, zero behind.
+- Source `scripts/qualification/current-freellmapi-p2b-exact-image-config-direct-encrypted-export-r1.py`
+- Git blob **088c00311fdc4648b28b3b454a4e7a02cd49d46c**, exactly **29276 UTF-8 bytes**, 616 source lines. Connector fetch/lineage + static trust/secrecy markers checked; **Mac Python AST and --self-test NOT YET RUN; original-image/config EXPORT NOT EXECUTED**.
+- Authorized scope was explicitly and narrowly granted in private PR57: exact ORIGINAL immutable image and potentially credential-bearing exact original Docker container recreation inspect JSON encrypted locally. NOT current live /app/data SQLite/WAL data volume contents, external RO policy/token SOURCE FILE CONTENTS, provider/AI calls, new/live container, shutdown/restart, image load, deploying candidate, merging PR51 or enabling L1C-C.
+- Before source stream: exact original live original container `1f42509a5cd8dc8cb317797d7e8fc120325aaf23009c4b87ef59c8f5e73214a2` and immutable image `sha256:873977ab3cc6b1e4a25c88a0afb00dfee6cda1f90fb855f5d9aa32c28d424d49`, original TAG `omniroute:r16-32-freellmapi-preactivation-f8bc751312da` pinned to ID/size, exact live RW /app/data volume name metadata, external 3 RO bind destinations/type/RW, local host ports/network/canary OFF, original repo HEAD `470a9eb5d5014c0df116c9e3c5b6ae3853bda021`, unchanged recovery-wrapper SHA **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3**, valid protected owner FPR selector privately and fresh estimated host capacity.
+- Owner enters local **`EXPORT_P2B_IMAGE_CONFIG`** before any export. Script creates ONE NEW, nonoverwritable 0700 private Downloads root `~/Downloads/omniroute_p2b_original_image_config_export_r1_PRIVATE`. Streams `docker image save` exact original validated TAG *ONLY* via anonymous plaintext pipe into GPG recipient-encrypted 0600 .partial file, producer/encrypter both exit0 required for atomic cipher rename. Confidentially decrypts ciphertext ONLY through anonymous pipe into a FULLY CONSUMED non-extracting streaming TAR validator: original manifest RepoTag + referenced layers, config JSON SHA-256 exactly equals pinned image ID, GPG rc0 and validator rc0. No TAR listing/extraction/plaintext file or secret debug text emitted/persisted. Separately streams potentially secret-bearing exact `docker container inspect ORIGINAL_CID` JSON straight into a second qualified owner-GPG ciphertext via anonymous pipe (NEVER raw inspect JSON printed or saved); verifies GPG decrypt to bounded in-memory JSON parser for original CID/image/name/current named volume, RO bind destination/type/RW, host loopback/network and canary OFF. Captures private Docker/GPG/validator stderr ONLY mode0600 locally, outputs sanitized ciphertext SHA/byte sizes and private mode0600 manifest, original full selected live/image/worktree/wrapper post nonmutation before emitting PASS. Failed partial artifacts retained privately (no silent overwrite).
+- Synthesized `--self-test` fabricates tiny TAR, image config SHA/tag/layer manifest and safe synthetic inspect JSON; does NOT access owner keyring, Docker, current data or provider. AST and synthetic selftest MUST succeed before owner token and actual export.
+- A possible PASS is LOCAL P2B IMAGE and encrypted CONFIDENTIAL CONFIG only. No off-device custody of these large artifacts claimed, current live /app/data RW volume NOT preserved. P2C coherent writer-quiesced WAL-aware current-volume backup, P2D isolated actual-data restore, P2E live service return and PR51 L1C-C activation are separate owner authorization gates. `ROLLBACK_READY=NO`.
+
+### EXACT next owner Mac command — PR73 integrity + fabricated fixture; owner-confirmed scoped P2B execution
+
+**Do not share actual local recipient identifier, passphrase, plaintext Docker inspect/env/host RO bind SOURCE, raw private GPG stderr, or private manifest contents. The encrypted Docker inspect config itself is confidential.** Run ONLY this final pinned source, not prior provisional commits:
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-exact-image-config-encrypted-export-r1"
+COMMIT="bda77430ab2f947206b31cc64005c09e00a6ebac"
+FILE="scripts/qualification/current-freellmapi-p2b-exact-image-config-direct-encrypted-export-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_exact_image_config_direct_encrypted_export_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_EXPORT_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "29276" ] || { echo FAIL_P2B_EXPORT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "088c00311fdc4648b28b3b454a4e7a02cd49d46c" ] || { echo FAIL_P2B_EXPORT_BLOB; exit 1; }
+
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_exact_export_python_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_EXPORT_SYNTHETIC_FIXTURE; exit 1; }
+echo "p2b_exact_export_source_and_synthetic_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+
+python3 -B "$SCRIPT"
+)
+~~~
+
+At owner confirmation prompt type **`EXPORT_P2B_IMAGE_CONFIG`** ONLY if approving the existing narrow P2B export now. If the qualified original GPG key is privately requested through pinentry during confidential decrypt verification, enter its existing passphrase locally only. This operation may write large ENCRYPTED ciphertext files; DO NOT upload them or the private diagnostics. Expected success ONLY after actual owner Mac run with BOTH artifacts created and their full confidential decrypt validators accepted:
+`original_immutable_image_encrypted_stream=PASS`
+`original_image_ciphertext_decrypt_full_tar_and_image_config_SHA=PASS`
+`exact_original_container_config_encrypted_stream=PASS`
+`confidential_exact_container_inspect_JSON_decrypt_and_semantics=PASS`
+`original_live_identity_source_worktree_and_recovery_wrapper_nonmutation=PASS`
+`original_live_identity_postcheck=PASS`, `original_git_worktree_postcheck=PASS`, `encrypted_recovery_wrapper_postcheck=PASS`
+`RESULT=PASS_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_ENCRYPTED_EXPORT_R1`.
+
+If any step fails, STOP. Do not bypass integrity checks, retry unchanged, access current /app/data or assume full rollback. Keep private partial ciphertext/log locally and report only normal sanitized terminal markers. Once P2B accepted, return to bounded live release path; request distinct P2C authorization before coherent current live-volume capture, P2D actual-data restore and P2E interruption.
+
+**NEXT_GATE=LOCAL_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_DIRECT_ENCRYPTED_EXPORT_R1**.
