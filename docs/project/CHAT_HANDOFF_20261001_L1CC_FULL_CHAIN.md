@@ -915,3 +915,29 @@ Expected after actual Mac copy success:
 Existing previously scoped P2B exact original immutable image and potentially credential-bearing Docker config direct-to-encryption preservation stays BLOCKED until BOTH successful external copy evidence and user custody confirmation + local intended-recipient approval. P2C coherent writer-quiesced complete production volume backup, P2D real-data isolated restoration, P2E original live service changes, and activation of default-OFF/frozen PR #51 remain separate unapproved gates. `ROLLBACK_READY=NO`.
 
 **NEXT_GATE=OWNER_EXECUTE_EXTERNAL_CIPHERTEXT_ONLY_COPY_AND_VERIFY_R1**.
+
+## 26. 2026-10-03 P2B-K2 external ciphertext copy actual Mac PASS; safe ejection and separate custody next
+
+Supersedes §25's PR #67 Mac execution pending marker. Operator fetched exact private draft PR #67 HEAD **15350b37d2644de04526dbd191346ff097c6600a**, Git blob **f77b0c0b90c50e05b7b89c894c1cc40573194116**, exactly **10912 bytes**, local script SHA-256 **2ed8fc938737a28f47037adca6d85dd93e8f0f1ede4d21b1588f947b98901a4d**. Ref/size/blob, Python AST and embedded synthetic external-volume fixture PASS. Exact Mac result **`RESULT=PASS_P2B_K2_EXTERNAL_CIPHERTEXT_COPY_AND_SHA_R1`**.
+
+Operator selected an actual externally mounted writable macOS disk privately via the hidden prompt (the drive's name, actual path, identity and UUID were NOT given to ChatGPT/GitHub) and explicitly entered local `COPY_ENCRYPTED_RECOVERY`. Script copied ONLY existing already-AES256-encrypted `secret_key_recovery.gpg`, **732 bytes**. Destination fresh directory `OmniRoute_P2B_K2_Recovery` mode0700, encrypted copy mode0600. macOS `diskutil` external device check and writable matching mountpoint PASS; external device identity stable during transfer; independent external re-read SHA256 **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3** matched original PRE/POST; source encrypted wrapper SHA nonmutation PASS. No GPG key operation, wrapper decrypt, original private keyhome/raw private-key packet export, Docker/current production image/configuration/data-volume access, service mutation, provider/network action or L1C-C activation.
+
+PR #66 preceding owner Mac R3: independently imported the SAME existing protected recovery into a separate fresh short-path GNUPGHOME (wrapper decrypt rc0; secret import rc0; primary/Cv25519 encryption subkey match; new synthetic decrypt PASS), original ciphertext unchanged, disposable test home removed. Combined qualification:
+`LOCAL_RECOVERED_KEY_CRYPTOGRAPHIC_PROOF=PASS`
+`EXTERNALLY_MOUNTED_MEDIA_ENCRYPTED_RECOVERY_COPY_AND_READBACK=PASS_732_BYTES`.
+
+**Exact outstanding gate, NOT yet passed:** Actual PR #67 operator output explicitly states:
+~~~
+owner_physical_ejection_and_separate_custody=STILL_PENDING
+owner_two_passphrase_recovery_custody=NOT_VERIFIABLE_BY_SCRIPT
+production_image_config_export=BLOCKED_NOT_EXECUTED
+next_gate=OWNER_CONFIRM_EXTERNAL_MEDIA_SEPARATION_AND_TWO_PASSPHRASE_CUSTODY
+~~~
+
+Owner should SAFELY EJECT external drive through macOS and physically retain it away from original Mac. Independently preserve/reconfirm access to BOTH distinct original GPG private-key passphrase AND AES256 recovery-wrapper passphrase and concise private recovery instructions (never paste either, local drive path, UUID, original key fingerprint, private diagnostics, recipient_candidate.private or recovery artifact to ChatGPT/GitHub). Owner may attest ONLY simple nonsensitive booleans: external media was safely ejected, drive is separately held, original private-key passphrase remains available, AES256 wrapper passphrase remains available. If any is uncertain, keep corresponding gate PENDING; do not infer from PR #67's file-copy PASS. The exact intended recipient must also be locally confirmed using the private selector before any production-secret-bearing export.
+
+After affirmative owner custody/recipient confirmation, stage a new single-purpose pinned current immutable Docker IMAGE and exact potentially secret-bearing Docker recreation CONFIG preservation script under the previously authorized narrow PR #57, streaming directly into encryption with zero plaintext persistent writes and original app-volume/service nonmutation. This does NOT automatically execute export, authorize P2C production `/app/data` backup/writer quiescence, P2D real-data isolated restore, P2E service action, live model/provider calls or default-OFF PR #51 L1C-C merge/activation. `ROLLBACK_READY=NO`.
+
+Private GitHub records: PR #66 accepted same-Mac recovered-key PASS, draft PR #67 now recorded external encrypted recovery copy PASS; controlling PRM #45 updated. Public `docs/project/CURRENT_STATUS.md` §54 records same scope. Frozen PR #67 HEAD remains **15350b37d2644de04526dbd191346ff097c6600a**, blob **f77b0c0b90c50e05b7b89c894c1cc40573194116**; no need to rerun it, and it deliberately refuses overwriting the new external recovery folder.
+
+**NEXT_GATE=OWNER_CONFIRM_EXTERNAL_MEDIA_SEPARATION_AND_TWO_PASSPHRASE_CUSTODY**.
