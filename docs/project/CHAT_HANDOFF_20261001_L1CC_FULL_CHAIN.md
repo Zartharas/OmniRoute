@@ -941,3 +941,60 @@ After affirmative owner custody/recipient confirmation, stage a new single-purpo
 Private GitHub records: PR #66 accepted same-Mac recovered-key PASS, draft PR #67 now recorded external encrypted recovery copy PASS; controlling PRM #45 updated. Public `docs/project/CURRENT_STATUS.md` §54 records same scope. Frozen PR #67 HEAD remains **15350b37d2644de04526dbd191346ff097c6600a**, blob **f77b0c0b90c50e05b7b89c894c1cc40573194116**; no need to rerun it, and it deliberately refuses overwriting the new external recovery folder.
 
 **NEXT_GATE=OWNER_CONFIRM_EXTERNAL_MEDIA_SEPARATION_AND_TWO_PASSPHRASE_CUSTODY**.
+
+## 27. 2026-10-03 owner authorizes continued P2B staging, NOT automatic physical custody — PR #68 next
+
+Immediately after accepted PR #67 external encrypted recovery-copy PASS, owner said **"Yes, I authorize, and keep on working."** Treat as permission to continue source-only P2B qualification/preparation in user's OWN private fork, not as a factual assertion that drive has since been safely EJECTED/physically separated, or that both actual distinct passphrases are available. PRIOR real PR #67 operator result still `owner_physical_ejection_and_separate_custody=STILL_PENDING`, `owner_two_passphrase_recovery_custody=NOT_VERIFIABLE_BY_SCRIPT`. Do not overstate. No P2B production image/config export has occurred and `ROLLBACK_READY=NO`.
+
+Previously accepted:
+- PR #66 local R3: original exact pre-existing protected key was independently imported in a separate newly agent-qualified short-path GNUPGHOME; wrapper decrypt rc0, isolated secret import rc0, matching recovered primary/Cv25519 encryption subkey and fresh synthetic decrypt PASS. Preserved original keyhome and encrypted recovery wrapper.
+- PR #67 real Mac: exact immutable head `15350b37d2644de04526dbd191346ff097c6600a`; script blob `f77b0c0b90c50e05b7b89c894c1cc40573194116` / 10912 bytes; local SHA `2ed8fc938737a28f47037adca6d85dd93e8f0f1ede4d21b1588f947b98901a4d`. Mounted external drive check and COPY_ENCRYPTED_RECOVERY confirmation PASS; copied ONLY existing already encrypted `secret_key_recovery.gpg` 732 bytes to new 0700/0600 external folder/file and reread independent SHA `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3` matching source; original wrapper unchanged and destination device identity stable.
+
+Private NEW **DRAFT PR #68** `qualification/current-freellmapi-p2b-k2-custody-recipient-admission-r1`, exactly THREE source/doc-only commits / TWO newly added files directly on frozen PR #67. HEAD **e3ce8e478d29c7bda7bd996c276bdc0b41bb82e2**.
+1. `scripts/qualification/current-freellmapi-p2b-k2-owner-custody-recipient-admission-r1.py`; Git blob **a763e56d95686162c91b45b640b10671ea59b452**, **9767 UTF-8 bytes**. This script does NOT copy/decrypt/import/export any keys or use Docker/provider/network/production data/config/image. It verifies existing protected root/dedicated GPG home, 0600 private local `recipient_candidate.private` from R3, original encrypted wrapper SHA, EXACT single public+secret dedicated primary full fingerprint match and at least one SAME matching live public+secret encryption subkey key ID. All GPG listing text remains captured privately in memory; no UID, key ID, fingerprint, passphrase, external drive name/path or raw GPG errors ever printed. Then asks owner to attest ONLY four nonsecret explicit conditions in interactive terminal:
+   - type `EJECTED` iff external recovery drive actually safely ejected by macOS,
+   - type `SEPARATED` iff that drive is physically kept separately from the Mac,
+   - type `BOTH_RETAINED` iff original GPG-key passphrase and different AES256 recovery-wrapper passphrase remain separately and privately available (NEVER paste actual values),
+   - type `INTENDED` iff existing dedicated owner recipient is correct for P2B.
+   Any declined/unanswered is `RESULT=PENDING_P2B_K2_OWNER_CUSTODY_AND_INTENDED_RECIPIENT_ADMISSION_R1`, never a fabricated PASS. Even positive answers are OWNER factual attestation, not independently observed physical proof. Mac syntax/synthetic fixtures and owner execution PENDING.
+2. `docs/qualification/CURRENT_FREELLMAPI_P2B_K2_OWNER_CUSTODY_AND_NEXT_IMAGE_EXPORT_PLAN_20261003.md`; blob **172533f768e67601432f117b991e9da354f80f64**, **8296 UTF-8 bytes**. This is DESIGN ONLY for next separate pinned exact original immutable Docker image and potentially secret-bearing exact Docker recreation config direct-to-qualified-GPG encryption. Require fresh image/container/volume identity and canary-OFF/restarted-state checks, current host/Docker storage budget, 0700 local ciphertext destination, no plaintext image tar or raw inspect JSON disk files, pipefail + encrypted .partial atomic promote, confidential decrypt verification, sanitized manifest and before/after original deployment nonmutation. Current source secret/policy RO bind FILE CONTENTS are external dependencies, NOT collected in P2B. Full data-volume rollback remains impossible until separate P2C/P2D and P2E gates.
+
+### EXACT next owner Mac command — R1 local factual custody and intended recipient admission only
+
+This does not copy/modify external media or production Docker. Safely eject and independently secure the external drive BEFORE making an affirmative attestation; if not done, leave it pending.
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-custody-recipient-admission-r1"
+COMMIT="e3ce8e478d29c7bda7bd996c276bdc0b41bb82e2"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-owner-custody-recipient-admission-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_owner_custody_recipient_admission_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_ADMISSION_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "9767" ] || { echo FAIL_P2B_K2_ADMISSION_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "a763e56d95686162c91b45b640b10671ea59b452" ] || { echo FAIL_P2B_K2_ADMISSION_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_k2_admission_python_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_K2_ADMISSION_SYNTHETIC_SELFTEST; exit 1; }
+echo "p2b_k2_admission_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+Expected ONLY after genuine owner answers and source/metadata checks PASS:
+`existing_private_candidate_matches_single_dedicated_public_and_secret_primary=PASS`;
+`unexpired_public_and_secret_encryption_subkey_metadata=PASS`;
+`external_media_safe_ejection=OWNER_ATTESTED`;
+`external_media_independent_physical_custody=OWNER_ATTESTED`;
+`two_distinct_recovery_passphrase_custody=OWNER_ATTESTED`;
+`owner_intended_encryption_recipient=OWNER_ATTESTED`;
+`RESULT=PASS_P2B_K2_OWNER_CUSTODY_AND_INTENDED_RECIPIENT_ADMISSION_R1`.
+
+NEVER provide external-drive name/path/serial, key recipient ID/FPR, both passphrases, original encrypted recovery file or private diagnostic contents. If one factual condition isn't met, script should produce PENDING and no export. The owner's "yes authorize" is not the missing attestation. On real PASS, next action is creating/reviewing ONE separately pinned confidential P2B original image+exact config direct-to-encryption implementation under prior scoped PR #57 authorization; do not treat this as P2C current RW /app/data volume backup, P2D isolated real-data restore, P2E original service action or L1C-C default-OFF PR #51 merge/activation.
+
+`ROLLBACK_READY=NO`.
+**NEXT_GATE=LOCAL_P2B_K2_OWNER_CUSTODY_AND_INTENDED_RECIPIENT_ADMISSION_R1**.
