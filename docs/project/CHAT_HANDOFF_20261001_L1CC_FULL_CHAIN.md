@@ -1110,9 +1110,9 @@ Supersedes §29's diagnostic-pending statement. Operator executed frozen PR70 HE
 ### Private DRAFT PR #71 — one reviewed original-agent terminal update, ONE new fabricated roundtrip
 
 - Branch: `qualification/current-freellmapi-p2b-original-agent-tty-synthetic-r1`
-- Frozen final HEAD **bb563e05884d6304fa10bac6496f332594fa2272**; base frozen PR70 HEAD **fb78db3ef7575b3984b286501d4b3dc0a791a934**
+- Frozen final HEAD **8cdb7aa04567d7a98846ce065d464fe27cb33577**; base frozen PR70 HEAD **fb78db3ef7575b3984b286501d4b3dc0a791a934**
 - Exactly ONE ADDED Python standard-library script: `scripts/qualification/current-freellmapi-p2b-original-agent-tty-synthetic-roundtrip-r1.py`
-- Git blob **a06741e5429130ea4db23047b627ba4883d2511f**, exactly **15336 UTF-8 bytes**, two narrow commits ahead/zero behind, GitHub source readback verified.
+- Git blob **a50024bce859cce795d8939e9d2414e0bb276368**, exactly **15501 UTF-8 bytes**, three narrow commits ahead/zero behind, GitHub source readback verified.
 - First privately reads existing old PR69 GPG stderr into bounded memory and maps the exact `public key decryption failed:` suffix to ONE finite nonsecret error category (never raw error), checks protected original dedicated private owner GPG home/recipient candidate and immutable AES256 secret-recovery wrapper SHA. Real interactive TTY plus actual current owned agent socket and path <=95 reported/resolved bytes and `gpg-connect-agent --no-autostart GETINFO pid` PASS are required. No production Docker, network, provider or RW-volume access.
 - Owner must explicitly type `TEST_SYNTHETIC`; then creates a UNIQUE new owner-private chmod0700 local Downloads synthetic-evidence directory (existing directory blocks unchanged rerun). Refreshes only the EXISTING original local agent's terminal/display routing using documented `gpg-connect-agent --homedir ORIGINAL --no-autostart UPDATESTARTUPTTY`, with no agent kill/restart, persistent config edit or original key modification. The refresh is a testable hypothesis, **NOT** a confirmed historical cause.
 - Generates a new fabricated 64-byte random challenge in process memory, encrypts it to the owner-qualified existing recipient, then does exactly ONE original-home decrypt using normal local GPG pinentry (NO passphrase argv/env, NO loopback). All raw GPG status/identities/errors saved ONLY inside private 0600 local `encrypt_gpg_PRIVATE.txt` and `decrypt_gpg_PRIVATE.txt`; terminal prints only fixed status CODE boolean markers and exact synthetic-match result. Private original AES256 recovery-wrapper SHA rechecked on test failure or success. Does NOT decrypt original wrapped secret, recreate/reexport key, copy external drive or create protected production image/config. If this fails, DON'T run unchanged again or proceed to export.
@@ -1126,15 +1126,15 @@ Supersedes §29's diagnostic-pending statement. Operator executed frozen PR70 HE
 cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
 
 REF="qualification/current-freellmapi-p2b-original-agent-tty-synthetic-r1"
-COMMIT="bb563e05884d6304fa10bac6496f332594fa2272"
+COMMIT="8cdb7aa04567d7a98846ce065d464fe27cb33577"
 FILE="scripts/qualification/current-freellmapi-p2b-original-agent-tty-synthetic-roundtrip-r1.py"
 SCRIPT="$HOME/Downloads/omniroute_p2b_original_agent_tty_synthetic_roundtrip_r1.py"
 
 git fetch --no-tags origin "$REF" || exit 1
 [ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_TTY_SYNTH_REF_DRIFT; exit 1; }
 git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
-[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "15336" ] || { echo FAIL_P2B_TTY_SYNTH_SIZE; exit 1; }
-[ "$(git hash-object "$SCRIPT")" = "a06741e5429130ea4db23047b627ba4883d2511f" ] || { echo FAIL_P2B_TTY_SYNTH_BLOB; exit 1; }
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "15501" ] || { echo FAIL_P2B_TTY_SYNTH_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "a50024bce859cce795d8939e9d2414e0bb276368" ] || { echo FAIL_P2B_TTY_SYNTH_BLOB; exit 1; }
 python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_tty_synthetic_python_syntax=PASS")' "$SCRIPT" || exit 1
 python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_TTY_SYNTH_SELFTEST; exit 1; }
 echo "p2b_tty_synthetic_source_and_fixture=PASS"
@@ -1155,3 +1155,5 @@ At the owner confirmation prompt type ONLY `TEST_SYNTHETIC` if authorizing the s
 A script PASS is SYNTHETIC-only qualification, NOT P2B image/config export or full rollback. On FAIL, keep raw logs private and review only safe summary; no blind repeat or bypass.
 
 **NEXT_GATE=LOCAL_P2B_ORIGINAL_AGENT_TTY_SYNTHETIC_ROUNDTRIP_R1**.
+
+**FINAL PIN CORRECTION:** A third script-only commit hardens Python subprocess GPG output using `os.umask(0o077)` before any fabricated ciphertext is created. The previous provisional PR71 HEAD `bb563e05884d6304fa10bac6496f332594fa2272` is **SUPERSEDED** and must NOT be fetched or run. Frozen FINAL HEAD **8cdb7aa04567d7a98846ce065d464fe27cb33577**, Git blob **a50024bce859cce795d8939e9d2414e0bb276368**, **15501 UTF-8 bytes**. The exact command above already reflects these final pins. Operator Mac run still PENDING.
