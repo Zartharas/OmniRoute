@@ -1252,3 +1252,17 @@ Even a local R2 PASS will NOT establish off-device custody. P2B actual encrypted
 `P2B_PRODUCTION_IMAGE_CONFIG=NOT_EXPORTED`  
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2B_K2_EXISTING_CIPHERTEXT_RECOVERY_ONLY_R2`
+
+## 49. 2026-10-03 P2B-K2 R2 recovery-wrapper decrypt PASS; isolated private-key import rc=2 — diagnostic only next
+
+Owner executed exact private PR #62 frozen HEAD `ad88725e82ebd8fa1814f35d68df528e9fb9cab4`, source blob `01e3baf58f93eca56d01eb15cfdc548627a89b0e` / 7122 bytes; local script SHA-256 `ced9387e7dba989ac2fd0a21b1ceed9669a4bea6471579dda88a00a08041cf69`; Git source and Bash syntax PASS. Existing original dedicated owner keyhome/encrypted recovery/synthetic fixture checks PASS; encrypted recovery wrapper SHA **before R2** `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3`. Owner entered RECOVER. Unlike combined R1 status, R2 isolated subprocess exit codes: **`recovery_wrapper_decrypt_rc=0`**, **`isolated_secret_key_import_rc=2`**, `FAIL_PROTECTED_SECRET_KEY_IMPORT_SIDE`, `RESULT=FAIL_P2B_K2_RECOVERY_ONLY_R2`. Wrapper decryption completed, but separate protected-private-key import failed. R2 post-attempt wrapper hash/nonmutation test was **not reached** and recovered challenge was **not performed**; do not misreport either as PASS. R2 disposable keyhome may hold partial import data. No Docker, production config/image/volume access, original live service mutation, provider calls, new key generation or key reexport. Preserve intact `/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r`, both original owner passphrases, protected wrapper and R1/R2 failed disposable homes. NEVER rerun original key provisioning PR #61 or R2 unchanged and NEVER upload local GPG diagnostics/key material.
+
+New private **DRAFT PR #63**, branch `qualification/current-freellmapi-p2b-k2-import-diagnostic-r1`, immutable head **4c3243b94da8b0a663e0300d8fb13ada97db9fc1** directly above frozen R2 PR #62. Exactly one added diagnostic Python script `scripts/qualification/current-freellmapi-p2b-k2-import-failure-diagnostic-r1.py`, Git blob **aa3ff9eb53cb468ac3c66673dc5c401a2ab7f60c**, **9819 UTF-8 bytes**. Source-only diagnostic; actual Mac syntax/self-test/run PENDING. It locally validates owner/type/mode and SHA of EXISTING ciphertext against pre-R2 reference, privately parses bounded R2 GPG error log into fixed Boolean issue categories **without printing raw stderr/key fingerprints/UIDs/private material**, and aggregates public/secret primary/subkey metadata from exactly one previously created R2 disposable test home. No decrypt/import/export attempt, new key, Docker, original key overwrite, image/config/data access or external key retrieval. GPG metadata listings may refresh only the disposable test home. R2 import rc=2 does not by itself prove zero partial key records. Classifier and parser support fabricated `--self-test`. Use diagnostic result to design a specific R3 fix, not an unguided repeat.
+
+P2B production image/exact configuration export remains **BLOCKED** until an independently restored key and off-device encrypted recovery custody are proven. P2C current full-volume backup, P2D real-data isolate restore and provider/canary remain separately unapproved. PR #51 default OFF/non-live/draft-unmerged; `ROLLBACK_READY=NO`.
+
+`P2B_K2_R2_WRAPPER_DECRYPT=PASS_RC0`  
+`P2B_K2_R2_ISOLATED_KEY_IMPORT=FAIL_RC2`  
+`RECOVERY_WRAPPER_POST_R2_SHA=NOT_YET_RECHECKED`  
+`P2B_IMAGE_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
+`NEXT_GATE=LOCAL_P2B_K2_IMPORT_FAILURE_AGGREGATE_DIAGNOSTIC_R1`
