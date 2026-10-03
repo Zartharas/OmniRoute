@@ -714,3 +714,57 @@ Expected **only after actual operator execution**: `encrypted_recovery_wrapper_m
 On actual diagnostic evidence, build a precisely scoped R3 import correction (not another blind provisioning/decrypt/import retry), then independently establish off-device encrypted wrapper custody before current image/config preservation. **P2B export remains blocked**; P2C current production writer stop/full-volume backup, P2D isolated real-data restore and L1C-C activation remain unapproved.
 
 **NEXT_GATE=LOCAL_P2B_K2_IMPORT_FAILURE_AGGREGATE_DIAGNOSTIC_R1**.
+
+## 22. 2026-10-03 P2B-K2 PR #63 forensic result PARTIAL; next PR #64 GPG-free existing-home filesystem metadata check
+
+Supersedes §21's pending PR #63. Operator Git-verified PR #63 commit **4c3243b94da8b0a663e0300d8fb13ada97db9fc1**, one-file blob **aa3ff9eb53cb468ac3c66673dc5c401a2ab7f60c**, 9819 bytes, local SHA-256 **a5924cebaf1921c11880a7c98ca734b6fcee3fce624fabc5479bb21ce02ab7eb**; Python AST and internal synthetic fixture PASS. Existing `secret_key_recovery.gpg` SHA-256 matched ORIGINAL PRE-R2 `59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3` on this newer diagnostic, so it was unchanged by the prior R2 failure. Private R2 GPG stderr contains *some* agent secret-key-transfer error class marker, but the fixed pinentry, passphrase/cancel, invalid-packet and storage patterns were NO. Do not assert confirmed root cause from regex matching. ONE prior failed R2 disposable test home owner/permissions PASS; public GPG metadata listing **rc0**, secret GPG metadata listing **rc2**, so PR #63's strict both-rc0 condition terminated before printing any aggregate key counts:
+
+~~~
+encrypted_recovery_wrapper_matches_R2_preattempt_sha256=PASS
+diagnostic_pattern_agent_secret_key_transfer=YES
+R2_test_home_public_metadata_listing_rc=0
+R2_test_home_secret_metadata_listing_rc=2
+fixed_error_category=FAIL_R2_HOME_AGGREGATE_GPG_LISTING
+RESULT=FAIL_P2B_K2_IMPORT_FAILURE_AGGREGATE_DIAGNOSTIC_R1
+~~~
+
+This is a **PARTIAL diagnostic** on a failed import, not evidence that no protected key records exist or that actual recovery succeeded. Historical separate-process R2 remains `recovery_wrapper_decrypt_rc=0`, `isolated_secret_key_import_rc=2`. Existing dedicated key, AES256 wrapper, two distinct owner-held passphrases, failed R1/R2 disposable test homes and PRIVATE diagnostic files must remain intact under `/Users/zarthras/.omniroute_p2b_k2_recoverable_gpg_r1_RvVHj22r`. DO NOT rerun PR #61 provisioning, same PR #62 recovery, or failed PR #63 listing script unchanged; do not upload GPG diagnostic output/raw key/home/wrapper/credentials.
+
+### Private new draft PR #64 — no GPG commands, no repeated import/listing
+
+- Branch `qualification/current-freellmapi-p2b-k2-import-forensics-r2`
+- Frozen HEAD **05609719941d1b45a9c641f9c8867ece27cf03ae**
+- Direct parent PR #63 **4c3243b94da8b0a663e0300d8fb13ada97db9fc1**
+- Exactly one new Python script `scripts/qualification/current-freellmapi-p2b-k2-import-filesystem-forensics-r2.py`
+- Git blob **4f7be08284f9f0ed8fc1e9ff00391bac5957a945**, **10365 UTF-8 bytes**, one ahead/zero behind PR #63.
+- Validates expected private original root, current encrypted wrapper SHA and bounded R2 PRIVATE error-log owner/type/modes/sizes; classifies raw log **privately** into finer fixed Boolean categories (e.g. agent send/receive, protected packet array, import error, agent storage, pinentry, passphrase, IO). Prints neither raw error text nor fingerprint/UID/name/key/secret.
+- Discovers exactly one R2 failed disposable test home and reads **filesystem metadata only**: `pubring.kbx`, `pubring.db`, `trustdb.gpg` presence/nonempty, plus protected `private-keys-v1.d` regular 40-character hex keygrip `.key` files COUNT and unusual entries COUNT; never names or key file payloads. Does not invoke GPG at all, including the broken secret-key listing, and does not decrypt/import/export/generate keys or use Docker/network/production.
+- A physical regular private `.key` file is **NOT** sufficient proof of a usable recovered key. Script includes only synthetic pattern fixture `--self-test`, operator Mac syntax/test/actual forensic run still PENDING. The result is diagnostic, not recovery authorization.
+
+### Exact next one-command operator continuation — PR #64
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-import-forensics-r2"
+COMMIT="05609719941d1b45a9c641f9c8867ece27cf03ae"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-import-filesystem-forensics-r2.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_import_filesystem_forensics_r2.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_FORENSICS_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "10365" ] || { echo FAIL_P2B_K2_FORENSICS_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "4f7be08284f9f0ed8fc1e9ff00391bac5957a945" ] || { echo FAIL_P2B_K2_FORENSICS_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_k2_forensics_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_K2_FORENSICS_SYNTHETIC_SELFTEST; exit 1; }
+echo "p2b_k2_forensics_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+Expected only on actual Mac execution: `encrypted_recovery_wrapper_matches_original_R2_sha256=PASS`, refined `private_diagnostic_*=YES/NO`, `failed_R2_private_key_store_dir_present`, `failed_R2_regular_keygrip_packet_file_count`, `RESULT=PASS_P2B_K2_IMPORT_FILESYSTEM_FORENSICS_R2`. The bounded script must fail on wrapper drift, unexpected symlink/permissions or missing/ambiguous previous R2 test home; don't bypass any such safety guard. Never paste PRIVATE GPG diagnostic file itself or original wrapped/secret-key contents, passwords, fingerprint or filename list.
+
+**NEXT_GATE=LOCAL_P2B_K2_IMPORT_FILESYSTEM_FORENSICS_R2**. Following real result, design a strictly targeted R3 isolated secret-key import or owner-local GPG agent correction and preserve original key/wrapper. It must eventually prove recovered-key synthetic decrypt and independent off-device encrypted recovery custody BEFORE existing scoped P2B image/config export. P2C full current live-volume archival/writer quiescence, P2D isolated real-data restore and L1C-C activation remain separately unapproved.
