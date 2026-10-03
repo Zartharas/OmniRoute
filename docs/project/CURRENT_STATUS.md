@@ -1193,3 +1193,17 @@ Only after an operator PASS and private owner confirmation of the intended recip
 `P2C_LIVE_DATA_VOLUME_BACKUP=NOT_AUTHORIZED`  
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1`
+
+## 45. 2026-10-02 P2B-K R1 GPG recipient discovery FAIL-CLOSED; aggregate census next
+
+Owner ran exact PR #58 3794-byte Git-blob-verified script at `a3b1389399065b9bb831aaf8d6bd60ca006b5390`, blob `6c1cb968c81050156c90ea0991f9a5f816f3225e`, local SHA-256 `8ff3b3403d1805ebddaac1fedeef4544cde9aaad2a562dc6b90b164a947e9aa6`. Fetch/integrity/Bash syntax PASS, then terminal **`FAIL_NO_ELIGIBLE_EXISTING_SECRET_KEY`**, `RESULT=FAIL_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1`; local evidence `/Users/zarthras/Downloads/omniroute_p2b_key_qualification_r1_r13IKIBy`. R1 used a narrow selector: secret primary `sec` with uppercase `E` in GPG capability field and following full `fpr`. This may exclude encryption-subkey/stub arrangements; it does **not** demonstrate the entire keyring is empty. No synthetic encrypt/decrypt challenge ran. Original output confirms Docker NONE, config accessed NO, image exported NO, production volume accessed NO, external network commands NONE, key generation/import NO and recipient identities not emitted. **The separately authorized P2B image/config export remains BLOCKED.**
+
+Owner-fork **draft PR #59**, branch `qualification/current-freellmapi-p2b-keyring-census-r1`, immutable source HEAD **7a303411945854581847513512da92f13b181512**, one script-only commit/file above historical R1 PR #58: `scripts/qualification/current-freellmapi-p2b-gpg-metadata-census-r1.py`, Git blob **b2c2350f7e4060caf46c74408ef3c8f3a0ce4480**, **7425 UTF-8 bytes**. This narrow read-only GPG *metadata* diagnostic reports only aggregate public/secret primary/subkey counts, declared encryption capabilities, unavailable stubs and a coarse classification; all raw identities, UIDs, fingerprints and GPG stderr stay unprinted/unpersisted. Its embedded parser fixture self-test covers empty, public-only, primary missing aggregate-E but encryption subkey, primary aggregate-E and secret-stub cases. **Mac syntax/self-test/actual keyring census PENDING.** It performs no production/Docker, secret-data export, external key retrieval, key creation/import/export, image/volume backup, provider calls or canary activation.
+
+If the census confirms no usable local secret key, obtain separate owner consent for a reviewed new recipient/recovery workflow, or an approved pre-existing external public recipient whose decryption can be independently proven; never silently generate keys or drop the confidentiality gate. If existing subkeys are present, revise only the key qualification selector and repeat synthetic encrypt/decrypt with owner selection. PR #51 remains default OFF/non-live/draft-unmerged; P0/P1/P2A accepted; P2B image/config and P2C/P2D data preservation still NOT performed.
+
+`P2B_K_R1=FAIL_CLOSED_PRIMARY_KEY_FILTER`  
+`QUALIFIED_ENCRYPTION_RECIPIENT=NO`  
+`P2B_IMAGE_AND_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2B_GPG_METADATA_CENSUS_R1`
