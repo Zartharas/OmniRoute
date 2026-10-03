@@ -1207,3 +1207,17 @@ If the census confirms no usable local secret key, obtain separate owner consent
 `P2B_IMAGE_AND_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2B_GPG_METADATA_CENSUS_R1`
+
+## 46. 2026-10-02 GPG census OPERATOR PASS: active home has zero keys; P2B-K2 consent pending
+
+Operator ran exact Git-verified private PR #59 census at HEAD `7a303411945854581847513512da92f13b181512`, blob `b2c2350f7e4060caf46c74408ef3c8f3a0ce4480`, 7425 bytes, local SHA-256 `3090b1821523990cde5728016b24ffdb685c6124e804e2a5cb341f3943a2cac8`. Python AST and embedded fixture-parser checks PASS; terminal **`RESULT=PASS_P2B_GPG_AGGREGATE_METADATA_CENSUS_R1`**. Public primary/subkey=0/0, secret primary/subkey=0/0, original selector matches=0. `aggregate_classification=NO_SECRET_PRIMARY_RECORDS_IN_ACTIVE_LOCAL_GPG_HOME`. Thus PR #58 fail-closed recipient result was expected for the empty **active** local GPG home—not evidence that keys cannot exist under an alternate explicit GNUPGHOME or another device. No raw key identities printed/persisted, no Docker/config/image/production-volume reads, key generation/import/export, provider calls or snapshot. P2B owner-approved image/config export remains BLOCKED awaiting a qualified intended recipient.
+
+Owner-controlled private **draft PR #60**, branch `qualification/current-freellmapi-p2b-recoverable-recipient-approval-r1`, HEAD **79704a71ad30731d5dc3a219f977408d1e93bf6e**, directly based on accepted frozen PR #59. Exactly ONE design-only addition: `docs/qualification/CURRENT_FREELLMAPI_P2B_K2_RECOVERABLE_GPG_RECIPIENT_APPROVAL_20261002.md`, blob **33e19fddc62db4f1b815d04535bb5226441965b7**, **6962 bytes**. Separate explicit owner authorization is requested for establishing one dedicated owner-controlled GPG public-key encryption recipient under a new private GNUPGHOME, using interactive strong passphrase, separately protected recovery key material (prefer off-device) and proving synthetic decrypt from independently restored key custody. An existing external owner-held recipient is only an alternative if separately demonstrated recoverable. No key was generated/imported/exported or a recovery artifact created. Existing P2B permission does not silently include private-key provisioning. No passphrases, recipient identities, fingerprints or key material may be uploaded to GitHub/chat.
+
+P2C current writer-quiesced /app/data archive, P2D isolated real-data restore, P2E original service return and canary/provider activation remain independent unapproved gates. Source-qualified L1C-C implementation PR #51 stays default OFF/draft/unmerged; previously accepted PRs preserved.
+
+`P2B_GPG_CENSUS=ACCEPTED_ACTIVE_HOME_EMPTY`  
+`P2B_RECOVERABLE_RECIPIENT=NOT_QUALIFIED`  
+`P2B_IMAGE_AND_CONFIG_ARCHIVE=NOT_CREATED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=OWNER_AUTHORIZATION_P2B_K2_RECOVERABLE_GPG_RECIPIENT`
