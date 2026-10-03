@@ -548,3 +548,55 @@ Private new **DRAFT PR #60** is *design/owner-consent only*:
 **CURRENT:** P0 metadata=PASS, P1 synthetic WAL/artifact=PASS, P2A host/tool preflight=PASS, GPG aggregate census=PASS (active home empty), usable recipient=NONE QUALIFIED, P2B production image/config archives=NOT CREATED, P2C full production data backup and P2D real-data restore=NOT AUTHORIZED, PR #51 source-qualified default OFF/draft/unmerged, `ROLLBACK_READY=NO`.
 
 **NEXT_GATE=OWNER_AUTHORIZATION_P2B_K2_RECOVERABLE_GPG_RECIPIENT**. Prior consent to encrypt existing artifacts does not permit unattended key creation, secret-key export or recovery media writes. On owner authorization, keep any key and recovery data exclusively local/off-device; never ask for secret values, private fingerprints or passwords in chat.
+
+## 19. 2026-10-02 P2B-K2 owner authorizes dedicated protected GPG key and local encrypted-recovery proof
+
+The owner explicitly approved P2B-K2 key provisioning, an encrypted private-key recovery copy and independent restoration verification. This is separate from older PR #57 authorization for FUTURE confidential current image/config archival, which remains blocked until recipient and recovery custody qualify. P2C full production-volume snapshot/writer quiescence, P2D isolated real-data restore, P2E interruption/return and provider/canary activation are NOT AUTHORIZED. Frozen implementation PR #51 remains non-live/default OFF/draft/unmerged.
+
+Private draft **PR #61**, branch `qualification/current-freellmapi-p2b-k2-dedicated-gpg-provisioning-r1`, final HEAD **4fbfef3a7746ca11318e213d41d01a897066fa68**, parent PR #60 `79704a71ad30731d5dc3a219f977408d1e93bf6e`. Exactly three narrow source-only commits, ONE ADDED script:
+- `scripts/qualification/current-freellmapi-p2b-k2-dedicated-recoverable-gpg-r1.sh`
+- immutable Git blob **e88158e66a67f5a5a9e7ed56852a1a187b806053**
+- exact UTF-8 size **9811 bytes**.
+- Earlier PR #61 draft head `bd549fafe9d491513cfd3bc38e96dbd340de98e9` and 8764-byte blob are SUPERSEDED. Use FINAL pin above ONLY.
+
+### P2B-K2 exact operator scope
+
+The Bash script disables shell tracing and core dumps, requires interactive Mac TTY and local **PROVISION** confirmation, creates NEW mode-0700 hidden `$HOME/.omniroute_p2b_k2_recoverable_gpg_r1_*` root and dedicated GNUPGHOMEs, leaves the default GPG home untouched, and creates a new Ed25519 certification primary + Cv25519 encryption subkey with 2y expiry via normal local GPG pinentry. No passphrases, fingerprints/UIDs, private-key bytes or raw diagnostics are printed to terminal, GitHub or chat.
+
+With a freshly generated synthetic challenge it verifies public-recipient encryption and original-key decryption; it streams a protected private-key export only through an **in-memory pipe** into a separately passphrase-protected OpenPGP AES256/SHA512 iterated-S2K ciphertext `secret_key_recovery.gpg` (0600), never to a plaintext file. Additional hard guards verify both exported secret packets have salted+iterated S2K protection and a deliberately empty recovery-wrapper passphrase CANNOT decrypt the archive. It streams recovery ciphertext decrypt directly to `gpg --import` under a DIFFERENT new isolated GNUPGHOME, checks matching recovered primary and encryption subkey, and tests decryption of the synthetic challenge with the restored key. It removes only the disposable second test GNUPGHOME afterward. The ORIGINAL protected key home, separate AES256 recovery ciphertext, private `recipient_candidate.private` and restricted diagnostics remain in the hidden owner local folder. Two different owner-held strong passphrases must be preserved: original secret-key passphrase and encrypted recovery-wrapper passphrase.
+
+**Boundary:** The secondary test-home is on the SAME Mac and is not off-device disaster-recovery custody. A locally successful P2B-K2 ends with `encrypted_recovery_off_device_custody=PENDING_OWNER_ACTION` and actual image/config export `BLOCKED_NOT_EXECUTED`. Owner must make/verify a private, independently stored encrypted recovery copy and custody of BOTH passphrases before authorizing the separately pinned image/config export. A synthetic/disposable separate-environment GPG fixture confirmed Ed25519/Cv25519 and wrapper/restore operations plus 2/2 protected packets and literal-empty passphrase fail; it cannot substitute for actual owner Mac interactive result.
+
+### Exact next one-command Mac invocation (operator run PENDING)
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-k2-dedicated-gpg-provisioning-r1"
+COMMIT="4fbfef3a7746ca11318e213d41d01a897066fa68"
+FILE="scripts/qualification/current-freellmapi-p2b-k2-dedicated-recoverable-gpg-r1.sh"
+SCRIPT="$HOME/Downloads/omniroute_p2b_k2_dedicated_recoverable_gpg_r1.sh"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_K2_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "9811" ] || { echo FAIL_P2B_K2_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "e88158e66a67f5a5a9e7ed56852a1a187b806053" ] || { echo FAIL_P2B_K2_BLOB; exit 1; }
+/bin/bash -n "$SCRIPT" || { echo FAIL_P2B_K2_BASH_SYNTAX; exit 1; }
+echo "p2b_k2_source_integrity_and_syntax=PASS"
+shasum -a 256 "$SCRIPT"
+/bin/bash "$SCRIPT"
+)
+~~~
+
+Before typing PROVISION, confirm you have an interactive working local GPG pinentry and can privately preserve TWO distinct strong passphrases. The script will prompt for key-generation and encryption-wrapper passphrases through normal GPG pinentry; do not enter them in the chat. If any step fails, retain private root and share only redacted normal terminal markers, **never** files from the root (it contains actual private key and encrypted recovery artifacts), wrapper passphrase, `recipient_candidate.private` or `gpg_diagnostics_PRIVATE.txt`. Do not auto-run the old failed key-discovery R1 or change the default keyring.
+
+Expected on genuine success:
+`both_secret_key_packets_passphrase_protected=PASS`
+`empty_recovery_wrapper_passphrase_rejected=PASS`
+`separate_keyhome_restored_primary_and_encryption_subkey=PASS`
+`separate_keyhome_synthetic_challenge_decrypt=PASS`
+`RESULT=PASS_P2B_K2_LOCAL_KEY_AND_ENCRYPTED_RECOVERY_REHEARSAL_R1`
+
+**NEXT_GATE=LOCAL_P2B_K2_DEDICATED_GPG_PROVISIONING_AND_RECOVERY_R1**. Following local PASS, obtain and verify independent/off-device encrypted recovery custody and intended recipient approval before constructing any sensitive production image/config export; P2C–P2E still require separate owner authorization.
