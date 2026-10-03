@@ -470,3 +470,52 @@ shasum -a 256 "$SCRIPT"
 Expected only after a real Mac run: `RESULT=PASS_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1`, `synthetic_recipient_encryption=PASS`, `synthetic_corresponding_secret_key_decryption=PASS`, `EVIDENCE_ROOT=...`. If the script reports `FAIL_NO_ELIGIBLE_EXISTING_SECRET_KEY`, do not auto-generate/import a key or substitute OpenSSL plaintext/symmetric fallback. If it reports `FAIL_MULTIPLE_KEYS_SELECT_PRIVATELY`, the owner must select a known preexisting eligible key locally via the full fingerprint (e.g., look up GPG fingerprints in a SEPARATE local terminal; never send key IDs/credentials in chat) and set `OMNIROUTE_P2B_RECIPIENT_FPR` for a controlled rerun. Do not claim actual production image/config has been saved from a synthetic PASS.
 
 **NEXT_GATE=LOCAL_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1**. Once that qualifies, implement a separately pinned direct-to-GPG image/config export that rechecks real identity, obtains local owner approval of intended recipient, never persists plaintext, validates ciphertext decryption/structure, and leaves the original deployment unchanged. P2C–P2E remain distinct owner authorization gates.
+
+## 17. 2026-10-02 P2B-K R1 operator fail-closed — next read-only local GPG metadata census
+
+Supersedes §16's P2B-K R1 pending status. Exact R1 script at frozen PR #58 HEAD **a3b1389399065b9bb831aaf8d6bd60ca006b5390**, Git blob **6c1cb968c81050156c90ea0991f9a5f816f3225e**, 3794 bytes, operator local SHA-256 **8ff3b3403d1805ebddaac1fedeef4544cde9aaad2a562dc6b90b164a947e9aa6** passed source integrity and Bash syntax, but yielded:
+
+~~~
+FAIL_NO_ELIGIBLE_EXISTING_SECRET_KEY
+RESULT=FAIL_P2B_K_EXISTING_GPG_RECIPIENT_QUALIFICATION_R1
+EVIDENCE_ROOT=/Users/zarthras/Downloads/omniroute_p2b_key_qualification_r1_r13IKIBy
+~~~
+
+**Correct scope:** no eligible primary secret key found by R1's aggregate uppercase `E` and immediate `fpr` selector. Do NOT extrapolate to "the keyring is empty" or assume lack of encryption subkeys. No synthetic challenge began, no Docker/image/config/current volume access, key generation/import or network execution took place. This is a preserved FAIL-CLOSED prerequisite, not a regression in accepted P0/P1/P2A. Existing owner P2B confidential-export authorization remains contingent on confirming a genuine recipient. P2B image save/raw config export is BLOCKED.
+
+Independent private **draft PR #59** branch **qualification/current-freellmapi-p2b-keyring-census-r1** at frozen HEAD **7a303411945854581847513512da92f13b181512**, exactly one new Python script based on original frozen PR #58 source:
+- `scripts/qualification/current-freellmapi-p2b-gpg-metadata-census-r1.py`
+- Git blob **b2c2350f7e4060caf46c74408ef3c8f3a0ce4480**
+- **7425 UTF-8 bytes**
+- fixed-size, in-memory aggregate keyring *metadata-only* public and secret records via local GPG; NO IDs, fingerprints, UIDs, email, raw GPG listing or stderr printed or persisted. No Docker/app-volume/config access, recipient encrypt/decrypt attempt, key generation/import/export or external auto key retrieval. Reports separate public primary/subkey and secret primary/subkey encryption declarations, unavailable stubs and count matching original R1 selector. This is a diagnosis, NOT recipient qualification. Its embedded synthetic parser fixture self-test is executable without GPG/keyring access. Mac execution still PENDING.
+
+### Exact next Mac command: P2B GPG identity-free aggregate census
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-keyring-census-r1"
+COMMIT="7a303411945854581847513512da92f13b181512"
+FILE="scripts/qualification/current-freellmapi-p2b-gpg-metadata-census-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_gpg_metadata_census_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_CENSUS_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "7425" ] || { echo FAIL_P2B_CENSUS_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "b2c2350f7e4060caf46c74408ef3c8f3a0ce4480" ] || { echo FAIL_P2B_CENSUS_BLOB; exit 1; }
+
+python3 -B -c 'import ast, pathlib, sys; ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")); print("p2b_census_python_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_CENSUS_PARSER_SELFTEST; exit 1; }
+echo "p2b_census_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+Expected success **of the census only**: `RESULT=PASS_P2B_GPG_AGGREGATE_METADATA_CENSUS_R1`; it should include `aggregate_classification=` and the aggregate counts. Even a clean census that finds zero keys is NOT a recipient qualified PASS; `recipient_encryption_and_decryption_qualified=NO`, production export remains BLOCKED.
+
+If no local secret keys, do not auto-generate/import a key, switch to plaintext or bypass synthetic recipient qualification: obtain separate owner approval for an explicit owner-held key creation/recovery plan or a qualified existing external public recipient with separately proven decryption. If the census finds an encryption-capable secret subkey excluded by R1, narrowly repair only the selector, then repeat owner-confirmed synthetic encrypt/decrypt. Keep `recipient_candidate.private` and `gpg_private_diagnostic.txt` from the prior failed attempt private and local. No production volume backup, service stop, restore, provider calls or activation are authorized.
+
+**NEXT_GATE=LOCAL_P2B_GPG_METADATA_CENSUS_R1**.
