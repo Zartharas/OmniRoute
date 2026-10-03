@@ -1044,3 +1044,61 @@ Once actual fresh preflight PASS, create a NEW SOURCE-PINNED separate owner-scop
 `P2B_K2_OWNER_CUSTODY_RECIPIENT_ADMISSION=OWNER_MAC_PASS`; `P2B_EXACT_IMAGE_ARCHIVE=NOT_CREATED`; `P2B_CONFIDENTIAL_EXACT_CONFIG_ARCHIVE=NOT_CREATED`; `ROLLBACK_READY=NO`.
 
 **NEXT_GATE=LOCAL_P2B_EXACT_IMAGE_CONFIG_EXPORT_READONLY_PREFLIGHT_R1**.
+
+## 29. 2026-10-03 actual PR69 P2B preflight FAIL at original-home synthetic decryption; PR70 private read-only diagnosis
+
+Supersedes §28's pending PR69 execution. Owner fetched frozen PR #69 HEAD **6a9b959ced014f23c9b759ebe0df43e9ff7ba003**, Git blob **b23430c4f03c769445dfb609eea3303ea2a02775**, **10776 bytes**, operator Mac SHA256 **f1e9b63e55cca850372e281378ffdee766f37673f3578031c2c09e4bb1b612e4**. Ref/size/blob and Bash -n PASS. Real execution selected-only read-only checks PASS: original local worktree HEAD; current running healthy exact original container + immutable image, restart0/OOMfalse/canary-OFF; current named RW /app/data volume metadata; three external token/policy RO bind DESTINATION/type/RW; loopback host ports and `mer-gateway_default`; restricted original private GNUPGHOME/recipient selector/AES256 wrapper fixed SHA. No raw secret-bearing Docker inspect JSON, token source paths or contents printed/read. Synthetic GPG encrypt to intended dedicated public recipient PASSED (a nonempty synthetic ciphertext file was created), but synthetic decrypt using ORIGINAL dedicated GNUPGHOME failed:
+~~~
+FAIL_OWNER_GPG_SYNTHETIC_DECRYPT
+original_live_identity_nonmutation=PASS
+original_worktree_head_and_status_nonmutation=PASS
+private_synthetic_evidence_root=/Users/zarthras/Downloads/omniroute_p2b_export_preflight_r1_LvKhBK64
+private_GPG_diagnostic_do_not_share=YES
+production_image_export=NOT_EXECUTED
+production_exact_config_export=NOT_EXECUTED
+production_volume_read_or_backup=NO
+original_live_service_mutation=NO
+rollback_ready=NO
+RESULT=FAIL_P2B_EXACT_IMAGE_CONFIG_EXPORT_PREFLIGHT_R1
+~~~
+
+IMPORTANT: PR69 host free-space planning check was AFTER the failed decrypt and NOT REACHED. Actual original-image/config export NEVER started; prior accepted PR #66 R3 SAME protected key independently imported to separately agent-qualified SHORT test GNUPGHOME and correctly decrypted fabricated data, and PR68 original dedicated public/secret key metadata still PASS. Do NOT invent GPG decrypt root cause or invalidate the separate-home proof, and do NOT run PR69 unchanged a second time. The exact previous 0700 local evidence directory contains `synthetic_only.gpg` and mode0600 `private_gpg_diagnostic.txt` with both successful ENCRYPT and failed DECRYPT stderr concatenated. These must remain PRIVATE; DO NOT paste raw GPG messages, GPG key IDs, fingerprints, UID, personal volume paths, private passphrases, original GNUPGHOME or actual wrapped secret file into chat/GitHub.
+
+### New PRIVATE DRAFT PR #70: fixed-category original-home decrypt error classifier (owner Mac PENDING)
+
+- Branch: `qualification/current-freellmapi-p2b-original-gpg-decrypt-diagnostic-r1`
+- Frozen HEAD **fb78db3ef7575b3984b286501d4b3dc0a791a934** directly above unchanged PR #69 **6a9b959ced014f23c9b759ebe0df43e9ff7ba003**
+- Exactly ONE added Python source: `scripts/qualification/current-freellmapi-p2b-original-gpg-decrypt-diagnostic-r1.py`
+- Git blob **97b7c698767bf7db234b0cdd00b9e617304ffbc0**, **11783 UTF-8 bytes**, one commit ahead/zero behind parent, source/diff readback verified.
+- Script reads ONLY bounded existing prior private PR69 GPG error file locally into memory, checks exact private evidence dir and prior synthetic ciphertext file's owner/type/mode/size/PRESENCE only (does not decrypt synthetic file), rechecks original existing AES256 private-key recovery-wrapper SHA **59cd8704137c342266a5685cbea2bbd976950ffa223225f1e5e12a136f1061c3** before/after; emits only fixed YES/NO indicators for missing private secret key, general decrypt, pinentry/TTY, GPG agent socket/start/transfer/broken pipe, passphrase/cancel, key-material/format, file/permission, agent storage or missing public key. These are overlap-prone indicators from combined ENCRYPT+DECRYPT stderr, not a conclusive RCA.
+- Queries local `gpgconf --homedir ORIGINAL --list-dirs agent-socket` for original socket **path length only**, socket presence/type/owner (never string), optionally `gpg-connect-agent --homedir ORIGINAL --no-autostart 'GETINFO pid' /bye` ONLY for a present owner-owned socket. Captures stdout/PID/stderr PRIVATELY, emits only fixed contact result, does NOT autostart an agent or call GPG decryption/import/export/key-list/generation. No Docker, production file, external network/provider or live app action. `--self-test` uses synthetic strings only.
+
+### Exact next owner Mac one-command continuation — PR #70 diagnostic ONLY
+
+~~~bash
+(
+cd "/Users/zarthras/Documents/Development Projects/omniroute-auth-keeper-r16-17" || exit 1
+
+REF="qualification/current-freellmapi-p2b-original-gpg-decrypt-diagnostic-r1"
+COMMIT="fb78db3ef7575b3984b286501d4b3dc0a791a934"
+FILE="scripts/qualification/current-freellmapi-p2b-original-gpg-decrypt-diagnostic-r1.py"
+SCRIPT="$HOME/Downloads/omniroute_p2b_original_gpg_decrypt_diagnostic_r1.py"
+
+git fetch --no-tags origin "$REF" || exit 1
+[ "$(git rev-parse FETCH_HEAD)" = "$COMMIT" ] || { echo FAIL_P2B_GPG_DIAGNOSTIC_REF_DRIFT; exit 1; }
+git show "$COMMIT:$FILE" > "$SCRIPT" || exit 1
+[ "$(wc -c < "$SCRIPT" | tr -d ' ')" = "11783" ] || { echo FAIL_P2B_GPG_DIAGNOSTIC_SCRIPT_SIZE; exit 1; }
+[ "$(git hash-object "$SCRIPT")" = "97b7c698767bf7db234b0cdd00b9e617304ffbc0" ] || { echo FAIL_P2B_GPG_DIAGNOSTIC_SCRIPT_BLOB; exit 1; }
+python3 -B -c 'import ast,pathlib,sys;ast.parse(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"));print("p2b_gpg_diagnostic_python_syntax=PASS")' "$SCRIPT" || exit 1
+python3 -B "$SCRIPT" --self-test || { echo FAIL_P2B_GPG_DIAGNOSTIC_SYNTHETIC_SELFTEST; exit 1; }
+echo "p2b_gpg_diagnostic_source_and_fixture=PASS"
+shasum -a 256 "$SCRIPT"
+python3 -B "$SCRIPT"
+)
+~~~
+
+Expected ONLY after actual owner Mac execution: `original_AES256_recovery_wrapper_sha_nonmutation=PASS`, `prior_PR69_synthetic_ciphertext_nonempty=PASS`, fixed `original_gpg_private_diagnostic_*=YES/NO` categories, `original_current_agent_socket_state`, `original_current_agent_no_autostart_contact`, `existing_encrypted_wrapper_postcheck=PASS`, and terminal `RESULT=PASS_P2B_ORIGINAL_GPG_DECRYPT_FAILURE_DIAGNOSTIC_R1`. This would pass the **diagnostic**, NOT the previously failed original GPG private-key decryption or current P2B image/config export. If expected PRIVATE files are missing/permissions drift, STOP rather than lowering bounds or printing raw GPG output. On real output, stage a minimal cause-specific original GPG-agent/pinentry correction and separately rerun NEW synthetic-only P2B preflight; only after that PASS contemplate a separately PINNED confidential P2B export under existing narrow PR57 consent.
+
+Current immutable exact original image not saved; raw secret-bearing original Docker config not preserved; current live RW volume no coherent snapshot; no P2C/P2D/P2E owner consent; PR51 default OFF/draft/unmerged; ROLLBACK_READY=NO.
+
+**NEXT_GATE=LOCAL_P2B_ORIGINAL_GPG_DECRYPT_DIAGNOSTIC_R1**.
