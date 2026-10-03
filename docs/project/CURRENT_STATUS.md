@@ -1221,3 +1221,20 @@ P2C current writer-quiesced /app/data archive, P2D isolated real-data restore, P
 `P2B_IMAGE_AND_CONFIG_ARCHIVE=NOT_CREATED`  
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=OWNER_AUTHORIZATION_P2B_K2_RECOVERABLE_GPG_RECIPIENT`
+
+## 47. 2026-10-02 P2B-K2 dedicated recoverable GPG key provisioning AUTHORIZED; pinned Mac run pending
+
+The user separately authorized creating one dedicated owner-controlled protected GPG encryption recipient and separately encrypted secret-key recovery copy, with a second isolated-keyhome synthetic decrypt proof. Existing P2B consent covers future secret-safe image/config preservation only after actual recipient/custody qualification; it does NOT grant P2C writer stop/full current volume archive, P2D real-data restoration or provider/canary activation.
+
+Final private **draft PR #61** is based on the P2B-K2 owner-consent document in PR #60 at `79704a71ad30731d5dc3a219f977408d1e93bf6e`. Qualification branch `qualification/current-freellmapi-p2b-k2-dedicated-gpg-provisioning-r1`, final HEAD **4fbfef3a7746ca11318e213d41d01a897066fa68**, three script-only commits ahead and ONE added file `scripts/qualification/current-freellmapi-p2b-k2-dedicated-recoverable-gpg-r1.sh`, Git blob **e88158e66a67f5a5a9e7ed56852a1a187b806053**, **9811 UTF-8 bytes**. Earlier PR #61 interim head `bd549fafe9d491513cfd3bc38e96dbd340de98e9` / 8764 bytes is SUPERSEDED; do not execute old draft.
+
+Script requires an interactive operator TTY and the nonsecret local confirmation PROVISION. It creates a fresh mode-0700 hidden folder directly under user HOME (not default GPG home or Downloads), with new Ed25519 certification primary and Cv25519 encryption subkey (2-year expiry), using local pinentry for private key passphrase. A protected recovery export is streamed directly to separately passphrase-encrypted OpenPGP AES256/SHA512 iterated-S2K ciphertext; no unencrypted secret-key export file. It independently demands 2/2 exported secret packets show passphrase protection, and rejects literal empty wrapper passphrase; verifies locally created synthetic challenge and independent imported-key decrypt in a separate fresh keyhome. Deletes only disposable restored test home; protected original key home, encrypted recovery file, private candidate fingerprint and diagnostic log remain restricted under hidden root. Owner must retain TWO distinct strong passphrases (original GPG key and recovery ciphertext wrapper); no values/recipient identities in chat/GitHub. Representative disposable synthetic crypto operations PASSED in independent test environment; **Mac operator script integrity/syntax/execution PENDING**.
+
+Successful same-host isolated recovery test does **not** establish separately retained/off-device recovery custody. Next after operator Mac PASS: privately copy `secret_key_recovery.gpg` to trusted owner-controlled independent/off-device medium and confirm custody of both passphrases without sharing them. Until that verification, actual immutable image and exact container-config export is BLOCKED despite prior P2B consent. NO Docker, production image/config/volume reading, service interruption, new app snapshot, model/provider call or L1C-C activation in P2B-K2. PR #51 unchanged draft/unmerged/default OFF; P0/P1/P2A accepted, active original GPG home empty by accepted PR #59.
+
+`P2B_K2_OWNER_AUTHORIZATION=YES`  
+`P2B_K2_MAC_KEY_AND_RECOVERY_SETUP=PENDING`  
+`P2B_K2_OFF_DEVICE_RECOVERY_CUSTODY=NOT_PROVEN`  
+`P2B_IMAGE_CONFIG_EXPORT=BLOCKED_NOT_EXECUTED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2B_K2_DEDICATED_GPG_PROVISIONING_AND_RECOVERY_R1`
