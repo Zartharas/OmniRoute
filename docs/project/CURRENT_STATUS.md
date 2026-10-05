@@ -1568,3 +1568,22 @@ The classifier executes no Docker/GPG/SQLite/network action, reads only the exis
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_PRIVATE_SCAN_LOG_CLASSIFIER_R1`
 
+## 67. 2026-10-05 P2C scan catch-all classified; operation-level read-only diagnostic staged
+
+The existing private scan-log classifier returned **`SCAN_FAIL_UNEXPECTED_SCAN_ERROR`**. No raw private log was emitted and no Docker/GPG/data-volume/service mutation occurred during that classifier run. This means the original P2C scanner's catch-all was reached but the failing filesystem operation is still unknown. The original service recovery from the failed P2C transaction remains accepted PASS; no P2C encrypted backup was created.
+
+A new operation-level read-only diagnostic is staged on existing private DRAFT PR #75:
+- HEAD **521472540ab897f73c01ec457fa7b78f4a4c6898**;
+- file `scripts/qualification/current-freellmapi-p2c-scan-stage-diagnostic-r1.sh`;
+- Git blob **0d7ae887f28069000d207036ee59bbbe6b023fc2**;
+- **8458 bytes**;
+- SHA-256 **c1363e35fef0c3f06b793235082049f70ac89134e2645fa0f32b151cea84000e**.
+
+The diagnostic keeps the original service running, mounts the current volume read-only into the exact pre-existing image with network disabled, reproduces the traversal/hash path, and emits only sanitized operation/errno/path-class/path-depth/entry-type categories. It prints no filenames, raw exceptions or file contents. No service stop/restart, GPG, SQLite command, archive/backup creation or provider call.
+
+`P2C_R1=BOUNDED_FAIL_PRIVATE_COMPLETE_TREE_SCAN`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_SCAN_STAGE_DIAGNOSTIC_R1`
+
