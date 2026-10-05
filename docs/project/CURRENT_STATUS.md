@@ -1518,3 +1518,28 @@ The PR74 PASS output itself is **not** authorization for this interruption. Do n
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=EXPLICIT_OWNER_P2C_MAINTENANCE_WINDOW_AUTHORIZATION`
 
+## 65. 2026-10-05 owner authorizes P2C maintenance window; final PR75 execution pin hardened against force-kill
+
+Owner explicitly authorizes the bounded P2C current-live RW-volume preservation transaction: controlled interruption of the exact original `mer-omniroute`, exclusive writer quiescence, complete current `/app/data` read-only capture to owner-private encrypted storage, confidential coverage/hash validation, and return of the exact original service. P2D isolated restore remains a separate authorization gate.
+
+Before operator execution, PR75 received one safety hardening based on current Docker CLI semantics: finite `docker stop --timeout` may escalate to SIGKILL after the grace period. The final source therefore does **not** use a finite `docker stop`. It sends SIGTERM only, polls for a clean exit, fails closed if quiescence is not achieved, rejects observed exit code 137, and still attempts to return/verify the original service. No automatic force-kill is authorized.
+
+FINAL private DRAFT PR #75 execution pin:
+- branch `qualification/current-freellmapi-p2c-coordinated-backup-r1`;
+- HEAD **d4991c27eae60f9304b1a8013a3708f16376ab8e**;
+- exact base PR74 head **8602981e88bf3e2c0d7bcfd529b2560c1c59c708**;
+- source `scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r1.py`;
+- Git blob **ea2c3a1e6925995932a87b77f6a58f9864ca066d**;
+- **36022 UTF-8 bytes**;
+- SHA-256 **733ba08833fcf5fa793e898c6da6d69848848022c0aa6e3e6d749793c00b8b1f**;
+- one changed file relative to PR74; PR remains DRAFT/OPEN/UNMERGED.
+
+The local production path still requires the exact interactive token `AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLUME_PRESERVATION`. No plaintext production archive, no source SQLite open/checkpoint/repair, network-none RO-volume helpers, provider calls 0, L1C-C activation NO. If any execution gate fails, do not rerun unchanged; preserve private evidence and review service-return markers first.
+
+`P2C_OWNER_MAINTENANCE_WINDOW_AUTHORIZATION=GRANTED`  
+`P2C_EXECUTION=LOCAL_MAC_PENDING`  
+`P2D_ISOLATED_RESTORE=NOT_AUTHORIZED_NOT_PERFORMED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R1`
+
