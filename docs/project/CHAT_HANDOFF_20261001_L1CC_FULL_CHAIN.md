@@ -1385,3 +1385,24 @@ At runtime the owner must still type exactly `AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLU
 
 **NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R1**.
 
+## 39. 2026-10-05 P2C scan failure isolated; original service recovered
+
+Authorized P2C R1 passed its source/self-test gates, entered the maintenance-window path, and proved graceful writer quiescence. It then failed at the first private complete-tree scan. The original service was returned and its exact identity/topology/health revalidated successfully. No encrypted P2C backup was reached or created.
+
+Do not rerun P2C unchanged. Preserve the existing private P2C evidence root.
+
+Use only the staged read-only classifier on private PR #75:
+- HEAD **1c03177fb7e99464a79d925d760ef5ecfbcaac39**
+- file `scripts/qualification/current-freellmapi-p2c-private-scan-log-classifier-r1.py`
+- blob **0e8cf0c4fc1f7591eadb11ad15fdbcc56458ded9**
+- 3763 bytes
+- SHA-256 **d885df19989b93d2b1c3bcb00dd22a66cd7cf9ec40bc71f84710e062de6b222d**
+
+The classifier reads only the already-created private scan diagnostic and emits a sanitized category. It performs no Docker, GPG, SQLite, network or production-volume action.
+
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`ROLLBACK_READY=NO`
+
+**NEXT_GATE=LOCAL_P2C_PRIVATE_SCAN_LOG_CLASSIFIER_R1**.
+
