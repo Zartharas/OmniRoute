@@ -1443,3 +1443,13 @@ This corrected R2 first reproduces the `0:0`/cap-drop-all access context, then p
 
 **NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R2**.
 
+## 43. 2026-10-05 use Python R3 for helper-user permission diagnosis
+
+Both shell permission-probe attempts failed locally at syntax validation and never reached Docker or production data. Do not rerun or further patch them.
+
+Use only private PR75 HEAD **513ee811abca52829c4ed6957cdff733838bec4d**, file `scripts/qualification/current-freellmapi-p2c-helper-user-permission-probe-r3.py`, blob **3004db9fa190b464c890eda1a9b63b627dcd85ff**, 12812 bytes, SHA-256 **69a72db22124bacb49b57471a1b18b5ec04967e471253a573d87b0d17839b502**.
+
+R3 is Python-only on the host, retains network-none/read-only helpers, compares PR75's `0:0`/cap-drop-all access context against exact live `Config.User`, emits no raw filenames/content/user IDs and performs no service interruption, GPG, SQLite or archive operation.
+
+**NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R3**.
+
