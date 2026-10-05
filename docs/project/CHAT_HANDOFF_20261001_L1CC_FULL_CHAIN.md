@@ -1421,3 +1421,15 @@ It leaves the original service running, uses a network-none RO volume mount, rep
 
 **NEXT_GATE=LOCAL_P2C_SCAN_STAGE_DIAGNOSTIC_R1**.
 
+## 41. 2026-10-05 P2C next gate: prove or reject helper-user permission defect
+
+Read-only diagnosis now shows the failed complete-tree scan stops at **OPEN/EACCES** on an **AUXILIARY depth-2 file**. The original service remains healthy and unchanged.
+
+Accepted P0 used the exact live `Config.User` for its RO helper. PR75 instead hard-coded `0:0` while also dropping all capabilities. The next gate is therefore a read-only side-by-side access probe, not another maintenance-window run.
+
+Use only PR75 HEAD **2aa2756a5a8dbcf2e6680bb61a57d2bfbc8e6e7d**, file `scripts/qualification/current-freellmapi-p2c-helper-user-permission-probe-r1.sh`, blob **b63c13828e963fdb631642b81715dd7e8f7dc4af**, 10906 bytes, SHA-256 **cffc02ee89dd7c21f1b3e74eef9fc47ece1b78a877d7d6ada91c0438831c98af**.
+
+The probe does no service stop/restart, no GPG/SQLite/archive/provider work and emits no raw path/content. If the `0:0` context reproduces EACCES while the exact live user open scan passes, patch both PR75 scan and tar helpers to use exact live `Config.User`, then requalify before any P2C retry.
+
+**NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R1**.
+
