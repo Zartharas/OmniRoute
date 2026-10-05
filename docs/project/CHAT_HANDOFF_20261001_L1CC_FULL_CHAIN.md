@@ -1337,3 +1337,20 @@ Do not record the external volume/device name in repository evidence. This prove
 
 **NEXT_GATE=OWNER_ATTEST_SAFE_EJECTION_AND_SEPARATE_STORAGE_THEN_SEPARATELY_AUTHORIZE_P2C**.
 
+## 36. 2026-10-05 safe ejection owner-attested; P2C readiness preflight is the active gate
+
+P2B image/config preservation and off-device encrypted-copy integrity remain accepted. Owner now explicitly attests the removable copy was safely ejected. Do not infer separate physical storage unless separately stated.
+
+New private **DRAFT PR #74** is the only next execution target and is read-only readiness only:
+- branch `qualification/current-freellmapi-p2c-readiness-preflight-r1`;
+- HEAD **8602981e88bf3e2c0d7bcfd529b2560c1c59c708**;
+- base current PR73 HEAD **b4ef3f892c31fa6f124ca874eb1d9f74713f207a**;
+- script blob **f2b642078369320f66c524a34d17976a4427fa96**, **7632 bytes**, SHA-256 **27581c30b91c43aa65fcb3a7708b5db458c34a66283426e5131b060d3e82b3fb**;
+- approval-boundary doc blob **ebf25ee8166cbae8487f33685a536790bb2e8080**.
+
+The PR74 preflight does NOT stop/restart production, create a helper, read `/app/data` file contents, open SQLite, create a snapshot, run GPG encryption/decryption, call providers or activate L1C-C. It only refreshes current exact topology/sole running volume-writer state, verifies accepted local P2B ciphertext baselines and protected recovery metadata, checks a conservative host planning floor and proves nonmutation.
+
+After a clean PR74 Mac PASS, actual P2C still requires explicit owner maintenance-window authorization. The accepted P2A contract remains controlling: graceful stop, exclusive writer quiescence, **entire-tree** read-only capture and encryption, no hot tar/live checkpoint, immediate safe return of the original service; P2D disconnected restore proof remains separate. PR51 stays DRAFT/UNMERGED/default OFF and `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=LOCAL_P2C_READ_ONLY_READINESS_PREFLIGHT_R1**.
+
