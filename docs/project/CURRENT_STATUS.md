@@ -1463,3 +1463,18 @@ This completes the finite P2B exact-image + confidential-config preservation req
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=OWNER_CUSTODY_REVIEW_FOR_P2B_ARTIFACTS_THEN_SEPARATE_P2C_AUTHORIZATION`
 
+## 62. 2026-10-05 P2B off-device encrypted-artifact custody copy PASS
+
+Supersedes section 61's off-device-copy pending state. Owner copied the already validated P2B encrypted image and confidential container-config ciphertexts to a destination macOS classified as **External** and independently verified as a **separate filesystem**. External readback verified both ciphertext byte sizes and SHA-256 values against the accepted local P2B records. No plaintext artifact was copied and no current live RW `/app/data` contents were read or preserved.
+
+Exact terminal result: **`RESULT=PASS_P2B_OFF_DEVICE_ENCRYPTED_ARTIFACT_CUSTODY_COPY_R1`**.
+
+This closes off-device **copy integrity** for the two P2B ciphertexts. The external volume/device name is intentionally not recorded. Safe ejection and physically separate storage remain owner-attested custody steps; do not mark physical custody complete until those are confirmed. P2C current live RW-volume preservation remains separately unauthorized and unperformed.
+
+`P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG=OWNER_MAC_PASS`  
+`P2B_OFF_DEVICE_ENCRYPTED_COPY_INTEGRITY=OWNER_MAC_PASS`  
+`P2B_SAFE_EJECTION_AND_SEPARATE_STORAGE=OWNER_ATTESTATION_PENDING`  
+`P2C_CURRENT_LIVE_RW_VOLUME_BACKUP=NOT_AUTHORIZED_NOT_CREATED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=OWNER_ATTEST_SAFE_EJECTION_AND_SEPARATE_STORAGE_THEN_SEPARATELY_AUTHORIZE_P2C`
+
