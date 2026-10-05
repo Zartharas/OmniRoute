@@ -1433,3 +1433,13 @@ The probe does no service stop/restart, no GPG/SQLite/archive/provider work and 
 
 **NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R1**.
 
+## 42. 2026-10-05 helper-user permission probe R1 was syntax-only failure; use corrected R2
+
+Do not treat the failed R1 permission probe as a runtime diagnostic. `bash -n` stopped it before Docker or production access.
+
+Use only private PR75 HEAD **b0317ca84fee09cab0d8e1544e8a666adff38ccb**, file `scripts/qualification/current-freellmapi-p2c-helper-user-permission-probe-r1.sh`, blob **ff8032a8228f5a3ea57e8565f0853e5ea33c1fe5**, 10394 bytes, SHA-256 **f27c4c58db0db3de130b011ee1f479bc0c3f18830b440422e91b6dd6e1e6731b**.
+
+This corrected R2 first reproduces the `0:0`/cap-drop-all access context, then performs the same open-only traversal as exact live `Config.User`; no service interruption, GPG, SQLite or archive operation is permitted.
+
+**NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R2**.
+
