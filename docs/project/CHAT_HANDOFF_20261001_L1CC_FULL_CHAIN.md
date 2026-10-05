@@ -1308,3 +1308,22 @@ PR72 actual Mac: original immutable image inspected size 3049822395 bytes; host 
 Only after owner Mac actually prints RESULT=PASS_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_ENCRYPTED_EXPORT_R1, record sanitized output in PR73/PRM45 and public docs and separately verify custody of new large encrypted artifacts. P2B alone does NOT back up current /app/data RW SQLite WAL contents or guarantee rollback. Request NEW explicit owner approval before P2C coherent writer-quiesced current full RW volume backup, P2D isolated actual-data restore, P2E service/rollback/canary, and later original five-pillar L1C-C product acceptance. Keep PR51 DRAFT/UNMERGED/default OFF. ROLLBACK_READY=NO. Treat P2B as a FINITE prerequisite, not a new project; avoid repetitive GPG discovery when existing proofs remain valid.
 
 NEXT_GATE=LOCAL_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_DIRECT_ENCRYPTED_EXPORT_R1.
+
+## 34. 2026-10-05 P2B exact image + confidential config COMPLETE locally
+
+Supersedes sections 32-33 execution-pending state. Private draft PR #73 remains the authoritative preservation record and no duplicate PR was created. The owner completed the corrected R3 resume on the existing PR73 branch. The already-created encrypted original image was reused rather than regenerated; corrected OCI descriptor-chain validation passed, the exact confidential container recreation configuration was encrypted and privately validated, and final original live identity/worktree/recovery-wrapper/image nonmutation checks all passed.
+
+Exact owner terminal result: **`RESULT=PASS_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_ENCRYPTED_EXPORT_R3_RESUME`**.
+
+P2B is therefore complete for the exact original immutable image and confidential container recreation configuration. The encrypted artifacts remain local owner-private and off-device custody for these newly created artifacts is not yet confirmed. No plaintext TAR or inspect JSON was persisted, no current live RW `/app/data` contents were read or backed up, and no container stop/restart/load/helper/provider/canary operation was performed.
+
+Do not repeat the image export, prior GPG discovery, OCI diagnosis or P2B validation absent new contradictory evidence. P2C coherent writer-quiesced current-volume preservation, P2D isolated real-data restore and P2E service return remain separate gates. PR51 L1C-C remains DRAFT/UNMERGED/default OFF.
+
+`P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG=OWNER_MAC_PASS`  
+`P2B_ARTIFACTS=LOCAL_OWNER_PRIVATE_VALIDATED`  
+`P2B_OFF_DEVICE_CUSTODY=NOT_YET_CONFIRMED`  
+`P2C_CURRENT_LIVE_RW_VOLUME_BACKUP=NOT_AUTHORIZED_NOT_CREATED`  
+`ROLLBACK_READY=NO`
+
+**NEXT_GATE=OWNER_CUSTODY_REVIEW_FOR_P2B_ARTIFACTS_THEN_SEPARATE_P2C_AUTHORIZATION**. After the bounded rollback prerequisites are complete, return directly to the original five-pillar Codex Unified / controlled L1C-C production-acceptance roadmap.
+
