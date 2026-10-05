@@ -1498,3 +1498,23 @@ Actual P2C remains a distinct maintenance-window authorization: graceful stop, e
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_READ_ONLY_READINESS_PREFLIGHT_R1`
 
+## 64. 2026-10-05 P2C read-only readiness PASS; owner-gated execution PR #75 staged
+
+Owner executed exact private PR #74 read-only preflight and obtained **`RESULT=PASS_P2C_READ_ONLY_READINESS_PREFLIGHT_R1`**. No service stop/restart, helper container, production-volume content read, SQLite operation, backup/snapshot, GPG encrypt/decrypt, provider call or L1C-C activation occurred. Exact current live topology and sole running use of the current named RW `/app/data` volume PASS; accepted P2B ciphertext baselines and protected recovery metadata PASS; host Downloads free **2151000808 KiB** versus conservative P2C planning floor **2897360 KiB**, PASS_ESTIMATE_ONLY; final live identity/worktree nonmutation PASS.
+
+The project therefore advanced to a prepared-but-unexecuted P2C transaction. New private **DRAFT PR #75**, branch `qualification/current-freellmapi-p2c-coordinated-backup-r1`, is stacked on PR74 head **8602981e88bf3e2c0d7bcfd529b2560c1c59c708**. Current PR75 head **6edb526dab57df6b50534fac7018314dc3d1038a**, one changed source file:
+`scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r1.py`
+Git blob **48353233e351eaf83fa0b778f83b4db36c37bcdd**, **34497 bytes**, SHA-256 **eca8995404e8f1b44bf3d577d91fca8b68a980885ba9e649589ecdd691875ba8**.
+
+Offline AST/self-test PASS: complete-tree positive case plus rejection of missing member, traversal, symlink and corrupt content. Self-test performs no Docker/network action. The production path requires explicit local owner token **`AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLUME_PRESERVATION`** before helper creation or service stop. Planned transaction: exact-baseline recheck, network-none helper capability, graceful stop of only the exact original service, exclusive writer quiescence, private complete-tree manifest, direct read-only source tar to qualified GPG ciphertext without plaintext archive, confidential decrypt/coverage/hash validation, source nonmutation re-scan, and unconditional attempt to return the exact original service. It never opens/checkpoints/repairs the live SQLite source. P2D isolated restore remains later and separate.
+
+The PR74 PASS output itself is **not** authorization for this interruption. Do not execute PR75 until the owner explicitly authorizes the P2C maintenance window.
+
+`P2C_READ_ONLY_READINESS_PREFLIGHT=OWNER_MAC_PASS`  
+`P2C_EXECUTION_ARTIFACT=PR75_DRAFT_PREPARED`  
+`P2C_CURRENT_FULL_VOLUME_BACKUP=NOT_AUTHORIZED_NOT_PERFORMED`  
+`P2D_ISOLATED_RESTORE=NOT_AUTHORIZED_NOT_PERFORMED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=EXPLICIT_OWNER_P2C_MAINTENANCE_WINDOW_AUTHORIZATION`
+
