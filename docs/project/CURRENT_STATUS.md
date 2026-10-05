@@ -1543,3 +1543,28 @@ The local production path still requires the exact interactive token `AUTHORIZE_
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R1`
 
+## 66. 2026-10-05 P2C R1 bounded failure at private complete-tree scan; original service recovery PASS
+
+Owner executed final authorized PR75 P2C source and entered the exact local maintenance-window token. Source integrity/syntax/offline self-test PASS; exact pre-P2C live topology/P2B/recovery baselines PASS; network-none helper node/tar capability PASS; SIGTERM-only original-service stop and exclusive writer quiescence PASS.
+
+The transaction then stopped at **`fixed_failure_category=FAIL_PRIVATE_COMPLETE_TREE_SCAN`**. Critically, **`original_service_exact_identity_topology_and_health_return=PASS`** followed, proving the exact original service returned and revalidated after the failed scan. P2D was not performed and `ROLLBACK_READY=NO`.
+
+PR75 control flow places the private complete-tree scan before actual source-size capacity, tar production, GPG encryption, ciphertext validation and post-capture re-scan. Therefore the failed run did **not** reach P2C encrypted-backup creation. Preserve the one-time owner-private P2C root and logs; do not rerun unchanged or delete/rename evidence.
+
+A narrow read-only classifier was added to the same private draft PR75 branch:
+- current HEAD **1c03177fb7e99464a79d925d760ef5ecfbcaac39**;
+- `scripts/qualification/current-freellmapi-p2c-private-scan-log-classifier-r1.py`;
+- Git blob **0e8cf0c4fc1f7591eadb11ad15fdbcc56458ded9**;
+- **3763 UTF-8 bytes**;
+- SHA-256 **d885df19989b93d2b1c3bcb00dd22a66cd7cf9ec40bc71f84710e062de6b222d**.
+
+The classifier executes no Docker/GPG/SQLite/network action, reads only the existing owner-private `source_pre_scan_PRIVATE.log`, emits only an allow-listed scanner failure category/bounded helper hint and never prints raw private log text.
+
+`P2C_R1=BOUNDED_FAIL_PRIVATE_COMPLETE_TREE_SCAN`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`P2C_ENCRYPTED_BACKUP=NOT_REACHED_NOT_CREATED`  
+`P2D_ISOLATED_RESTORE=NOT_PERFORMED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_PRIVATE_SCAN_LOG_CLASSIFIER_R1`
+
