@@ -1431,3 +1431,35 @@ No P2C writer-quiesced coherent CURRENT live RW /app/data SQLite/WAL volume back
 `NEXT_GATE=LOCAL_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_DIRECT_ENCRYPTED_EXPORT_R1`
 
 **2026-10-03 final PR73 source pin amendment:** The draft PR already exists as #73; no duplicate PR is necessary. Final immutable head `1e16c953626f76f20493dabb45aede9f47c53bef`, exact script blob `08ad722d06ef30a87da71fe1f0aff78ee2241631`, **29300 bytes**, three focused commits / one new file / zero behind PR72. Latest narrow correction avoids read-only-FD fsync while retaining producer writable-FD fsync, full encrypted ciphertext reread/SHA, anonymous pipe decrypt validators and final source/live/wrapper nonmutation gating. The prior provisional PR73 head is SUPERSEDED. Local Mac syntax/fictional fixture and actual encrypted image/config export PENDING. Finish this single scoped P2B step and return to the original five-pillar Codex Unified/L1C-C release plan; P2C/P2D/P2E still independent owner-consent gates. **ROLLBACK_READY=NO.**
+
+## 61. 2026-10-05 PR73 owner Mac P2B exact image + confidential config preservation PASS
+
+Supersedes section 60's execution-pending state. Owner executed the bounded PR73 sequence through the corrected resume R3 on branch `qualification/current-freellmapi-p2b-exact-image-config-encrypted-export-r1`. Historical R1 image export successfully created the exact original encrypted image but its original validator produced a false negative because it assumed the Docker image-inspect ID must equal the tag-selected image-config digest. Read-only probes established the current containerd/OCI archive identity correctly: the pinned original Docker image ID resolves to an OCI index, the selected image config is separately content-addressed, and all referenced OCI descriptors/digests/sizes/layers validate. The existing encrypted image was retained and **not regenerated**.
+
+The final resume source is commit **b4ef3f892c31fa6f124ca874eb1d9f74713f207a**, file `scripts/qualification/current-freellmapi-p2b-exact-image-config-resume-r3.py`, Git blob **e4b472e1c31c65a2ec3f7261f12855993f9e2080**, **12264 UTF-8 bytes**; Mac local SHA-256 **31b994ff901d605b27d47aaa71dc65ac5e5b3f591b4bd4c4ed759937b1bc124f**. Ref/blob/size, Python AST, source-mode fixture and R1 filename-to-Path regression all PASS.
+
+Actual R3 owner run:
+- original runtime/worktree/recipient/recovery-wrapper preflight PASS;
+- existing encrypted image OCI descriptor-chain validator R2 PASS;
+- exact confidential original container inspect stream encrypted directly to owner GPG ciphertext PASS;
+- confidential config decrypt + semantic validation PASS;
+- original runtime/worktree/recovery-wrapper/existing-image nonmutation PASS;
+- private sanitized ciphertext manifest mode0600 PASS;
+- final live identity/worktree/recovery-wrapper/image postchecks all PASS;
+- no second `docker image save`, no plaintext TAR/inspect JSON persistence, no current RW `/app/data` file access, no container stop/restart/load/helper/provider/canary action.
+
+Verified local owner-private encrypted artifacts:
+- image ciphertext: **694906102 bytes**, SHA-256 **2c82e911b2fb41fa962fd8017884c1d03825777a8acee40e533ca1e1bb66978b**;
+- confidential exact container config ciphertext: **15683 bytes**, SHA-256 **f2daae9482e4458f7904c85d1ce2e7c977664a556aeba37a5f56fcb633f0ff6b**.
+
+Exact terminal result: **`RESULT=PASS_P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG_ENCRYPTED_EXPORT_R3_RESUME`**.
+
+This completes the finite P2B exact-image + confidential-config preservation requirement locally. It does **not** preserve the coherent current live RW `/app/data` SQLite/WAL state and does not establish a tested restoration path. P2C coherent current-volume preservation, P2D isolated real-data restore and P2E service return remain separately authorized gates. PR51 remains DRAFT/UNMERGED/default OFF. Do not repeat image-export, OCI/GPG discovery or P2B validation absent new contradictory evidence.
+
+`P2B_EXACT_IMAGE_AND_CONFIDENTIAL_CONFIG=OWNER_MAC_PASS`  
+`P2B_ARTIFACTS=LOCAL_OWNER_PRIVATE_VALIDATED`  
+`P2B_OFF_DEVICE_CUSTODY=NOT_YET_CONFIRMED`  
+`P2C_CURRENT_LIVE_RW_VOLUME_BACKUP=NOT_AUTHORIZED_NOT_CREATED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=OWNER_CUSTODY_REVIEW_FOR_P2B_ARTIFACTS_THEN_SEPARATE_P2C_AUTHORIZATION`
+
