@@ -1327,3 +1327,13 @@ Do not repeat the image export, prior GPG discovery, OCI diagnosis or P2B valida
 
 **NEXT_GATE=OWNER_CUSTODY_REVIEW_FOR_P2B_ARTIFACTS_THEN_SEPARATE_P2C_AUTHORIZATION**. After the bounded rollback prerequisites are complete, return directly to the original five-pillar Codex Unified / controlled L1C-C production-acceptance roadmap.
 
+## 35. 2026-10-05 P2B off-device copy integrity PASS; physical custody attestation still pending
+
+Owner completed the bounded off-device copy for the two already validated P2B ciphertext artifacts. The destination was reported by macOS as External and was verified as a separate filesystem. External copies of both encrypted artifacts were re-read and matched their accepted byte-size and SHA-256 baselines. No plaintext artifacts were copied; current live RW `/app/data` was not accessed or preserved.
+
+Exact result: **`RESULT=PASS_P2B_OFF_DEVICE_ENCRYPTED_ARTIFACT_CUSTODY_COPY_R1`**.
+
+Do not record the external volume/device name in repository evidence. This proves external-copy integrity only. Safe ejection and physically separate storage remain an owner-attested custody step. P2C writer-quiesced coherent current-volume preservation, P2D isolated real-data restore and P2E service return remain separate authorization gates. PR51 stays DRAFT/UNMERGED/default OFF; `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=OWNER_ATTEST_SAFE_EJECTION_AND_SEPARATE_STORAGE_THEN_SEPARATELY_AUTHORIZE_P2C**.
+
