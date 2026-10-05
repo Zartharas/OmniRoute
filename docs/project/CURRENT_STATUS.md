@@ -1607,3 +1607,21 @@ The probe keeps production running, uses network-none/read-only mounts, emits no
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R1`
 
+## 69. 2026-10-05 permission probe R1 stopped at syntax gate; corrected R2 pinned
+
+The first helper-user permission probe attempt never reached runtime: local `bash -n` failed on a malformed concatenation at the `live_user_open_scan` grep/post-identity boundary. Therefore that attempt created no helper, read no production-volume contents and changed no service state.
+
+The failed R1 source is preserved. A corrected superseding revision is pinned on private DRAFT PR #75:
+- HEAD **b0317ca84fee09cab0d8e1544e8a666adff38ccb**
+- file `scripts/qualification/current-freellmapi-p2c-helper-user-permission-probe-r1.sh`
+- Git blob **ff8032a8228f5a3ea57e8565f0853e5ea33c1fe5**
+- **10394 UTF-8 bytes**
+- SHA-256 **f27c4c58db0db3de130b011ee1f479bc0c3f18830b440422e91b6dd6e1e6731b**
+
+The malformed concatenation is removed, the live-user output contract is restored and only one post-identity/worktree nonmutation block remains. The probe still performs no service stop/restart, GPG, SQLite or archive/backup operation.
+
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R2`
+
