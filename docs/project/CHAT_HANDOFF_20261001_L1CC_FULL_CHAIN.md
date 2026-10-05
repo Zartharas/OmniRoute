@@ -1406,3 +1406,18 @@ The classifier reads only the already-created private scan diagnostic and emits 
 
 **NEXT_GATE=LOCAL_P2C_PRIVATE_SCAN_LOG_CLASSIFIER_R1**.
 
+## 40. 2026-10-05 next gate is read-only P2C scan-stage diagnosis
+
+The private log classifier returned **`SCAN_FAIL_UNEXPECTED_SCAN_ERROR`**. This is insufficient to justify another maintenance-window attempt. Do not rerun P2C R1 unchanged.
+
+Use only the new read-only operation-level diagnostic on PR #75:
+- HEAD **521472540ab897f73c01ec457fa7b78f4a4c6898**
+- file `scripts/qualification/current-freellmapi-p2c-scan-stage-diagnostic-r1.sh`
+- blob **0d7ae887f28069000d207036ee59bbbe6b023fc2**
+- 8458 bytes
+- SHA-256 **c1363e35fef0c3f06b793235082049f70ac89134e2645fa0f32b151cea84000e**
+
+It leaves the original service running, uses a network-none RO volume mount, reproduces traversal/hash operations and emits only sanitized failure-stage metadata. No filenames, raw exceptions or payloads are emitted; no GPG/SQLite/archive/service mutation occurs. If it passes while the service is running, remember that live-writer race remains possible and do not treat that as P2C qualification.
+
+**NEXT_GATE=LOCAL_P2C_SCAN_STAGE_DIAGNOSTIC_R1**.
+
