@@ -1643,3 +1643,32 @@ R3 keeps the original service running, verifies exact live identity and sole run
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R3`
 
+## 71. 2026-10-05 P2C helper-user root cause proven; patched source and read-only qualification staged
+
+Python R3 permission comparison conclusively reproduced the P2C scanner defect under the prior helper context and disproved a production-data corruption hypothesis. Sanitized evidence: live `Config.User` is explicit/non-default and non-root; the previous `0:0` + cap-drop-all context reproduced OPEN/EACCES on an AUXILIARY depth-2 regular file; that file matches the live UID/GID, owner-read is set, group/other read are not, and exact live-user mode bits predict readability. The exact live `Config.User` open traversal passed. Live identity/worktree nonmutation also passed.
+
+Root cause: PR75 hard-coded `--user 0:0` with all capabilities dropped for the source scanner/tar helper path instead of using the exact live application `Config.User`.
+
+Patch now staged on private DRAFT PR #75, current HEAD **2590b03332e2fad258713677bba1217e3a06b97f**:
+- patched production source `scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r1.py`;
+- Git blob **8821ba0b0d99af791a45ded3bd9f3a0b9f33ba4a**;
+- **36988 bytes**;
+- SHA-256 **fc49b07f1f5110bafdeabd9772ccf28e620e02eca23ac82d930412fd75e6fe8c**.
+
+The scanner, helper capability check and tar producer now consume one `helper_user` resolved from the exact live `Config.User`; no hard-coded `"--user", "0:0"` remains in those volume-helper paths. Offline self-test includes a helper-user propagation regression and hard-coded-root rejection.
+
+A separate read-only qualification is staged:
+- `scripts/qualification/current-freellmapi-p2c-live-user-readonly-helper-qualification-r1.py`;
+- blob **7f066493b027b1c485c39b201c7eca8e2f9d0d3b**;
+- **11963 bytes**;
+- SHA-256 **3b522df1760e5398ade60fb43726a2ce4b476b81d9dd74a7f098de0b68fa5cc4**.
+
+It keeps production running, performs the exact-live-user RO/network-none full-tree hash scan, and source-validates that both pre/post scanner calls and tar producer consume `helper_user`. It deliberately does not execute a live tar stream because live-writer races could confound a permission-only qualification. No coherent-backup claim is permitted.
+
+`P2C_ROOT_CAUSE=PROVEN_HELPER_USER_CONTEXT_DEFECT`  
+`P2C_PATCH=STAGED_IN_DRAFT_PR75`  
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_LIVE_USER_READONLY_HELPER_QUALIFICATION_R1`
+
