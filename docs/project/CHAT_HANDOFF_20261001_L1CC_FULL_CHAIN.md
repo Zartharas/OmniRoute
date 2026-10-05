@@ -1354,3 +1354,22 @@ After a clean PR74 Mac PASS, actual P2C still requires explicit owner maintenanc
 
 **NEXT_GATE=LOCAL_P2C_READ_ONLY_READINESS_PREFLIGHT_R1**.
 
+## 37. 2026-10-05 PR74 actual readiness PASS; PR75 P2C execution source prepared but NOT authorized
+
+PR74 owner Mac result is accepted: **`PASS_P2C_READ_ONLY_READINESS_PREFLIGHT_R1`**. The gate was strictly non-mutating: no service interruption, helper, production-data content read, SQLite operation, backup/snapshot, GPG operation, provider call or L1C-C activation. Current exact live topology/sole running volume use, P2B local ciphertext baselines, protected recovery metadata, conservative host capacity and final nonmutation all passed.
+
+New private **DRAFT PR #75** is stacked directly on PR74:
+- branch `qualification/current-freellmapi-p2c-coordinated-backup-r1`;
+- current HEAD **6edb526dab57df6b50534fac7018314dc3d1038a**;
+- source `scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r1.py`;
+- Git blob **48353233e351eaf83fa0b778f83b4db36c37bcdd**;
+- **34497 bytes**;
+- SHA-256 **eca8995404e8f1b44bf3d577d91fca8b68a980885ba9e649589ecdd691875ba8**;
+- offline self-test: positive complete-tree validation plus four fail-closed negative cases PASS.
+
+The production path is deliberately interactive and inert until the owner types **`AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLUME_PRESERVATION`**. Only after that token does it create a network-none helper, gracefully stop the exact original service, prove no running writer remains, scan/capture the complete current data tree read-only, stream it directly into qualified GPG ciphertext, confidentially validate archive membership/content hashes, prove source nonmutation and return the same original service. No plaintext archive or live-source SQLite checkpoint/repair. P2D remains separately unauthorized.
+
+The user's PR74 result is evidence of readiness, not implicit permission to interrupt the live service. Keep PR51 DRAFT/UNMERGED/default OFF and `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=EXPLICIT_OWNER_P2C_MAINTENANCE_WINDOW_AUTHORIZATION**.
+
