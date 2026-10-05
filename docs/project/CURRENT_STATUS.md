@@ -1587,3 +1587,23 @@ The diagnostic keeps the original service running, mounts the current volume rea
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_SCAN_STAGE_DIAGNOSTIC_R1`
 
+## 68. 2026-10-05 P2C scan diagnosis narrows to helper user/permission mismatch candidate
+
+The live read-only scan-stage diagnostic returned **OPEN / EACCES** on an **AUXILIARY depth-2 regular file**. Pre/post live identity and active worktree nonmutation both passed; no stop/restart, archive, GPG or SQLite operation occurred.
+
+Repository comparison found a concrete implementation difference: accepted P0 deliberately ran the read-only helper as the exact live container `Config.User`, while PR75 hard-coded `--user 0:0` with `--cap-drop ALL` for both scan and tar helpers. Root without discretionary-access capabilities can receive EACCES on a file readable by the live application user, so this is now the leading source-defect hypothesis.
+
+A direct read-only comparison probe is staged on private DRAFT PR #75:
+- HEAD **2aa2756a5a8dbcf2e6680bb61a57d2bfbc8e6e7d**
+- file `scripts/qualification/current-freellmapi-p2c-helper-user-permission-probe-r1.sh`
+- blob **b63c13828e963fdb631642b81715dd7e8f7dc4af**
+- **10906 bytes**
+- SHA-256 **cffc02ee89dd7c21f1b3e74eef9fc47ece1b78a877d7d6ada91c0438831c98af**
+
+The probe keeps production running, uses network-none/read-only mounts, emits no filenames or file contents, and performs no GPG/SQLite/archive/provider action. It compares open access under PR75's current `0:0`/cap-drop-all context against the exact live `Config.User`.
+
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R1`
+
