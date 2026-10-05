@@ -1453,3 +1453,16 @@ R3 is Python-only on the host, retains network-none/read-only helpers, compares 
 
 **NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R3**.
 
+## 44. 2026-10-05 P2C helper-user defect proven; qualify patched source before any retry
+
+The Python R3 probe proved the prior P2C failure was caused by helper-user context, not bad production data: `0:0` with all capabilities dropped reproduced OPEN/EACCES on a file owned/readable by the live application user, while exact live `Config.User` traversal passed.
+
+Use current private PR75 HEAD **2590b03332e2fad258713677bba1217e3a06b97f**. Patched production source blob **8821ba0b0d99af791a45ded3bd9f3a0b9f33ba4a**, 36988 bytes, SHA-256 **fc49b07f1f5110bafdeabd9772ccf28e620e02eca23ac82d930412fd75e6fe8c**. Scanner, helper capability and tar producer now receive exact live `Config.User`; hard-coded root volume-helper user is removed and guarded by self-test.
+
+Before any second maintenance-window attempt, run only the read-only qualification:
+`scripts/qualification/current-freellmapi-p2c-live-user-readonly-helper-qualification-r1.py`, blob **7f066493b027b1c485c39b201c7eca8e2f9d0d3b**, 11963 bytes, SHA-256 **3b522df1760e5398ade60fb43726a2ce4b476b81d9dd74a7f098de0b68fa5cc4**.
+
+It performs exact-live-user full-tree hash scanning with production still running and validates source wiring for scanner/tar helper propagation. No live tar stream, service interruption, GPG, SQLite command or backup is allowed. A later P2C retry requires fresh explicit owner authorization after this qualification passes.
+
+**NEXT_GATE=LOCAL_P2C_LIVE_USER_READONLY_HELPER_QUALIFICATION_R1**.
+
