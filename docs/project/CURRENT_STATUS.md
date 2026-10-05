@@ -1478,3 +1478,23 @@ This closes off-device **copy integrity** for the two P2B ciphertexts. The exter
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=OWNER_ATTEST_SAFE_EJECTION_AND_SEPARATE_STORAGE_THEN_SEPARATELY_AUTHORIZE_P2C`
 
+## 63. 2026-10-05 P2B removable copy safely ejected; P2C read-only readiness PR #74 staged
+
+Owner explicitly attests the removable drive containing the verified P2B encrypted image+config copy was safely ejected after the accepted external-copy integrity PASS. This records **safe ejection OWNER-ATTESTED** only; separate physical storage is not inferred unless separately stated.
+
+P2C preparation advanced without touching production data. New private **DRAFT PR #74**, branch `qualification/current-freellmapi-p2c-readiness-preflight-r1`, HEAD **8602981e88bf3e2c0d7bcfd529b2560c1c59c708**, is stacked directly on current PR73 head **b4ef3f892c31fa6f124ca874eb1d9f74713f207a**, two commits ahead/zero behind. It adds exactly:
+- `scripts/qualification/current-freellmapi-p2c-readonly-readiness-preflight-r1.sh`, Git blob **f2b642078369320f66c524a34d17976a4427fa96**, **7632 bytes**, independently prepared SHA-256 **27581c30b91c43aa65fcb3a7708b5db458c34a66283426e5131b060d3e82b3fb**;
+- `docs/qualification/CURRENT_FREELLMAPI_P2C_READINESS_AND_EXECUTION_BOUNDARY_20261005.md`, Git blob **ebf25ee8166cbae8487f33685a536790bb2e8080**, **3975 bytes**.
+
+The read-only preflight performs no service stop/restart, helper-container creation, production `/app/data` file-content access, SQLite open/checkpoint/repair, backup/snapshot, GPG encrypt/decrypt, provider call or L1C-C activation. It revalidates exact current live topology and sole running use of the current volume, local accepted P2B ciphertext baselines, protected GPG/recovery-wrapper metadata, conservative host-space planning floor and final live/worktree nonmutation.
+
+Actual P2C remains a distinct maintenance-window authorization: graceful stop, exclusive writer quiescence, read-only complete-tree capture of `storage.sqlite` plus whichever WAL/SHM/journal sidecars exist, `call_logs`, `db_backups` and auxiliary state, direct encryption, confidential coverage/hash proof, source nonmutation, and return of the same original service. P2D isolated restore remains later and separate.
+
+`P2B_SAFE_EJECTION=OWNER_ATTESTED`  
+`P2C_READ_ONLY_READINESS_PREFLIGHT=MAC_PENDING`  
+`P2C_CURRENT_FULL_VOLUME_BACKUP=NOT_AUTHORIZED_NOT_PERFORMED`  
+`P2D_ISOLATED_RESTORE=NOT_AUTHORIZED_NOT_PERFORMED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_READ_ONLY_READINESS_PREFLIGHT_R1`
+
