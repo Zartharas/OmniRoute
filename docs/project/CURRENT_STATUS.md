@@ -1625,3 +1625,21 @@ The malformed concatenation is removed, the live-user output contract is restore
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R2`
 
+## 70. 2026-10-05 shell permission probe abandoned; Python R3 supersedes syntax-failing R1/R2
+
+The owner Mac permission-probe R2 again failed at local shell syntax validation before any Docker/helper/production-volume action. GitHub readback showed an older malformed duplicated shell fragment remained before the corrected tail. Therefore both shell permission-probe attempts are syntax-only failures and provide no runtime permission evidence.
+
+Do not repair or rerun the shell probe again. A Python replacement removes the heredoc/shell-quoting failure class entirely and is now pinned on private DRAFT PR #75:
+- HEAD **513ee811abca52829c4ed6957cdff733838bec4d**
+- file `scripts/qualification/current-freellmapi-p2c-helper-user-permission-probe-r3.py`
+- Git blob **3004db9fa190b464c890eda1a9b63b627dcd85ff**
+- **12812 UTF-8 bytes**
+- SHA-256 **69a72db22124bacb49b57471a1b18b5ec04967e471253a573d87b0d17839b502**
+
+R3 keeps the original service running, verifies exact live identity and sole running use of the current volume, resolves exact live `Config.User` without printing username/UID/GID, runs the PR75 root/no-capability read-only open traversal, then the same read-only traversal as exact live `Config.User`, emits only sanitized categories, and verifies post-run live/worktree nonmutation. No stop/restart, GPG, SQLite command, archive/backup or provider call.
+
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`ORIGINAL_SERVICE_RETURN=PASS`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_HELPER_USER_PERMISSION_PROBE_R3`
+
