@@ -1373,3 +1373,15 @@ The user's PR74 result is evidence of readiness, not implicit permission to inte
 
 **NEXT_GATE=EXPLICIT_OWNER_P2C_MAINTENANCE_WINDOW_AUTHORIZATION**.
 
+## 38. 2026-10-05 P2C owner authorization granted; use only final force-kill-free PR75 source
+
+Owner has explicitly authorized the P2C maintenance-window transaction. P2D remains separately unauthorized.
+
+Use only final PR75 HEAD **d4991c27eae60f9304b1a8013a3708f16376ab8e**, source blob **ea2c3a1e6925995932a87b77f6a58f9864ca066d**, **36022 bytes**, SHA-256 **733ba08833fcf5fa793e898c6da6d69848848022c0aa6e3e6d749793c00b8b1f**. Earlier PR75 heads are superseded.
+
+Final safety semantics: no finite `docker stop` and no automatic SIGKILL. The source sends SIGTERM only, polls for clean exit, aborts if writer quiescence is not achieved, rejects exit code 137, and attempts to return/verify the original service on every post-signal path. The rest of the bounded transaction remains complete-tree RO source scan, direct tar-to-GPG ciphertext, confidential full membership/hash validation, quiesced source re-scan/nonmutation and original-service topology/health return.
+
+At runtime the owner must still type exactly `AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLUME_PRESERVATION`. If any failure marker occurs, do not retry unchanged or manually alter the private evidence root until service-return status is reviewed. P2D remains separate and `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R1**.
+
