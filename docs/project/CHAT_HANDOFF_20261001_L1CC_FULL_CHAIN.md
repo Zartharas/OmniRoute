@@ -1594,3 +1594,15 @@ PR78 repair is unchanged. No fresh authorization is required because the earlier
 
 **NEXT_GATE=RERUN_CORRECTED_LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
 
+## 55. 2026-10-06 issue24 repair passed npm-ci; use PR79 webpack fallback R2
+
+PR #78's lockfile repair is now proven at its intended reproducibility boundary: exact one-record delta, clean npm 12.0.2 `npm ci`, and no lockfile rewrite.
+
+The remaining build failure is downstream: Next.js 16.3.2/Turbopack panicked in `ModuleGraphImportTracer` with `there must be a path to a root`. The repository already supports webpack as the explicit escape hatch.
+
+Use PR79 head **815c3c3e5149ea027ff60134f8fff656bb59a48f**, R2 harness `scripts/qualification/issue24-bounded-lockfile-repair-webpack-qualification-r2.sh`, blob **b6b3796e3ed46c5b9f6ad0c9c473a717ad48dfaa**, 13750 bytes, SHA-256 **a28453c71062df3bb08ab026fe0c3e706ba98eb1e3442fe013b23e506b32bcb2**.
+
+R2 changes only the build argument to `OMNIROUTE_USE_TURBOPACK=0`; all live/runtime/provider safety boundaries remain unchanged.
+
+**NEXT_GATE=LOCAL_PR79_WEBPACK_FALLBACK_CANDIDATE_BUILD_R2**.
+
