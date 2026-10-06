@@ -1553,3 +1553,13 @@ The gate builds exact PR #51 source as `linux/amd64` `runner-base` and verifies 
 
 **NEXT_GATE=LOCAL_PR51_CANDIDATE_IMAGE_BUILD_QUALIFICATION_R1**.
 
+## 52. 2026-10-06 PR77 build failed safely on known inherited issue #24
+
+The authorized candidate-image build did not reach application compilation or a qualified image. `npm ci` stopped on the already-known inherited package/lock mismatch: `Missing: brace-expansion@1.1.21 from lock file`.
+
+This is not a PR #51 functional regression. PR #51 changes no dependency/build files, and private QA issue #24 already records the identical failure on older qualified source.
+
+Do not bypass the lockfile gate. The next bounded step is issue #24's separately authorized lockfile repair: isolated exact-source reconciliation, lockfile-only/minimal diff proof, clean `npm ci`, then rerun PR #77 build qualification. No live cutover or provider activity is implied.
+
+**NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_ISSUE24_BOUNDED_LOCKFILE_REPAIR_R1**.
+
