@@ -1735,3 +1735,19 @@ R2 requires the existing R1 private evidence root, writes only to a new R2 priva
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R2`
 
+## 74. 2026-10-06 P2C coherent encrypted current-volume backup R2 PASS
+
+Owner executed the pinned second P2C maintenance-window transaction from private DRAFT PR #75 HEAD **4ce8dfb792a776db6bdfaa18c03a3a660d058b00** and obtained exact result **`PASS_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R2`**.
+
+All bounded gates passed: R1 evidence preservation, exact pre-P2C live/P2B/recovery baselines, exact-live-`Config.User` helper path, network-none helper capability, SIGTERM-only graceful service quiescence and exclusive-writer proof, complete quiesced tree manifest, actual host-capacity guard, direct encrypted full-tree stream, confidential encrypted-archive validation, quiesced-source nonmutation, private backup-record mode0600, exact original service identity/topology/health return, and original worktree/recovery-wrapper/P2B postchecks.
+
+Quiesced source observed **115 regular files**, **16 directories**, **472773808 logical bytes**. SQLite WAL/SHM/journal sidecars were absent after clean quiescence. The validated encrypted current-volume artifact is **472922518 bytes**, SHA-256 **8cce0cc12a38114224f5c7ba98d80bfcf10e87f5a343ec55dd4d4fe3fee940de**, status `LOCAL_OWNER_PRIVATE_VALIDATED`.
+
+P2C is now **COMPLETE** for the defined coherent encrypted current-volume preservation scope. Do not repeat P2C unless a later intentional refresh is requested.
+
+`P2C=COMPLETE_PASS`  
+`P2D_ISOLATED_RESTORE=NOT_PERFORMED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=SEPARATE_OWNER_AUTHORIZATION_FOR_P2D_ISOLATED_RESTORE_PROOF`
+
