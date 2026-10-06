@@ -1896,3 +1896,20 @@ Local execution token: `AUTHORIZE_ISSUE24_BOUNDED_LOCKFILE_REPAIR_R1`.
 
 **NEXT_GATE=LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
 
+## 81. 2026-10-06 PR79 harness escaping defect fixed before execution
+
+The first local PR #79 qualification attempt stopped during shell variable initialization because four host-shell expansions were accidentally stored with literal backslashes in the generated harness. The failure occurred before evidence-directory creation, Docker, npm, dependency-network access or candidate-image build.
+
+Corrected private PR #79:
+- head **51bd569aaf79ef9f7f3b0b4c0ac87dd66aa5f2cd**;
+- base remains PR #78 repair head **2cd6759b7ffbd396110ccb19f200fe237c80bad6**;
+- qualification script blob **31025c85458ef0045c44eabdafe79ed836c8181c**;
+- **13372 bytes**;
+- SHA-256 **8687161ea3d7e88afe771547ecc8eec7fe4ba601e452ee1ef97affe00aefff6e**.
+
+All unintended escaped `${...}` host-shell expansions are removed. The two escaped `$(npm --version)` substitutions are intentionally retained for execution inside the ephemeral Node/npm container.
+
+PR #78 remains unchanged and lockfile-only. Existing owner authorization still applies because scope did not change and the failed attempt never entered npm/Docker/network mutation.
+
+**NEXT_GATE=RERUN_CORRECTED_LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
+
