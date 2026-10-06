@@ -1526,3 +1526,15 @@ The active project path now returns to the original product roadmap: **controlle
 
 **NEXT_GATE=RETURN_TO_L1CC_CONTROLLED_ACCEPTANCE_ROADMAP**.
 
+## 50. 2026-10-06 next gate is PR51 candidate-image build, not another backup or lease patch
+
+P2B/P2C/P2D are complete and `ROLLBACK_READY=YES`.
+
+Post-rollback audit of the accepted B1 lease-valid contract shows no naive managed-lease patch should be added to L1C-C. The current selector's no-lease branch already excludes all connections reserved to `lease:exclusive` keys and all ACTIVE leased connections. Combined with exact forced pinning, cached quota enforcement, no session affinity and rejection of rate-limited/suppressed accounts, this is the applicable lease-valid guarantee for the four-distinct-connection chain.
+
+PR #51 is still only source-qualified and is not inside the running FreeLLMAPI image. Therefore a live PR #51 credential/egress test cannot yet be authoritative.
+
+The next bounded action is to build and qualify an exact Docker candidate from PR #51 HEAD **c3ea109b629ab20184b1515afc94e7be96f44cc8**, leaving both canary flags OFF and leaving the current live container/image/volume untouched. The repository Dockerfile requires normal build-time distro/npm/GitHub asset network access; this is not a provider/model request but is a local Docker-image mutation and requires separate owner authorization.
+
+**NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_PR51_CANDIDATE_IMAGE_BUILD_QUALIFICATION**.
+
