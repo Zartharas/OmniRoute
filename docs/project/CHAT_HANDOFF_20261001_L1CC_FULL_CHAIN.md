@@ -1480,3 +1480,13 @@ Do not reuse the earlier P2C authorization. A second maintenance-window attempt 
 
 **NEXT_GATE=FRESH_OWNER_AUTHORIZATION_FOR_SECOND_P2C_ATTEMPT**.
 
+## 46. 2026-10-06 use distinct P2C R2 source for authorized second maintenance-window attempt
+
+Fresh owner authorization is granted for P2C R2 only. Preserve the failed R1 private evidence root.
+
+Use private PR75 HEAD **4ce8dfb792a776db6bdfaa18c03a3a660d058b00**, file `scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r2.py`, blob **c04d04e208a5b15362a0a7e820678478a5a96edc**, 37622 bytes, SHA-256 **2bb08c33b3dbf5eade064e8cc1e5038adb81c858a6f589c682d8ef7b229c43cc**.
+
+R2 writes to a new private evidence root, requires/preserves R1 evidence, carries the qualified exact-live-user helper fix and uses the R2-only local authorization token `AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLUME_PRESERVATION_R2`. P2D remains separately unauthorized.
+
+**NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R2**.
+
