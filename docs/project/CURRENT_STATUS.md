@@ -1874,3 +1874,25 @@ Do not weaken `npm ci`, switch production build to `npm install`, or perform bro
 `CANDIDATE_IMAGE_QUALIFIED=NO`  
 `NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_ISSUE24_BOUNDED_LOCKFILE_REPAIR_R1`
 
+## 80. 2026-10-06 issue #24 bounded lockfile repair authorized; PR #78/#79 staged
+
+Owner authorized the bounded repair for the inherited npm lockfile drift that blocked PR #77.
+
+Repair PR #78 is DRAFT/OPEN/UNMERGED and is based directly on exact PR #51 head **c3ea109b629ab20184b1515afc94e7be96f44cc8**. Its head is **2cd6759b7ffbd396110ccb19f200fe237c80bad6** and it changes exactly one file, `package-lock.json`, with **3 additions / 3 deletions**. The only semantic change is root `node_modules/brace-expansion` metadata from **1.1.18** to **1.1.21** (version/resolved/integrity only); dependency shape, `package.json`, `Dockerfile`, application source and tests remain unchanged. Repaired lock blob: **e492509efd515af4666ffe3e03d83c577c6da726**.
+
+Stacked qualification PR #79 is DRAFT/OPEN/UNMERGED:
+- base repair head: **2cd6759b7ffbd396110ccb19f200fe237c80bad6**;
+- qualification head: **d86fc5c0a2f38cda9543ad705085a3a11714b428**;
+- harness: `scripts/qualification/issue24-bounded-lockfile-repair-qualification-r1.sh`;
+- blob: **0dd3f0e8e7f00d2f7239e1fe46087e5e8eaef864**;
+- bytes: **13376**;
+- SHA-256: **d5616bbfe2edaf521bf1cbaefd3ffe1dafdffd3df883448216eee6c16e0a87b1**.
+
+The harness binds to the exact failed-build Node base digest and npm **12.0.2**, proves the one-record lock delta, runs clean `npm ci` in an isolated ephemeral container, requires lock/package nonmutation, then rebuilds and statically qualifies the repaired PR #51 candidate image. The live service is checked before/after and remains untouched. Candidate runtime execution, credentials, provider/model calls, egress probes, real canary, merge and activation remain out of scope.
+
+Local execution token: `AUTHORIZE_ISSUE24_BOUNDED_LOCKFILE_REPAIR_R1`.
+
+`ROLLBACK_READY=YES` remains established.
+
+**NEXT_GATE=LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
+
