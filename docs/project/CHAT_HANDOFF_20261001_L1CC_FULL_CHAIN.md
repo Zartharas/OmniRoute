@@ -1490,3 +1490,15 @@ R2 writes to a new private evidence root, requires/preserves R1 evidence, carrie
 
 **NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R2**.
 
+## 47. 2026-10-06 P2C complete; stop backup iteration and advance to P2D gate
+
+P2C is no longer the active blocker. Owner Mac execution of distinct R2 passed end-to-end with exact result **`PASS_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R2`**.
+
+The coherent current `/app/data` tree was captured only after graceful exclusive-writer quiescence, streamed directly to encrypted owner-private storage, confidentially validated against the private complete-tree manifest, re-scanned for source nonmutation, and followed by successful exact original service identity/topology/health restoration.
+
+Validated encrypted artifact: **472922518 bytes**, SHA-256 **8cce0cc12a38114224f5c7ba98d80bfcf10e87f5a343ec55dd4d4fe3fee940de**. Quiesced source: 115 regular files, 16 directories, 472773808 logical bytes. P2C should not be rerun absent an intentional later refresh.
+
+The next bounded rollback prerequisite is **P2D isolated restore proof**, which remains separately unauthorized. Keep PR51 draft/unmerged/default OFF. `ROLLBACK_READY=NO` until the restore gate succeeds.
+
+**NEXT_GATE=SEPARATE_OWNER_AUTHORIZATION_FOR_P2D_ISOLATED_RESTORE_PROOF**.
+
