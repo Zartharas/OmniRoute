@@ -1584,3 +1584,13 @@ The harness uses the exact Node image digest observed in the failed PR77 build a
 
 **NEXT_GATE=LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
 
+## 54. 2026-10-06 use corrected PR79 harness head
+
+The initial PR79 local run failed before Docker/npm/network execution because generated shell source contained literal escaped host substitutions such as `${TMPDIR:-/tmp}`.
+
+Use corrected PR79 head **51bd569aaf79ef9f7f3b0b4c0ac87dd66aa5f2cd** and harness blob **31025c85458ef0045c44eabdafe79ed836c8181c**, 13372 bytes, SHA-256 **8687161ea3d7e88afe771547ecc8eec7fe4ba601e452ee1ef97affe00aefff6e**.
+
+PR78 repair is unchanged. No fresh authorization is required because the earlier failed attempt never crossed into Docker/npm/network mutation and the approved scope is unchanged.
+
+**NEXT_GATE=RERUN_CORRECTED_LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
+
