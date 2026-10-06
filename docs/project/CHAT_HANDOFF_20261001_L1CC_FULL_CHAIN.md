@@ -1514,3 +1514,15 @@ A full P2D PASS permits `ROLLBACK_READY=YES` for the defined preservation/restor
 
 **NEXT_GATE=LOCAL_P2D_ISOLATED_RESTORE_PROOF_R1**.
 
+## 49. 2026-10-06 P2D PASS; preservation/restore work is complete
+
+P2D isolated restore proof passed end-to-end with exact result **`PASS_P2D_ISOLATED_RESTORE_PROOF_R1`** and `ROLLBACK_READY=YES`.
+
+The P2C archive restored into a fresh disconnected volume, matched the complete preserved tree before database open, passed copy-only SQLite integrity/schema/representative-count checks, preserved all external artifact hashes, and left the live service/worktree plus P2B/P2C/recovery artifacts unchanged. The isolated restored volume remains detached/confidential.
+
+Do not repeat P2B/P2C/P2D unless a deliberate preservation refresh is later required. PR #76 remains a draft evidence carrier. PR #51 remains draft/unmerged/default OFF.
+
+The active project path now returns to the original product roadmap: **controlled L1C-C full-chain acceptance first, then continuation toward the five-pillar OmniRoute + Auth Keeper architecture**.
+
+**NEXT_GATE=RETURN_TO_L1CC_CONTROLLED_ACCEPTANCE_ROADMAP**.
+
