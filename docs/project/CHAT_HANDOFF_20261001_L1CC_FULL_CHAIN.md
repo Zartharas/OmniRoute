@@ -1466,3 +1466,17 @@ It performs exact-live-user full-tree hash scanning with production still runnin
 
 **NEXT_GATE=LOCAL_P2C_LIVE_USER_READONLY_HELPER_QUALIFICATION_R1**.
 
+## 45. 2026-10-06 P2C helper-user correction qualified; second outage still requires fresh approval
+
+The patched PR75 helper-user path has now passed owner-Mac read-only qualification on HEAD **2590b03332e2fad258713677bba1217e3a06b97f**.
+
+The production source self-test passed complete-tree validator coverage, helper-user propagation and no-Docker synthetic execution. Actual read-only execution as exact live `Config.User` then completed the full-tree hash scan: 117 regular files, 16 directories and 476919168 logical bytes observed; WAL and SHM present; journal absent. Source wiring confirms the same helper-user value reaches scanner and tar-producer paths. Live identity/worktree nonmutation PASS.
+
+This proves the prior `0:0`/cap-drop-all permission defect is corrected, but it is not a coherent backup because the live writer remained active and no encrypted P2C artifact was created.
+
+Use production source blob **8821ba0b0d99af791a45ded3bd9f3a0b9f33ba4a**, 36988 bytes, SHA-256 **fc49b07f1f5110bafdeabd9772ccf28e620e02eca23ac82d930412fd75e6fe8c**. Qualification source blob **7f066493b027b1c485c39b201c7eca8e2f9d0d3b**, 11963 bytes, SHA-256 **3b522df1760e5398ade60fb43726a2ce4b476b81d9dd74a7f098de0b68fa5cc4**.
+
+Do not reuse the earlier P2C authorization. A second maintenance-window attempt requires fresh explicit owner approval. P2D remains separately unauthorized and `ROLLBACK_READY=NO`.
+
+**NEXT_GATE=FRESH_OWNER_AUTHORIZATION_FOR_SECOND_P2C_ATTEMPT**.
+
