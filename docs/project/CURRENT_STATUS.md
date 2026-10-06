@@ -1847,3 +1847,30 @@ Expected candidate tag: `omniroute:l1cc-pr51-c3ea109b-r1-amd64`.
 
 **NEXT_GATE=LOCAL_PR51_CANDIDATE_IMAGE_BUILD_QUALIFICATION_R1**.
 
+## 79. 2026-10-06 PR77 candidate image build blocked by inherited npm lockfile drift
+
+Owner executed the authorized PR #77 build-only qualification against exact PR #51 source `c3ea109b629ab20184b1515afc94e7be96f44cc8`.
+
+Pre-build gates passed:
+- qualification source integrity/syntax;
+- exact live identity/topology/health/canary-OFF;
+- host build-space floor;
+- isolated exact-source build context.
+
+Docker then failed at builder `npm ci` before application compilation/image completion because `package.json` and `package-lock.json` are not synchronized: **`Missing: brace-expansion@1.1.21 from lock file`**.
+
+The failure is not introduced by PR #51: its diff contains only the eight L1C-C source/test files and does not modify `package.json`, `package-lock.json` or `Dockerfile`. The identical condition is already tracked in private QA issue #24 as inherited repository baseline drift from earlier qualified source.
+
+Current lockfile resolves the root `brace-expansion` entry at 1.1.18 while `package.json` carries a floating nested `minimatch -> brace-expansion ^1.1.18` override; the Docker build's current npm resolver requires 1.1.21 and `npm ci` correctly fails closed.
+
+No candidate-image PASS was produced. No live service stop/restart, production-volume use, provider/model call, L1C-C activation or live-container replacement occurred.
+
+Do not weaken `npm ci`, switch production build to `npm install`, or perform broad dependency upgrades.
+
+`ROLLBACK_READY=YES` remains established.
+
+`PR77_BUILD=SAFE_FAIL_INHERITED_LOCKFILE_DRIFT`  
+`PR51_SOURCE_REGRESSION=NO`  
+`CANDIDATE_IMAGE_QUALIFIED=NO`  
+`NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_ISSUE24_BOUNDED_LOCKFILE_REPAIR_R1`
+
