@@ -1502,3 +1502,15 @@ The next bounded rollback prerequisite is **P2D isolated restore proof**, which 
 
 **NEXT_GATE=SEPARATE_OWNER_AUTHORIZATION_FOR_P2D_ISOLATED_RESTORE_PROOF**.
 
+## 48. 2026-10-06 P2D authorized; use separate draft PR #76
+
+P2C is complete and must not be repeated. The owner has separately authorized P2D isolated restore proof.
+
+Use private PR #76 HEAD **d700c20e061522a9f596a925713ee8fc939f87d1**, source `scripts/qualification/current-freellmapi-p2d-isolated-restore-proof-r1.py`, blob **534a9ceb8034ba1c54afb6e8bb5cb6e133418cca**, 45789 bytes, SHA-256 **56b5c7deb9984f1a539d037bffa54a6d62cae105f6027b804fcdc029610edaf2**. Runbook blob **30e8044a3e514d1077817beaa133dcd03538e41f**, 4583 bytes, SHA-256 **4fecf48e1f76f2f18d1d0d44ee4c4490e696304e368ec1806dc0e99bc163a33c**.
+
+P2D creates one fresh network-none isolated volume and restores only there. No production volume mount, live service stop/restart, production token/policy mount, host port, provider call or L1C-C activation is permitted. SQLite is opened only on the restored copy. Local token: `AUTHORIZE_P2D_ISOLATED_RESTORE_PROOF`.
+
+A full P2D PASS permits `ROLLBACK_READY=YES` for the defined preservation/restore prerequisite, but does not merge or activate PR #51. After PASS, return to the controlled L1C-C/five-pillar acceptance roadmap.
+
+**NEXT_GATE=LOCAL_P2D_ISOLATED_RESTORE_PROOF_R1**.
+
