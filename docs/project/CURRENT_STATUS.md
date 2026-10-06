@@ -1716,3 +1716,22 @@ The helper-user defect is now both **proven and qualified fixed** without anothe
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=FRESH_OWNER_AUTHORIZATION_FOR_SECOND_P2C_ATTEMPT`
 
+## 73. 2026-10-06 fresh owner authorization granted for distinct P2C R2 transaction
+
+After the patched exact-live-user helper path passed read-only qualification, the owner granted fresh authorization for a second P2C maintenance-window attempt. The failed R1 private evidence must remain preserved and must not be reused or deleted.
+
+Distinct R2 source on private DRAFT PR #75:
+- HEAD **4ce8dfb792a776db6bdfaa18c03a3a660d058b00**
+- file `scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r2.py`
+- Git blob **c04d04e208a5b15362a0a7e820678478a5a96edc**
+- **37622 bytes**
+- SHA-256 **2bb08c33b3dbf5eade064e8cc1e5038adb81c858a6f589c682d8ef7b229c43cc**
+
+R2 requires the existing R1 private evidence root, writes only to a new R2 private root, uses exact live `Config.User` for scanner/capability/tar paths, retains SIGTERM-only quiescence with no automatic force-kill, persists no plaintext production archive, and performs no live-source SQLite checkpoint/repair. Synthetic checks cover complete-tree validation, helper-user propagation, R1/R2 evidence separation and R2-only authorization token. Local execution requires `AUTHORIZE_P2C_CURRENT_LIVE_RW_VOLUME_PRESERVATION_R2`.
+
+`P2C_R2_OWNER_AUTHORIZATION=GRANTED`  
+`P2C_R2_EXECUTION=LOCAL_MAC_PENDING`  
+`P2D_ISOLATED_RESTORE=NOT_AUTHORIZED_NOT_PERFORMED`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=LOCAL_P2C_COORDINATED_CURRENT_VOLUME_ENCRYPTED_BACKUP_R2`
+
