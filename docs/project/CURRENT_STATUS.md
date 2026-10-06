@@ -1751,3 +1751,31 @@ P2C is now **COMPLETE** for the defined coherent encrypted current-volume preser
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=SEPARATE_OWNER_AUTHORIZATION_FOR_P2D_ISOLATED_RESTORE_PROOF`
 
+## 75. 2026-10-06 P2D isolated restore proof authorized and staged in separate draft PR #76
+
+P2C R2 is complete. The owner has separately authorized **P2D isolated restore proof** only.
+
+P2D is isolated from production: it may verify the already-preserved P2B/P2C artifacts, create one new disconnected Docker volume, restore the P2C archive into that isolated volume, validate the exact restored tree and run SQLite integrity/schema/count checks on the COPY only. It may not stop/restart the live service, mount/restore the production volume, mount production token/policy binds, publish ports, join a Docker network, call providers or activate L1C-C.
+
+Authoritative private DRAFT PR #76:
+- branch `qualification/current-freellmapi-p2d-isolated-restore-r1`;
+- base P2C head **4ce8dfb792a776db6bdfaa18c03a3a660d058b00**;
+- HEAD **d700c20e061522a9f596a925713ee8fc939f87d1**;
+- source `scripts/qualification/current-freellmapi-p2d-isolated-restore-proof-r1.py`;
+- blob **534a9ceb8034ba1c54afb6e8bb5cb6e133418cca**;
+- **45789 bytes**;
+- SHA-256 **56b5c7deb9984f1a539d037bffa54a6d62cae105f6027b804fcdc029610edaf2**;
+- runbook `docs/qualification/CURRENT_FREELLMAPI_P2D_ISOLATED_RESTORE_PROOF_20261006.md`;
+- blob **30e8044a3e514d1077817beaa133dcd03538e41f**;
+- **4583 bytes**;
+- SHA-256 **4fecf48e1f76f2f18d1d0d44ee4c4490e696304e368ec1806dc0e99bc163a33c**.
+
+The script requires exact local token `AUTHORIZE_P2D_ISOLATED_RESTORE_PROOF`. It confidentially validates the P2C archive before extraction, initializes only the fresh isolated volume for the exact live UID/GID, restores via anonymous GPG→tar pipe, requires an exact pre-open tree match, runs `better-sqlite3` integrity and representative nonsecret schema/count checks on the copy, then revalidates all non-SQLite external artifact hashes. The restored volume remains detached and retained for owner review; it is not deleted automatically.
+
+`P2C=COMPLETE_PASS`  
+`P2D_OWNER_AUTHORIZATION=GRANTED`  
+`P2D_EXECUTION=LOCAL_MAC_PENDING`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO_UNTIL_P2D_PASS`  
+`NEXT_GATE=LOCAL_P2D_ISOLATED_RESTORE_PROOF_R1`
+
