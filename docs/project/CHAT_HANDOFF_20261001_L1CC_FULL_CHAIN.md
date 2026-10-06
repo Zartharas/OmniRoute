@@ -1563,3 +1563,24 @@ Do not bypass the lockfile gate. The next bounded step is issue #24's separately
 
 **NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_ISSUE24_BOUNDED_LOCKFILE_REPAIR_R1**.
 
+## 53. 2026-10-06 issue24 repair split cleanly into PR78 repair + PR79 qualification
+
+The known inherited `npm ci` failure is now addressed without contaminating PR #51 functional source.
+
+Draft PR #78 is the repair-only layer:
+- base PR51 head **c3ea109b629ab20184b1515afc94e7be96f44cc8**;
+- head **2cd6759b7ffbd396110ccb19f200fe237c80bad6**;
+- only `package-lock.json` changes;
+- exactly 3+/3-;
+- root `brace-expansion` metadata moves 1.1.18 -> 1.1.21 only.
+
+Draft PR #79 is the qualification-only layer:
+- head **d86fc5c0a2f38cda9543ad705085a3a11714b428**;
+- harness blob **0dd3f0e8e7f00d2f7239e1fe46087e5e8eaef864**;
+- 13376 bytes;
+- SHA-256 **d5616bbfe2edaf521bf1cbaefd3ffe1dafdffd3df883448216eee6c16e0a87b1**.
+
+The harness uses the exact Node image digest observed in the failed PR77 build and npm 12.0.2, performs clean isolated `npm ci`, then rebuilds the candidate image while retaining all live/runtime/provider safety boundaries.
+
+**NEXT_GATE=LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
+
