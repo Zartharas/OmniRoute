@@ -1800,3 +1800,27 @@ The preservation/restore prerequisite is complete. Do not continue backup/restor
 
 **NEXT_GATE=RETURN_TO_L1CC_CONTROLLED_ACCEPTANCE_ROADMAP**.
 
+## 77. 2026-10-06 L1C-C post-rollback lease audit complete; next gate is candidate-image build qualification
+
+After P2D established `ROLLBACK_READY=YES`, the project returned to draft PR #51. A source audit reconciled the accepted B1 `leaseValid=true` contract with the actual production credential selector.
+
+PR #51 / PR #50 does not pass a managed single-connection lease context into `getProviderCredentials`. That is intentional for the current four-distinct-connection L1C-C chain: the ordinary managed-lease header/generation contract represents one lease owner bound to one connection and cannot be naively shared across four distinct stage pins.
+
+The unmanaged selector is nevertheless fail-closed with respect to exclusive lease authority. After cached quota filtering, `applyExclusiveConnectionLeasePolicy` removes both:
+- connections reserved to active `lease:exclusive` API-key policies via `getExclusiveLeaseConnectionIds()`; and
+- connections currently occupied by an ACTIVE exclusive connection lease via `getExclusiveLeaseOccupancy()`.
+
+The PR #51 credential call additionally uses one exact forced connection, a one-element allowed connection list, `sessionKey=null`, `sessionAffinityTtlMs=0`, quota bypass OFF, rate-limited/suppressed acceptance OFF and post-selection exact connection/provider equality. Therefore the applicable B1 lease-valid property for this chain is **not reserved/occupied by the exclusive-lease system**, not acquisition of one shared managed lease.
+
+A `lease:exclusive` canary key would fail closed under this path unless a future multi-connection lease design is explicitly introduced. No such design is added here.
+
+No live credential materialization, provider call, Docker mutation, canary activation or PR #51 source change occurred during this audit.
+
+Because PR #51 is not present in the currently running FreeLLMAPI image, the next controlled acceptance action is **not** a live PR #51 credential test. First produce and qualify an exact candidate Docker image from PR #51 HEAD **c3ea109b629ab20184b1515afc94e7be96f44cc8** with L1C/L1C-C flags still OFF, without replacing or restarting the live container. The Dockerfile itself performs package/distro fetches during build, so this is a local build mutation and external dependency-network action, but not a provider/model call.
+
+`ROLLBACK_READY=YES`  
+`PR51=DRAFT_UNMERGED_DEFAULT_OFF`  
+`L1CC_LEASE_SEMANTICS=AUDITED_FAIL_CLOSED_NO_SOURCE_PATCH`  
+`L1CC_CREDENTIAL_PROVIDER_EVIDENCE=NOT_YET_PERFORMED`  
+`NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_PR51_CANDIDATE_IMAGE_BUILD_QUALIFICATION`
+
