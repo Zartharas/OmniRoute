@@ -1672,3 +1672,47 @@ It keeps production running, performs the exact-live-user RO/network-none full-t
 `ROLLBACK_READY=NO`  
 `NEXT_GATE=LOCAL_P2C_LIVE_USER_READONLY_HELPER_QUALIFICATION_R1`
 
+## 72. 2026-10-06 patched P2C live-user helper qualification PASS
+
+Owner executed the pinned read-only qualification for the PR75 helper-user correction on current private DRAFT PR #75 HEAD **2590b03332e2fad258713677bba1217e3a06b97f**.
+
+Patched production source syntax/self-test PASS:
+- `fabricated_p2c_complete_tree_validator=PASS_POSITIVE_PLUS_4_NEGATIVE_CASES`
+- `fabricated_p2c_helper_user_propagation=PASS`
+- `fabricated_p2c_network_or_docker_access=NONE`
+
+Actual live-user read-only qualification PASS:
+- exact live `Config.User` helper source confirmed;
+- complete-tree hash scan PASS;
+- **117 regular files**, **16 directories**, **476919168 logical bytes** observed;
+- `storage.sqlite-wal` present;
+- `storage.sqlite-shm` present;
+- rollback journal absent;
+- scanner/tar helper-user source-wiring regression PASS;
+- no plaintext archive;
+- live identity and active worktree nonmutation PASS;
+- coherent-backup claim explicitly **NO** because the live writer remained active;
+- P2C execution not performed;
+- exact result **`PASS_P2C_LIVE_USER_READONLY_HELPER_QUALIFICATION_R1`**.
+
+Current production patch remains pinned:
+- `scripts/qualification/current-freellmapi-p2c-coordinated-current-volume-backup-r1.py`
+- blob **8821ba0b0d99af791a45ded3bd9f3a0b9f33ba4a**
+- 36988 bytes
+- SHA-256 **fc49b07f1f5110bafdeabd9772ccf28e620e02eca23ac82d930412fd75e6fe8c**
+
+Qualification artifact remains:
+- blob **7f066493b027b1c485c39b201c7eca8e2f9d0d3b**
+- 11963 bytes
+- SHA-256 **3b522df1760e5398ade60fb43726a2ce4b476b81d9dd74a7f098de0b68fa5cc4**
+
+The helper-user defect is now both **proven and qualified fixed** without another outage. However, no coherent encrypted P2C backup exists yet. A second maintenance-window transaction requires fresh explicit owner authorization; the previous authorization is not reused. P2D remains separate.
+
+`P2C_HELPER_USER_FIX=QUALIFIED_PASS`  
+`P2C_ENCRYPTED_BACKUP=NOT_CREATED`  
+`P2C_SECOND_MAINTENANCE_WINDOW=FRESH_OWNER_AUTHORIZATION_REQUIRED`  
+`P2D_ISOLATED_RESTORE=NOT_AUTHORIZED_NOT_PERFORMED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`  
+`ROLLBACK_READY=NO`  
+`NEXT_GATE=FRESH_OWNER_AUTHORIZATION_FOR_SECOND_P2C_ATTEMPT`
+
