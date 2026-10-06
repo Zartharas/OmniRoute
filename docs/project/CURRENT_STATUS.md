@@ -1913,3 +1913,28 @@ PR #78 remains unchanged and lockfile-only. Existing owner authorization still a
 
 **NEXT_GATE=RERUN_CORRECTED_LOCAL_ISSUE24_BOUNDED_LOCKFILE_REPAIR_QUALIFICATION_R1**.
 
+## 82. 2026-10-06 issue24 lockfile repair validated; Turbopack R1 failed; webpack R2 staged
+
+The corrected PR #79 R1 qualification conclusively validated the issue #24 repair:
+- exact single-record `package-lock.json` delta PASS;
+- `package.json` and `Dockerfile` nonmutation PASS;
+- clean `npm ci` PASS with npm 12.0.2;
+- clean `npm ci` did not rewrite the repaired lockfile.
+
+The Docker build then advanced past dependency installation/native rebuild and failed later inside `npm run build` on Next.js 16.3.2/Turbopack with **`TurbopackInternalError: internal error: entered unreachable code: there must be a path to a root`** in `ModuleGraphImportTracer`. Production remained untouched and `ROLLBACK_READY=YES`.
+
+This is now treated as a distinct Turbopack build defect, not a lockfile-repair failure. OmniRoute already exposes the documented build escape hatch `OMNIROUTE_USE_TURBOPACK=0`, which makes `build-next-isolated.mjs` invoke `next build --webpack`.
+
+PR #78 remains unchanged and lockfile-only. PR #79 now includes a separate webpack-fallback R2 harness:
+- PR79 head **815c3c3e5149ea027ff60134f8fff656bb59a48f**;
+- file `scripts/qualification/issue24-bounded-lockfile-repair-webpack-qualification-r2.sh`;
+- blob **b6b3796e3ed46c5b9f6ad0c9c473a717ad48dfaa**;
+- **13750 bytes**;
+- SHA-256 **a28453c71062df3bb08ab026fe0c3e706ba98eb1e3442fe013b23e506b32bcb2**;
+- candidate tag `omniroute:l1cc-pr51-issue24lock-webpack-r2-amd64`;
+- only build-path change: `--build-arg OMNIROUTE_USE_TURBOPACK=0`.
+
+No new authorization is required because this remains inside the existing build/dependency-network-only authorization and adds no live/runtime/provider/credential/canary/merge authority.
+
+**NEXT_GATE=LOCAL_PR79_WEBPACK_FALLBACK_CANDIDATE_BUILD_R2**.
+
