@@ -1779,3 +1779,24 @@ The script requires exact local token `AUTHORIZE_P2D_ISOLATED_RESTORE_PROOF`. It
 `ROLLBACK_READY=NO_UNTIL_P2D_PASS`  
 `NEXT_GATE=LOCAL_P2D_ISOLATED_RESTORE_PROOF_R1`
 
+## 76. 2026-10-06 P2D isolated restore proof PASS; rollback preservation prerequisite complete
+
+Owner executed the pinned P2D isolated restore proof from private DRAFT PR #76 and obtained exact result **`PASS_P2D_ISOLATED_RESTORE_PROOF_R1`**.
+
+The proof was fully isolated from production: no live-service stop/restart, no production-volume restore/mount, no Docker network, no host ports, no production token/policy mounts, no provider calls, no L1C-C activation and no plaintext archive persistence. The restored copy exactly matched the preserved P2C manifest before SQLite open: **115 regular files**, **16 directories**, **472773808 logical bytes**, including **97 call_logs files**, **8 db_backups files** and **9 auxiliary files**.
+
+SQLite validation on the isolated COPY passed `integrity_check`; no WAL checkpoint was needed; pre-open WAL/SHM/journal were absent. Sanitized schema counts were **134 tables**, **339 indexes**, **0 views**, **28 triggers**. Three representative unnamed tables were sampled with row counts **172, 0, 0** (aggregate **172**). All non-SQLite external artifact hashes remained identical after SQLite validation.
+
+Production live identity/worktree and P2B/P2C ciphertexts/recovery wrapper remained unchanged. The isolated restore volume is retained detached/confidential for owner review.
+
+`P2B=PASS`  
+`P2C=PASS`  
+`P2D=PASS`  
+`ROLLBACK_READY=YES`  
+`PR76=P2D_EVIDENCE_DRAFT_OPEN_UNMERGED`  
+`PR51_L1CC=DRAFT_UNMERGED_DEFAULT_OFF`
+
+The preservation/restore prerequisite is complete. Do not continue backup/restore iteration absent an intentional refresh or contradictory evidence.
+
+**NEXT_GATE=RETURN_TO_L1CC_CONTROLLED_ACCEPTANCE_ROADMAP**.
+
