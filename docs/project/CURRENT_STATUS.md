@@ -1824,3 +1824,26 @@ Because PR #51 is not present in the currently running FreeLLMAPI image, the nex
 `L1CC_CREDENTIAL_PROVIDER_EVIDENCE=NOT_YET_PERFORMED`  
 `NEXT_GATE=EXPLICIT_OWNER_AUTHORIZATION_FOR_PR51_CANDIDATE_IMAGE_BUILD_QUALIFICATION`
 
+## 78. 2026-10-06 owner authorized PR51 candidate-image build qualification; PR #77 staged
+
+Owner authorized the bounded PR #51 candidate-image build qualification.
+
+Private DRAFT PR #77 is the execution/evidence carrier:
+- base: PR #51 exact implementation head **c3ea109b629ab20184b1515afc94e7be96f44cc8**;
+- qualification head: **d71d462a824a7268d109c73b92df6faeb91c70d8**;
+- topology: one commit ahead / zero behind;
+- exactly one added qualification script;
+- script blob: **e5a9cc6e240e83f724674b27e9dcb66b44f6f6a3**;
+- bytes: **10292**;
+- SHA-256: **5539c3b2f3bf2dc6c88aae99410990cacd96c536f18b6ea167719863a49a516d**.
+
+Authorized actions are limited to creating an isolated tracked-source build context from exact PR #51, building `runner-base` for `linux/amd64`, normal Dockerfile build-time distro/npm/GitHub dependency access, candidate-image creation/tagging, static image inspection and pre/post exact-live nonmutation checks.
+
+This authorization does **not** cover live container stop/restart/replacement, production-volume use by the candidate, candidate runtime execution, credentials, provider/model calls, egress probes, real canary activation or merge.
+
+Expected candidate tag: `omniroute:l1cc-pr51-c3ea109b-r1-amd64`.
+
+`ROLLBACK_READY=YES` remains established from P2D.
+
+**NEXT_GATE=LOCAL_PR51_CANDIDATE_IMAGE_BUILD_QUALIFICATION_R1**.
+
