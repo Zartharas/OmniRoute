@@ -1938,3 +1938,43 @@ No new authorization is required because this remains inside the existing build/
 
 **NEXT_GATE=LOCAL_PR79_WEBPACK_FALLBACK_CANDIDATE_BUILD_R2**.
 
+## 82. 2026-10-07 issue #24 repair qualified; Turbopack blocker isolated; webpack R2 is next
+
+Authoritative private-repository state was re-read on 2026-10-07.
+
+Preservation/restore remains complete: `P2B=PASS`, `P2C=PASS`, `P2D=PASS`, `ROLLBACK_READY=YES`. Draft PR #51 remains open/unmerged/default OFF at **c3ea109b629ab20184b1515afc94e7be96f44cc8**.
+
+The inherited npm lockfile defect tracked by private issue #24 is now qualified as repaired at the intended reproducibility boundary. Draft PR #78 remains the lockfile-only repair:
+- head **2cd6759b7ffbd396110ccb19f200fe237c80bad6**;
+- base exact PR51 head;
+- only `package-lock.json`;
+- 3 additions / 3 deletions;
+- root `brace-expansion` record **1.1.18 -> 1.1.21** only;
+- repaired lock blob **e492509efd515af4666ffe3e03d83c577c6da726**.
+
+Owner-Mac execution of PR #79 R1 then proved:
+- exact one-record lock delta PASS;
+- `package.json`/Dockerfile nonmutation PASS;
+- clean `npm ci` PASS under npm **12.0.2**;
+- `npm ci` did not rewrite the repaired lockfile;
+- builder npm/native rebuild/tls-client asset checks passed.
+
+The build failed later in Next.js 16.3.2 Turbopack with:
+`TurbopackInternalError: internal error: entered unreachable code: there must be a path to a root`
+at `turbopack-core/src/module_graph/mod.rs:746:25`.
+
+This is now a separate build-engine blocker, not a PR51 functional regression and not a lockfile-repair failure. Live service/data/provider boundaries remained untouched and `ROLLBACK_READY=YES`.
+
+Private PR #79 now carries the R2 webpack-fallback qualification:
+- current head **815c3c3e5149ea027ff60134f8fff656bb59a48f**;
+- file `scripts/qualification/issue24-bounded-lockfile-repair-webpack-qualification-r2.sh`;
+- blob **b6b3796e3ed46c5b9f6ad0c9c473a717ad48dfaa**;
+- **13750 bytes**;
+- SHA-256 **a28453c71062df3bb08ab026fe0c3e706ba98eb1e3442fe013b23e506b32bcb2**;
+- candidate tag `omniroute:l1cc-pr51-issue24lock-webpack-r2-amd64`;
+- only intentional build change: `--build-arg OMNIROUTE_USE_TURBOPACK=0`.
+
+Existing owner authorization remains valid for this build-only R2 because scope did not expand. Candidate runtime, credentials, provider/model calls, egress probes, real canary, merge and activation remain separately unauthorized.
+
+`NEXT_GATE=LOCAL_PR79_R2_WEBPACK_CANDIDATE_IMAGE_QUALIFICATION`.
+
