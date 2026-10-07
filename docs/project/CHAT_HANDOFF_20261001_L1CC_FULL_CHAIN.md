@@ -1606,3 +1606,28 @@ R2 changes only the build argument to `OMNIROUTE_USE_TURBOPACK=0`; all live/runt
 
 **NEXT_GATE=LOCAL_PR79_WEBPACK_FALLBACK_CANDIDATE_BUILD_R2**.
 
+## 55. 2026-10-07 new-chat handoff: run/read PR79 R2 webpack qualification
+
+Do not resume from the older PR77 lockfile failure or from the first PR79 harness-escaping issue. Live private GitHub is authoritative and has advanced.
+
+Current chain:
+- P2B/P2C/P2D PASS; `ROLLBACK_READY=YES`;
+- PR51 draft/unmerged/default OFF at **c3ea109b629ab20184b1515afc94e7be96f44cc8**;
+- PR78 lockfile-only repair at **2cd6759b7ffbd396110ccb19f200fe237c80bad6** is qualified by clean npm-ci evidence;
+- PR79 R1 passed lockfile/npm-ci gates but failed later on a Next.js Turbopack internal panic;
+- PR79 current head is **815c3c3e5149ea027ff60134f8fff656bb59a48f**.
+
+Next artifact:
+`scripts/qualification/issue24-bounded-lockfile-repair-webpack-qualification-r2.sh`
+
+Pin:
+- blob **b6b3796e3ed46c5b9f6ad0c9c473a717ad48dfaa**
+- 13750 bytes
+- SHA-256 **a28453c71062df3bb08ab026fe0c3e706ba98eb1e3442fe013b23e506b32bcb2**
+
+R2 uses the repository-supported fallback `OMNIROUTE_USE_TURBOPACK=0` so the candidate builds with webpack instead of Turbopack. Existing issue24 build-only authorization remains applicable.
+
+In the next chat, first re-read private PRM #45, PR #79, PR #78, issue #24 and PR #51 LIVE. The user will provide the R2 terminal output. If R2 has not been run, provide only the pinned retrieval/integrity/run command. If it PASSes, record the candidate image identity and stop at the separate authorization boundary for candidate-runtime flag-OFF qualification. If it FAILs, classify the fixed failure and do not rerun unchanged or weaken the build.
+
+**NEXT_GATE=LOCAL_PR79_R2_WEBPACK_CANDIDATE_IMAGE_QUALIFICATION**.
+
